@@ -1,4 +1,4 @@
-import base64,json,tempfile,threading,unittest,urllib.request,urllib.error
+import time,base64,json,tempfile,threading,unittest,urllib.request,urllib.error
 from pathlib import Path
 from http.server import ThreadingHTTPServer
 from debug_server import Handler,Store
@@ -26,6 +26,16 @@ class ServerTest(unittest.TestCase):
                 self.assertEqual(e.exception.code,409)
                 claimed=request('/api/worker/next',token=server.store.token)['command']
                 self.assertEqual(claimed['id'],command['id']);self.assertEqual(claimed['status'],'running')
+                frame={'request_id':command['id'],'sequence':1,'captured_unix':time.time(),'frames':{k:base64.b64encode(b'\xff\xd8test\xff\xd9').decode() for k in ('video.overhead','video.wrist_l','video.wrist_r')}}
+                with self.assertRaises(urllib.error.HTTPError) as e:request('/api/worker/frame',frame)
+                self.assertEqual(e.exception.code,401)
+                request('/api/worker/frame',frame,server.store.token)
+                self.assertEqual(request('/api/live')['frame']['sequence'],1)
+                self.assertEqual(request('/api/replay/0')['frame']['request_id'],command['id'])
+                self.assertNotIn('captured_unix',(Path(directory)/'events.jsonl').read_text())
+                stale=dict(frame,captured_unix=time.time()-20)
+                with self.assertRaises(urllib.error.HTTPError) as e:request('/api/worker/frame',stale,server.store.token)
+                self.assertEqual(e.exception.code,400)
                 request('/api/stop',{})
                 self.assertTrue(request('/api/status')['command']['stop'])
                 event=request('/api/events',{'kind':'test','api_key':'MUST_NOT_STORE'},server.store.token)

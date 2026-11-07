@@ -55,6 +55,20 @@ class Worker:
             except FileNotFoundError:pass
             except Exception as error:self.error=str(error)
             time.sleep(.08)
+    def stream(self):
+        sent=None
+        while not self.closed:
+            packet=self.last
+            command=self.command
+            if packet and command and self.recording and time.time()-packet['captured_unix']<2:
+                identity=(command['id'],packet['captured_unix'])
+                if identity!=sent:
+                    try:
+                        self.api('/api/worker/frame',{'request_id':command['id'],'sequence':packet['sequence'],'captured_unix':packet['captured_unix'],'frames':packet['frames']})
+                        sent=identity
+                    except Exception:pass
+            time.sleep(.5)
+
     def fresh(self,after=0):
         deadline=time.monotonic()+12
         while time.monotonic()<deadline:
@@ -128,7 +142,7 @@ class Worker:
     def run(self):
         configure(self.client,prepare(self.root/'model'))
         if not self.client.wait_for_ik(180):raise TimeoutError('IK initialization timed out')
-        threading.Thread(target=self.poll,daemon=True).start();threading.Thread(target=self.pump,daemon=True).start()
+        threading.Thread(target=self.poll,daemon=True).start();threading.Thread(target=self.pump,daemon=True).start();threading.Thread(target=self.stream,daemon=True).start()
         self.event('worker.ready',message='Unreal worker ready for text commands')
         seen=set();heard=set()
         try:

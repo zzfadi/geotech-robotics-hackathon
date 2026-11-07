@@ -96,7 +96,7 @@ def refine_central_mount():
     return setup((LABELS[2],))
 
 
-def hide_camera_meshes():
+def hide_camera_meshes(hide_central_body=False):
     """Hide camera representations without disabling optics or wrist attachments."""
     existing = yam_station.actors()
     for label in LABELS:
@@ -110,8 +110,8 @@ def hide_camera_meshes():
             primitive.modify()
             primitive.set_visibility(False, False)
             primitive.set_hidden_in_game(True, False)
-    for label in (yam_station.PREFIX+'OverviewCameraProxy',
-                  'MakerStation_CentralCameraLens_Approximate'):
+    for label in ((yam_station.PREFIX+'OverviewCameraProxy',
+                  'MakerStation_CentralCameraLens_Approximate') if hide_central_body else ()):
         proxy=existing.get(label)
         if proxy is not None:
             proxy.modify()
@@ -123,8 +123,8 @@ def hide_camera_meshes():
 def show_central_camera_body():
     """Show only the small physical camera proxy; retain hidden editor icons."""
     existing = yam_station.actors()
-    for label in (yam_station.PREFIX+'OverviewCameraProxy',
-                  'MakerStation_CentralCameraLens_Approximate'):
+    for label in ((yam_station.PREFIX+'OverviewCameraProxy',
+                  'MakerStation_CentralCameraLens_Approximate') if hide_central_body else ()):
         actor = existing.get(label)
         if actor is None: raise ValueError('Missing central camera proxy: '+label)
         actor.modify()

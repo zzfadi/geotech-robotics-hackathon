@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:08:45-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Deployed live three-camera previews and replay slider to the Luna2 Dream app; restored the small central camera housing.",
+  "why": "Operators need to see actual Unreal frames during commands and review captures afterward.",
+  "where": [
+    "https://luna2.tail6864ac.ts.net/",
+    "DreamSim/debug_server.py",
+    "DreamSim/web/index.html"
+  ],
+  "details": "Authenticated worker frame upload; latest 300 packets retained in RAM. Live capture and browser replay verified. Recent commands rejected out-of-range gripper outputs before movement. Dream sandbox banana behavior inspected; continuous grasp physics remains pending."
+}

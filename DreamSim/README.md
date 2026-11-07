@@ -59,3 +59,11 @@ A synthetic macOS `say` clip saying “Move the right robot arm toward the orang
 A real microphone command transcribed as “Pick up red box.” Its subsequent Dream response exceeded the configured joint speed cap and was rejected before playback. The new retimer preserves ordered targets, prepends the observed pose, and reduces the playback sample rate for both arms together. Offline replay of that saved response produces 49 samples over 8.294 seconds (3.456× time scale), including the initial jaw transition. These are source/model limits, not calibrated hardware capabilities. Live execution of this revised path remains pending.
 
 The worker now waits up to two minutes for an existing editor task, with cancellation, and recovers a candidate seed from the last observation when a rejected playback has no pose. Unreal still verifies every live link before accepting that seed. Playback waits allow the bounded 15-second trajectory plus startup overhead; failures request a stop. Successful grasp and runtime contact control remain unproven.
+
+## Live camera preview and replay
+
+The Luna2 app now polls a separate, latest-frame endpoint twice per second. During each command the Mac worker forwards all three actual Unreal SceneCapture JPEGs on a dedicated thread; inference and observation delivery do not wait for the preview network request. The page marks images LIVE only while their capture timestamp is under two seconds old, otherwise Capture stopped.
+
+Replay last capture and the frame slider inspect up to 300 retained three-camera packets from the most recent command. This RAM buffer is replaced by the next command and cleared by a server restart; it is not a durable video archive. The existing local overhead JPEG sequence and MP4 remain under Saved/DreamDebugger/worker/recordings/<request-id>/. Browser replay was verified with real Unreal camera frames on November 7. The current test commands were rejected for out-of-range grip output, so their preview confirms capture/replay, not successful movement or grasp.
+
+The Dream sandbox was inspected during the user's “take a banana” task: its UI identifies YAM and a 300-second run budget, and the right gripper is interacting with the banana. This is a behavior reference; our Maker Arm controller still needs continuous runtime contact control to reproduce it.

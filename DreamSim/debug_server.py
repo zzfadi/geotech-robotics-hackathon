@@ -9,7 +9,7 @@ class Store:
         self.path=path;path.mkdir(parents=True,exist_ok=True)
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
-        self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.lock=threading.RLock()
+        self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.lock=threading.RLock()
         log=path/'events.jsonl'
         if log.exists():
             for line in log.read_text().splitlines():
@@ -36,6 +36,15 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         s=self.server.store
         if self.path=='/':return self.send(200,(Path(__file__).parent/'web/index.html').read_bytes(),'text/html; charset=utf-8')
+        if self.path=='/api/live':
+            with s.lock:return self.send(200,{'frame':s.preview[-1] if s.preview else None,'count':len(s.preview),'server_time':time.time()})
+        if self.path.startswith('/api/replay/'):
+            try:
+                index=int(self.path.rsplit('/',1)[1])
+                with s.lock:
+                    if not 0<=index<len(s.preview):return self.send(404,{'error':'Frame unavailable'})
+                    return self.send(200,{'frame':s.preview[index],'count':len(s.preview),'server_time':time.time()})
+            except ValueError:return self.send(400,{'error':'Invalid frame index'})
         if self.path=='/api/status':
             with s.lock:return self.send(200,{'events':list(s.events),'command':s.command,'voice':({k:v for k,v in s.voice.items() if k!='audio'} if s.voice else None),'worker_online':time.time()-s.worker_at<10,'server_time':time.time()})
         if self.path=='/api/worker/next':
@@ -55,6 +64,22 @@ class Handler(BaseHTTPRequestHandler):
             origin=self.headers.get('Origin')
             if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):return self.send(403,{'error':'Cross-origin request refused'})
             data=json.loads(self.rfile.read(length))
+            if self.path=='/api/worker/frame':
+                if not self.worker():return self.send(401,{'error':'Worker authentication required'})
+                frames=data.get('frames',{})
+                if set(frames)!={'video.overhead','video.wrist_l','video.wrist_r'}:raise ValueError('Expected all three camera views')
+                for value in frames.values():
+                    raw=base64.b64decode(value,validate=True)
+                    if not raw.startswith(b'\xff\xd8') or not raw.endswith(b'\xff\xd9'):raise ValueError('Expected JPEG frame')
+                captured=float(data['captured_unix'])
+                if not 0<=time.time()-captured<10:raise ValueError('Frame is not fresh')
+                with s.lock:
+                    if not s.command or data.get('request_id')!=s.command['id']:raise ValueError('Unknown frame request')
+                    if s.preview_request!=data['request_id']:
+                        s.preview.clear();s.preview_request=data['request_id']
+                    frame={'request_id':data['request_id'],'sequence':data['sequence'],'captured_unix':captured,'frames':frames}
+                    s.preview.append(frame)
+                return self.send(200,{'ok':True})
             if self.path=='/api/voice':
                 audio=base64.b64decode(data.get('audio',''),validate=True)
                 if not 100<len(audio)<=1_400_000:raise ValueError('Record a short voice command (maximum 30 seconds)')
