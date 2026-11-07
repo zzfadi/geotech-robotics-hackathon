@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T12:33:27-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Replaced both live YAM arms with 18 official Maker Arm link actors; verified geometry scale and host synchronization.",
+  "why": "Match the confirmed MakerMods hardware using the latest official CAD-derived meshes.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_station.py",
+    "docs/images/maker-arm-station.jpg"
+  ],
+  "details": "Nine mesh bounds match converted vertices within 0.1 mm. Luna2 gracefully restarted with verified recovery archive and compiled checkpoint fix. Dynamics, calibration, map rename and final binary checkpoint remain unfinished."
+}
