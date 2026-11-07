@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T12:28:16-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Identified MakerMods Maker Arm from the new close-up and vendored its official URDF/STL model.",
+  "why": "The earlier YAM preview is a different arm; accurate simulation requires the correct geometry and hardware calibration.",
+  "where": [
+    "docs/maker-arm-model.md",
+    "Unreal/TheHumanTouch/SourceAssets/MakerArm"
+  ],
+  "details": "Verified all referenced meshes. Upstream dynamics, actuator limits and gripper transmission remain unvalidated; live Unreal replacement is pending."
+}
