@@ -4,12 +4,24 @@
 *{box-sizing:border-box}body{margin:3rem auto;padding:0 1.5rem;max-width:48rem;font:17px/1.5 system-ui,sans-serif;color:#edf3f3;background:#141d22}h1{font-size:2rem;line-height:1.15;margin-bottom:.4rem}p{margin-top:.5rem}button{font:inherit;padding:.55rem 1rem;border:0;border-radius:.3rem;cursor:pointer}video{display:block;margin:1.2rem 0;width:100%;max-height:55vh;background:#080c0e;border-radius:.4rem;transform:scaleX(-1)}#status{color:#c1e4df}button:disabled{opacity:.5}
 </style>
 <h1>Webcam performer</h1>
-<p>Face the camera with your shoulders, elbows and hips in view. Camera images stay on this Mac.</p>
+<p>For full-body tracking, frame one performer from head to feet and leave room for their arms to extend. Camera images stay on this Mac.</p>
 <button id="start">Start webcam</button> <button id="stop" disabled>Stop</button>
 <video muted autoplay playsinline></video><p id="status" role="status">Ready</p>
+<details><summary>Table calibration</summary><p>Hold the printed board in view, then save a full-resolution image for camera registration.</p><button id="save" disabled>Save board image</button></details>
 <script>
 const video=document.querySelector('video'), statusText=document.querySelector('#status');
 const start=document.querySelector('#start'), stop=document.querySelector('#stop');
+const snapshot=document.querySelector('#save');
+snapshot.onclick=()=>{
+    if(!stream || !video.videoWidth)return;
+    const view=document.createElement('canvas'); view.width=video.videoWidth;view.height=video.videoHeight;
+    view.getContext('2d').drawImage(video,0,0);
+    view.toBlob(blob=>{
+        if(!blob)return;
+        const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='table-board-'+Date.now()+'.png';a.click();
+        setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    },'image/png');
+};
 let stream, run, offset=0, lastClock=0;
 async function clockSync() {
     let best=Infinity, bestOffset=0;
@@ -22,7 +34,7 @@ async function clockSync() {
 function end(message) {
     const id=run; run=null;
     if(stream) {for(const track of stream.getTracks())track.stop();stream=null;}
-    video.srcObject=null; start.disabled=false;stop.disabled=true;statusText.textContent=message;
+    video.srcObject=null; start.disabled=false;stop.disabled=true;snapshot.disabled=true;statusText.textContent=message;
     if(id) fetch('/end',{method:'POST',headers:{'X-Camera-Session':id}}).catch(()=>{});
 }
 stop.onclick=()=>end('Stopped');
@@ -31,7 +43,7 @@ start.onclick=async()=>{
     const id=crypto.randomUUID();run=id;
     try {
         stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{width:{ideal:960,max:1920},height:{ideal:540,max:1080},frameRate:{ideal:30}}});
-        video.srcObject=stream; await video.play(); await clockSync(); stop.disabled=false;
+        video.srcObject=stream; await video.play(); await clockSync(); stop.disabled=false; snapshot.disabled=false;
         const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{alpha:false});
         async function capture(now,meta) {
             if(run!==id)return;

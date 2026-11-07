@@ -16,5 +16,5 @@ if [[ ! -f "$model" ]] || ! echo "$digest  $model" | shasum -a 256 -c --status; 
     mv "$download" "$model"
 fi
 echo "Webcam pose capture is starting. Allow Terminal to use the camera if prompted."
-echo "Face camera 0 with your shoulders and hips in view. Press Control-C to stop."
+echo "For full-body capture, face camera 0 with your head, hands and feet in view. Press Control-C to stop."
 exec "$capture_uv" run --script webcam.py --model "$model" --camera 0 "$@"

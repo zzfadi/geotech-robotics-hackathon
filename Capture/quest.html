@@ -92,7 +92,7 @@ button.onclick = async () => {
             if (time - last < 16 || ws.readyState !== WebSocket.OPEN || ws.bufferedAmount > 32000) return;
             const body = frame.body, viewer = frame.getViewerPose(space);
             if (!body || !viewer) { report("Waiting for body tracking."); return; }
-            const bones = [], hands = {}, opticalJoints = {left:0, right:0};
+            const bones = [], hands = {}, opticalJoints = {left:0, right:0}, opticalTips = {left:false, right:false};
             for (const source of session.inputSources) {
                 if (source.hand) hands[source.handedness] = source.hand;
             }
@@ -101,7 +101,10 @@ button.onclick = async () => {
                 const side = name.startsWith("left-") ? "left" : "right";
                 const handSpace = handJoint && hands[side]?.get(handJoint);
                 const optical = handSpace && frame.getJointPose(handSpace,space);
-                if (optical) opticalJoints[side]++;
+                if (optical) {
+                    opticalJoints[side]++;
+                    if (handJoint === "index-finger-tip") opticalTips[side] = !optical.emulatedPosition;
+                }
                 const pose = optical || (name === "head" ? viewer : jointSpace && frame.getPose(jointSpace,space));
                 if (!pose && parent < 0) { report("Body tracking unavailable."); return; }
                 if (!pose) {
@@ -112,7 +115,7 @@ button.onclick = async () => {
                 const {position:p, orientation:q} = pose.transform;
                 bones.push([name,parent,p.x,p.y,p.z,q.x,q.y,q.z,q.w,pose.emulatedPosition ? 0.5 : 1]);
             }
-            ws.send(JSON.stringify({seq:n++,client_ms:frame.predictedDisplayTime ?? time, optical_joints:opticalJoints, bones}));
+            ws.send(JSON.stringify({seq:n++,client_ms:frame.predictedDisplayTime ?? time, optical_joints:opticalJoints, optical_index_tips:opticalTips, bones}));
             last = time;
             if (n === 1 || n % 60 === 0) report("Streaming " + bones.length + " joints. Optical hand joints: " + opticalJoints.left + " left, " + opticalJoints.right + " right.");
         };

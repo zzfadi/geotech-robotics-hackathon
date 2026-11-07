@@ -1,0 +1,7 @@
+{
+ "when":"2026-11-07T13:21:00-08:00","workstream":"vrxr","status":"in-progress",
+ "what":"Added camera-board and session-specific Quest fingertip registration, and clarified head-to-foot webcam framing.",
+ "why":"Full-body animation and contact need a shared measured frame at the Maker Arm table.",
+ "where":["Capture/register_table.py","Capture/README.md"],
+ "details":"Synthetic image tests recover camera geometry and reject a moved camera. Headset registration requires a separate check target and expires on a new session. Physical registration still needs surveyed marks."
+}

@@ -7,6 +7,7 @@
 import argparse
 import asyncio
 import json
+import logging
 import math
 import socket
 import time
@@ -79,13 +80,81 @@ def encode_frame(msg, session, offset_ns, rtt_ns, anchor):
         ):
             raise ValueError("Invalid optical hand joint counts")
         data["optical_joints"] = {s: counts[s] for s in ("left", "right")}
+    if "optical_index_tips" in msg:
+        tips = msg["optical_index_tips"]
+        if not isinstance(tips, dict) or any(
+            type(tips.get(s)) is not bool for s in ("left", "right")
+        ):
+            raise ValueError("Invalid optical fingertip flags")
+        data["optical_index_tips"] = {s: tips[s] for s in ("left", "right")}
     encoded = json.dumps(data, separators=(",", ":"), allow_nan=False).encode()
     if len(encoded) > 60000:
         raise ValueError("Pose exceeds the Live Link receiver's packet limit")
     return station_ns, encoded
 
 
-def create_app(observer_port, anchor, *, livelink_port=17860):
+DEFAULT_SESSION_REGISTRATION = (
+    Path(__file__).resolve().parents[1]
+    / "Unreal/TheHumanTouch/Saved/Capture/quest-session-registration.json"
+)
+
+
+def read_anchor(data):
+    t = np.asarray(data["table_from_local_floor"], dtype=float)
+    if (
+        not isinstance(data["space"], str)
+        or data["space"] in ("", "hip_relative", "quest_local_floor")
+        or t.shape != (4, 4)
+        or not np.isfinite(t).all()
+        or not np.allclose(t[3], [0, 0, 0, 1])
+        or not np.allclose(t[:3, :3].T @ t[:3, :3], np.eye(3), atol=1e-4)
+        or abs(np.linalg.det(t[:3, :3]) - 1) > 1e-4
+    ):
+        raise ValueError("Invalid table registration")
+    return data["space"], Rotation.from_matrix(t[:3, :3]), t[:3, 3]
+
+
+class SessionRegistration:
+    """Never apply a local-floor fit to a later immersive session."""
+
+    def __init__(self, path, session, fallback):
+        self.path = path
+        self.session = session
+        self.fallback = fallback
+        self.anchor = fallback
+        self.next_read = 0.0
+        self.signature = None
+
+    def current(self):
+        now = time.monotonic()
+        if not self.path or now < self.next_read:
+            return self.anchor
+        self.next_read = now + 0.25
+        try:
+            stat = self.path.stat()
+            signature = stat.st_mtime_ns, stat.st_ino
+            if signature != self.signature:
+                self.signature = signature
+                data = json.loads(self.path.read_text())
+                self.anchor = (
+                    read_anchor(data)
+                    if data.get("source_session") == self.session
+                    else self.fallback
+                )
+        except FileNotFoundError:
+            self.signature = None
+            self.anchor = self.fallback
+        except (OSError, TypeError, KeyError, ValueError) as error:
+            self.anchor = self.fallback
+            logging.getLogger(__name__).warning(
+                "Could not use Quest session registration: %s", error
+            )
+        return self.anchor
+
+
+def create_app(
+    observer_port, anchor, *, livelink_port=17860, session_registration=None
+):
     app = web.Application()
     active = asyncio.Lock()
 
@@ -104,6 +173,7 @@ def create_app(observer_port, anchor, *, livelink_port=17860):
             sent = {}
             samples = deque(maxlen=12)
             session = uuid.uuid4().hex
+            registration = SessionRegistration(session_registration, session, anchor)
             last_ns = last_seq = -1
 
             async def ping():
@@ -132,7 +202,7 @@ def create_app(observer_port, anchor, *, livelink_port=17860):
                         elif samples and msg["seq"] > last_seq:
                             rtt, offset = min(samples)
                             stamp, encoded = encode_frame(
-                                msg, session, offset, rtt, anchor
+                                msg, session, offset, rtt, registration.current()
                             )
                             if stamp > last_ns:
                                 for port in (livelink_port, observer_port):
@@ -160,6 +230,12 @@ if __name__ == "__main__":
         type=Path,
         help="JSON with space and measured table_from_local_floor 4x4",
     )
+    parser.add_argument(
+        "--session-registration",
+        type=Path,
+        default=DEFAULT_SESSION_REGISTRATION,
+        help="Reload this touch registration while its source session is active",
+    )
     args = parser.parse_args()
     if args.observer_port == 17860 or not all(
         0 < p < 65536 for p in (args.port, args.observer_port)
@@ -168,17 +244,15 @@ if __name__ == "__main__":
     anchor = None
     if args.calibration:
         data = json.loads(args.calibration.read_text())
-        t = np.array(data["table_from_local_floor"], dtype=float)
-        if (
-            not data["space"]
-            or t.shape != (4, 4)
-            or not np.isfinite(t).all()
-            or not np.allclose(t[3], [0, 0, 0, 1])
-            or not np.allclose(t[:3, :3].T @ t[:3, :3], np.eye(3), atol=1e-4)
-            or abs(np.linalg.det(t[:3, :3]) - 1) > 1e-4
-        ):
-            parser.error("Invalid table registration")
-        anchor = data["space"], Rotation.from_matrix(t[:3, :3]), t[:3, 3]
+        if "source_session" in data:
+            parser.error(
+                "Use --session-registration for a session-bound touch registration"
+            )
+        anchor = read_anchor(data)
     web.run_app(
-        create_app(args.observer_port, anchor), host="127.0.0.1", port=args.port
+        create_app(
+            args.observer_port, anchor, session_registration=args.session_registration
+        ),
+        host="127.0.0.1",
+        port=args.port,
     )
