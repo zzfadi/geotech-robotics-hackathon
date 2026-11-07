@@ -43,3 +43,7 @@ Mac Codex and Luna2 Claude have both returned verified Agent Chat replies in The
 Luna2 checkpoints and pushes ready Unreal content to GitHub every **15 minutes**, plus completed milestones. The job defers active/unsaved work instead of committing an incomplete checkpoint. See [checkpoint operations](../../docs/checkpoints.md) and `Config/CheckpointPolicy.json`. Git commits do not clear Multi-User history: use the documented coordinated archive/fresh-session boundary to keep transaction history short.
 
 See [migration research](../../docs/agentcopresence-migration.md) for VR and later robot work.
+
+## Dreamlabs YAM station
+
+The shared map now includes a two-arm YAM tabletop station using official I2RT meshes and URDF joint poses. See [research and usage](../../docs/dreamlabs-yam.md). This is an editor kinematic preview; Dream-1 inference and grasp physics are not connected. The initial zero-actor map validator is historical after this addition.

@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T12:13:25-08:00",
+  "who": "Denys Mac Codex",
+  "kind": "agent",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Researched Dreamlabs and added a bimanual I2RT YAM station to the live TheHumanTouch scene.",
+  "why": "Use official meshes and joint definitions for the photographed tabletop robot setup.",
+  "where": [
+    "docs/dreamlabs-yam.md",
+    "Unreal/TheHumanTouch/Tools/yam_station.py"
+  ],
+  "details": "18 robot links; 30 station actors. Four kinematics tests passed, live pose change and imported bounds checked, assets shared. Exact hardware revision/layout unconfirmed. Kinematic editor preview only; no Dream-1 inference or grasp dynamics. Host persistence is being verified; Luna2 automatic Git push remains blocked by credentials."
+}
