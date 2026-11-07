@@ -22,7 +22,7 @@ VERSION='coacd-1.0.14'
 FOLDER=MODEL.parents[2]/'Saved/CoPresenceImports/MakerArmPhysics'
 
 
-def decompose_link(name, threshold_m=.00025):
+def decompose_link(name, threshold_m=.00025, merge=False):
     description() # Verify every pinned source hash before deriving geometry.
     if not 0 < threshold_m <= .001: raise ValueError('Expected positive threshold at most 1 mm')
     link=next((l for l in model().findall('link') if l.get('name')==name),None)
@@ -35,7 +35,7 @@ def decompose_link(name, threshold_m=.00025):
         scale=numbers(mesh.get('scale','1 1 1'))
         settings={'version':VERSION,'threshold_m':threshold_m,'scale':scale,
                   'seed':0,'resolution':4000,'preprocess_resolution':100,
-                  'decimate':False,'merge':False,'real_metric':True}
+                  'decimate':False,'merge':merge,'real_metric':True}
         key=hashlib.sha256(path.read_bytes()+json.dumps(settings,sort_keys=True).encode()).hexdigest()
         entry=cache/(key+'.json')
         if entry.exists():
@@ -65,7 +65,7 @@ def decompose_link(name, threshold_m=.00025):
                 coacd.set_log_level('warn')
                 pieces=coacd.run_coacd(coacd.Mesh(shape.vertices,shape.faces),
                     threshold=threshold_m,real_metric=True,preprocess_mode='off',
-                    resolution=4000,mcts_iterations=150,merge=False,decimate=False,seed=0)
+                    resolution=4000,mcts_iterations=150,merge=merge,decimate=False,seed=0)
                 method=VERSION
             if not pieces: raise ValueError('No hulls for '+path.name)
             result={'source':mesh.get('filename'),'settings':settings,'method':method,'repair':repair,
@@ -82,7 +82,7 @@ def decompose_link(name, threshold_m=.00025):
         report.append({'source':mesh.get('filename'),'hulls':len(result['hulls']),
                        'method':result['method'],'cache_key':key,'repair':result.get('repair')})
         print(name,path.name,len(result['hulls']),'hulls',flush=True)
-    result={'link':name,'coordinates':'UE link-local cm','threshold_m':threshold_m,
+    result={'link':name,'coordinates':'UE link-local cm','threshold_m':threshold_m,'merge':merge,
             'urdf_sha256':hashlib.sha256(MODEL.read_bytes()).hexdigest(),
             'parts':report,'hulls':output,'status':'requires coverage and contact checks'}
     (FOLDER/(name+'-part-hulls.json')).write_text(json.dumps(result)+'\n')
@@ -91,6 +91,7 @@ def decompose_link(name, threshold_m=.00025):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('link');parser.add_argument('--threshold-m',type=float,default=.00025)
+    parser.add_argument('--merge',action='store_true',help='Merge hulls under the same CoACD concavity threshold')
     args=parser.parse_args()
-    result=decompose_link(args.link,args.threshold_m)
+    result=decompose_link(args.link,args.threshold_m,merge=args.merge)
     print('Prepared',len(result['hulls']),'hulls for',args.link)

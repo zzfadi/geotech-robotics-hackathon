@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T13:17:41-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Hidden all three camera preview meshes and the central camera housing/lens proxies.",
+  "why": "Keep the virtual camera views without visible camera bodies obscuring the station.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_cameras.py"
+  ],
+  "details": "Luna2 confirms three active CameraComponents with no preview meshes, plus hidden central proxies. Scene checkpoint remains pending under the existing save guard. Offline merged jaw trial still requires 1,686 hulls and remains experimental."
+}

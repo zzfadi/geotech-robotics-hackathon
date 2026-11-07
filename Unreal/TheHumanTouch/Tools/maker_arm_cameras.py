@@ -49,7 +49,7 @@ def setup(labels=LABELS):
         if not camera.attach_to_actor(parent, '', rule, rule, rule, False):
             raise RuntimeError('Failed camera attachment: '+label)
         camera.set_editor_property('tags', ['MakerStationCamera', 'Uncalibrated'])
-    return inspect()
+    return hide_camera_meshes()
 
 
 def inspect():
@@ -94,3 +94,30 @@ def refine_central_mount():
     lens.set_actor_rotation(unreal.MathLibrary.make_rot_from_z(direction), True)
     lens.set_folder_path('MakerStation/Cameras')
     return setup((LABELS[2],))
+
+
+def hide_camera_meshes():
+    """Hide camera representations without disabling optics or wrist attachments."""
+    existing = yam_station.actors()
+    for label in LABELS:
+        actor = existing[label]
+        component = actor.get_component_by_class(unreal.CameraComponent)
+        actor.modify()
+        component.modify()
+        component.set_editor_property('camera_mesh', None)
+        component.set_editor_property('camera_mesh_hidden_in_game', True)
+        for primitive in actor.get_components_by_class(unreal.PrimitiveComponent):
+            primitive.modify()
+            primitive.set_visibility(False, False)
+            primitive.set_hidden_in_game(True, False)
+    # These are separate visual housing/lens proxies. Keep the mast itself.
+    for label in (yam_station.PREFIX+'OverviewCameraProxy',
+                  'MakerStation_CentralCameraLens_Approximate'):
+        actor = existing.get(label)
+        if actor:
+            actor.modify()
+            mesh = actor.get_component_by_class(unreal.StaticMeshComponent)
+            mesh.modify()
+            mesh.set_visibility(False, False)
+            mesh.set_hidden_in_game(True, False)
+    return inspect()
