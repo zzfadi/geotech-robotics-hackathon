@@ -217,7 +217,7 @@ class Samples:
                     ):
                         poses[name] = frame
                     break
-        return {"target_ns": target, "rtt_ms": rtt / 1e6, "poses": poses}
+        return {"target_ns": target, "rtt_ms": rtt / 1e6, "clock_offset_ns": offset, "poses": poses}
 
 
 class PoseReceiver:
