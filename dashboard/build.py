@@ -3,27 +3,34 @@
 
 Usage:
   python3 dashboard/build.py          # validate and write dashboard/data/feed.json
+
+Authors are GitHub usernames of whoever pushed each commit to main, read from the
+repository activity API in GitHub Actions. Locally (no GITHUB_TOKEN) they fall back
+to git author names.
   python3 dashboard/build.py --check  # validate only (run before you commit)
 
 No dependencies beyond the Python 3 standard library.
 """
 import json
+import os
 import re
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent
 UPDATES = ROOT / "updates"
 DATA = ROOT / "data"
 
-KINDS = {"agent", "human"}
 UPDATE_STATUSES = {"done", "in-progress", "blocked", "decision", "note"}
 WS_STATUSES = {"not-started", "in-progress", "at-risk", "blocked", "done"}
-REQUIRED = ["when", "who", "kind", "workstream", "status", "what", "why"]
-ALLOWED = set(REQUIRED) | {"for", "where", "details", "workstream_update"}
+REQUIRED = ["when", "workstream", "status", "what", "why"]
+ALLOWED = set(REQUIRED) | {"where", "details", "workstream_update"}
+# Older entries named their author by hand. Authors now come from GitHub, so these are ignored.
+LEGACY = {"who", "kind", "for"}
 NAME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-\d{4}-[a-z0-9_.-]+\.json$")
 
 
@@ -63,7 +70,7 @@ def validate_workstreams(items, errors):
     return ids
 
 
-def validate_update(path, entry, ws_ids, errors):
+def validate_update(path, entry, ws_ids, errors, warnings):
     rel = path.relative_to(REPO)
     if not NAME_RE.match(path.name):
         errors.append(f"{rel}: file name must look like YYYY-MM-DD-HHMM-who-short-title.json (lowercase)")
@@ -74,15 +81,15 @@ def validate_update(path, entry, ws_ids, errors):
         if not isinstance(entry.get(key), str) or not entry[key].strip():
             errors.append(f"{rel}: '{key}' is required and must be text")
     for key in entry:
-        if key not in ALLOWED:
+        if key in LEGACY:
+            warnings.append(f"{rel}: '{key}' is no longer used (the author comes from GitHub); you can delete it")
+        elif key not in ALLOWED:
             errors.append(f"{rel}: unknown field '{key}' (allowed: {sorted(ALLOWED)})")
     when = None
     try:
         when = parse_when(entry.get("when", ""))
     except Exception as exc:  # noqa: BLE001
         errors.append(f"{rel}: 'when' is not an ISO time ({exc})")
-    if entry.get("kind") not in KINDS:
-        errors.append(f"{rel}: kind must be 'agent' or 'human'")
     if entry.get("status") not in UPDATE_STATUSES:
         errors.append(f"{rel}: status must be one of {sorted(UPDATE_STATUSES)}")
     if entry.get("workstream") not in ws_ids:
@@ -102,13 +109,65 @@ def validate_update(path, entry, ws_ids, errors):
     return when
 
 
-def git_commits(limit=40):
+def git(*args):
+    return subprocess.run(["git", "-C", str(REPO), *args], capture_output=True, text=True, check=True).stdout
+
+
+def github_get_all(path, max_pages=10):
+    """GET a paginated GitHub API list. Needs GITHUB_TOKEN and GITHUB_REPOSITORY (set in Actions)."""
+    token, repo = os.environ.get("GITHUB_TOKEN"), os.environ.get("GITHUB_REPOSITORY")
+    if not token or not repo:
+        return None
+    url = f"https://api.github.com/repos/{repo}/{path}"
+    items = []
+    for _ in range(max_pages):
+        req = Request(url, headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json",
+                                    "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "team-dashboard-build"})
+        with urlopen(req, timeout=20) as res:
+            items.extend(json.loads(res.read().decode("utf-8")))
+            link = res.headers.get("Link") or ""
+        nxt = re.search(r'<([^>]+)>;\s*rel="next"', link)
+        if not nxt:
+            break
+        url = nxt.group(1)
+    return items
+
+
+def pushers(branch="main"):
+    """Map commit SHA -> GitHub username of whoever pushed it to the branch, from the repo activity API."""
+    try:
+        activity = github_get_all(f"activity?ref=refs/heads/{branch}&per_page=100&direction=asc")
+    except Exception as exc:  # noqa: BLE001
+        print(f"note: GitHub activity lookup failed ({exc}); using git author names", file=sys.stderr)
+        return {}
+    if not activity:
+        return {}
+    by_sha = {}
+    for act in sorted(activity, key=lambda a: a.get("timestamp", "")):
+        login = (act.get("actor") or {}).get("login")
+        before, after = act.get("before", ""), act.get("after", "")
+        if not login or not after or set(after) == {"0"}:
+            continue
+        rng = after if not before or set(before) == {"0"} else f"{before}..{after}"
+        try:
+            shas = git("rev-list", rng).split()
+        except Exception:  # noqa: BLE001
+            shas = [after]
+        for sha in shas:
+            by_sha.setdefault(sha, login)
+    return by_sha
+
+
+def author_of(sha, by_sha, names):
+    if sha in by_sha:
+        return by_sha[sha], "github"
+    return names.get(sha, "unknown"), "git"
+
+
+def git_commits(by_sha, limit=40):
     fmt = "%x1e%H%x1f%h%x1f%an%x1f%aI%x1f%s"
     try:
-        out = subprocess.run(
-            ["git", "-C", str(REPO), "log", f"-n{limit}", f"--format={fmt}", "--name-only"],
-            capture_output=True, text=True, check=True,
-        ).stdout
+        out = git("log", f"-n{limit}", f"--format={fmt}", "--name-only")
     except Exception:  # noqa: BLE001
         return []
     commits = []
@@ -127,17 +186,38 @@ def git_commits(limit=40):
             area = "/".join(segs[:2]) if len(segs) > 2 else (segs[0] if len(segs) > 1 else "(root)")
             if area not in areas:
                 areas.append(area)
+        author, source = author_of(parts[0], by_sha, {parts[0]: parts[2]})
         commits.append({
-            "sha": parts[0], "short": parts[1], "author": parts[2],
+            "sha": parts[0], "short": parts[1], "author": author, "author_source": source,
             "when": parts[3], "subject": parts[4],
             "files": len(files), "areas": areas[:4],
         })
     return commits
 
 
+def update_authors(by_sha):
+    """Map each update file name -> (author, source), from the commit that first added it."""
+    result = {}
+    try:
+        out = git("log", "--reverse", "--diff-filter=A", "--no-renames", "--format=%x1e%H%x1f%an", "--name-only",
+                  "--", "dashboard/updates")
+    except Exception:  # noqa: BLE001
+        return result
+    for block in out.split("\x1e"):
+        head, _, files = block.strip("\n").partition("\n")
+        if "\x1f" not in head:
+            continue
+        sha, name = head.split("\x1f", 1)
+        for f in files.splitlines():
+            f = f.strip()
+            if f and Path(f).name not in result:
+                result[Path(f).name] = author_of(sha, by_sha, {sha: name})
+    return result
+
+
 def main():
     check_only = "--check" in sys.argv
-    errors = []
+    errors, warnings = [], []
     project = load_json(DATA / "project.json", errors) or {}
     workstreams = load_json(DATA / "workstreams.json", errors) or []
     ws_ids = validate_workstreams(workstreams, errors)
@@ -152,11 +232,14 @@ def main():
         entry = load_json(path, errors)
         if entry is None:
             continue
-        when = validate_update(path, entry, ws_ids, errors)
+        when = validate_update(path, entry, ws_ids, errors, warnings)
         if when is not None:
-            entry = dict(entry, id=path.stem, _ts=when.timestamp())
+            entry = {k: v for k, v in entry.items() if k not in LEGACY}
+            entry = dict(entry, id=path.stem, file=path.name, _ts=when.timestamp())
             updates.append(entry)
 
+    for w in warnings:
+        print("warning: " + w, file=sys.stderr)
     if errors:
         print("Dashboard data has problems:\n  - " + "\n  - ".join(errors), file=sys.stderr)
         return 1
@@ -177,12 +260,18 @@ def main():
     if check_only:
         return 0
 
+    by_sha = pushers(project.get("branch", "main"))
+    authors = update_authors(by_sha)
+    for entry in updates:
+        entry["author"], entry["author_source"] = authors.get(entry.pop("file"), ("not pushed yet", "local"))
+    print(f"Authors: {len(by_sha)} commits matched to GitHub pushers" if by_sha else "Authors: git author names (no GitHub token)")
+
     feed = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "project": project,
         "workstreams": list(by_id.values()),
         "updates": updates,
-        "commits": git_commits(),
+        "commits": git_commits(by_sha),
     }
     (DATA / "feed.json").write_text(json.dumps(feed, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print("Wrote dashboard/data/feed.json")

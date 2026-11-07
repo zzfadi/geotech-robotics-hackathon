@@ -1,14 +1,16 @@
 # Team dashboard
 
-Live at **https://zzfadi.github.io/geotech-robotics-hackathon/**. It shows each workstream's owner and progress, a countdown to the demo deadline (Sunday, Nov 8, 3 PM PT), every posted update (newest first, filterable by person or agent, workstream and status), and the latest commits on `main`.
+Live at **https://zzfadi.github.io/geotech-robotics-hackathon/**. It shows each workstream's owner and progress, a countdown to the demo deadline (Sunday, Nov 8, 3 PM PT), every posted update (newest first, filterable by GitHub user, workstream and status), and the latest commits on `main`.
+
+Everything is credited to the **GitHub username that pushed it to `main`**, read from GitHub's push history when the site builds. Nobody types their own name.
 
 GitHub Actions rebuilds and redeploys it on every push to `main` (`.github/workflows/dashboard.yml`).
 
 ## How to post an update
 
-Every person and agent posts the same way: **add one new JSON file** to `dashboard/updates/`. Never edit or delete someone else's entry. One file per update means two people posting at once never conflict.
+Everyone posts the same way: **add one new JSON file** to `dashboard/updates/`. Never edit or delete someone else's entry. One file per update means two people posting at once never conflict.
 
-1. Create `dashboard/updates/YYYY-MM-DD-HHMM-<who>-<short-title>.json`, using Pacific time and lowercase, for example `2026-11-07-1430-claude-turn-gate-prototype.json`.
+1. Create `dashboard/updates/YYYY-MM-DD-HHMM-<short-title>.json`, using Pacific time and lowercase, for example `2026-11-07-1430-turn-gate-prototype.json`.
 2. Fill it in (format below).
 3. Run `python3 dashboard/build.py --check`. It prints `OK` or tells you exactly what to fix.
 4. Commit it to `main`, ideally in the same commit as the work it describes, and push.
@@ -18,9 +20,6 @@ Every person and agent posts the same way: **add one new JSON file** to `dashboa
 ```json
 {
   "when": "2026-11-07T14:30:00-08:00",
-  "who": "Claude",
-  "kind": "agent",
-  "for": "FADI",
   "workstream": "turn-gate",
   "status": "in-progress",
   "what": "Hand-in-workspace detector running on the webcam feed",
@@ -34,9 +33,6 @@ Every person and agent posts the same way: **add one new JSON file** to `dashboa
 | Field | Required | What to put |
 | --- | --- | --- |
 | `when` | yes | ISO time with offset. Pacific is `-08:00` this weekend. |
-| `who` | yes | Your name, or the agent's name (`Claude`, `Dot`, `Codex`…). Keep it the same every time so the filter works. |
-| `kind` | yes | `agent` or `human`. |
-| `for` | no | For agents: the person you're working for. |
 | `workstream` | yes | One id from the list below. |
 | `status` | yes | `done`, `in-progress`, `blocked`, `decision` or `note`. |
 | `what` | yes | One line: what changed. |
@@ -66,4 +62,4 @@ python3 dashboard/build.py
 python3 -m http.server 8000 -d dashboard
 ```
 
-Then open http://localhost:8000. `build.py` writes `dashboard/data/feed.json`, which is generated and not committed.
+Then open http://localhost:8000. `build.py` writes `dashboard/data/feed.json`, which is generated and not committed. Locally it shows git author names; the live site shows GitHub usernames.

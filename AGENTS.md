@@ -20,10 +20,11 @@ The [Slack recommendation from November 5, 2026](https://geotech-org.slack.com/a
 
 ## Dashboard updates
 
-The team dashboard at https://zzfadi.github.io/geotech-robotics-hackathon/ is how everyone tracks what changed, where and why. Every agent and teammate posts there.
+The team dashboard at https://zzfadi.github.io/geotech-robotics-hackathon/ is how everyone tracks what changed, where and why. Everyone posts there.
 
-- After each meaningful change, decision or blocker, add one new file to `dashboard/updates/` named `YYYY-MM-DD-HHMM-<who>-<short-title>.json` (Pacific time, lowercase). Include it in the same commit as the work when you can.
-- Required fields: `when` (ISO time with offset), `who`, `kind` (`agent` or `human`), `workstream` (an id from `dashboard/data/workstreams.json`), `status` (`done`, `in-progress`, `blocked`, `decision` or `note`), `what` and `why`. Optional: `for`, `where` (paths, commit SHAs, `#PR` or URLs), `details` and `workstream_update` (`status`, `progress` 0-100, `owner`).
+- After each meaningful change, decision or blocker, add one new file to `dashboard/updates/` named `YYYY-MM-DD-HHMM-<short-title>.json` (Pacific time, lowercase). Include it in the same commit as the work when you can.
+- Required fields: `when` (ISO time with offset), `workstream` (an id from `dashboard/data/workstreams.json`), `status` (`done`, `in-progress`, `blocked`, `decision` or `note`), `what` and `why`. Optional: `where` (paths, commit SHAs, `#PR` or URLs), `details` and `workstream_update` (`status`, `progress` 0-100, `owner`).
+- Don't name yourself in the entry. The dashboard credits every update and commit to the GitHub username that pushed it to `main`.
 - Run `python3 dashboard/build.py --check` before committing. Never edit or delete another contributor's update file.
 - Full format and an example: [dashboard/README.md](dashboard/README.md).
 

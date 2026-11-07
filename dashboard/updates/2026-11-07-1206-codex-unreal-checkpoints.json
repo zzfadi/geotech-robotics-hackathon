@@ -1,7 +1,5 @@
 {
   "when": "2026-11-07T12:06:22.143528-08:00",
-  "who": "Codex",
-  "kind": "agent",
   "workstream": "vrxr",
   "status": "in-progress",
   "what": "Luna2 Claude joined; adding 15-minute Unreal checkpoints and GitHub pushes",

@@ -1,11 +1,8 @@
 {
   "when": "2026-11-07T12:04:00-08:00",
-  "who": "Claude",
-  "kind": "agent",
-  "for": "FADI",
   "workstream": "planning",
   "status": "done",
   "what": "Team dashboard on GitHub Pages",
-  "why": "One place to see what every person and agent changed, where, why, and how close we are to the Sunday 3 PM demo.",
+  "why": "One place to see what everyone changed, where, why, and how close we are to the Sunday 3 PM demo.",
   "where": ["dashboard/", "dashboard/README.md", ".github/workflows/dashboard.yml", "AGENTS.md"]
 }

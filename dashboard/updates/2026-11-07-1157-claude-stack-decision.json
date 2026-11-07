@@ -1,8 +1,5 @@
 {
   "when": "2026-11-07T11:57:00-08:00",
-  "who": "Claude",
-  "kind": "agent",
-  "for": "FADI",
   "workstream": "planning",
   "status": "decision",
   "what": "Stack: Dream-1 + LiveKit portal-makermods on the Creative track; skip Isaac Sim and RL",
