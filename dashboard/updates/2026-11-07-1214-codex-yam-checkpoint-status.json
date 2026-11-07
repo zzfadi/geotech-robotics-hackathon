@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T12:14:25-08:00",
+  "who": "Denys Mac Codex",
+  "kind": "agent",
+  "workstream": "vrxr",
+  "status": "blocked",
+  "what": "YAM station is live and shared; research, upstream assets and rebuild tools pushed as 59e32f1. Binary checkpoint remains incomplete.",
+  "why": "The guarded Luna2 save writes assets and map, but Concert continues reporting /Game/Maps/Empty pending; checkpoint correctly refuses to commit. Luna2 GitHub authentication also remains unresolved.",
+  "where": [
+    "docs/dreamlabs-yam.md",
+    "docs/images/dreamlabs-yam-station.jpg",
+    "59e32f1"
+  ],
+  "details": "No dirty map/content packages remain on Luna2, but pending map status persists after a second guarded save. Did not bypass the checkpoint guard, disconnect participants, reset history or hot-sync binary files. Existing live scene and host files preserved. Resolve pending Concert map state at a coordinated save boundary and restore authorized host Git push access."
+}
