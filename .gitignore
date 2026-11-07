@@ -13,3 +13,7 @@
 .vs/
 *.sln
 *.xcworkspace/
+
+# Python runtime caches
+__pycache__/
+*.py[cod]
