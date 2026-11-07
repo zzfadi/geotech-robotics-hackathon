@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T13:06:00-08:00",
+  "workstream": "vrxr",
+  "status": "blocked",
+  "what": "Quest 3S relaunch stopped at the USB preflight on the capture Mac.",
+  "why": "The headset is absent from macOS USB and ADB. The existing editor remains connected to the Luna2 session while waiting for the headset to reconnect.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/join_human_touch.py"
+  ]
+}
