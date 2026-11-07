@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:12:48-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Added two wrist cameras and a central mast overview camera to TheHumanTouch.",
+  "why": "Match the three physical camera positions identified in the station reference.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_cameras.py",
+    "docs/maker-arm-model.md"
+  ],
+  "details": "Three rendered views checked on Mac. CameraActor count, wrist attachments and FOVs verified on Luna2. 16:9 and 90/100 degree optics are provisional; dataset capture and physical calibration remain pending. Binary checkpoint is separately guarded."
+}
