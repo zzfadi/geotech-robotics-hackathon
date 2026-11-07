@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T12:58:56-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified that the updated Mac presence code stops emitting empty level transactions after a normal shared-map reload.",
+  "why": "Separate a confirmed fix from the remaining client that still invalidates the guarded checkpoint.",
+  "where": [
+    "docs/checkpoints.md"
+  ],
+  "details": "Mac and Luna2 loaded the compatible Python fix. The 20:58 UTC reload completed without the old redirector crash; only Brian VR produced the empty transaction. Brian needs the matching update. Native Windows/Mac builds succeeded but remain staged for deployment."
+}
