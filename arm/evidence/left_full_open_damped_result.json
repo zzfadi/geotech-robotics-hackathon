@@ -1,0 +1,4231 @@
+{
+  "arm": "left",
+  "serial": "2077378045465008",
+  "motion_requested": true,
+  "motion_completed": true,
+  "stage": "completed",
+  "preflight_samples": [
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": 1.3851726915252658,
+      "temperature_c": 30.0,
+      "mode": 0,
+      "warning": false,
+      "fault": false
+    },
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": 4.15551807457539,
+      "temperature_c": 30.0,
+      "mode": 0,
+      "warning": false,
+      "fault": false
+    },
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": -0.46172423050855765,
+      "temperature_c": 30.0,
+      "mode": 0,
+      "warning": false,
+      "fault": false
+    },
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": -0.46172423050855765,
+      "temperature_c": 30.0,
+      "mode": 0,
+      "warning": false,
+      "fault": false
+    },
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": -0.46172423050855765,
+      "temperature_c": 30.0,
+      "mode": 0,
+      "warning": false,
+      "fault": false
+    },
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": -1.3851726915252658,
+      "temperature_c": 30.0,
+      "mode": 0,
+      "warning": false,
+      "fault": false
+    }
+  ],
+  "motor_ids": [
+    7
+  ],
+  "start_deg": -22.58376949912657,
+  "open_target_deg": -96.00000000000001,
+  "close_target_deg": null,
+  "speed_deg_s": 3.0000000000000004,
+  "open_only": true,
+  "watchdog_ms": null,
+  "operator_cutoff": true,
+  "original_watchdog_ticks": null,
+  "samples": [
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.58376949912657,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": 0.03760683760683747,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.605748836838693,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.605748836838693,
+      "velocity_deg_s": 4.15551807457539,
+      "torque_nm": -0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.605748836838693,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": 0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.62772817455061,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.05811965811965791,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.62772817455061,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.649707512262633,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.05811965811965791,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.671686849974755,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.693666187686777,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.7156455253988,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.11965811965811923,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.7156455253988,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.759604200822942,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.759604200822942,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.78158353853496,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.825542213959004,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.847521551671125,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.91345956480729,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.95741824023133,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -22.979397577943352,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.001376915655374,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.045335591079517,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.1332529419277,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.265128968199928,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.39700499447226,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.46294300760842,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.572839696168526,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.726695060152874,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -23.946488437273388,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.14017094017093967,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -24.078364463545615,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -24.276178502954004,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.11282051282051242,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -24.473992542362396,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -24.781703270331093,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": 0.03076923076923066,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.111393336011812,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": 0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.353166050844347,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.463062739404553,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.11282051282051242,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.529000752540718,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.550980090252637,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.57295942796466,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.59493876567678,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.6169181033888,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.63889744110082,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.704835454236985,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.74879412966103,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.77077346737315,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.792752805085172,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.836711480509315,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.902649493645477,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -25.968587506781542,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -26.012546182205686,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -26.100463533053766,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -26.232339559326096,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -26.43015359873449,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -26.6499469758549,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -27.04557505467168,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.03760683760683747,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -27.35328578264048,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": -0.03076923076923066,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -27.617037835184934,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": -0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -27.858810550017466,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.0512820512820511,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.034645251713837,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.11282051282051242,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.166521277986064,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.29839730425829,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.0991452991452988,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.386314655106474,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.430273330530618,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.47423200595466,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.518190681378805,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.540170019090827,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.562149356802845,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.606108032226988,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.62808736993901,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.65006670765113,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.694025383075175,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.737984058499215,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.78194273392336,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.84788074705942,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -28.95777743561973,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -29.067674124179934,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -29.35340551443651,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -29.70507491782925,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": 0.11282051282051242,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.122682334358053,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.36445504919059,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.474351737750897,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.54028975088696,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.628207101735143,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.738103790295348,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.848000478855656,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.93591782970374,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -30.95789716741586,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.067793855976067,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.177690544536272,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.3095665708085,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.419463259368705,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.507380610216995,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.573318623353156,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.66123597420124,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.749153325049527,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -31.903008689033776,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -32.07884339073014,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -32.43051279412288,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.07863247863247835,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -32.87009954836371,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.0512820512820511,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.04593425006018,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.11187226319624,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.17781027633241,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.22176895175655,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.24374828946847,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.26572762718059,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.287706964892614,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.30968630260463,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.353644978028775,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.39760365345292,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.46354166658898,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.507500342013124,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.52947967972515,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.61739703057323,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.727293719133534,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.83719040769374,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -33.96906643396597,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -34.18885981108648,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -34.496570539055185,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.0512820512820511,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -34.76032259159963,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -35.06803331956823,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": -0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -35.41970272296108,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -35.61751676236936,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.0512820512820511,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -35.83731013948987,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -35.90324815262604,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -35.9691861657622,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.01314484118625,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.035124178898265,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.05710351661029,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.07908285432241,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.07908285432241,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.12304152974645,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.14502086745858,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.18897954288261,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.23293821830666,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.2768968937308,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.29887623144282,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.34283490686696,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.40877292000303,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.452731595427174,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.49669027085132,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.5846076216994,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -36.760442323395765,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -37.024194375940326,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -37.46378113018115,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": 0.11965811965811923,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -37.79347119586197,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.01326457298238,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.0991452991452988,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.18909927467865,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.320975300951076,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.13333333333333286,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.40889265179916,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.474830664935325,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.56274801578351,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.65066536663169,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.73858271747978,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.848479406040084,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.89243808146423,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.93639675688827,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -38.980355432312315,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.02431410773646,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.04629344544848,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.0682727831606,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.134210796296664,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.200148809432825,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.288066160280906,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.39796284884122,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.59577688824961,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -39.96942562935447,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": 0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -40.430991721307315,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": 0.09230769230769198,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -40.650785098427825,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.11282051282051242,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -40.76068178698803,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -40.8266198001242,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -40.870578475548236,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -40.936516488684305,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -40.98047516410845,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.002454501820566,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.04641317724461,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.068392514956734,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.20026854122896,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.33214456750118,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.42006191834937,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.48599993148554,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.61787595775786,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.74975198403009,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -41.947566023438476,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -42.14538006284687,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -42.32121476454324,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": -0.11282051282051242,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -42.606946154799815,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -42.93663622048054,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.017094017094017033,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.244346948449135,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": 0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.442160987857626,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.07179487179487154,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.53007833870571,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.55205767641773,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.57403701412985,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.596016351841875,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.596016351841875,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.61799568955399,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.66195436497804,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.70591304040208,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.7278923781141,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.77185105353824,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.79383039125026,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.815809728962385,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.85976840438632,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.94768575523461,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -43.99164443065876,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -44.01362376837078,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -44.05758244379482,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -44.10154111921886,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -44.21143780777917,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -44.29935515862735,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -44.4532105226116,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -44.71696257515626,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": -0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -45.09061131626102,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.03076923076923066,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -45.44228071965365,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.017094017094017033,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -45.72801210991023,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -45.925826149318624,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.11965811965811923,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.03572283787893,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.145619526439134,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.25551621499934,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.14017094017093967,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.36541290355965,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.38739224127167,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.43135091669571,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.497288929831875,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.5192682675439,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.56322694296804,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.56322694296804,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.58520628068006,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.629164956104105,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.67312363152825,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.73906164466441,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.783020320088454,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.848958333224616,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -46.95885502178482,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -47.068751710345026,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -47.33250376288958,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -47.68417316628232,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": 0.0991452991452988,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.12375992052315,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.32157395993164,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.453449986203864,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.519387999340026,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.60730535018821,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.673243363324275,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.76116071417256,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.87105740273277,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.936995415868935,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -48.98095409129308,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.06887144214116,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.156788792989346,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.288664819261676,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.398561507821775,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.48647885867006,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.57439620951815,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.64033422265431,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.77221024892664,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -49.94804495062291,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -50.21179700316757,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": 0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -50.607425081984346,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -50.959094485377086,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.03760683760683747,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.06899117393729,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.112949849361435,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.15690852478548,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.20086720020952,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.244825875633666,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.266805213345684,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.2887845510577,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.31076388876983,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.37670190190589,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.44263991504205,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.464619252754076,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.50857792817822,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.552536603602256,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.684412629874586,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.772329980722674,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -51.88222666928298,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -52.03608203326733,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -52.29983408581178,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.05811965811965791,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -52.58556547606846,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.07863247863247835,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -52.87129686632493,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": 0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -53.22296626971767,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": 0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -53.50869765997435,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -53.706511699382744,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.07863247863247835,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -53.86036706336709,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.13333333333333286,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -53.926305076503255,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -53.99224308963932,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.014222427351335,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.03620176506346,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.05818110277548,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.080160440487504,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.10213977819963,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.12411911591155,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.146098453623566,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.19005712904771,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.23401580447185,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.277974479895896,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.299953817607914,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.39316239316239354,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.34391249303206,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.4205128205128208,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.3878711684561,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.45380918159226,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.47578851930439,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.519747194728325,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.60766454557661,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -54.805478584985,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -55.1131893129536,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": 0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -55.596734742618565,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": 0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -55.882466132875244,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.03632149685949,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.19017686084384,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.11965811965811923,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.322052887116065,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.13333333333333286,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.40997023796425,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.453928913388395,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.49788758881244,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.58580493966062,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.67372229050891,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.78361897906912,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.8715363299172,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.93747434305336,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -56.9814330184775,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.025391693901646,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.047371031613565,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.06935036932559,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.113309044749734,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.179247057885895,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.24518507102196,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.35508175958227,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.50893712356662,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -57.86060652695925,
+      "velocity_deg_s": -15.236899606775888,
+      "torque_nm": 0.05811965811965791,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.322172618912305,
+      "velocity_deg_s": -15.236899606775888,
+      "torque_nm": 0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.629883346880895,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.761759373153126,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.82769738628929,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.89363539942535,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.93759407484949,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.95957341256152,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -58.981552750273636,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.02551142569768,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.06947010112172,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.17936678968203,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.267284140530116,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.399160166802545,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.46509817993861,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.57499486849881,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.75082957019518,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -59.94864360960367,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -60.12447831129994,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -60.32229235070844,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.0991452991452988,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -60.63000307867703,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": 0.017094017094017033,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -60.98167248206977,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": 0.03760683760683747,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.31136254775039,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": 0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.465217911734634,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.5311559248709,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.55313526258292,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.575114600294945,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.575114600294945,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.59709393800706,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.61907327571909,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.68501128885515,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.728969964279294,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.75094930199131,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.794907977415455,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.8388666528395,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.86084599055152,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3589743589743595,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.926784003687686,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -61.97074267911183,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -62.01470135453577,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -62.080639367672035,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -62.146577380808196,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -62.2564740693683,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -62.41032943335265,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -62.60814347276104,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": -0.11965811965811923,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -63.00377155157793,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": 0.0512820512820511,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -63.33346161725854,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": 0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -63.64117234522714,
+      "velocity_deg_s": -12.466554223725764,
+      "torque_nm": -0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -63.904924397771694,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.03680042404402,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.16867645031635,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.25659380116443,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.14017094017093967,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.34451115201271,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.38846982743667,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.4324285028608,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.47638717828495,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.49836651599696,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.54232519142111,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.54232519142111,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.58628386684515,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.60826320455718,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.6302425422692,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.67420121769334,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.413675213675214,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.71815989311749,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3589743589743595,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.76211856854152,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.38632478632478673,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.80607724396556,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.85003591938971,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -64.93795327023778,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -65.02587062108609,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -65.17972598507032,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -65.55337472617519,
+      "velocity_deg_s": -14.31345114575918,
+      "torque_nm": 0.05811965811965791,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.03692015584005,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.05811965811965791,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.30067220838471,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.43254823465693,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.54244492321725,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.60838293635331,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.6963002872015,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.76223830033756,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.85015565118584,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.916093664322,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -66.96005233974604,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.0040110151701,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.11390770373039,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.20182505457858,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.3337010808508,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.44359776941111,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.50953578254718,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.57547379568334,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.66339114653152,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -67.81724651051587,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -68.01506054992427,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -68.38870929102903,
+      "velocity_deg_s": -14.31345114575918,
+      "torque_nm": 0.13333333333333286,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -68.85027538298198,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": 0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.02611008467835,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.11402743552652,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.15798611095057,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.22392412408674,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.24590346179876,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.26788279951087,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.26788279951087,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.2898621372229,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.31184147493492,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.35580015035896,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.39975882578311,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.44371750120715,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.48767617663128,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.53163485205533,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.61955220290352,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.72944889146372,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.83934558002403,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -69.94924226858423,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -70.14705630799263,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -70.47674637367324,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.0512820512820511,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -70.76247776392992,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": 0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -71.07018849189852,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": 0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -71.44383723300328,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -71.68560994783581,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -71.86144464953219,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.11965811965811923,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -71.90540332495623,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -71.97134133809239,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -71.99332067580441,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.01530001351654,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.03727935122855,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.03727935122855,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.0812380266526,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.0812380266526,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.12519670207664,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.14717603978876,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.21311405292492,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.25707272834896,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.27905206606098,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.30103140377301,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.36696941690917,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.41092809233331,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.45488676775736,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.4273504273504276,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.47686610546937,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.413675213675214,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.4988454431815,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.54280411860555,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.65270080716574,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -72.80655617115009,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -73.07030822369465,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.03760683760683747,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -73.5318743156476,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": 0.0991452991452988,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -73.8395850436163,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": -0.03076923076923066,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.03739908302468,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.21323378472106,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.34510981099328,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.13333333333333286,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.43302716184147,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.4769858372655,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.54292385040168,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.63084120124986,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.71875855209804,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.85063457837028,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.89459325379441,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -74.96053126693057,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.00448994235462,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.02646928006664,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.30427350427350497,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.04844861777866,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.09240729320281,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.11438663091482,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.15834530633897,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.24626265718716,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.31220067032332,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.44407669659554,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -75.68584941142808,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.07863247863247835,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.05949815253284,
+      "velocity_deg_s": -12.466554223725764,
+      "torque_nm": 0.09230769230769198,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.54304358219781,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.69689894618206,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.78481629703035,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.82877497245438,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.89471298559054,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.93867166101458,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -76.98263033643873,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.00460967415086,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.00460967415086,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.0485683495748,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.13648570042308,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.20242371355914,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.29034106440733,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.40023775296753,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.4661757661037,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.5760724546639,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.72992781864825,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -77.92774185805665,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -78.12555589746503,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -78.34534927458554,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.09230769230769198,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -78.69701867797819,
+      "velocity_deg_s": -12.466554223725764,
+      "torque_nm": 0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.11462609450709,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.05811965811965791,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.40035748476366,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.0991452991452988,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.51025417332397,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.532233511036,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.55421284874801,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.57619218646003,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.59817152417206,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.62015086188408,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.66410953730822,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.70806821273237,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.73004755044438,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.77400622586843,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.79598556358044,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.81796490129257,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.88390291442873,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.9498409275648,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -79.99379960298894,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.03775827841298,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.413675213675214,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.03775827841298,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.0597376161251,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.39316239316239354,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.12567562926117,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.19161364239733,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.27953099324552,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.43338635722986,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -80.65317973435027,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.0991452991452988,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -81.02682847545513,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -81.35651854113576,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": 0.023931623931623847,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -81.64224993139233,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": -0.017094017094017033,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -81.88402264622486,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -81.99391933478498,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.1257953610574,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.21371271190549,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.32360940046568,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.36756807588984,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.41152675131387,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.433506089026,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.47746476445003,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.49944410216216,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.5434027775861,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.56538211529822,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.56538211529822,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.58736145301025,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.60934079072237,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.65329946614641,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.4341880341880344,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.67527880385853,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.39316239316239354,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.71923747928247,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.7412168169946,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.413675213675214,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.76319615470662,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.78517549241863,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.80715483013076,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.82913416784278,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.89507218097884,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3589743589743595,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -82.961010194115,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -83.04892754496329,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -83.2687209220836,
+      "velocity_deg_s": -13.390002684742472,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -83.62039032547634,
+      "velocity_deg_s": -16.160348067792597,
+      "torque_nm": 0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.0819564174294,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": 0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.27977045683778,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.41164648311,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.18119658119658055,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.47758449624617,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.21538461538461462,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.54352250938223,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.6094605225184,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.67539853565457,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.74133654879063,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.2700854700854709,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.78529522421476,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.87321257506305,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.93915058819911,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -84.96112992591114,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.04904727675942,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.13696462760751,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.24686131616782,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.35675800472802,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.44467535557611,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.5545720441364,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.62051005727247,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.7523860835448,
+      "velocity_deg_s": -6.925863457625515,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -85.95020012295319,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.1538461538461533,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -86.30186952634594,
+      "velocity_deg_s": -14.31345114575918,
+      "torque_nm": 0.09230769230769198,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -86.7854149560109,
+      "velocity_deg_s": -16.160348067792597,
+      "torque_nm": 0.11965811965811923,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.02718767084343,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.0931256839795,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.15906369711566,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.2030223725398,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.2030223725398,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.24698104796396,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.29059829059829134,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.26896038567587,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.2909397233879,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.31291906110002,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.35687773652405,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3589743589743595,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.35687773652405,
+      "velocity_deg_s": 5.078966535592098,
+      "torque_nm": -0.33846153846153904,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.42281574966032,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.46677442508425,
+      "velocity_deg_s": 3.232069613558682,
+      "torque_nm": -0.3589743589743595,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.48875376279638,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.5107331005084,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.38632478632478673,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.55469177593254,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.57667111364457,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.66458846449265,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.70854713991679,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.77448515305296,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.84042316618903,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.92834051703731,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -87.99427853017347,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -88.14813389415772,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -88.4338652844143,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.07863247863247835,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -88.71959667467097,
+      "velocity_deg_s": -8.772760379658932,
+      "torque_nm": -0.017094017094017033,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.04928674035159,
+      "velocity_deg_s": -9.69620884067564,
+      "torque_nm": 0.01025641025641022,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.37897680603231,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": -0.0034188034188034067,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.62074952086485,
+      "velocity_deg_s": -7.849311918642223,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.79658422256111,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.8845015734093,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.90648091112132,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.95043958654546,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.97241892425748,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -89.99439826196961,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.01637759968152,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.03835693739354,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.03835693739354,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.3316239316239322,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.06033627510567,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.08231561281768,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3658119658119663,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.12627428824183,
+      "velocity_deg_s": -4.15551807457539,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.17023296366597,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.21419163908992,
+      "velocity_deg_s": -6.002414996608807,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.23617097680204,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.39316239316239354,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.25815031451405,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3726495726495731,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.28012965222608,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.4205128205128208,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.28012965222608,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.45470085470085486,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.3021089899382,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.4205128205128208,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.3021089899382,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.32408832765022,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.38632478632478673,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.32408832765022,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.413675213675214,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.34606766536224,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.4341880341880344,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.34606766536224,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.34606766536224,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.4341880341880344,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.36804700307437,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.44102564102564124,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.36804700307437,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.39002634078628,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.4120056784984,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.43398501621043,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.45596435392245,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.39316239316239354,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.45596435392245,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.40000000000000036,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.47794369163456,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.4205128205128208,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.47794369163456,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.44786324786324805,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.49992302934659,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.52190236705862,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.40683760683760717,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.56586104248275,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.3589743589743595,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.63179905561881,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.3111111111111118,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -90.78565441960316,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -91.0274271344357,
+      "velocity_deg_s": -11.543105762709056,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -91.5329519018127,
+      "velocity_deg_s": -12.466554223725764,
+      "torque_nm": 0.1059829059829056,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -91.79670395435724,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.03076923076923066,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.01649733147775,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.170352695462,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.14017094017093967,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.28024938402221,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.34618739715837,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.41212541029444,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.43410474800656,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.4780634234306,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.52202209885475,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.60993944970294,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2564102564102573,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.6758774628391,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.80775348911132,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.87369150224748,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.2769230769230777,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.91765017767163,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.28376068376068453,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -92.96160885309557,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3247863247863254,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.0055675285197,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.3179487179487186,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.02754686623183,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.07150554165588,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.3589743589743595,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.09348487936799,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.3794871794871799,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.13744355479194,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.35213675213675266,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.2033815679281,
+      "velocity_deg_s": 1.3851726915252658,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.26931958106427,
+      "velocity_deg_s": -3.232069613558682,
+      "torque_nm": -0.34529914529914585,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.33525759420043,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.29743589743589816,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.46713362047277,
+      "velocity_deg_s": -5.078966535592098,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -93.75286501072924,
+      "velocity_deg_s": -10.619657301692348,
+      "torque_nm": -0.07179487179487154,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.19245176497026,
+      "velocity_deg_s": -16.160348067792597,
+      "torque_nm": 0.1606837606837601,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.56610050607502,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.04444444444444429,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.69797653234724,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.12649572649572605,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.74193520777139,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.76391454548342,
+      "velocity_deg_s": -0.46172423050855765,
+      "torque_nm": -0.19487179487179418,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.76391454548342,
+      "velocity_deg_s": -1.3851726915252658,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.76391454548342,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.78589388319533,
+      "velocity_deg_s": -2.3086211525419738,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.78589388319533,
+      "velocity_deg_s": 2.3086211525419738,
+      "torque_nm": -0.2085470085470078,
+      "temperature_c": 30.0
+    },
+    {
+      "position_deg": -94.76391454548342,
+      "velocity_deg_s": 0.46172423050855765,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 30.0
+    }
+  ],
+  "open_measured_deg": -94.76391454548342,
+  "release_command_acknowledged": true,
+  "release_mode_verified": false
+}

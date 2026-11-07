@@ -1,0 +1,32 @@
+{
+  "captured": "2026-11-07",
+  "source": "Experimental two-Maker-Arm bench tools and four captured runs supplied by the session coordinator",
+  "sdk": {
+    "repository": "https://github.com/makermods-robotics/maker-arm-sdk",
+    "revision": "0245316c05cb3e8d900f35e70c08e2e18e36731e",
+    "working_tree": "clean, according to captured git status",
+    "license": "Apache-2.0",
+    "vendored": false
+  },
+  "tested_environment": {
+    "python": "3.12.15",
+    "platform": "Apple Silicon macOS 27.0.1 (26A434), arm64",
+    "environment_manager": "uv",
+    "sdk_installation": "editable with dev extras",
+    "libusb": "Homebrew 1.0.30",
+    "dependencies": "requirements.txt records captured package versions"
+  },
+  "hardware_validation": {
+    "right_full_open_result.json": "Earlier full-open revision: kp=10, kd=1, 5 deg/s",
+    "left_full_open_result.json": "Earlier full-open revision: kp=10, kd=1, 5 deg/s; aborted on measured speed",
+    "left_full_open_damped_result.json": "Final full-open revision: kp=10, kd=2, 3 deg/s",
+    "claw_probe_right_repeat_result.json": "Earlier small-step revision: kp=5, kd=0.5, 3 deg/s; opening aborted, closing not attempted",
+    "limit": "Only motor 7 was powered, one arm at a time. Packaging changes are not newly hardware-validated."
+  },
+  "evidence_sha256": {
+    "claw_probe_right_repeat_result.json": "86b9d1569561665f90e5d6ec2154c24bb7b9b4ca57cd2fb4cca399d69f365127",
+    "left_full_open_damped_result.json": "5d21e17f193491f6b12cb2b0285009af95002ecbc917f1dc32b5887b7eeb1b48",
+    "left_full_open_result.json": "b477d4dd24ac670e42a55e3ef049a923e5b85a168dd6165a080b25fa773f2869",
+    "right_full_open_result.json": "412ea60d6f6bf165a7d14da3a8ccd5e696c36ee828266188c8ffbbe64ec64ac5"
+  }
+}

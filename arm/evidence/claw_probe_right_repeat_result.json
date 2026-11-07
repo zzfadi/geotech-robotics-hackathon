@@ -1,0 +1,266 @@
+{
+  "arm": "right",
+  "serial": "0027002E4146570520313238",
+  "motion_requested": true,
+  "motion_completed": false,
+  "stage": "opening",
+  "motor_ids": [
+    7
+  ],
+  "start_deg": -4.560712575249355,
+  "open_target_deg": -9.560712575249356,
+  "close_target_deg": -4.560712575249355,
+  "speed_deg_s": 3.0000000000000004,
+  "watchdog_ms": null,
+  "operator_cutoff": true,
+  "original_watchdog_ticks": null,
+  "samples": [
+    {
+      "position_deg": -4.560712575249355,
+      "torque_nm": -0.0034188034188034067,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.538733237537335,
+      "torque_nm": -0.023931623931623847,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.03760683760683747,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.023931623931623847,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.017094017094017033,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.03760683760683747,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.09230769230769198,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.05811965811965791,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.07863247863247835,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.07179487179487154,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.0991452991452988,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.05811965811965791,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.07179487179487154,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.07179487179487154,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.09230769230769198,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.08547008547008517,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.07863247863247835,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.07179487179487154,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.03760683760683747,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.07863247863247835,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.06495726495726473,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.07179487179487154,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.0991452991452988,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.406857211265108,
+      "torque_nm": -0.13333333333333286,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.1059829059829056,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.11965811965811923,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.428836548977129,
+      "torque_nm": -0.11965811965811923,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.450815886689251,
+      "torque_nm": -0.18803418803418737,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.450815886689251,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.472795224401272,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.450815886689251,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.472795224401272,
+      "torque_nm": -0.17435897435897374,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.494774562113191,
+      "torque_nm": -0.16752136752136693,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.494774562113191,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.538733237537335,
+      "torque_nm": -0.22222222222222143,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.560712575249355,
+      "torque_nm": -0.201709401709401,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.5826919129614785,
+      "torque_nm": -0.24273504273504187,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.5826919129614785,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.6046712506734995,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.648629926097643,
+      "torque_nm": -0.22905982905982825,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.6706092638095615,
+      "torque_nm": -0.24957264957264869,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.714567939233705,
+      "torque_nm": -0.2632478632478641,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.80248529008189,
+      "torque_nm": -0.23589743589743506,
+      "temperature_c": 29.0
+    },
+    {
+      "position_deg": -4.97831999177826,
+      "torque_nm": -0.1470085470085465,
+      "temperature_c": 29.0
+    }
+  ],
+  "release_command_acknowledged": true,
+  "release_mode_verified": false
+}

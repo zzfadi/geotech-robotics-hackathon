@@ -1,6 +1,6 @@
 # Robot stack integration boundary
 
-Checked November 7, 2026. The selected demo remains cooperative token placement with Dream-1, LiveKit Portal, a hand-in-workspace gate and voice. This review establishes a source-level integration boundary; station access, inference and physical motion have not been tested here.
+Checked November 7, 2026. The selected demo remains cooperative token placement with Dream-1, LiveKit Portal, a hand-in-workspace gate and voice. This review establishes a source-level integration boundary; inference and integrated policy-driven physical motion have not been tested here. The separate [two-Maker-Arm bench handoff](../arm/README.md) records supervised gripper-only opening over gs_usb, not a Dream/Portal adapter or validated whole-arm control. Hardware testing is paused before Dream application testing.
 
 ## Hardware compatibility comes first
 
