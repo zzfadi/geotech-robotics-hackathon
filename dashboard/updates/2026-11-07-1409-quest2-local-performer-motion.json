@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:09:33-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Verified a physical Quest 2 moving the stock Ada MetaHuman through the local Mac XR editor and Live Link Hub.",
+  "why": "Confirms the live head and both wrists reach the rendered character, independently of the remote-computer setup.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/quest2_performer.py",
+    "Capture/README.md",
+    "3363df0"
+  ],
+  "details": "The monitored interval contained 256 station pose frames and 94 valid wrist frames per side. Source head rotation changed by 87 degrees and left/right wrist positions moved 26/24 cm. Mesh samples showed head rotation and both wrists moving. Unreal evaluated the same session on Human_Quest_C. The observed OXRSys video transport was Wi-Fi with the headset recognized over USB. Individual finger joints were unavailable in this run."
+}
