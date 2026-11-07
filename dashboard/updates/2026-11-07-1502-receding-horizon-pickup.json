@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T15:02:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Prepared stable 7 cm cube and 12-row receding-horizon Dream trial.",
+  "why": "Long open-loop chunks pushed or tipped the target before replanning.",
+  "where": [
+    "DreamSim/worker.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_actions.py"
+  ],
+  "details": "All raw response rows still validated; only bounded prefix executed, then fresh feedback. Nine action tests pass. Target center starts z=78.5 cm; acceptance >=88.5 cm plus held grasp. No successful autonomous pickup yet."
+}

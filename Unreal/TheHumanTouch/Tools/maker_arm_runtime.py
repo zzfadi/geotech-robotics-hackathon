@@ -102,7 +102,7 @@ class Session:
         if self.phase!='ready' or self.motion is not None:raise RuntimeError('Runtime not ready or trajectory active')
         data=json.loads(Path(report).read_text())
         maker_arm_feedback.verify(data['state'],self.world)
-        chunks,timing=retime(data['action'],data['state'],hz)
+        chunks,timing=retime(data['action'],data['state'],hz,execution_rows=data.get('execution_rows'))
         self.motion={'chunks':chunks,'timing':timing,'output':str(output),'start':time.monotonic(),'index':-1}
         self.motion_report(False)
 

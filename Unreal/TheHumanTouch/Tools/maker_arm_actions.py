@@ -31,7 +31,7 @@ def validate(action,hz=20,check_speed=True,max_rows=200):
     return chunks
 
 
-def retime(action,state,hz=20,max_duration=15):
+def retime(action,state,hz=20,max_duration=15,execution_rows=None):
     """Preserve target order/positions and uniformly slow playback to CAD speeds.
 
     Include the actual starting pose so the first grip target cannot jump. No
@@ -52,6 +52,10 @@ def retime(action,state,hz=20,max_duration=15):
                 if row[6]!=grip:corrections.append({'arm':key,'row':index,'requested':grip,'applied':row[6]})
             prepared[key].append(row)
     chunks=validate(prepared,hz,check_speed=False)
+    if execution_rows is not None:
+        if isinstance(execution_rows,bool) or not isinstance(execution_rows,int) or execution_rows<1:
+            raise ValueError('Expected positive integer execution horizon')
+        chunks={side:rows[:execution_rows] for side,rows in chunks.items()}
     root=model();limits=[j.find('limit') for j in root.findall("joint[@type='revolute']")]
     speeds=[min(float(j.get('velocity')) or 3,3) for j in limits]
     jaw_speed=2*float(root.find("joint[@name='gripper_left_joint']/limit").get('velocity'))

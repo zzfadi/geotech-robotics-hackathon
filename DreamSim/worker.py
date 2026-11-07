@@ -120,7 +120,7 @@ class Worker:
                 action,packet=request_action(self.client.get_action,lambda:self.fresh(after=time.time(),scope=scope),lambda:(self.root/'stop').exists(),lambda message:self.event('session.recovering',cycle=cycle+1,message=message),DreamSessionExpired)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user; discarded pending model response')
                 self.event('request.completed',cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
-                report=self.root/'action.json';report.write_text(json.dumps({'state':packet['state'],'action':action},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
+                report=self.root/'action.json';report.write_text(json.dumps({'state':packet['state'],'action':action,'execution_rows':self.args.action_rows},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
                 # Preserve raw EEF targets beside solved joints for calibration
                 # diagnosis; the controller still reads the current action file.
                 (self.recording/f'action-{cycle+1}.json').write_text(report.read_text())
@@ -235,4 +235,4 @@ class Worker:
         finally:self.closed=True;self.client.close()
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--runtime-physics',action='store_true');p.add_argument('--checkpoint',default='dreamlabs/dream-1-beta-flash');args=p.parse_args();Worker(args).run()
+    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--action-rows',type=int,default=None);p.add_argument('--runtime-physics',action='store_true');p.add_argument('--checkpoint',default='dreamlabs/dream-1-beta-flash');args=p.parse_args();Worker(args).run()

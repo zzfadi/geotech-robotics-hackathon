@@ -67,3 +67,17 @@ class RetimingTest(unittest.TestCase):
         with self.assertRaises(ValueError):retime({'q_l_chunk':[[9]*7],'q_r_chunk':[[9]*7]},state)
 
 if __name__=='__main__':unittest.main()
+
+class HorizonTest(unittest.TestCase):
+    def test_prefix_preserves_targets_and_raw_action(self):
+        q=[0,-1,.8,0,0,0];state={'q_left':q,'q_right':q,'gap_left_m':.04193,'gap_right_m':.04193}
+        rows=[q+[.4] for _ in range(48)];action={'q_l_chunk':rows,'q_r_chunk':rows}
+        chunks,timing=retime(action,state,execution_rows=12)
+        self.assertEqual(len(chunks['left']),13)
+        self.assertEqual(timing['original_rows'],48)
+        self.assertEqual(chunks['left'][1:],rows[:12])
+        self.assertEqual(len(action['q_l_chunk']),48)
+    def test_invalid_tail_still_rejected(self):
+        q=[0,-1,.8,0,0,0];state={'q_left':q,'q_right':q,'gap_left_m':.04193,'gap_right_m':.04193}
+        rows=[q+[.4] for _ in range(48)];rows[-1]=[float('nan')]+rows[-1][1:]
+        with self.assertRaises(ValueError):retime({'q_l_chunk':rows,'q_r_chunk':rows},state,execution_rows=12)

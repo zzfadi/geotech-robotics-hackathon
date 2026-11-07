@@ -1,0 +1,102 @@
+{
+  "phase": "stopped",
+  "error": "Stopped by user",
+  "scope": "runtime physics (approximate convex jaws)",
+  "state": {
+    "q_left": [
+      0.6157651289359678,
+      -2.0651395587654373,
+      2.643757044852195,
+      -0.794658969332288,
+      0.33166904549498605,
+      0.03690970410312784
+    ],
+    "q_right": [
+      -0.06834280996264279,
+      -1.2092839437764837,
+      0.8750431312547698,
+      -0.06405525073617489,
+      0.054664141856707114,
+      -0.05189221724867819
+    ],
+    "gap_left_m": 0.0,
+    "gap_right_m": 0.07108182676521005,
+    "contact_stop_left": [],
+    "contact_stop_right": []
+  },
+  "props": {
+    "MakerStation_Approximate_Block_Green": {
+      "initial_z_cm": 77.5,
+      "max_z_cm": 77.5002355854131,
+      "final_z_cm": 77.50007677389202,
+      "simulated": true,
+      "position_cm": [
+        53.000051262321286,
+        -12.000063443398544,
+        77.50007677389202
+      ],
+      "velocity_cm_s": [
+        -2.155559570837795e-07,
+        -1.8437793869452435e-07,
+        -1.25378093684958e-07
+      ],
+      "speed_cm_s": 3.101278144372415e-07,
+      "height_above_start_cm": 7.677389201887763e-05,
+      "current_above_10cm_seconds": 0.0,
+      "max_above_10cm_seconds": 0.0,
+      "current_slow_above_10cm_seconds": 0.0,
+      "max_slow_above_10cm_seconds": 0.0,
+      "at_least_1s_slow_above_10cm": false,
+      "grasp_verified": false
+    },
+    "MakerStation_Approximate_Block_Orange": {
+      "initial_z_cm": 77.5,
+      "max_z_cm": 77.5,
+      "final_z_cm": 77.5,
+      "simulated": true,
+      "position_cm": [
+        60.0,
+        15.0,
+        77.5
+      ],
+      "velocity_cm_s": [
+        -1.7730287993344973e-07,
+        -1.729960388274776e-07,
+        -2.3743167787415587e-07
+      ],
+      "speed_cm_s": 3.4312933762770907e-07,
+      "height_above_start_cm": 0.0,
+      "current_above_10cm_seconds": 0.0,
+      "max_above_10cm_seconds": 0.0,
+      "current_slow_above_10cm_seconds": 0.0,
+      "max_slow_above_10cm_seconds": 0.0,
+      "at_least_1s_slow_above_10cm": false,
+      "grasp_verified": false
+    },
+    "MakerStation_Approximate_Block_Red": {
+      "initial_z_cm": 77.5,
+      "max_z_cm": 78.25172301133318,
+      "final_z_cm": 77.50002062623453,
+      "simulated": true,
+      "position_cm": [
+        60.51517341951742,
+        -27.529396613572693,
+        77.50002062623453
+      ],
+      "velocity_cm_s": [
+        2.7708181278285338e-06,
+        2.0445584141270956e-06,
+        -7.828757588868029e-07
+      ],
+      "speed_cm_s": 3.5313661181097766e-06,
+      "height_above_start_cm": 2.062623453014112e-05,
+      "current_above_10cm_seconds": 0.0,
+      "max_above_10cm_seconds": 0.0,
+      "current_slow_above_10cm_seconds": 0.0,
+      "max_slow_above_10cm_seconds": 0.0,
+      "at_least_1s_slow_above_10cm": false,
+      "grasp_verified": false
+    }
+  },
+  "task_success_verified": false
+}

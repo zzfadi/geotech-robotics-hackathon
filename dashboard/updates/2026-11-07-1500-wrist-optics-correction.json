@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T15:00:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Corrected wrist capture clipping and optical centers; enlarged red test target to 5x5x8 cm with user authorization.",
+  "why": "Policy images sliced close objects and camera was inside CAD wrist shell. New rendered view has solid jaws and target.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_observer.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_calibration_trial.py",
+    "docs/maker-arm-camera-trial.md"
+  ],
+  "details": "Capture near plane 1 cm; flange-local camera (5,0,-12), aim (0,0,-17) cm. Red center starts (55,-30,79) cm. Success still requires recorded physical contact lift of >=10 cm; not yet achieved."
+}

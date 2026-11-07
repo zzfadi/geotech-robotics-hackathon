@@ -61,6 +61,10 @@ class Observer:
                     capture.set_editor_property('capture_on_movement',False)
                     capture.set_editor_property('always_persist_rendering_state',True)
                     capture.set_editor_property('fov_angle',component.field_of_view)
+                # Wrist targets are only centimetres away; the default 10 cm
+                # near plane slices the cube and fingers out of policy images.
+                capture.set_editor_property('override_custom_near_clipping_plane',True)
+                capture.set_editor_property('custom_near_clipping_plane',1.0)
                 actor.set_actor_label('DreamSim_LocalCapture_'+role)
                 for primitive in actor.get_components_by_class(unreal.PrimitiveComponent):
                     primitive.set_visibility(False,False);primitive.set_hidden_in_game(True,False)

@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T14:46:53-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Compared full and Flash Dream policies on identical adjusted camera input",
+  "why": "Choose an evidence-supported next grasp trial after prior trajectories missed the red cube",
+  "where": [
+    "docs/validation/dream-camera-policy-comparison.json"
+  ],
+  "details": [
+    "Inference only; no motion applied",
+    "Flash predicted path passes within0.385cm of cube center; fullmodel within7.29cm",
+    "Actual10cm sustained pickup remains unverified"
+  ]
+}
