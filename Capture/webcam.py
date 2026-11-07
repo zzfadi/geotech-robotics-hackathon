@@ -170,12 +170,71 @@ def solve(result, image_size, rect, calibration, previous):
     return space, bones
 
 
+class WebcamPublisher:
+    def __init__(self, detector, udp, roi, calibration, observer_port):
+        self.detector = detector
+        self.udp = udp
+        self.roi = roi
+        self.calibration = calibration
+        self.observer_port = observer_port
+        self.begin()
+
+    def begin(self):
+        self.session = uuid.uuid4().hex
+        self.seq = self.sent = 0
+        self.previous = {}
+        # Keep MediaPipe VIDEO timestamps monotonic even when browser capture restarts.
+        self.last_ms = getattr(self, "last_ms", -1)
+
+    def publish(self, frame, stamp, timing):
+        h, w = frame.shape[:2]
+        x0, y0, x1, y1 = self.roi
+        rect = (int(x0 * w), int(y0 * h), int(x1 * w), int(y1 * h))
+        crop = frame[rect[1] : rect[3], rect[0] : rect[2]]
+        if not crop.size:
+            raise ValueError("Camera ROI is empty at this resolution")
+        rgb = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
+        image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+        self.last_ms = max(self.last_ms + 1, stamp // 1_000_000)
+        result = self.detector.detect_for_video(image, self.last_ms)
+        pose = solve(result, (w, h), rect, self.calibration, self.previous)
+        seq = self.seq
+        self.seq += 1
+        if pose is None:
+            self.previous.clear()
+            return False
+        space, bones = pose
+        packet = json.dumps(
+            {
+                "version": 1,
+                "subject": "Human_Cam_B",
+                "seq": str(seq),
+                "station_ns": str(stamp),
+                "session": self.session,
+                "space": space,
+                "bones": bones,
+                "timing": timing,
+            },
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode()
+        for port in (17860, self.observer_port):
+            self.udp.sendto(packet, ("127.0.0.1", port))
+        self.sent += 1
+        return True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--model", type=Path, required=True, help="MediaPipe pose_landmarker_lite.task"
     )
     source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument(
+        "--browser",
+        action="store_true",
+        help="Serve browser webcam capture on http://localhost:17864",
+    )
     source.add_argument("--camera", type=int, help="OpenCV camera index")
     source.add_argument("--image", type=Path, help="Repeat a reference still at 30 Hz")
     parser.add_argument("--frames", type=int, help="Stop after this many input frames")
@@ -236,62 +295,43 @@ def main():
         running_mode=vision.RunningMode.VIDEO,
         num_poses=2,
     )
-    session = uuid.uuid4().hex
-    seq = sent = 0
-    previous = {}
-    last_ms = -1
+    publisher = None
     try:
         with (
             vision.PoseLandmarker.create_from_options(options) as detector,
             socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp,
         ):
+            publisher = WebcamPublisher(
+                detector, udp, args.roi, calibration, args.observer_port
+            )
+            if args.browser:
+                from browser_camera import serve
+
+                serve(publisher, args.frames)
+                return
             start = time.monotonic()
-            while args.frames is None or seq < args.frames:
+            while args.frames is None or publisher.seq < args.frames:
                 if cap is None:
-                    time.sleep(max(0, start + seq / 30 - time.monotonic()))
+                    time.sleep(max(0, start + publisher.seq / 30 - time.monotonic()))
                     frame = still
                 else:
                     ok, frame = cap.read()
                     if not ok:
                         raise RuntimeError("Camera stopped providing frames")
-                stamp = time.monotonic_ns()
-                h, w = frame.shape[:2]
-                rect = (int(x0 * w), int(y0 * h), int(x1 * w), int(y1 * h))
-                crop = frame[rect[1] : rect[3], rect[0] : rect[2]]
-                rgb = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
-                image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
-                last_ms = max(last_ms + 1, stamp // 1_000_000)
-                result = detector.detect_for_video(image, last_ms)
-                pose = solve(result, (w, h), rect, calibration, previous)
-                if pose:
-                    space, bones = pose
-                    packet = json.dumps(
-                        {
-                            "version": 1,
-                            "subject": "Human_Cam_B",
-                            "seq": str(seq),
-                            "station_ns": str(stamp),
-                            "session": session,
-                            "space": space,
-                            "bones": bones,
-                            "timing": "host_dequeue"
-                            if cap is not None
-                            else "reference_still",
-                        },
-                        separators=(",", ":"),
-                        allow_nan=False,
-                    ).encode()
-                    for port in (17860, args.observer_port):
-                        udp.sendto(packet, ("127.0.0.1", port))
-                    sent += 1
-                else:
-                    previous.clear()
-                seq += 1
+                publisher.publish(
+                    frame,
+                    time.monotonic_ns(),
+                    "host_dequeue" if cap is not None else "reference_still",
+                )
     finally:
         if cap is not None:
             cap.release()
-        print(f"Published {sent}/{seq} frames, session {session}", file=sys.stderr)
-    if not sent:
+        if publisher:
+            print(
+                f"Published {publisher.sent}/{publisher.seq} frames, session {publisher.session}",
+                file=sys.stderr,
+            )
+    if not publisher or not publisher.sent:
         raise SystemExit(
             "No single unambiguous pose detected inside the selected region"
         )
