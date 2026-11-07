@@ -9,7 +9,7 @@ import yam_station
 LABELS = ('MakerCamera_LeftWrist', 'MakerCamera_RightWrist', 'MakerCamera_Overview')
 
 
-def setup():
+def setup(labels=LABELS):
     existing = yam_station.actors()
     required = ['MakerArm_'+side+'_link_007' for side in ('left', 'right')]
     required.append(yam_station.PREFIX+'OverviewCameraProxy')
@@ -24,9 +24,10 @@ def setup():
         target = transform.transform_location(unreal.Vector(-10, 0, -35))
         specifications.append((label, parent, location, target, 90.0))
     parent = existing[yam_station.PREFIX+'OverviewCameraProxy']
-    location = parent.get_actor_location() + unreal.Vector(3.5, 0, 0)
+    location = parent.get_actor_location() + unreal.Vector(3.5, 0, -3.5)
     specifications.append((LABELS[2], parent, location, unreal.Vector(53, 0, 75), 100.0))
     for label, parent, location, target, fov in specifications:
+        if label not in labels: continue
         camera = existing.get(label)
         if camera is None and label == LABELS[2]:
             camera = existing.get(yam_station.PREFIX+'OverviewCamera_Uncalibrated')
@@ -66,3 +67,30 @@ def inspect():
                        'horizontal_fov_degrees': camera.field_of_view,
                        'aspect_ratio': camera.aspect_ratio})
     return result
+
+
+def refine_central_mount():
+    """Match the new front photo: black flat mast, top housing and underside lens.
+
+    Sizes are photo estimates in cm; this is a visual mount, not measured CAD.
+    """
+    existing = yam_station.actors()
+    dark = unreal.load_asset(yam_station.ASSETS+'/M_YAM_Dark')
+    if dark is None: raise ValueError('Missing station material')
+    for suffix, scale in [('CameraMast', (0.015, 0.07, 0.66)),
+                          ('OverviewCameraProxy', (0.06, 0.10, 0.025))]:
+        actor = existing[yam_station.PREFIX+suffix]
+        actor.modify()
+        actor.set_actor_scale3d(unreal.Vector(*scale))
+        actor.static_mesh_component.modify()
+        actor.static_mesh_component.set_material(0, dark)
+    name = 'MakerStation_CentralCameraLens_Approximate'
+    lens = existing.get(name)
+    if lens is None:
+        lens = yam_station.mesh_actor(name, unreal.load_asset('/Engine/BasicShapes/Cylinder.Cylinder'),
+                                      (11.7, 0, 139.8), (0.022, 0.022, 0.02), dark)
+    lens.modify()
+    direction = unreal.Vector(40.5, 0, -63.5)
+    lens.set_actor_rotation(unreal.MathLibrary.make_rot_from_z(direction), True)
+    lens.set_folder_path('MakerStation/Cameras')
+    return setup((LABELS[2],))

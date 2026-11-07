@@ -79,8 +79,8 @@ def arrange_table():
     p = yam_station.PREFIX
     placements = {
         p+'Table': ((45, 0, 72), (0.8, 2.0, 0.06)),
-        p+'CameraMast': ((7, 0, 109), (0.025, 0.025, 0.66)),
-        p+'OverviewCameraProxy': ((9, 0, 142), (0.06, 0.10, 0.04)),
+        p+'CameraMast': ((7, 0, 109), (0.015, 0.07, 0.66)),
+        p+'OverviewCameraProxy': ((9, 0, 142), (0.06, 0.10, 0.025)),
         p+'ControlComputerProxy': ((65, 65, 78), (0.30, 0.22, 0.06)),
     }
     for oldx, x in ((15, 10), (115, 80)):
