@@ -9,7 +9,8 @@ class Store:
         self.path=path;path.mkdir(parents=True,exist_ok=True)
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
-        self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.lock=threading.RLock()
+        self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
+        if (path/'recording.json').exists():self.recording=json.loads((path/'recording.json').read_text())
         log=path/'events.jsonl'
         if log.exists():
             for line in log.read_text().splitlines():
@@ -37,7 +38,7 @@ class Handler(BaseHTTPRequestHandler):
         s=self.server.store
         if self.path=='/':return self.send(200,(Path(__file__).parent/'web/index.html').read_bytes(),'text/html; charset=utf-8')
         if self.path=='/api/live':
-            with s.lock:return self.send(200,{'frame':s.preview[-1] if s.preview else None,'count':len(s.preview),'server_time':time.time()})
+            with s.lock:return self.send(200,{'frame':s.live_frame,'count':len(s.preview),'server_time':time.time()})
         if self.path.startswith('/api/replay/'):
             try:
                 index=int(self.path.rsplit('/',1)[1])
@@ -45,8 +46,19 @@ class Handler(BaseHTTPRequestHandler):
                     if not 0<=index<len(s.preview):return self.send(404,{'error':'Frame unavailable'})
                     return self.send(200,{'frame':s.preview[index],'count':len(s.preview),'server_time':time.time()})
             except ValueError:return self.send(400,{'error':'Invalid frame index'})
+        if self.path.startswith('/api/recording/'):
+            role=self.path.split('/')[-1].split('.')[0]
+            if role not in ('overhead','wrist_l','wrist_r'):return self.send(404,{'error':'Unknown camera'})
+            path=s.path/('recording-'+role+'.mp4')
+            if role=='overhead' and not path.exists():path=s.path/'recording.mp4'
+            if not path.exists():return self.send(404,{'error':'No recording for this camera'})
+            return self.send(200,path.read_bytes(),'video/mp4')
+        if self.path.startswith('/api/recording.mp4'):
+            path=s.path/'recording.mp4'
+            if not path.exists():return self.send(404,{'error':'No recording yet'})
+            return self.send(200,path.read_bytes(),'video/mp4')
         if self.path=='/api/status':
-            with s.lock:return self.send(200,{'events':list(s.events),'command':s.command,'voice':({k:v for k,v in s.voice.items() if k!='audio'} if s.voice else None),'worker_online':time.time()-s.worker_at<10,'server_time':time.time()})
+            with s.lock:return self.send(200,{'events':list(s.events),'recording':s.recording,'command':s.command,'voice':({k:v for k,v in s.voice.items() if k!='audio'} if s.voice else None),'worker_online':time.time()-s.worker_at<10,'server_time':time.time()})
         if self.path=='/api/worker/next':
             if not self.worker():return self.send(401,{'error':'Worker authentication required'})
             with s.lock:
@@ -64,6 +76,22 @@ class Handler(BaseHTTPRequestHandler):
             origin=self.headers.get('Origin')
             if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):return self.send(403,{'error':'Cross-origin request refused'})
             data=json.loads(self.rfile.read(length))
+            if self.path=='/api/worker/video':
+                if not self.worker():return self.send(401,{'error':'Worker authentication required'})
+                raw=base64.b64decode(data['video'],validate=True)
+                if not 12<len(raw)<1_400_000 or raw[4:8]!=b'ftyp':raise ValueError('Expected bounded MP4 recording')
+                with s.lock:
+                    if not any(e.get('request_id')==data.get('request_id') for e in s.events):raise ValueError('Unknown recording request')
+                    role=data.get('role','overhead')
+                    if role not in ('overhead','wrist_l','wrist_r'):raise ValueError('Unknown camera')
+                    tmp=s.path/'recording.tmp';tmp.write_bytes(raw);tmp.replace(s.path/('recording-'+role+'.mp4'))
+                    if role=='overhead':(s.path/'recording.mp4').write_bytes(raw)
+                    roles=list(s.recording.get('roles',[])) if s.recording and s.recording['request_id']==data['request_id'] else []
+                    if role not in roles:roles.append(role)
+                    s.recording={k:data[k] for k in ('request_id','prompt','frames','result')}
+                    s.recording['roles']=roles
+                    (s.path/'recording.json').write_text(json.dumps(s.recording))
+                return self.send(200,{'ok':True})
             if self.path=='/api/worker/frame':
                 if not self.worker():return self.send(401,{'error':'Worker authentication required'})
                 frames=data.get('frames',{})
@@ -74,11 +102,13 @@ class Handler(BaseHTTPRequestHandler):
                 captured=float(data['captured_unix'])
                 if not 0<=time.time()-captured<10:raise ValueError('Frame is not fresh')
                 with s.lock:
-                    if not s.command or data.get('request_id')!=s.command['id']:raise ValueError('Unknown frame request')
-                    if s.preview_request!=data['request_id']:
+                    recording=data.get('recording',True)
+                    if recording and (not s.command or data.get('request_id')!=s.command['id']):raise ValueError('Unknown frame request')
+                    if recording and s.preview_request!=data['request_id']:
                         s.preview.clear();s.preview_request=data['request_id']
                     frame={'request_id':data['request_id'],'sequence':data['sequence'],'captured_unix':captured,'frames':frames}
-                    s.preview.append(frame)
+                    s.live_frame=frame
+                    if recording:s.preview.append(frame)
                 return self.send(200,{'ok':True})
             if self.path=='/api/voice':
                 audio=base64.b64decode(data.get('audio',''),validate=True)

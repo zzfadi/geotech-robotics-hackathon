@@ -45,7 +45,9 @@ class Worker:
                     sequence=packet['sequence'];self.last=packet
                     if self.recording:
                         self.recorded+=1
-                        (self.recording/('frame_%06d.jpg'%self.recorded)).write_bytes(base64.b64decode(packet['frames']['video.overhead']))
+                        for role in ('overhead','wrist_l','wrist_r'):
+                            prefix='frame' if role=='overhead' else role
+                            (self.recording/(prefix+'_%06d.jpg'%self.recorded)).write_bytes(base64.b64decode(packet['frames']['video.'+role]))
                     if self.prompt:
                         obs={'prompt':self.prompt}
                         for side in ('left','right'):
@@ -60,11 +62,11 @@ class Worker:
         while not self.closed:
             packet=self.last
             command=self.command
-            if packet and command and self.recording and time.time()-packet['captured_unix']<2:
-                identity=(command['id'],packet['captured_unix'])
+            if packet and time.time()-packet['captured_unix']<2:
+                identity=((command or {}).get('id'),packet['captured_unix'])
                 if identity!=sent:
                     try:
-                        self.api('/api/worker/frame',{'request_id':command['id'],'sequence':packet['sequence'],'captured_unix':packet['captured_unix'],'frames':packet['frames']})
+                        self.api('/api/worker/frame',{'request_id':(command or {}).get('id'),'recording':bool(self.recording),'sequence':packet['sequence'],'captured_unix':packet['captured_unix'],'frames':packet['frames']})
                         sent=identity
                     except Exception:pass
             time.sleep(.5)
@@ -78,7 +80,7 @@ class Worker:
             time.sleep(.1)
         raise TimeoutError('No fresh verified Unreal camera/state observation')
     def run_job(self,command):
-        task=False;request_id=command['id']
+        task=False;request_id=command['id'];result='failed'
         try:
             (self.root/'stop').unlink(missing_ok=True);self.error=None;self.last=None
             self.client.reset_episode();self.prompt=command['prompt']
@@ -89,7 +91,7 @@ class Worker:
             seed.write_text(json.dumps(recover_state(previous,self.root/'cameras/observation.json',self.args.initial_state)))
             # Reset observers between episodes so stale images cannot enter a new command.
             (self.root/'cameras/observation.json').unlink(missing_ok=True)
-            code=f"import importlib, json, maker_arm_feedback, maker_arm_observer, maker_arm_playback\nfrom copresence import ui_widgets\nmaker_arm_observer.stop()\nimportlib.reload(maker_arm_feedback)\nimportlib.reload(maker_arm_playback)\nimportlib.reload(maker_arm_observer)\nmaker_arm_feedback.seed(json.load(open({str(seed)!r})))\nui_widgets.after(1, lambda: maker_arm_observer.start({str(self.root/'cameras')!r}, seconds=120))"
+            code=f"import importlib, json, maker_arm_feedback, maker_arm_observer, maker_arm_playback\nfrom copresence import ui_widgets\nmaker_arm_observer.stop()\nimportlib.reload(maker_arm_feedback)\nimportlib.reload(maker_arm_playback)\nimportlib.reload(maker_arm_observer)\nmaker_arm_feedback.seed(json.load(open({str(seed)!r})))\nui_widgets.after(1, lambda: maker_arm_observer.start({str(self.root/'cameras')!r}, seconds=86400))"
             self.python(code,'Start verified three-camera feedback for Dream command')
             for cycle in range(self.args.cycles):
                 packet=self.fresh();time.sleep(.3)
@@ -101,11 +103,15 @@ class Worker:
                 report=self.root/'action.json';report.write_text(json.dumps({'state':packet['state'],'action':action},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
                 previous.unlink(missing_ok=True)
                 self.python(f"from copresence import ui_widgets\nimport maker_arm_playback\nui_widgets.after(.2, lambda: maker_arm_playback.launch({str(report)!r},{str(previous)!r}))",'Apply bounded Dream response in one shared transaction')
-                self.event('playback.started',cycle=cycle+1,message='Applying Dream joint targets in Unreal')
+                self.event('playback.queued',cycle=cycle+1,message='Validating Dream trajectory before movement')
+                playback_announced=False
                 deadline=time.monotonic()+20
                 while time.monotonic()<deadline:
                     if previous.exists():
                         state=json.loads(previous.read_text())
+                        if not state.get('error') and not playback_announced:
+                            self.event('playback.started',cycle=cycle+1,message='Unreal accepted trajectory; motion started')
+                            playback_announced=True
                         if state.get('done'):
                             if state.get('error'):raise RuntimeError(state['error'])
                             break
@@ -113,6 +119,7 @@ class Worker:
                 else:raise TimeoutError('Unreal playback did not finish')
                 self.event('playback.completed',cycle=cycle+1,state=state,message=str(state['rows'])+'-sample kinematic trajectory finished')
                 packet=self.fresh(after=time.time());self.event('observation',frames=packet['frames'],state=packet['state'])
+            result='done'
             self.api('/api/worker/done',{'request_id':request_id,'status':'done'})
         except Exception as error:
             stopped=(self.root/'stop').exists()
@@ -122,10 +129,16 @@ class Worker:
             self.prompt=''
             recording=self.recording;self.recording=None
             if recording and self.recorded:
-                subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(),'-y','-loglevel','error','-framerate','5','-i',str(recording/'frame_%06d.jpg'),'-c:v','libx264','-pix_fmt','yuv420p',str(recording/'unreal-motion.mp4')],capture_output=True,timeout=20)
+                for role in ('overhead','wrist_l','wrist_r'):
+                    try:
+                        prefix='frame' if role=='overhead' else role
+                        video=recording/('unreal-motion.mp4' if role=='overhead' else role+'.mp4')
+                        subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(),'-y','-loglevel','error','-framerate','5','-i',str(recording/(prefix+'_%06d.jpg')),'-c:v','libx264','-pix_fmt','yuv420p',str(video)],capture_output=True,timeout=20,check=True)
+                        if video.stat().st_size>=1_400_000:raise ValueError('Recording exceeds upload limit')
+                        self.api('/api/worker/video',{'request_id':request_id,'prompt':command['prompt'],'frames':self.recorded,'result':result,'role':role,'video':base64.b64encode(video.read_bytes()).decode()})
+                    except Exception as error:self.event('recording.failed',message=role+': '+str(error))
             if task:
                 try:
-                    self.python('import maker_arm_observer; maker_arm_observer.stop()','Stop local camera capture')
                     self.ue('end_task',{'summary':'Dream web command finished; see debugger for actual request and kinematic playback result. Contact/grasp success is not established.','keep_view':True})
                 except Exception as error:self.event('cleanup.failed',message=str(error))
     def transcribe(self,voice):
@@ -139,10 +152,19 @@ class Worker:
             if not text:raise ValueError('No speech detected')
             self.api('/api/worker/transcript',{'id':voice['id'],'text':text})
         except Exception as error:self.api('/api/worker/transcript',{'id':voice['id'],'error':str(error)})
+    def start_preview(self):
+        seed=self.root/'preview-seed.json'
+        seed.write_text(json.dumps(recover_state(self.root/'playback.json',self.root/'cameras/observation.json',self.args.initial_state)))
+        wait_for_editor(lambda:self.ue('begin_task',{'title':'Start live camera preview','request':'Stream the three virtual cameras to the web app without moving the arms.','keep_view':True,'focus_x':40,'focus_y':0,'focus_z':100}),lambda:False,lambda message:self.event('preview.waiting',message=message))
+        try:
+            self.python(f"import json,maker_arm_feedback,maker_arm_observer\nfrom copresence import ui_widgets\nmaker_arm_observer.stop()\nmaker_arm_feedback.seed(json.load(open({str(seed)!r})))\nui_widgets.after(1,lambda:maker_arm_observer.start({str(self.root/'cameras')!r},seconds=86400))",'Start continuous local camera preview')
+        finally:self.ue('end_task',{'summary':'Started local three-camera preview; robot poses unchanged.','keep_view':True})
+
     def run(self):
         configure(self.client,prepare(self.root/'model'))
         if not self.client.wait_for_ik(180):raise TimeoutError('IK initialization timed out')
         threading.Thread(target=self.poll,daemon=True).start();threading.Thread(target=self.pump,daemon=True).start();threading.Thread(target=self.stream,daemon=True).start()
+        self.start_preview()
         self.event('worker.ready',message='Unreal worker ready for text commands')
         seen=set();heard=set()
         try:

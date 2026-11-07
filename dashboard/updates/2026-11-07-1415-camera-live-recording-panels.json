@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T14:15:52-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Camera panels now switch between continuous live views and MP4 recordings in place.",
+  "why": "The user wants to watch the same camera view live or replay its recording, and clearly see whether a command was accepted.",
+  "details": "Continuous idle live timestamps verified. Fresh request 6ecb7a33fb544cfd8546d8105fae96ec completed one 49-sample movement then its second inference expired. All three 83-frame MP4s uploaded; served bytes match originals and all fully decode. Browser Live/Recording controls and three in-panel players verified. Auth, role routing, restart persistence and preview/replay separation tests pass.",
+  "where": [
+    "DreamSim/web/index.html",
+    "DreamSim/worker.py",
+    "DreamSim/debug_server.py",
+    "https://luna2.tail6864ac.ts.net/"
+  ]
+}
