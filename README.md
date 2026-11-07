@@ -2,6 +2,10 @@
 
 GeoTech robotics hackathon workspace.
 
+## Dashboard
+
+Track the team's progress at **https://zzfadi.github.io/geotech-robotics-hackathon/**. To post an update, see [dashboard/README.md](dashboard/README.md).
+
 ## Contributing
 
 All development takes place directly on `main`. Read [AGENTS.md](AGENTS.md) for the branch workflow, conflict-resolution guidance, and agent working rules.

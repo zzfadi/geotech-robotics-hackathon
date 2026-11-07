@@ -18,6 +18,15 @@ The [Slack recommendation from November 5, 2026](https://geotech-org.slack.com/a
 - For conflicts encountered now, inspect both sides and preserve the intended behavior of each change. Do not blindly select one side or overwrite another contributor's work.
 - If the correct resolution depends on an unclear product decision, explain the conflict and ask for that decision. Otherwise resolve it, verify the result, and continue on `main`.
 
+## Dashboard updates
+
+The team dashboard at https://zzfadi.github.io/geotech-robotics-hackathon/ is how everyone tracks what changed, where and why. Every agent and teammate posts there.
+
+- After each meaningful change, decision or blocker, add one new file to `dashboard/updates/` named `YYYY-MM-DD-HHMM-<who>-<short-title>.json` (Pacific time, lowercase). Include it in the same commit as the work when you can.
+- Required fields: `when` (ISO time with offset), `who`, `kind` (`agent` or `human`), `workstream` (an id from `dashboard/data/workstreams.json`), `status` (`done`, `in-progress`, `blocked`, `decision` or `note`), `what` and `why`. Optional: `for`, `where` (paths, commit SHAs, `#PR` or URLs), `details` and `workstream_update` (`status`, `progress` 0-100, `owner`).
+- Run `python3 dashboard/build.py --check` before committing. Never edit or delete another contributor's update file.
+- Full format and an example: [dashboard/README.md](dashboard/README.md).
+
 ## Working practices
 
 ### Checkpoints, GitHub pushes and Multi-User history
