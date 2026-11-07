@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:20:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "The Quest 3S capture Mac rejoined the live TheHumanTouch session using ht-rejoin.",
+  "why": "The previous USB blocker is resolved. The editor is running the shared map from the Luna2 checkpoint and the headset is receiving the editor view.",
+  "where": [
+    "a2c77b28",
+    "Unreal/TheHumanTouch/Tools/join_human_touch.py"
+  ],
+  "details": "Verified the same editor process in Concert and in the USB stream, advancing encoded frames, headset-side decoding at 2176 × 1200, and a negotiated refresh rate of 72 Hz."
+}
