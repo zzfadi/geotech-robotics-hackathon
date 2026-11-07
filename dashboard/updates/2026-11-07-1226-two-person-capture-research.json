@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T12:26:00-08:00",
+  "workstream": "vrxr",
+  "status": "note",
+  "what": "Verified native Mac Live Link Hub startup and off-engine pose inference; documented the two-person simulated-contact and Quest overlay plan.",
+  "why": "The capture rig can be prototyped without routing through remote Windows. Both performers, the physics process and three robot camera views need the same table frame and timestamps.",
+  "where": ["docs/performance-capture.md", "output/pdf/table-registration-letter.pdf"],
+  "details": "The printable calibration board passed an OpenCV decode check. Live skeletal subjects, arm model revision, end-to-end timing, and physical registration still need verification."
+}
