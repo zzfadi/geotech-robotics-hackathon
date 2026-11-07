@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T12:48:12-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Documented the official Maker Arm URDF entry point and agent model-handling rules; corrected the stale Unreal YAM description.",
+  "why": "Keep the GitHub README, agent instructions and Unreal workflow aligned with the existing official Maker Arm model.",
+  "where": [
+    "README.md",
+    "AGENTS.md",
+    "Unreal/TheHumanTouch/README.md"
+  ],
+  "details": "Documentation update only; model provenance and mesh references checked. Physics and hardware calibration remain unvalidated."
+}

@@ -62,3 +62,13 @@ The team dashboard at https://zzfadi.github.io/geotech-robotics-hackathon/ is ho
 - Read applicable repository instructions before changing files.
 - Preserve unrelated user changes and never commit credentials, tokens, private keys, or local secret files.
 - Keep documentation aligned with implemented behavior. Report what changed, what was verified, and any remaining blockers.
+
+### Maker Arm robot description
+
+- Target MakerMods **Maker Arm**, not Metal Arm or the earlier I2RT YAM preview. Official sources: https://www.makermods.ai/maker-arm and https://github.com/makermods-robotics/maker-arm-sdk/tree/main/urdf/maker_arm.
+- URDF means Unified Robot Description Format. Use `Unreal/TheHumanTouch/SourceAssets/MakerArm/robot.urdf` and its adjacent `meshes/`. The pinned upstream commit, license and SHA-256 hashes are recorded in `provenance.json`; preserve upstream files and provenance when making derived assets. Review upstream changes before updating the pin.
+- Read `docs/maker-arm-model.md` and the source model README before changing geometry, kinematics or physics. Use `maker_arm_model.py`, `import_maker_arm_meshes.py` and `maker_arm_station.py` for the existing Unreal representation; do not substitute YAM joint offsets or limits.
+- Preserve the six revolute arm joints, symmetric prismatic jaw mimic and fixed `grasp_center`. The pose helper takes six URDF radians and total jaw gap in metres (0–0.104825); SDK motor coordinates require a separately calibrated mapping.
+- Preserve CAD frames and mesh scale; the existing conversion handles Y-up to Z-up, metres to Unreal centimetres and handedness. Do not apply an additional display rotation or scale without checking the resulting geometry.
+- Describe the current Unreal model as an editor kinematic representation. Dynamics, collision/contact behavior, hardware alignment and gripper transmission remain unvalidated; importing meshes does not establish a calibrated digital twin.
+- After model/conversion changes, run `python3 -m unittest discover -s Unreal/TheHumanTouch/Tools -p 'test_maker_arm_model.py'` and verify source hashes/mesh references. Follow the scoped editing and checkpoint rules for live Unreal changes.

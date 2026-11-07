@@ -44,6 +44,22 @@ Luna2 checkpoints and pushes ready Unreal content to GitHub every **15 minutes**
 
 See [migration research](../../docs/agentcopresence-migration.md) for VR and later robot work.
 
-## Dreamlabs YAM station
+## Maker Arm station
 
-The shared map now includes a two-arm YAM tabletop station using official I2RT meshes and URDF joint poses. See [research and usage](../../docs/dreamlabs-yam.md). This is an editor kinematic preview; Dream-1 inference and grasp physics are not connected. The initial zero-actor map validator is historical after this addition.
+The target is MakerMods Maker Arm. The shared scene's earlier I2RT YAM preview has been replaced with the official Maker Arm geometry, as recorded in the [model assessment](../../docs/maker-arm-model.md). The initial zero-actor map validator is historical after the station addition.
+
+The **URDF (Unified Robot Description Format)** is [SourceAssets/MakerArm/robot.urdf](SourceAssets/MakerArm/robot.urdf), from the [official SDK model package](https://github.com/makermods-robotics/maker-arm-sdk/tree/0245316c05cb3e8d900f35e70c08e2e18e36731e/urdf/maker_arm). Keep `meshes/` adjacent to it. The package includes 52 STL meshes, six revolute arm joints, two prismatic jaws with a mimic relationship, and a fixed `grasp_center`. See the [upstream usage and limitations](SourceAssets/MakerArm/README.md) and [provenance manifest](SourceAssets/MakerArm/provenance.json).
+
+### Existing Unreal workflow
+
+- `Tools/maker_arm_model.py` reads the URDF, computes joint frames, and prepares nine combined link OBJ meshes under `Saved/CoPresenceImports/MakerArm`. Mesh preparation preserves visual origins and converts geometry to centimetres; mounted frames handle CAD Y-up and the Unreal pose conversion handles handedness.
+- `Tools/import_maker_arm_meshes.py` imports those prepared meshes into `/Game/_Agents/Denys_Mac_Codex/MakerArm` through a scoped CoPresence task. It does not generate collision or save packages automatically; use the shared-editor persistence/checkpoint workflow.
+- `Tools/maker_arm_station.py` positions the two arms (18 link actors). `set_pose(side, q, gap)` takes six URDF joint angles in radians and **total** jaw opening in metres, from 0 to 0.104825. It enforces symmetric jaw motion. These coordinates are not the SDK's motor angles. `replace_yam()` is a guarded migration for the old complete station, not a routine refresh command.
+
+Run the offline kinematic checks from the repository root:
+
+```sh
+python3 -m unittest discover -s Unreal/TheHumanTouch/Tools -p 'test_maker_arm_model.py'
+```
+
+This is an editor kinematic representation, not a physics articulation. Dream-1 inference and grasp physics are not connected. Upstream dynamics and physical joint alignment remain unvalidated; collision decomposition, calibrated contacts, station registration and motor-to-jaw transmission still require validation. No runtime or asset reimport is required solely to update this documentation.
