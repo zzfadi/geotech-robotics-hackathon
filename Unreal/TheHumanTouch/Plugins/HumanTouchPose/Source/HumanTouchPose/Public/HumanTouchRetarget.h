@@ -16,6 +16,13 @@ class HUMANTOUCHPOSE_API UHumanTouchRetarget : public ULiveLinkRetargetAsset
 
   private:
     FTransform MeshToWorld;
+    TMap<FName, FQuat> HandNeutral;
+    struct FLegCalibration
+    {
+        FVector Anchor;
+        double Scale;
+    };
+    TMap<FName, FLegCalibration> LegCalibration;
     FString LastSession, LastSpace;
     FVector SourceOrigin = FVector::ZeroVector;
     FQuat Alignment = FQuat::Identity, FirstHead = FQuat::Identity;

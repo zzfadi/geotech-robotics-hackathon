@@ -6,6 +6,6 @@ public class HumanTouchPose : ModuleRules
     {
         PCHUsage = PCHUsageMode.NoPCHs;
         PublicDependencyModuleNames.AddRange(new[] { "Core", "CoreUObject", "Engine", "LiveLinkInterface", "LiveLinkAnimationCore" });
-        PrivateDependencyModuleNames.AddRange(new[] { "Json", "Networking", "Sockets" });
+        PrivateDependencyModuleNames.AddRange(new[] { "AnimationCore", "Json", "Networking", "Sockets" });
     }
 }
