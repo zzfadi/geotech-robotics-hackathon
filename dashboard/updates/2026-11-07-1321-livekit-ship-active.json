@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T13:21:00-08:00",
+  "workstream": "voice-agent",
+  "status": "in-progress",
+  "what": "LiveKit Ship activation verified for The Human Touch",
+  "why": "The sponsor cloud setup is ready for the voice and robotics integration work.",
+  "where": ["https://cloud.livekit.io/", "https://www.livekit.info/pah"],
+  "details": "The authenticated LiveKit project billing page and subscription management portal confirm Ship is active after the hackathon checkout. Voice-agent deployment, room membership and audible turn cues still require implementation and verification."
+}
