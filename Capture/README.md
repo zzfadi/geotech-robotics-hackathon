@@ -64,3 +64,32 @@ Run `python3 Capture/observe.py` on the capture Mac to see each sample's identit
 ```
 
 All transforms are expressed in the named frame (+X right, +Y up, -Z forward). The first bone is the root with parent -1. The receiver converts handedness and metres to UE centimetres, then computes parent-local bone transforms. Missing/late frames must expire on the robot side. Frame identity is preserved across both copies; strict simulation/render alignment additionally requires a common evaluation tick. The physical camera, headset articulation, contact authority and overlay each need independent verification.
+
+## External Maker Arm contact simulation
+
+The station can run a local MuJoCo 4.0 process with both official Maker Arm URDFs and an independently simulated tabletop token. It samples the registered human streams at a common target time, updates palm and forearm collision proxies, and returns robot poses and contact locations to Unreal. The arm holds its rest position with a provisional compliant controller. The model's dynamics, hardware registration and collision response still require physical validation. [Maker Arm model assessment](../docs/maker-arm-model.md).
+
+1. Open the populated `/Game/Maps/TheHumanTouch` map. Run this in the editor's Python console (one paste using Python mode):
+
+   ```python
+   import pathlib, sys, unreal
+   root = pathlib.Path(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_dir()))
+   sys.path.insert(0, str(root / "Tools"))
+   import contact_view
+   contact_view.export_layout(root / "Saved/Capture/station-layout.json", "table_v1")
+   contact_view.start()
+   ```
+
+   Layout export reads the current base actor poses and tabletop height. The station's named coordinate frame uses metres, +X right, +Y up, -Z forward, with origin at the UE world origin. Use this same frame when registering each capture device. Re-export the layout after moving the bases/table.
+
+2. Stop any command-line observer using port 17861. Start the simulator from the repository root:
+
+   ```sh
+   uv run --script Capture/contact_sim.py --layout Unreal/TheHumanTouch/Saved/Capture/station-layout.json
+   ```
+
+   The default publishes 60 ticks per second with four physics substeps. It selects the latest frame at or before the common target (45 ms behind the station clock). Each tick carries the frame IDs actually applied, 20 link frames including both grasp centers, the token pose, the human collision proxies and contact points. Unregistered poses are ignored. Proxies expire when their sample is over 120 ms old at the target time. After tracking loss or a jump, two distinct consistent samples are required to re-enable contact. Stop the simulator with Control-C.
+
+3. The edit viewport displays robot link outlines, applied forearms, the token and contacts. **Simulate in Editor** moves the 18 Maker Arm mesh actors in the play world to the returned poses. Type `contact_view.status()` in the editor's Python console to inspect the last tick, its inputs, contacts and freshness. `contact_view.stop()` releases port 17863. All contact geometry in this view corresponds to the same authoritative tick. The live skeletal preview draws independently at the Live Link evaluation time.
+
+**Verified:** A physical Quest 3S published a 67-joint subject through Mac Hub. Over one nine-second sample the receiver got 406 frames and all ten fingertips had valid transforms. Three independent editor frame evaluations matched the external receiver's sequence and timestamp. A separate two-performer **synthetic** rehearsal produced simultaneous contacts on opposite grippers. Unreal received both events with the identical source IDs and simulation tick, and all 18 play-world mesh positions matched the transmitted positions. Live webcam acquisition, measured table registration and two-person physical reaches still need an on-site test.

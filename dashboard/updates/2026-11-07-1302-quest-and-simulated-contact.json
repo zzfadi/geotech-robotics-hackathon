@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T13:02:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified the physical Quest 3S skeleton through Mac Hub into Unreal and a separate two-person Maker Arm contact rehearsal.",
+  "why": "The simulator can use the same timestamped human input as Unreal and return a single robot result for each tick.",
+  "where": ["Capture/README.md", "Capture/contact_sim.py", "Unreal/TheHumanTouch/Tools/contact_view.py"],
+  "details": "A nine-second live capture returned 406 frames, all ten fingertips and three exact editor/observer frame matches. With synthetic registered reaches, both grippers contacted on the same tick and all 18 play-world mesh positions matched the simulation. Live webcam and physical table registration remain open."
+}
