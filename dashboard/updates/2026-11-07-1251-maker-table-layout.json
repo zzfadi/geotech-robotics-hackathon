@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T12:51:13-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Reopened the Mac editor on TheHumanTouch and aligned the table, shared mounting plate and colored task props to the physical reference.",
+  "why": "Place both official Maker Arms along the same long edge with inward reach and a shared tabletop workspace.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_station.py",
+    "docs/maker-arm-model.md",
+    "docs/images/maker-arm-table.jpg"
+  ],
+  "details": "Verified 18 arm links, six task proxies, mounting plate and tabletop transforms on Luna2. Mac session lists Luna2 and Brian VR. Dimensions remain provisional. Recovered the Mac from a host backup after a Concert redirector reload crash; guarded binary Git checkpoint remains blocked by dirty/pending map state."
+}
