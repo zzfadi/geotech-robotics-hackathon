@@ -14,8 +14,15 @@ _active = None
 
 class MotionAudit:
     def __init__(self, directory, seconds=60, fps=10):
-        if not 0 < seconds <= 120 or not 0 < fps <= 20:
-            raise ValueError('Audit duration must be <=120 seconds and rate <=20 Hz')
+        if not 0 < seconds <= 300 or not 0 < fps <= 20:
+            raise ValueError('Audit duration must be <=300 seconds and rate <=20 Hz')
+        self.world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+        if self.world is None:
+            import maker_arm_runtime
+            session = getattr(maker_arm_runtime, '_session', None)
+            self.world = getattr(session, 'editor_world', None)
+        if self.world is None or not unreal.SystemLibrary.is_valid(self.world):
+            raise RuntimeError('No valid cached editor world for audit')
         self.directory = Path(directory)
         if not self.directory.is_absolute():
             self.directory = Path(unreal.Paths.project_dir()) / self.directory
@@ -39,14 +46,14 @@ class MotionAudit:
         self.last = now
         try:
             actors = {}
-            for actor in unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors():
+            for actor in unreal.GameplayStatics.get_all_actors_of_class(self.world, unreal.Actor):
                 label = actor.get_actor_label()
-                if not (label.startswith('MakerArm_') or label.startswith('MakerCamera_')):
+                if not (label.startswith('MakerArm_') or label.startswith('MakerCamera_') or label.startswith('MakerStation_Approximate_Block_')):
                     continue
                 transform = actor.get_actor_transform()
                 p, q = transform.translation, transform.rotation
                 actors[label] = {'p': [p.x, p.y, p.z], 'q': [q.x, q.y, q.z, q.w]}
-            world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+            world = self.world
             self.output.write(json.dumps({'at': time.time(), 'map': world.get_path_name(), 'actors': actors}) + '\n')
             self.output.flush()
             self.frames += 1
