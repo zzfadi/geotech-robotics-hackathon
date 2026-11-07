@@ -1,0 +1,32 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Category": "Robotics",
+  "Description": "The Human Touch robotics hackathon. Requires Unreal Engine 5.8.3 (CL 58210709).",
+  "Plugins": [
+    {
+      "Name": "PythonScriptPlugin",
+      "Enabled": true
+    },
+    {
+      "Name": "EditorScriptingUtilities",
+      "Enabled": true
+    },
+    {
+      "Name": "MultiUserClient",
+      "Enabled": true
+    },
+    {
+      "Name": "OpenXR",
+      "Enabled": true
+    },
+    {
+      "Name": "EnhancedInput",
+      "Enabled": true
+    },
+    {
+      "Name": "LiveLink",
+      "Enabled": true
+    }
+  ]
+}

@@ -4,3 +4,12 @@
 !.env.example
 *.pem
 *.key
+
+# Unreal generated data
+**/Binaries/
+**/Intermediate/
+**/Saved/
+**/DerivedDataCache/
+.vs/
+*.sln
+*.xcworkspace/
