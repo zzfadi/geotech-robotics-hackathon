@@ -1,0 +1,183 @@
+{
+  "abort_status": {
+    "phase": "stopped",
+    "error": null,
+    "scope": "runtime physics (approximate convex jaws)",
+    "state": {
+      "q_left": [
+        0.02,
+        -1.2,
+        0.81,
+        -0.09999999999999998,
+        0.0,
+        0.0
+      ],
+      "q_right": [
+        0.02,
+        -1.2,
+        0.81,
+        -0.1,
+        0.0,
+        0.0
+      ],
+      "gap_left_m": 0.05999999999999999,
+      "gap_right_m": 0.05999999999999999
+    },
+    "props": {
+      "MakerStation_Approximate_Block_Green": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Orange": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Red": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      }
+    },
+    "task_success_verified": false
+  },
+  "playback": {
+    "done": true,
+    "error": null,
+    "index": 2,
+    "rows": 3,
+    "timing": {
+      "action_hz": 20.0,
+      "time_scale": 1.0,
+      "duration_seconds": 0.1,
+      "original_rows": 2,
+      "rows": 3,
+      "grip_limit_corrections": []
+    },
+    "scope": "runtime physics (approximate convex jaws)",
+    "q_left": [
+      0.02,
+      -1.2,
+      0.81,
+      -0.09999999999999998,
+      0.0,
+      0.0
+    ],
+    "q_right": [
+      0.02,
+      -1.2,
+      0.81,
+      -0.1,
+      0.0,
+      0.0
+    ],
+    "gap_left_m": 0.05999999999999999,
+    "gap_right_m": 0.05999999999999999
+  },
+  "peer_acceptance": "bounded abort and commit lifecycle passed after transaction correction",
+  "scope": "bounded runtime control and transaction teardown, not autonomous pickup",
+  "commit_status": {
+    "phase": "stopped",
+    "error": null,
+    "scope": "runtime physics (approximate convex jaws)",
+    "state": {
+      "q_left": [
+        0.0,
+        -1.2,
+        0.81,
+        -0.09999999999999998,
+        0.0,
+        0.0
+      ],
+      "q_right": [
+        0.0,
+        -1.2,
+        0.81,
+        -0.1,
+        0.0,
+        0.0
+      ],
+      "gap_left_m": 0.05999999999999999,
+      "gap_right_m": 0.05999999999999999
+    },
+    "props": {
+      "MakerStation_Approximate_Block_Green": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Orange": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Red": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      }
+    },
+    "task_success_verified": false
+  },
+  "commit_playback": {
+    "done": true,
+    "error": null,
+    "index": 3,
+    "rows": 4,
+    "timing": {
+      "action_hz": 20.0,
+      "time_scale": 1.0,
+      "duration_seconds": 0.15,
+      "original_rows": 3,
+      "rows": 4,
+      "grip_limit_corrections": []
+    },
+    "scope": "runtime physics (approximate convex jaws)",
+    "q_left": [
+      0.0,
+      -1.2,
+      0.81,
+      -0.09999999999999998,
+      0.0,
+      0.0
+    ],
+    "q_right": [
+      0.0,
+      -1.2,
+      0.81,
+      -0.1,
+      0.0,
+      0.0
+    ],
+    "gap_left_m": 0.05999999999999999,
+    "gap_right_m": 0.05999999999999999
+  },
+  "abort_peer_audit": {
+    "luna_pid": 12380,
+    "both_wrist_pose_samples_shared": 2,
+    "final_actor_position_max_delta_cm": 0,
+    "editor_activities": [
+      490,
+      491
+    ],
+    "dangerous_pie_object_deletion_transactions": 0,
+    "normal_pie_package_discard_activity": 492
+  },
+  "commit_peer_audit": {
+    "luna_pid": 12380,
+    "final_actor_position_max_delta_cm": 0,
+    "editor_activities": [
+      493,
+      494
+    ],
+    "dangerous_pie_object_deletion_transactions": 0,
+    "normal_pie_package_discard_activity": 495
+  }
+}

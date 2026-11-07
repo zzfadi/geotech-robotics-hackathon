@@ -46,8 +46,8 @@ class MirrorTests(unittest.TestCase):
     def test_measured_pose_and_abort_restore(self):
         m=self.mirror();m.tick();self.assertEqual(self.target.pose.translation.x,10)
         m.finish(False);self.assertEqual(self.target.pose.translation.x,0)
-        self.assertEqual(self.snapshots,2);self.assertEqual(self.closed,1)
-        m.finish();self.assertEqual(self.closed,1)
+        self.assertEqual(self.snapshots,2);self.assertEqual(self.closed,2)
+        m.finish();self.assertEqual(self.closed,2)
     def test_commit_keeps_measured_pose(self):
         m=self.mirror();m.tick();m.finish(True)
         self.assertEqual(self.target.pose.translation.x,10)
@@ -57,12 +57,19 @@ class MirrorTests(unittest.TestCase):
         self.assertFalse(m.tick())
         m.finish(True)
         self.assertEqual(self.target.pose.translation.x,11)
-        self.assertEqual(self.snapshots,2);self.assertEqual(self.closed,1)
+        self.assertEqual(self.snapshots,2);self.assertEqual(self.closed,2)
     def test_commit_validation_failure_aborts(self):
         m=self.mirror();m.tick();self.runtime.pose=pose(float('nan'))
         with self.assertRaisesRegex(RuntimeError,'Nonfinite'):m.finish(True)
         self.assertTrue(m.closed);self.assertEqual(self.target.pose.translation.x,0)
-        self.assertEqual(self.closed,1)
+        self.assertEqual(self.closed,2)
+    def test_samples_leave_no_transaction_open_and_skip_noops(self):
+        m=self.mirror();self.assertEqual(self.closed,0)
+        m.tick();self.assertEqual(self.closed,1)
+        m.tick(force=True);self.assertEqual(self.closed,1)
+        self.runtime.pose=pose(12);m.tick(force=True)
+        self.assertEqual(self.closed,2)
+        m.finish(False);self.assertEqual(self.closed,3)
     def test_foreign_edit_is_not_overwritten(self):
         m=self.mirror();m.tick();self.target.pose=pose(99);m.last=-1e20
         with self.assertRaisesRegex(RuntimeError,'Concurrent'):m.tick()

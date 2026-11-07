@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T14:37:50-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Recovered Luna2 after a Concert transaction assertion; prepared authoritative runtime replication audit.",
+  "why": "Runtime capture deletion entered a long-lived mirror transaction, leaking PIE object references into Concert history immediately before the peer crash.",
+  "where": ["Unreal/TheHumanTouch/Tools/maker_arm_runtime_mirror.py", "Unreal/TheHumanTouch/Tools/multiuser_motion_audit.py"],
+  "details": "Luna2 crashed14:33 with EditorServer.cpp1186 UndoRedoContext assertion after activities478/479 deleted PIE camera components and discarded the PIE package; exact engine causal mechanism remains unproven. Crash log, minidump and autosave retained. One supported TheHumanTouch-Editor restart recovered PID12380, joined original session and correct map with Mac and Brian listed. No history deleted or other participants disconnected. Mirror now uses atomic short transactions;12 lifecycle tests pass. Read-only sampler caches editor world across SIE and includes all3 block transforms, bounded300seconds. Live revised runtime smoke pending."
+}

@@ -2,6 +2,8 @@
 
 Experimental, opt-in: caller owns runtime/controller and one active CoPresence task.
 Construct after enclosing MCP transaction ends; finish BEFORE ending SIE/task.
+Each changed sample closes its transaction synchronously; no transaction spans
+physics/camera teardown. At10Hz this trades bounded extra history for isolation.
 """
 import math
 import time
@@ -37,7 +39,7 @@ def _resolve(world, labels):
 
 
 class RuntimeMirror:
-    """One bounded transaction; finish(False) restores owned editor poses.
+    """Bounded short transactions; finish(False) restores owned editor poses.
 
     tick() may raise: controller must stop motion and call finish(False).
     Watchdog closes on timeout, task change, or runtime teardown. Check closed
@@ -73,22 +75,7 @@ class RuntimeMirror:
         self.closed = False
         self.error = None
         self.callback = None
-        self.undo_before = tracking.undo_count()
-        index = unreal.SystemLibrary.begin_transaction('CoPresence', unreal.Text(
-            tracking.transaction_title('Measured runtime Maker Arm motion')), next(iter(self.targets.values())))
-        if index != 0:
-            if index > 0:
-                unreal.SystemLibrary.end_transaction()
-            raise RuntimeError('Construct mirror after enclosing transaction ends')
-        try:
-            for actor in self.targets.values():
-                unreal.SystemLibrary.transact_object(actor)
-                unreal.SystemLibrary.transact_object(actor.root_component)
-            self.callback = unreal.register_slate_post_tick_callback(self._watchdog)
-        except Exception:
-            unreal.SystemLibrary.end_transaction()
-            self.closed = True
-            raise
+        self.callback = unreal.register_slate_post_tick_callback(self._watchdog)
         _active = self
 
     def _valid(self):
@@ -128,13 +115,8 @@ class RuntimeMirror:
                 if not all(math.isfinite(v) for v in _values(pose)):
                     raise RuntimeError('Nonfinite runtime pose: '+key)
                 measured[key] = pose
-            # Preflight all pairs before writing any of this sample.
-            for key, pose in measured.items():
-                if not _same(pose, self.expected[key]):
-                    actor = self.targets[key]
-                    actor.set_actor_transform(pose, False, True)
-                    self.expected[key] = actor.get_actor_transform()
-                    unreal.SystemLibrary.snapshot_object(actor.root_component)
+            # No editor transaction survives this synchronous Slate callback.
+            self._apply(measured, 'Measured runtime Maker Arm sample')
             self.last = now
             return True
         except Exception as error:
@@ -142,29 +124,49 @@ class RuntimeMirror:
             self.finish(commit=False)
             raise
 
+    def _apply(self, poses, description):
+        changed = {key: pose for key, pose in poses.items()
+                   if not _same(pose, self.targets[key].get_actor_transform())}
+        if not changed:
+            return
+        before = tracking.undo_count()
+        index = unreal.SystemLibrary.begin_transaction('CoPresence', unreal.Text(
+            tracking.transaction_title(description)), self.targets[next(iter(changed))])
+        if index != 0:
+            if index > 0:
+                unreal.SystemLibrary.end_transaction()
+            raise RuntimeError('Mirror sample requires no enclosing transaction')
+        try:
+            for key, pose in changed.items():
+                actor = self.targets[key]
+                unreal.SystemLibrary.transact_object(actor)
+                unreal.SystemLibrary.transact_object(actor.root_component)
+                actor.set_actor_transform(pose, False, True)
+                self.expected[key] = actor.get_actor_transform()
+                unreal.SystemLibrary.snapshot_object(actor.root_component)
+        finally:
+            unreal.SystemLibrary.end_transaction()
+            if tracking.current_task['id'] == self.task_id:
+                tracking.current_task['transactions'] += tracking.undo_count()-before
+
     def finish(self, commit=False):
         if self.closed:
             return
         if commit:
-            # Capture the final measured pose even inside the rate-limit interval.
-            # A failed final validation aborts/restores through tick(), never commits.
+            # Final measured sample bypasses the normal snapshot rate limit.
             self.tick(force=True)
         self.closed = True
         try:
-            if self.callback is not None:
-                unreal.unregister_slate_post_tick_callback(self.callback)
-                self.callback = None
             if not commit:
+                restored = {}
                 for key, actor in self.targets.items():
                     if not unreal.SystemLibrary.is_valid(actor):
                         continue
-                    # Never restore over a concurrent human/editor modification.
+                    # Preserve concurrent edits rather than overwriting them.
                     if _same(actor.get_actor_transform(), self.expected[key]):
-                        if not _same(self.original[key], self.expected[key]):
-                            actor.set_actor_transform(self.original[key], False, True)
-                            unreal.SystemLibrary.snapshot_object(actor.root_component)
+                        restored[key] = self.original[key]
+                self._apply(restored, 'Restore runtime diagnostic editor poses')
         finally:
-            # Explicit restored snapshots reach Concert; cancelling could hide them.
-            unreal.SystemLibrary.end_transaction()
-            if tracking.current_task['id'] == self.task_id:
-                tracking.current_task['transactions'] += tracking.undo_count()-self.undo_before
+            if self.callback is not None:
+                unreal.unregister_slate_post_tick_callback(self.callback)
+                self.callback = None

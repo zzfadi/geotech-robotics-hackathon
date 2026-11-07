@@ -1,0 +1,106 @@
+{
+  "request": "65854e7f82b44ff2bfcad26bf80c7809",
+  "samples": [
+    1121,
+    1151
+  ],
+  "latest": [
+    1794091312.680115,
+    1794091315.6478014
+  ],
+  "actors": {
+    "MakerArm_left_link_007": {
+      "distinct": [
+        283,
+        266
+      ],
+      "shared": 265,
+      "zrange": [
+        [
+          89.38885377492956,
+          112.72162149131697
+        ],
+        [
+          89.38885377492956,
+          112.72162149131697
+        ]
+      ]
+    },
+    "MakerArm_right_link_007": {
+      "distinct": [
+        283,
+        266
+      ],
+      "shared": 265,
+      "zrange": [
+        [
+          97.86876027123341,
+          120.23976702810941
+        ],
+        [
+          97.86876027123341,
+          120.23976702810941
+        ]
+      ]
+    },
+    "MakerStation_Approximate_Block_Red": {
+      "distinct": [
+        5,
+        4
+      ],
+      "shared": 4,
+      "zrange": [
+        [
+          77.5,
+          77.61788891924606
+        ],
+        [
+          77.5,
+          77.50015323511877
+        ]
+      ]
+    },
+    "MakerStation_Approximate_Block_Green": {
+      "distinct": [
+        1,
+        1
+      ],
+      "shared": 1,
+      "zrange": [
+        [
+          77.5,
+          77.5
+        ],
+        [
+          77.5,
+          77.5
+        ]
+      ]
+    },
+    "MakerStation_Approximate_Block_Orange": {
+      "distinct": [
+        1,
+        1
+      ],
+      "shared": 1,
+      "zrange": [
+        [
+          77.5,
+          77.5
+        ],
+        [
+          77.5,
+          77.5
+        ]
+      ]
+    }
+  },
+  "final_max_position_cm": 7.105427357601002e-15,
+  "final_max_quaternion_component": 2.498001805406602e-16,
+  "red_horizontal_displacement_cm": 5.256488820237112,
+  "pickup_verified": false,
+  "peer_editor_pid": 12380,
+  "peer_healthy_after": true,
+  "normal_final_pie_discard_activity": 782,
+  "camera_deletion_transaction_observed": false
+}

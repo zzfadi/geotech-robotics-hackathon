@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T14:37:24-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Paused runtime commands after peer crash exposed a transaction teardown defect.",
+  "why": "Local smoke passed but PIE camera deletions entered the long-open editor mirror transaction and crashed Luna2 Concert replay.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_runtime.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_observer.py",
+    "Unreal/TheHumanTouch/Tools/test_runtime_teardown.py",
+    "docs/maker-arm-runtime-controller.md"
+  ],
+  "details": "Mirror closes before observer/SIE teardown; runtime observer no longer deletes runtime actors. Short per-sample mirror transactions implemented;15 combined mirror/teardown offline tests pass. Connected-peer recovery/retest remains pending; original local smoke is not peer-safe acceptance."
+}

@@ -1,0 +1,1089 @@
+{
+  "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+  "prompt": "pick up red cube",
+  "command": {
+    "id": "65854e7f82b44ff2bfcad26bf80c7809",
+    "prompt": "pick up red cube",
+    "status": "done",
+    "stop": false,
+    "created_at": 1794091189.528948
+  },
+  "recording": {
+    "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+    "prompt": "pick up red cube",
+    "frames": 374,
+    "result": "done",
+    "roles": [
+      "overhead",
+      "wrist_l",
+      "wrist_r"
+    ]
+  },
+  "runtime": {
+    "phase": "stopped",
+    "error": null,
+    "scope": "runtime physics (approximate convex jaws)",
+    "state": {
+      "q_left": [
+        1.839569891249385,
+        -0.2911892201933825,
+        0.034880059660522315,
+        -0.09959375696790787,
+        -1.5000875829816713,
+        0.18641109847939125
+      ],
+      "q_right": [
+        0.7703193230228823,
+        -0.5172569739235028,
+        0.9870085282759229,
+        -0.36317287854381375,
+        -0.5123513378463423,
+        0.6079281568527223
+      ],
+      "gap_left_m": 0.01805903269094176,
+      "gap_right_m": 0.07052477561694964
+    },
+    "props": {
+      "MakerStation_Approximate_Block_Green": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.50000511397164,
+        "final_z_cm": 77.50000043342558,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Orange": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Red": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.9396213648396,
+        "final_z_cm": 77.50008084245579,
+        "simulated": true
+      }
+    },
+    "task_success_verified": false
+  },
+  "distance_reference": "TCP distances to INITIAL red position [57,-25,77.5]cm; red later slid horizontally",
+  "chunk_tcp_summary": [
+    {
+      "cycle": 1,
+      "arms": {
+        "left": {
+          "first_distance_cm": 19.162817037748805,
+          "minimum_distance_cm": 19.162817037748805,
+          "last_distance_cm": 38.202395798796054,
+          "first_tcp_cm": [
+            51.72499829761925,
+            -40.00535116256941,
+            88.18771960476569
+          ],
+          "last_tcp_cm": [
+            33.10888759157352,
+            -40.411971857535825,
+            103.01683593469858
+          ]
+        },
+        "right": {
+          "first_distance_cm": 66.13483155401211,
+          "minimum_distance_cm": 66.13483155401211,
+          "last_distance_cm": 72.7219386922477,
+          "first_tcp_cm": [
+            51.75206513201751,
+            40.043488549477075,
+            88.2526611409927
+          ],
+          "last_tcp_cm": [
+            38.402147302480756,
+            41.286334355620646,
+            100.92481846024157
+          ]
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "arms": {
+        "left": {
+          "first_distance_cm": 38.202395798796054,
+          "minimum_distance_cm": 26.701934273656967,
+          "last_distance_cm": 26.701934273656967,
+          "first_tcp_cm": [
+            33.10888759157352,
+            -40.411971857535825,
+            103.01683593469858
+          ],
+          "last_tcp_cm": [
+            42.492521870810016,
+            -34.99907482642446,
+            97.56352099959864
+          ]
+        },
+        "right": {
+          "first_distance_cm": 72.7219386922477,
+          "minimum_distance_cm": 72.60671835427482,
+          "last_distance_cm": 73.65521515929886,
+          "first_tcp_cm": [
+            38.402147302480756,
+            41.286334355620646,
+            100.92481846024157
+          ],
+          "last_tcp_cm": [
+            39.000829456808304,
+            43.115831131987456,
+            98.97915568913913
+          ]
+        }
+      }
+    },
+    {
+      "cycle": 3,
+      "arms": {
+        "left": {
+          "first_distance_cm": 26.6856352380169,
+          "minimum_distance_cm": 26.54752851185065,
+          "last_distance_cm": 45.71708948561121,
+          "first_tcp_cm": [
+            42.50197472062264,
+            -35.02769346974628,
+            97.53436434558961
+          ],
+          "last_tcp_cm": [
+            33.61412158213662,
+            -44.126766231334024,
+            111.81209371624232
+          ]
+        },
+        "right": {
+          "first_distance_cm": 73.65977455508066,
+          "minimum_distance_cm": 73.65977455508066,
+          "last_distance_cm": 91.50212189618667,
+          "first_tcp_cm": [
+            38.99978749648428,
+            43.11946187025019,
+            98.98240330691881
+          ],
+          "last_tcp_cm": [
+            32.219718173050595,
+            55.99591229372894,
+            112.1155764907669
+          ]
+        }
+      }
+    },
+    {
+      "cycle": 4,
+      "arms": {
+        "left": {
+          "first_distance_cm": 45.71780012811496,
+          "minimum_distance_cm": 31.35617014074358,
+          "last_distance_cm": 31.35617014074358,
+          "first_tcp_cm": [
+            33.613160633443385,
+            -44.12341303724337,
+            111.81425457159366
+          ],
+          "last_tcp_cm": [
+            50.930466613093444,
+            -43.473811990372994,
+            102.0985455038471
+          ]
+        },
+        "right": {
+          "first_distance_cm": 91.5063380064279,
+          "minimum_distance_cm": 83.21259453004795,
+          "last_distance_cm": 83.21259453004795,
+          "first_tcp_cm": [
+            32.21816929498989,
+            55.99924817182193,
+            112.11780694750101
+          ],
+          "last_tcp_cm": [
+            39.45169458793547,
+            50.54508057588747,
+            107.6551598631104
+          ]
+        }
+      }
+    },
+    {
+      "cycle": 5,
+      "arms": {
+        "left": {
+          "first_distance_cm": 31.35617014074358,
+          "minimum_distance_cm": 25.22411916524466,
+          "last_distance_cm": 25.22411916524466,
+          "first_tcp_cm": [
+            50.930466613093444,
+            -43.473811990372994,
+            102.0985455038471
+          ],
+          "last_tcp_cm": [
+            40.232738105042614,
+            -38.702333486887326,
+            90.43681464745086
+          ]
+        },
+        "right": {
+          "first_distance_cm": 83.21259453004795,
+          "minimum_distance_cm": 82.36631855727255,
+          "last_distance_cm": 83.95848755019679,
+          "first_tcp_cm": [
+            39.45169458793547,
+            50.54508057588747,
+            107.6551598631104
+          ],
+          "last_tcp_cm": [
+            39.28727135678718,
+            51.24672255994455,
+            107.85991064867126
+          ]
+        }
+      }
+    },
+    {
+      "cycle": 6,
+      "arms": {
+        "left": {
+          "first_distance_cm": 25.232981270868088,
+          "minimum_distance_cm": 22.730997469171925,
+          "last_distance_cm": 25.62439161530218,
+          "first_tcp_cm": [
+            40.22352180030226,
+            -38.695899496121115,
+            90.44895594336452
+          ],
+          "last_tcp_cm": [
+            34.126074996467224,
+            -27.46933906440598,
+            88.78252476940004
+          ]
+        },
+        "right": {
+          "first_distance_cm": 83.95501948902543,
+          "minimum_distance_cm": 79.74491301984825,
+          "last_distance_cm": 79.74491301984825,
+          "first_tcp_cm": [
+            39.290741252582976,
+            51.249873259209124,
+            107.84442749458654
+          ],
+          "last_tcp_cm": [
+            38.79088887271076,
+            46.62806886443932,
+            107.45161390056192
+          ]
+        }
+      }
+    }
+  ],
+  "red_final_position_cm": [
+    59.67269352965329,
+    -20.473700847952358,
+    77.50008084245579
+  ],
+  "task_success": false,
+  "conclusion": "Six model-driven physics cycles completed but red cube was pushed/slid, not picked up.",
+  "events": [
+    {
+      "kind": "command.queued",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "prompt": "pick up red cube",
+      "source": "text",
+      "at": 1794091189.528948,
+      "id": "1208eded5755439fa7c6dc8603aef82d"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "prompt": "pick up red cube",
+      "cycle": 1,
+      "state": {
+        "q_left": [
+          0.0,
+          -1.2,
+          0.81,
+          -0.09999999999999998,
+          0.0,
+          0.0
+        ],
+        "q_right": [
+          0.0,
+          -1.2,
+          0.81,
+          -0.1,
+          0.0,
+          0.0
+        ],
+        "gap_left_m": 0.05999999999999999,
+        "gap_right_m": 0.05999999999999999
+      },
+      "at": 1794091192.474134,
+      "id": "db7fbba2af0447f8adca951a57aa2d8b"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 1,
+      "elapsed_seconds": 2.2971677919849753,
+      "at": 1794091194.8791966,
+      "id": "cdfc7554a6f447639c05ef132824304b"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 1,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794091195.5021245,
+      "id": "aed925c1d6f24d1d8507842197de3cb0"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 1,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794091195.7610817,
+      "id": "80f751f2d21c46f69f67454e12a3362b"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 1,
+      "state": {
+        "done": true,
+        "error": null,
+        "index": 48,
+        "rows": 49,
+        "timing": {
+          "action_hz": 8.309768715305808,
+          "time_scale": 2.4068058552775233,
+          "duration_seconds": 5.776334052666056,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "scope": "runtime physics (approximate convex jaws)",
+        "q_left": [
+          0.4716791635626682,
+          -0.034906584769487374,
+          0.8200484630944849,
+          -0.6214049391813208,
+          -0.3813897896479896,
+          -0.02966081410959073
+        ],
+        "q_right": [
+          0.09155170801844605,
+          -0.034906584769487374,
+          0.46199115402214963,
+          -0.20418380711462067,
+          -0.0236323285535288,
+          0.024972363824506762
+        ],
+        "gap_left_m": 0.09090865657779719,
+        "gap_right_m": 0.09970143950934801
+      },
+      "message": "49-sample runtime physics trajectory finished",
+      "at": 1794091201.666381,
+      "id": "621e94d4d0a547e6b70f012cc41bd6fe"
+    },
+    {
+      "kind": "observation",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "state": {
+        "q_left": [
+          0.4716791635626682,
+          -0.034906584769487374,
+          0.8200484630944849,
+          -0.6214049391813208,
+          -0.3813897896479896,
+          -0.02966081410959073
+        ],
+        "q_right": [
+          0.09155170801844605,
+          -0.034906584769487374,
+          0.46199115402214963,
+          -0.20418380711462067,
+          -0.0236323285535288,
+          0.024972363824506762
+        ],
+        "gap_left_m": 0.09090865657779719,
+        "gap_right_m": 0.09970143950934801
+      },
+      "at": 1794091201.8769999,
+      "id": "854ea4b1e0d34b018bd1ad69a9b1b7ec"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "prompt": "pick up red cube",
+      "cycle": 2,
+      "state": {
+        "q_left": [
+          0.4716791635626682,
+          -0.034906584769487374,
+          0.8200484630944849,
+          -0.6214049391813208,
+          -0.3813897896479896,
+          -0.02966081410959073
+        ],
+        "q_right": [
+          0.09155170801844605,
+          -0.034906584769487374,
+          0.46199115402214963,
+          -0.20418380711462067,
+          -0.0236323285535288,
+          0.024972363824506762
+        ],
+        "gap_left_m": 0.09090865657779719,
+        "gap_right_m": 0.09970143950934801
+      },
+      "at": 1794091202.3745084,
+      "id": "0a9c5821f20548fea9e7da2ade43c495"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 2,
+      "elapsed_seconds": 1.8894582079956308,
+      "at": 1794091204.4444194,
+      "id": "c4da0bdd7cc648739a5a931267793548"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 2,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794091205.2225518,
+      "id": "a3563ddd359c4b5cb4dbc838217c2070"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 2,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794091205.4772086,
+      "id": "2e894a6d30af409c9fa2e2bf74121f55"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 2,
+      "state": {
+        "done": true,
+        "error": null,
+        "index": 48,
+        "rows": 49,
+        "timing": {
+          "action_hz": 5.000464934597612,
+          "time_scale": 3.9996280869049636,
+          "duration_seconds": 9.599107408571912,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "scope": "runtime physics (approximate convex jaws)",
+        "q_left": [
+          0.003305630224358677,
+          -0.9629922546706835,
+          1.242790132969409,
+          -0.7828910046524099,
+          0.29421289504824905,
+          -0.8530794986478102
+        ],
+        "q_right": [
+          0.8796888548177441,
+          -0.034906584769487374,
+          0.3329573909302691,
+          -0.0711608051315889,
+          -0.840376039068182,
+          -0.029482066162399477
+        ],
+        "gap_left_m": 0.08336920550152972,
+        "gap_right_m": 0.062178249880879916
+      },
+      "message": "49-sample runtime physics trajectory finished",
+      "at": 1794091215.0894454,
+      "id": "e575b7ccf436450e9b123913142d34ee"
+    },
+    {
+      "kind": "observation",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "state": {
+        "q_left": [
+          0.003305630224358677,
+          -0.9629922546706835,
+          1.242790132969409,
+          -0.7828910046524099,
+          0.29421289504824905,
+          -0.8530794986478102
+        ],
+        "q_right": [
+          0.8796888548177441,
+          -0.034906584769487374,
+          0.3329573909302691,
+          -0.0711608051315889,
+          -0.840376039068182,
+          -0.029482066162399477
+        ],
+        "gap_left_m": 0.08336920550152972,
+        "gap_right_m": 0.062178249880879916
+      },
+      "at": 1794091215.3001652,
+      "id": "95fc7d83a01f428f91f8d1b8906a091d"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "prompt": "pick up red cube",
+      "cycle": 3,
+      "state": {
+        "q_left": [
+          0.003305630224358677,
+          -0.9629922546706835,
+          1.242790132969409,
+          -0.7828910046524099,
+          0.29421289504824905,
+          -0.8530794986478102
+        ],
+        "q_right": [
+          0.8796888548177441,
+          -0.034906584769487374,
+          0.3329573909302691,
+          -0.0711608051315889,
+          -0.840376039068182,
+          -0.029482066162399477
+        ],
+        "gap_left_m": 0.08336920550152972,
+        "gap_right_m": 0.062178249880879916
+      },
+      "at": 1794091215.7576716,
+      "id": "9e05f84254374882ad225eeceb1bbe7d"
+    },
+    {
+      "kind": "session.recovering",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 3,
+      "message": "Dream renewed its inference session; retrying once from fresh Unreal feedback",
+      "at": 1794091218.1518903,
+      "id": "77cfb63138b64596a9e5cb77062b89f7"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 3,
+      "elapsed_seconds": 3.0414159589563496,
+      "at": 1794091218.9416041,
+      "id": "73f10be9f0eb4ec5924256bd30f53480"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 3,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794091219.6704128,
+      "id": "65f7d312d3d447d8a57164575a416e76"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 3,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794091219.9273667,
+      "id": "84105dcf3d504dd5bdceda727b6db03e"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 3,
+      "state": {
+        "done": true,
+        "error": null,
+        "index": 48,
+        "rows": 49,
+        "timing": {
+          "action_hz": 5.855965767562661,
+          "time_scale": 3.41532051139778,
+          "duration_seconds": 8.196769227354672,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "scope": "runtime physics (approximate convex jaws)",
+        "q_left": [
+          -1.3295046249469669,
+          -0.3202095135942202,
+          0.034906584769487374,
+          1.6950841300137391,
+          0.8039392608029026,
+          1.2161583100165516
+        ],
+        "q_right": [
+          1.9221030998896886,
+          -0.838244407327026,
+          0.8065735172558504,
+          1.0013088629795954,
+          -1.5349879048087383,
+          -0.9014011546448394
+        ],
+        "gap_left_m": 0.09476858063811186,
+        "gap_right_m": 0.07834288094236513
+      },
+      "message": "49-sample runtime physics trajectory finished",
+      "at": 1794091228.114845,
+      "id": "b263f697219d402c8be523115a4b1455"
+    },
+    {
+      "kind": "observation",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "state": {
+        "q_left": [
+          -1.3295046249469669,
+          -0.3202095135942202,
+          0.034906584769487374,
+          1.6950841300137391,
+          0.8039392608029026,
+          1.2161583100165516
+        ],
+        "q_right": [
+          1.9221030998896886,
+          -0.838244407327026,
+          0.8065735172558504,
+          1.0013088629795954,
+          -1.5349879048087383,
+          -0.9014011546448394
+        ],
+        "gap_left_m": 0.09476858063811186,
+        "gap_right_m": 0.07834288094236513
+      },
+      "at": 1794091228.451904,
+      "id": "0989a8ad93164ea88eb22d6bcee5adff"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "prompt": "pick up red cube",
+      "cycle": 4,
+      "state": {
+        "q_left": [
+          -1.3295046249469669,
+          -0.3202095135942202,
+          0.034906584769487374,
+          1.6950841300137391,
+          0.8039392608029026,
+          1.2161583100165516
+        ],
+        "q_right": [
+          1.9221030998896886,
+          -0.838244407327026,
+          0.8065735172558504,
+          1.0013088629795954,
+          -1.5349879048087383,
+          -0.9014011546448394
+        ],
+        "gap_left_m": 0.09476858063811186,
+        "gap_right_m": 0.07834288094236513
+      },
+      "at": 1794091228.9241412,
+      "id": "66cf99cd66304708bac27c47b418de77"
+    },
+    {
+      "kind": "session.recovering",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 4,
+      "message": "Dream renewed its inference session; retrying once from fresh Unreal feedback",
+      "at": 1794091231.4440324,
+      "id": "d86af76870244468b960e52402a3fb93"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 4,
+      "elapsed_seconds": 3.0792976249940693,
+      "at": 1794091232.219199,
+      "id": "2aca9e51ccd74b40990b9f6b5be8bda7"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 4,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794091233.0270197,
+      "id": "0f692905324c4b69af7c76c78cc6e6b7"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 4,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794091233.349742,
+      "id": "075533984f9c46ac83bdf6f776b339a6"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 4,
+      "state": {
+        "done": true,
+        "error": null,
+        "index": 48,
+        "rows": 49,
+        "timing": {
+          "action_hz": 6.795270231510983,
+          "time_scale": 2.94322364212333,
+          "duration_seconds": 7.063736741095992,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "scope": "runtime physics (approximate convex jaws)",
+        "q_left": [
+          -0.3155263735281003,
+          -1.1360058917865892,
+          1.2176772931238995,
+          -0.3019442705216116,
+          0.37964539719628293,
+          -0.208979077272482
+        ],
+        "q_right": [
+          0.684469926190541,
+          -1.6246703212911435,
+          2.690461007031528,
+          -1.5649534263810916,
+          -0.24548372793030673,
+          0.6237435194995853
+        ],
+        "gap_left_m": 0.07391912064985795,
+        "gap_right_m": 0.09230935842350019
+      },
+      "message": "49-sample runtime physics trajectory finished",
+      "at": 1794091240.478891,
+      "id": "e22cd7c9605745fbb52e0be9dda3efaa"
+    },
+    {
+      "kind": "observation",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "state": {
+        "q_left": [
+          -0.3155263735281003,
+          -1.1360058917865892,
+          1.2176772931238995,
+          -0.3019442705216116,
+          0.37964539719628293,
+          -0.208979077272482
+        ],
+        "q_right": [
+          0.684469926190541,
+          -1.6246703212911435,
+          2.690461007031528,
+          -1.5649534263810916,
+          -0.24548372793030673,
+          0.6237435194995853
+        ],
+        "gap_left_m": 0.07391912064985795,
+        "gap_right_m": 0.09230935842350019
+      },
+      "at": 1794091240.6760614,
+      "id": "9ea69e2663e84536897831fa2f167bbe"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "prompt": "pick up red cube",
+      "cycle": 5,
+      "state": {
+        "q_left": [
+          -0.3155263735281003,
+          -1.1360058917865892,
+          1.2176772931238995,
+          -0.3019442705216116,
+          0.37964539719628293,
+          -0.208979077272482
+        ],
+        "q_right": [
+          0.684469926190541,
+          -1.6246703212911435,
+          2.690461007031528,
+          -1.5649534263810916,
+          -0.24548372793030673,
+          0.6237435194995853
+        ],
+        "gap_left_m": 0.07391912064985795,
+        "gap_right_m": 0.09230935842350019
+      },
+      "at": 1794091241.0858643,
+      "id": "19655bd7c12e4d019b495d88180b9ec2"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 5,
+      "elapsed_seconds": 2.568735208013095,
+      "at": 1794091243.7751489,
+      "id": "2ba6c442d493422f845a6197ccd21cda"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 5,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794091244.429693,
+      "id": "952358560b254d4b99c93e74c6b5906d"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 5,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794091244.699802,
+      "id": "54535dae352b4b6aae2646d77cb7525a"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 5,
+      "state": {
+        "done": true,
+        "error": null,
+        "index": 48,
+        "rows": 49,
+        "timing": {
+          "action_hz": 5.262380636854619,
+          "time_scale": 3.800561263077734,
+          "duration_seconds": 9.121347031386561,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "scope": "runtime physics (approximate convex jaws)",
+        "q_left": [
+          0.32061754281704213,
+          -1.7357651770531717,
+          1.9245596232114146,
+          -1.5503767828841306,
+          -0.3076683818460346,
+          0.1718080090684494
+        ],
+        "q_right": [
+          0.7590878284894501,
+          -1.3926576484333386,
+          2.2537483535446476,
+          -1.3053274413088816,
+          -0.3058592800077023,
+          0.6413387768752089
+        ],
+        "gap_left_m": 0.08414949430452359,
+        "gap_right_m": 0.05636353851268131
+      },
+      "message": "49-sample runtime physics trajectory finished",
+      "at": 1794091253.8863144,
+      "id": "9e32019136294df8b6843a02a6324575"
+    },
+    {
+      "kind": "observation",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "state": {
+        "q_left": [
+          0.32061754281704213,
+          -1.7357651770531717,
+          1.9245596232114146,
+          -1.5503767828841306,
+          -0.3076683818460346,
+          0.1718080090684494
+        ],
+        "q_right": [
+          0.7590878284894501,
+          -1.3926576484333386,
+          2.2537483535446476,
+          -1.3053274413088816,
+          -0.3058592800077023,
+          0.6413387768752089
+        ],
+        "gap_left_m": 0.08414949430452359,
+        "gap_right_m": 0.05636353851268131
+      },
+      "at": 1794091254.2945147,
+      "id": "9fbe3705860e46a997b648eb281438cc"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "prompt": "pick up red cube",
+      "cycle": 6,
+      "state": {
+        "q_left": [
+          0.32061754281704213,
+          -1.7357651770531717,
+          1.9245596232114146,
+          -1.5503767828841306,
+          -0.3076683818460346,
+          0.1718080090684494
+        ],
+        "q_right": [
+          0.7590878284894501,
+          -1.3926576484333386,
+          2.2537483535446476,
+          -1.3053274413088816,
+          -0.3058592800077023,
+          0.6413387768752089
+        ],
+        "gap_left_m": 0.08414949430452359,
+        "gap_right_m": 0.05636353851268131
+      },
+      "at": 1794091254.7639444,
+      "id": "48941ffd634f4d07a3f3b11bcfab90ea"
+    },
+    {
+      "kind": "session.recovering",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 6,
+      "message": "Dream renewed its inference session; retrying once from fresh Unreal feedback",
+      "at": 1794091256.6178803,
+      "id": "bd726998de1f42b6b7983f48ee39dc89"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 6,
+      "elapsed_seconds": 2.344027333019767,
+      "at": 1794091257.2356431,
+      "id": "69fd80463db4463984dbb3370b5dd433"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 6,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794091257.946099,
+      "id": "d99c377796d743d0b6bf9993492de41e"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 6,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794091258.2320426,
+      "id": "e0e4ce951ae045b990f4b2c724752af7"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "cycle": 6,
+      "state": {
+        "done": true,
+        "error": null,
+        "index": 48,
+        "rows": 49,
+        "timing": {
+          "action_hz": 5.150072993651237,
+          "time_scale": 3.883440103597569,
+          "duration_seconds": 9.320256248634164,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "scope": "runtime physics (approximate convex jaws)",
+        "q_left": [
+          1.839569891249385,
+          -0.2911892201933825,
+          0.034880059660522315,
+          -0.09959375696790787,
+          -1.5000875829816713,
+          0.18641109847939125
+        ],
+        "q_right": [
+          0.7703193230228823,
+          -0.5172569739235028,
+          0.9870085282759229,
+          -0.36317287854381375,
+          -0.5123513378463423,
+          0.6079281568527223
+        ],
+        "gap_left_m": 0.01805903269094176,
+        "gap_right_m": 0.07052477561694964
+      },
+      "message": "49-sample runtime physics trajectory finished",
+      "at": 1794091267.5291934,
+      "id": "cfe866552712470181d285e1b170bb2e"
+    },
+    {
+      "kind": "observation",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "state": {
+        "q_left": [
+          1.839569891249385,
+          -0.2911892201933825,
+          0.034880059660522315,
+          -0.09959375696790787,
+          -1.5000875829816713,
+          0.18641109847939125
+        ],
+        "q_right": [
+          0.7703193230228823,
+          -0.5172569739235028,
+          0.9870085282759229,
+          -0.36317287854381375,
+          -0.5123513378463423,
+          0.6079281568527223
+        ],
+        "gap_left_m": 0.01805903269094176,
+        "gap_right_m": 0.07052477561694964
+      },
+      "at": 1794091267.7363644,
+      "id": "a4ccac88895748ae8581a91d621e0172"
+    },
+    {
+      "kind": "runtime.finished",
+      "request_id": "65854e7f82b44ff2bfcad26bf80c7809",
+      "state": {
+        "phase": "stopped",
+        "error": null,
+        "scope": "runtime physics (approximate convex jaws)",
+        "state": {
+          "q_left": [
+            1.839569891249385,
+            -0.2911892201933825,
+            0.034880059660522315,
+            -0.09959375696790787,
+            -1.5000875829816713,
+            0.18641109847939125
+          ],
+          "q_right": [
+            0.7703193230228823,
+            -0.5172569739235028,
+            0.9870085282759229,
+            -0.36317287854381375,
+            -0.5123513378463423,
+            0.6079281568527223
+          ],
+          "gap_left_m": 0.01805903269094176,
+          "gap_right_m": 0.07052477561694964
+        },
+        "props": {
+          "MakerStation_Approximate_Block_Green": {
+            "initial_z_cm": 77.5,
+            "max_z_cm": 77.50000511397164,
+            "final_z_cm": 77.50000043342558,
+            "simulated": true
+          },
+          "MakerStation_Approximate_Block_Orange": {
+            "initial_z_cm": 77.5,
+            "max_z_cm": 77.5,
+            "final_z_cm": 77.5,
+            "simulated": true
+          },
+          "MakerStation_Approximate_Block_Red": {
+            "initial_z_cm": 77.5,
+            "max_z_cm": 77.9396213648396,
+            "final_z_cm": 77.50008084245579,
+            "simulated": true
+          }
+        },
+        "task_success_verified": false
+      },
+      "message": "Runtime physics ended; task outcome requires measured verification",
+      "at": 1794091268.6039734,
+      "id": "ad9d4ab1cfb84934a45f5503fb3c23f0"
+    }
+  ]
+}
