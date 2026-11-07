@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T12:59:00-08:00",
+  "workstream": "voice-agent",
+  "status": "in-progress",
+  "what": "LiveKit project created; hackathon coupon accepted at checkout, subscription activation pending approval",
+  "why": "The Human Touch needs a LiveKit project for voice and robotics integration. The credit offer currently requires a Ship subscription checkout with recurring billing after the initial discount.",
+  "where": ["https://cloud.livekit.io/", "https://www.livekit.info/pah"],
+  "details": "The Human Touch project uses the United States data region with agent observability recording disabled. The initial checkout discount was verified, but activation remains pending subscription approval and payment details. No voice agent has been deployed or tested. Dream Labs hackathon credits remain assigned to the existing team contact."
+}
