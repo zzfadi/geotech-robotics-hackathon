@@ -1,5 +1,6 @@
 """Tailnet Dream debugger and command queue. Worker credentials never reach the UI."""
-import argparse,base64,json,secrets,threading,time,uuid
+import argparse,base64,json,re,secrets,threading,time,uuid
+from urllib.parse import parse_qs,urlsplit
 from collections import deque
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
@@ -10,7 +11,18 @@ class Store:
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
-        if (path/'recording.json').exists():self.recording=json.loads((path/'recording.json').read_text())
+        if (path/'recording.json').exists():
+            self.recording=json.loads((path/'recording.json').read_text())
+            # Preserve existing deployed clips when moving to request-specific URLs.
+            request_id=self.recording.get('request_id','')
+            if re.fullmatch(r'[0-9a-f]{32}',request_id):
+                directory=path/'recordings'/request_id;directory.mkdir(parents=True,exist_ok=True)
+                for role in self.recording.get('roles',['overhead']):
+                    if role not in ('overhead','wrist_l','wrist_r'):continue
+                    legacy=path/('recording-'+role+'.mp4')
+                    if role=='overhead' and not legacy.exists():legacy=path/'recording.mp4'
+                    target=directory/(role+'.mp4')
+                    if legacy.exists() and not target.exists():target.write_bytes(legacy.read_bytes())
         log=path/'events.jsonl'
         if log.exists():
             for line in log.read_text().splitlines():
@@ -33,6 +45,33 @@ class Handler(BaseHTTPRequestHandler):
         body=json.dumps(data,allow_nan=False).encode() if mime=='application/json' else data
         self.send_response(status);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(body)))
         self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff');self.end_headers();self.wfile.write(body)
+    def send_video(self,path):
+        """Serve a stable recording with native browser seeking support."""
+        if not path.is_file():return self.send(404,{'error':'Recording unavailable'})
+        body=path.read_bytes();size=len(body);start=0;end=size-1;status=200
+        requested=self.headers.get('Range')
+        if requested:
+            match=re.fullmatch(r'bytes=(\d*)-(\d*)',requested.strip())
+            try:
+                if not match or not any(match.groups()):raise ValueError()
+                first,last=match.groups()
+                if first:
+                    start=int(first);end=min(int(last),size-1) if last else size-1
+                else:
+                    suffix=int(last)
+                    if suffix<=0:raise ValueError()
+                    start=max(0,size-suffix)
+                if start>=size or start>end:raise ValueError()
+            except ValueError:
+                self.send_response(416);self.send_header('Content-Range',f'bytes */{size}');self.send_header('Content-Length','0');self.end_headers();return
+            body=body[start:end+1];status=206
+        self.send_response(status);self.send_header('Content-Type','video/mp4');self.send_header('Content-Length',str(len(body)))
+        self.send_header('Accept-Ranges','bytes');self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff')
+        if status==206:self.send_header('Content-Range',f'bytes {start}-{end}/{size}')
+        self.end_headers()
+        try:self.wfile.write(body)
+        except (BrokenPipeError,ConnectionResetError):pass
+
     def worker(self):return secrets.compare_digest(self.headers.get('Authorization',''),'Bearer '+self.server.store.token)
     def do_GET(self):
         s=self.server.store
@@ -46,19 +85,16 @@ class Handler(BaseHTTPRequestHandler):
                     if not 0<=index<len(s.preview):return self.send(404,{'error':'Frame unavailable'})
                     return self.send(200,{'frame':s.preview[index],'count':len(s.preview),'server_time':time.time()})
             except ValueError:return self.send(400,{'error':'Invalid frame index'})
-        if self.path.startswith('/api/recording/'):
-            role=self.path.split('/')[-1].split('.')[0]
+        route=urlsplit(self.path)
+        if route.path.startswith('/api/recording/') or route.path=='/api/recording.mp4':
+            role=route.path.rsplit('/',1)[-1].removesuffix('.mp4') if route.path.startswith('/api/recording/') else 'overhead'
             if role not in ('overhead','wrist_l','wrist_r'):return self.send(404,{'error':'Unknown camera'})
-            path=s.path/('recording-'+role+'.mp4')
-            if role=='overhead' and not path.exists():path=s.path/'recording.mp4'
-            if not path.exists():return self.send(404,{'error':'No recording for this camera'})
-            return self.send(200,path.read_bytes(),'video/mp4')
-        if self.path.startswith('/api/recording.mp4'):
-            path=s.path/'recording.mp4'
-            if not path.exists():return self.send(404,{'error':'No recording yet'})
-            return self.send(200,path.read_bytes(),'video/mp4')
+            with s.lock:
+                request_id=parse_qs(route.query).get('id',[(s.recording or {}).get('request_id','')])[0]
+            if not re.fullmatch(r'[0-9a-f]{32}',request_id):return self.send(404,{'error':'Unknown recording'})
+            return self.send_video(s.path/'recordings'/request_id/(role+'.mp4'))
         if self.path=='/api/status':
-            with s.lock:return self.send(200,{'events':list(s.events),'recording':s.recording,'command':s.command,'voice':({k:v for k,v in s.voice.items() if k!='audio'} if s.voice else None),'worker_online':time.time()-s.worker_at<10,'server_time':time.time()})
+            with s.lock:return self.send(200,{'events':[{k:v for k,v in e.items() if k!='frames'} for e in s.events],'recording':s.recording,'command':s.command,'voice':({k:v for k,v in s.voice.items() if k!='audio'} if s.voice else None),'worker_online':time.time()-s.worker_at<10,'server_time':time.time()})
         if self.path=='/api/worker/next':
             if not self.worker():return self.send(401,{'error':'Worker authentication required'})
             with s.lock:
@@ -84,8 +120,14 @@ class Handler(BaseHTTPRequestHandler):
                     if not any(e.get('request_id')==data.get('request_id') for e in s.events):raise ValueError('Unknown recording request')
                     role=data.get('role','overhead')
                     if role not in ('overhead','wrist_l','wrist_r'):raise ValueError('Unknown camera')
-                    tmp=s.path/'recording.tmp';tmp.write_bytes(raw);tmp.replace(s.path/('recording-'+role+'.mp4'))
-                    if role=='overhead':(s.path/'recording.mp4').write_bytes(raw)
+                    request_id=data['request_id']
+                    if not re.fullmatch(r'[0-9a-f]{32}',request_id):raise ValueError('Invalid recording request')
+                    directory=s.path/'recordings'/request_id;directory.mkdir(parents=True,exist_ok=True)
+                    target=directory/(role+'.mp4')
+                    # A request/role URL is immutable, so a browser can seek safely.
+                    if target.exists() and target.read_bytes()!=raw:return self.send(409,{'error':'Recording already uploaded'})
+                    if not target.exists():
+                        tmp=directory/(role+'.tmp');tmp.write_bytes(raw);tmp.replace(target)
                     roles=list(s.recording.get('roles',[])) if s.recording and s.recording['request_id']==data['request_id'] else []
                     if role not in roles:roles.append(role)
                     s.recording={k:data[k] for k in ('request_id','prompt','frames','result')}

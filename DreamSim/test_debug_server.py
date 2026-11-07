@@ -70,4 +70,36 @@ class ServerTest(unittest.TestCase):
                 self.assertNotIn('audio',server.store.voice)
             finally:server.shutdown();server.server_close()
 
+    def test_recording_identity_ranges_and_legacy_migration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory);first='a'*32;second='b'*32
+            old=b'0000ftyp'+bytes(range(100));new=b'0000ftyp'+b'N'*120
+            (path/'recording.json').write_text(json.dumps({'request_id':first,'prompt':'old','frames':4,'result':'failed','roles':['overhead']}))
+            (path/'recording-overhead.mp4').write_bytes(old)
+            server=ThreadingHTTPServer(('127.0.0.1',0),Handler);server.store=Store(path)
+            threading.Thread(target=server.serve_forever,daemon=True).start();url='http://127.0.0.1:'+str(server.server_port)
+            def post(data):
+                req=urllib.request.Request(url+'/api/worker/video',data=json.dumps(data).encode(),headers={'Content-Type':'application/json','Authorization':'Bearer '+server.store.token})
+                return urllib.request.urlopen(req)
+            def get(path,byte_range=None):
+                return urllib.request.urlopen(urllib.request.Request(url+path,headers={'Range':byte_range} if byte_range else {}))
+            try:
+                server.store.event({'kind':'command.queued','request_id':second,'frames':{'video.overhead':'large-unused-history'}})
+                payload={'request_id':second,'prompt':'new','frames':5,'result':'failed','video':base64.b64encode(new).decode()}
+                with post(payload) as response:self.assertEqual(response.status,200)
+                with get('/api/recording/overhead.mp4?id='+first) as response:self.assertEqual(response.read(),old)
+                with get('/api/recording/overhead.mp4?id='+second,'bytes=4-15') as response:
+                    self.assertEqual(response.status,206);self.assertEqual(response.headers['Content-Range'],'bytes 4-15/128');self.assertEqual(response.read(),new[4:16])
+                with get('/api/recording/overhead.mp4?id='+second,'bytes=-7') as response:self.assertEqual(response.read(),new[-7:])
+                with get('/api/recording/overhead.mp4?id='+second,'bytes=120-') as response:self.assertEqual(response.read(),new[120:])
+                for byte_range in ('bytes=999-','bytes=6-2','bytes=-0','bytes=0-2,4-6'):
+                    with self.assertRaises(urllib.error.HTTPError) as error:get('/api/recording/overhead.mp4?id='+second,byte_range)
+                    self.assertEqual(error.exception.code,416)
+                with self.assertRaises(urllib.error.HTTPError) as error:post(dict(payload,video=base64.b64encode(old).decode()))
+                self.assertEqual(error.exception.code,409)
+                with self.assertRaises(urllib.error.HTTPError) as error:get('/api/recording/overhead.mp4?id='+'c'*32)
+                self.assertEqual(error.exception.code,404)
+                with get('/api/status') as response:self.assertNotIn('frames',json.load(response)['events'][-1])
+            finally:server.shutdown();server.server_close()
+
 if __name__=='__main__':unittest.main()

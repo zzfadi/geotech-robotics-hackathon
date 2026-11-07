@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:19:18-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added stable per-command recording URLs and native video seeking support.",
+  "why": "The same camera panels must replay the selected capture reliably while newer commands produce recordings.",
+  "details": "MP4 uploads are immutable per request and camera; old deployed clips migrate automatically. HTTP byte ranges support browser seek. UI pins selected playback, prevents overlapping status polls and stale submission updates. Historical JPEGs omitted from status payload. API regressions and JavaScript initialization checks pass; deployment/browser QA coordinated separately.",
+  "where": [
+    "DreamSim/debug_server.py",
+    "DreamSim/web/index.html",
+    "DreamSim/test_debug_server.py"
+  ]
+}
