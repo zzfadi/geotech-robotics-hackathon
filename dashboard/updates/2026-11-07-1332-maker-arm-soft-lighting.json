@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:32:25-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Added soft tabletop lighting inspired by the Dream Labs sandbox",
+  "why": "Improve visibility of dark robot surfaces and colored props in all three virtual camera views.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_lighting.py",
+    "docs/maker-arm-model.md"
+  ],
+  "details": "Three broad area lights, ambient cubemap fill and fixed exposure. All three camera renders visually checked. Scene persistence uses the guarded Luna2 checkpoint."
+}
