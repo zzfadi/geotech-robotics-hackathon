@@ -104,3 +104,23 @@ uv run --python 3.12 --with usd-core python -m unittest discover -s Capture/isaa
 ```
 
 The tests exercise three synthetic subjects, cross-host clock epochs, stale withdrawal and USD preview cleanup. A transition regression keeps the same capture reference for two editor reads whose positions differ by 0.499 m. They have distinct evaluation identities, and the verifier rejects the displaced pose as an original-frame match. The earlier v1 station smoke test exposed this ambiguity in actual Unreal output. The v2 exporter was also tested on the station Mac with three synthetic subjects flowing through the running Hub and Unreal editor. In one moving rehearsal the loopback receiver audited 249 distinct evaluations. Of those, 235 matched the referenced producer frame across every joint and 14 differed during transitions. A second run audited 35 evaluations across all three subjects after an editor and Hub restart. Acceptance on Luna2 still requires a real application connection, a calibrated space and readback from Isaac’s physics callback.
+
+### Measure Unreal-to-Isaac delay on a physics tick
+
+Start the native exporter with `HumanTouch.Isaac.Start` in the Hub-connected editor. With the hardware publishers idle, run the audit gateway from the checkout on the station. Use a fresh trial name and an unused output filename. The station generates all three moving subjects locally and writes a SHA-256 digest of each evaluated Unreal packet. After a short preflight it waits for the configured Luna peer before continuing to publish.
+
+```sh
+python3 Capture/isaac/bridge_trial.py station --bind "$STATION_TAILSCALE_IP" --luna "$LUNA_TAILSCALE_IP" --trial "$TRIAL" --output unreal.jsonl
+```
+
+On Luna, use the installed Isaac Sim Python environment to run the following command in the same checkout. The script creates a temporary Z-up physics world, registers the bridge with its pre-physics callback, steps the simulation, and writes each subject’s first application of a distinct evaluation. The default playout delay is 100 ms. The temporary world has no robot controller or hardware connection.
+
+```powershell
+& $IsaacPython Capture/isaac/luna_trial.py --station $StationIP --trial $Trial --output isaac.jsonl
+```
+
+Bring the two JSONL files to the same machine and run the report. It checks the complete packet digest against Unreal and checks the applied USD link endpoints on the Isaac stage. It reports capture-to-application and Unreal-evaluation-to-application median and p95 per subject. Cross-machine times are estimates using the lowest recent clock-probe RTT. Asymmetric network delay can bias the estimate by up to about half that RTT. Stop the exporter with `HumanTouch.Isaac.Stop` when finished.
+
+```sh
+python3 Capture/isaac/bridge_trial.py report --unreal unreal.jsonl --isaac isaac.jsonl
+```

@@ -90,9 +90,11 @@ class IsaacPreview:
         parent="/World",
         port=17867,
         delay_ms=100,
+        on_applied=None,
     ):
         if not space or space in ("hip_relative", "quest_local_floor"):
             raise ValueError("Supply the measured table space ID")
+        self.on_applied = on_applied
         self.context = simulation_context
         self.space = space
         self.receiver = PoseReceiver(station, port, delay_ms)
@@ -121,6 +123,9 @@ class IsaacPreview:
                 for name, f in sample["poses"].items()
             },
         }
+
+        if self.on_applied and sample["poses"]:
+            self.on_applied(self.tick, sample, self.skeletons)
 
     def close(self):
         self.context.remove_physics_callback(self.CALLBACK)

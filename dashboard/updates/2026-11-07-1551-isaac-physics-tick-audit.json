@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T15:51:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added a single-Mac spoof trial that records Unreal evaluations and compares them to Isaac pre-physics pose receipts and stage geometry.",
+  "why": "Matching a source sequence or measuring tunnel RTT alone cannot establish what Luna applied, or when.",
+  "where": ["Capture/isaac/bridge_trial.py", "Capture/isaac/luna_trial.py", "Capture/isaac/README.md"],
+  "details": "The running Mac editor exported 345 distinct evaluations per subject in preflight. Verification of remote geometry and latency requires the returned Luna physics receipt."
+}
