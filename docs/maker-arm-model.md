@@ -65,3 +65,5 @@ The merged left-jaw trial also passed a separate sampled exterior check: 170,049
 ## Soft tabletop lighting
 
 `Tools/maker_arm_lighting.py` replaces the hard key/fill lighting with three broad rectangular lights, daylight cubemap ambient fill, and fixed manual exposure. The visual reference is the Dream Labs sandbox's softly lit tabletop. The key uses 6000 lm over 160 × 120 cm; fill lights use 2500 and 1800 lm. Exposure uses ISO 400, 1/60 s and f/4, with low bloom. All three virtual-camera renders were inspected: jaw tips, dark arm surfaces and colored tabletop props remain visible with softer shadows. These artistic settings are not a measured reconstruction of the physical room or calibrated camera radiometry.
+
+At the user’s subsequent request, `hide_camera_meshes()` again hides the central housing/lens as well as all three camera display meshes. The mast stays visible; virtual camera optics and attachments remain active. Local Dream SceneCapture helpers also hide their display primitives.

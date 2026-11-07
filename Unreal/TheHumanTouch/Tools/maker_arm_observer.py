@@ -36,6 +36,8 @@ class Observer:
                 source=item['source'];component=source.get_component_by_class(unreal.CameraComponent)
                 actor,capture=call_camera.spawn_capture_camera(target,source.get_actor_location(),source.get_actor_rotation(),component.field_of_view)
                 actor.set_actor_label('DreamSim_LocalCapture_'+role)
+                for primitive in actor.get_components_by_class(unreal.PrimitiveComponent):
+                    primitive.set_visibility(False,False);primitive.set_hidden_in_game(True,False)
                 item.update(target=target,actor=actor,capture=capture)
             return True
         except Exception:

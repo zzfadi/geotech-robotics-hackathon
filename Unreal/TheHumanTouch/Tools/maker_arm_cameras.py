@@ -110,6 +110,13 @@ def hide_camera_meshes():
             primitive.modify()
             primitive.set_visibility(False, False)
             primitive.set_hidden_in_game(True, False)
+    for label in (yam_station.PREFIX+'OverviewCameraProxy',
+                  'MakerStation_CentralCameraLens_Approximate'):
+        proxy=existing.get(label)
+        if proxy is not None:
+            proxy.modify()
+            mesh=proxy.get_component_by_class(unreal.StaticMeshComponent)
+            mesh.modify();mesh.set_visibility(False,False);mesh.set_hidden_in_game(True,False)
     return inspect()
 
 

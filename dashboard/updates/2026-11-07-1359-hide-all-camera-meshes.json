@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:59:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Hidden all camera display meshes and central housing/lens",
+  "why": "User requested invisible camera geometry while retaining the three virtual camera views.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_cameras.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_observer.py"
+  ],
+  "details": "Verified CameraComponents remain active with unchanged optics and attachments. Future local capture actors also hide their display primitives."
+}
