@@ -6,6 +6,7 @@ from pathlib import Path
 import unreal
 import maker_arm_feedback,maker_arm_observer
 from maker_arm_actions import retime
+from maker_arm_trajectory import sample
 from maker_arm_contact_stop import contact_gap,actor_boxes
 from maker_arm_lift_evidence import update as update_lift_evidence
 from maker_arm_model import mounted_frames,ue_pose
@@ -88,7 +89,7 @@ class Session:
             c=actor.static_mesh_component;c.set_mobility(unreal.ComponentMobility.MOVABLE)
             c.set_collision_profile_name('PhysicsActor');c.set_phys_material_override(self.material)
             c.set_mass_override_in_kg('',.05,True);c.set_enable_gravity(True);c.set_simulate_physics(True)
-            if not c.is_simulating_physics():raise RuntimeError('Prop did not enter Chaos simulation')
+            if not c.is_simulating_physics():raise RuntimeError('Prop did not enter Chaos simulation: '+label)
             self.props[label]=actor;self.evidence_timers[label]={};z=actor.get_actor_location().z
             self.evidence[label]={'initial_z_cm':z,'max_z_cm':z,'final_z_cm':z,'simulated':True}
         maker_arm_observer.stop()
@@ -135,22 +136,20 @@ class Session:
             if (self.status.parent/'stop').exists():raise RuntimeError('Stopped by user')
             m=self.motion
             if m:
-                index=min(int((now-m['start'])*m['timing']['action_hz']),len(m['chunks']['left'])-1)
-                if index!=m['index']:
-                    for side in BASES:
-                        row=m['chunks'][side][index]
-                        frames=mounted_frames(row[:6],row[6]*.104825,yaw=MOUNT_YAW[side])
-                        gap,contacts=contact_gap(row[6]*.104825,self.state['gap_'+side+'_m'],actor_boxes(self.props,frames['link_007'],BASES[side]))
-                        self.state['q_'+side]=row[:6];self.state['gap_'+side+'_m']=gap
-                        self.state['contact_stop_'+side]=contacts
-                        for link,t in mounted_frames(row[:6],gap,yaw=MOUNT_YAW[side]).items():
-                            if link not in VISUAL_LINKS:continue
-                            label='MakerArm_'+side+'_'+link;p,q=ue_pose(t);p=[p[i]+BASES[side][i] for i in range(3)]
-                            for actor in [self.actors[label]]+([self.proxies[label]] if label in self.proxies else []):
-                                actor.set_actor_location_and_rotation(unreal.Vector(*p),unreal.Quat(*q).rotator(),False,False)
-                    m['index']=index;maker_arm_feedback.applied(self.state);maker_arm_feedback.read(self.world)
-                    self.motion_report(False)
-                    if index==len(m['chunks']['left'])-1:self.motion_report(True);self.motion=None
+                for side in BASES:
+                    row,index=sample(m['chunks'][side],now-m['start'],m['timing']['action_hz'])
+                    frames=mounted_frames(row[:6],row[6]*.104825,yaw=MOUNT_YAW[side])
+                    gap,contacts=contact_gap(row[6]*.104825,self.state['gap_'+side+'_m'],actor_boxes(self.props,frames['link_007'],BASES[side]))
+                    self.state['q_'+side]=row[:6];self.state['gap_'+side+'_m']=gap
+                    self.state['contact_stop_'+side]=contacts
+                    for link,t in mounted_frames(row[:6],gap,yaw=MOUNT_YAW[side]).items():
+                        if link not in VISUAL_LINKS:continue
+                        label='MakerArm_'+side+'_'+link;p,q=ue_pose(t);p=[p[i]+BASES[side][i] for i in range(3)]
+                        for actor in [self.actors[label]]+([self.proxies[label]] if label in self.proxies else []):
+                            actor.set_actor_location_and_rotation(unreal.Vector(*p),unreal.Quat(*q).rotator(),False,False)
+                m['index']=index;maker_arm_feedback.applied(self.state);maker_arm_feedback.read(self.world)
+                self.motion_report(False)
+                if index==len(m['chunks']['left'])-1:self.motion_report(True);self.motion=None
             for label,actor in self.props.items():
                 actor.static_mesh_component.wake_all_rigid_bodies()
                 p=actor.get_actor_location();v=actor.static_mesh_component.get_physics_linear_velocity()

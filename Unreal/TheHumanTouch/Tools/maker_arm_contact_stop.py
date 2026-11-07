@@ -5,6 +5,30 @@ Coordinates below are metres in the official link_007 flange frame.
 import itertools
 
 
+def pad_points(points):
+    """Clip an oriented box to the finite finger-pad X/Z corridor.
+
+    Corner order matches itertools.product in actor_boxes. Full-box projection
+    overestimates the width for oblique props outside the contact region.
+    """
+    if len(points)!=8:raise ValueError('Expected eight ordered box corners')
+    faces=((0,1,3,2),(4,6,7,5),(0,4,5,1),(2,3,7,6),(0,2,6,4),(1,5,7,3))
+    result=[]
+    for face in faces:
+        polygon=[points[i] for i in face]
+        for axis,bound,sign in ((0,-.02,1),(0,.02,-1),(2,-.17,1),(2,-.10,-1)):
+            clipped=[]
+            for a,b in zip(polygon,polygon[1:]+polygon[:1]):
+                da=(a[axis]-bound)*sign;db=(b[axis]-bound)*sign
+                if da>=0:clipped.append(a)
+                if (da>=0)!=(db>=0):
+                    t=da/(da-db);clipped.append([a[i]+t*(b[i]-a[i]) for i in range(3)])
+            polygon=clipped
+            if not polygon:break
+        result.extend(polygon)
+    return result
+
+
 def contact_gap(requested, previous, boxes, compliance=.005):
     """Stop inward jaw travel at a prop intersecting both finger pads.
 
@@ -16,6 +40,8 @@ def contact_gap(requested, previous, boxes, compliance=.005):
         return requested, []
     result=requested; contacts=[]
     for label, points in boxes:
+        points=pad_points(points)
+        if not points:continue
         lo=[min(p[i] for p in points) for i in range(3)]
         hi=[max(p[i] for p in points) for i in range(3)]
         if hi[0]<-.02 or lo[0]>.02 or hi[2]<-.17 or lo[2]>-.10:

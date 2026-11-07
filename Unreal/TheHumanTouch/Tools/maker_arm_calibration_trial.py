@@ -47,11 +47,11 @@ def apply():
         c=camera.get_component_by_class(unreal.CameraComponent);c.modify();c.set_field_of_view(90.)
     block=existing[TARGET];block.modify();block.root_component.modify()
     block.set_actor_scale3d(unreal.Vector(.07,.07,.07))
-    block.set_actor_location_and_rotation(unreal.Vector(55,-30,78.5),unreal.Rotator(0,0,0),False,True)
+    block.set_actor_location_and_rotation(unreal.Vector(45,-40,78.5),unreal.Rotator(0,0,0),False,True)
     control=existing[CONTROL];control.modify();control.static_mesh_component.modify()
     material=existing['MakerStation_MountingPlate_Approximate'].static_mesh_component.get_material(0)
     if material is None:raise RuntimeError('Missing neutral material')
     control.static_mesh_component.set_material(0,material)
     return {'scope':'explicit provisional camera/target setup, not hardware calibration','wrist_location_local_cm':[5,0,-12],
-            'wrist_aim_local_cm':[0,0,-17],'wrist_fov_degrees':90,'red_start_center_cm':[55,-30,78.5],'red_dimensions_cm':[7,7,7],
+            'wrist_aim_local_cm':[0,0,-17],'wrist_fov_degrees':90,'red_start_center_cm':[45,-40,78.5],'red_dimensions_cm':[7,7,7],
             'pickup_acceptance_center_z_cm':88.5,'pickup_acceptance':'physical grasp plus >=10cm lift and hold; no attachment or commanded cube path'}

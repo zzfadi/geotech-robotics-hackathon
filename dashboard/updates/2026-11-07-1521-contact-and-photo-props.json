@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T15:20:05-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added photo props, continuous joint sampling and finite-pad contact-width calculation.",
+  "why": "Preserve the requested props and address observed missed contact while retaining free-body physics.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_photo_props.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_trajectory.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_contact_stop.py",
+    "docs/maker-arm-camera-trial.md"
+  ],
+  "details": "Fresh compound mesh has three hulls; both new props simulated in recorded trial 2faa9016. Four trajectory tests and eight contact-stop tests pass. New contact calculation is under recorded Dream test; no successful autonomous pickup yet. Host binary checkpoint remains pending."
+}
