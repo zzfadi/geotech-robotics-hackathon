@@ -1,0 +1,94 @@
+{
+  "link": "gripper_left",
+  "tolerance_mm": 0.5,
+  "random_samples_per_hull": 64,
+  "sampling": "all hull vertices, triangle centroids and seeded area-weighted samples",
+  "qualification": "sampled per-part exterior error; not continuous or physical validation",
+  "derived_sha256": "fd71b21e5e1055d0b960ce5ff957f694b3beb42bd185b418e4a99b31b0916ad3",
+  "parts": [
+    {
+      "part": "meshes/part_034_solid_034.stl",
+      "hulls": 504,
+      "surface_samples": 50325,
+      "max_sampled_excess_mm": 0.22025989831940834,
+      "samples_outside_tolerance": 0,
+      "worst_source_part_point_mm": [
+        -170.58305788054625,
+        144.669310246618,
+        14.979149476059643
+      ]
+    },
+    {
+      "part": "meshes/part_047_solid_047.stl",
+      "hulls": 162,
+      "surface_samples": 20070,
+      "max_sampled_excess_mm": 0.19828053563217843,
+      "samples_outside_tolerance": 0,
+      "worst_source_part_point_mm": [
+        -188.3509862010431,
+        138.94642732221436,
+        9.826149060799695
+      ]
+    },
+    {
+      "part": "meshes/part_031_solid_031.stl",
+      "hulls": 41,
+      "surface_samples": 4560,
+      "max_sampled_excess_mm": 0.1831978739447272,
+      "samples_outside_tolerance": 0,
+      "worst_source_part_point_mm": [
+        -167.08526632559523,
+        144.11527789304327,
+        15.264404060925143
+      ]
+    },
+    {
+      "part": "meshes/part_032_solid_032.stl",
+      "hulls": 46,
+      "surface_samples": 4926,
+      "max_sampled_excess_mm": 0.18793392401684758,
+      "samples_outside_tolerance": 0,
+      "worst_source_part_point_mm": [
+        -163.7910221615606,
+        141.13857664662777,
+        19.916736936182307
+      ]
+    },
+    {
+      "part": "meshes/part_033_solid_033.stl",
+      "hulls": 189,
+      "surface_samples": 18321,
+      "max_sampled_excess_mm": 0.18449374751298625,
+      "samples_outside_tolerance": 0,
+      "worst_source_part_point_mm": [
+        -173.97721150653575,
+        157.74802301565714,
+        9.923247107823826
+      ]
+    },
+    {
+      "part": "meshes/part_043_solid_043.stl",
+      "hulls": 14,
+      "surface_samples": 2511,
+      "max_sampled_excess_mm": 0.16324313104876426,
+      "samples_outside_tolerance": 0,
+      "worst_source_part_point_mm": [
+        -168.23359451930105,
+        141.0877419223193,
+        17.279248667340426
+      ]
+    },
+    {
+      "part": "meshes/part_045_solid_045.stl",
+      "hulls": 730,
+      "surface_samples": 69336,
+      "max_sampled_excess_mm": 0.3866832468951351,
+      "samples_outside_tolerance": 0,
+      "worst_source_part_point_mm": [
+        -188.957154192264,
+        153.14587994124577,
+        11.910427090930362
+      ]
+    }
+  ]
+}

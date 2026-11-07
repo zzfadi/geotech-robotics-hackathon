@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:20:06-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Validated sampled exterior error of the experimental left-jaw collision hulls.",
+  "why": "Vertex coverage alone misses convex hulls that fill holes or create false contacts.",
+  "where": [
+    "docs/validation/maker-arm-left-jaw-surface-sampling.json",
+    "Unreal/TheHumanTouch/Tools/validate_maker_arm_surfaces.py"
+  ],
+  "details": "170,049 samples; maximum sampled excess 0.387 mm, none over 0.5 mm. Annulus regression passes. Runtime performance, UE cooking and physical contacts remain unvalidated."
+}
