@@ -2,7 +2,8 @@
 import argparse,base64,json,os,subprocess,sys,threading,time,urllib.request
 from pathlib import Path
 from dream import DreamClient
-from dream.errors import DreamSessionExpired
+from dream.errors import DreamSessionExpired, DreamServerError
+from model_routing import ModelBudget, FLASH, FULL, red_cube_lift
 import imageio_ffmpeg
 from model import prepare
 from probe import configure
@@ -16,6 +17,7 @@ class Worker:
         self.root=args.data;self.root.mkdir(parents=True,exist_ok=True)
         self.recording=None;self.recorded=0;self.expected_scope=None;self.active_request_id=None;self.episode_started=0
         self.lock=threading.Lock();self.client=DreamClient();self.prompt='';self.error=None
+        self.checkpoint=None;self.arm=None
     def api(self,path,data=None):
         body=None if data is None else json.dumps(data,default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)).encode()
         req=urllib.request.Request(self.args.server+path,data=body,headers={'Authorization':'Bearer '+self.token,'Content-Type':'application/json'})
@@ -86,10 +88,48 @@ class Worker:
             if (self.root/'stop').exists():raise RuntimeError('Stopped by user')
             time.sleep(.1)
         raise TimeoutError('No fresh verified Unreal camera/state observation')
+    def select_model(self,checkpoint):
+        if self.checkpoint == checkpoint:return
+        with self.lock:
+            configure(self.client,self.arm,checkpoint)
+            if not self.client.wait_for_ik(30):raise TimeoutError('Model switch IK initialization timed out')
+            self.checkpoint=checkpoint
+            # policy() clears the observation window. Require a new installed packet.
+            self.last=None;self.episode_started=time.time()
+        self.event('model.selected',checkpoint=checkpoint,message='Using '+checkpoint)
+
+    def infer(self,budget,cycle,scope):
+        replacement_packet=None
+        def call():
+            nonlocal replacement_packet
+            if self.args.checkpoint == 'auto':
+                # Session renewal can retry once: count that as another actual call.
+                if self.checkpoint == FULL and budget.full_calls >= budget.full_limit:
+                    self.select_model(FLASH)
+                    replacement_packet=self.fresh(after=time.time(),scope=scope)
+                budget.charge(self.checkpoint)
+            self.event('model.call',checkpoint=self.checkpoint,cycle=cycle+1,
+                       full_calls=budget.full_calls,message='Calling '+self.checkpoint)
+            return self.client.get_action()
+        def request():
+            action,packet=request_action(call,lambda:self.fresh(after=time.time(),scope=scope),
+                lambda:(self.root/'stop').exists(),
+                lambda message:self.event('session.recovering',cycle=cycle+1,message=message),DreamSessionExpired)
+            return action,replacement_packet or packet
+        try:return request()
+        except DreamServerError as error:
+            if self.args.checkpoint != 'auto' or not budget.capacity_fallback(self.checkpoint,error):raise
+            self.event('model.fallback',checkpoint=FLASH,cycle=cycle+1,
+                       message='Full model unavailable ('+str(error.reason)+'); using Flash for the rest of this command')
+            self.select_model(FLASH)
+            return request()
+
     def run_job(self,command):
         task=False;runtime_started=False;request_id=command['id'];result='failed'
         self.active_request_id=request_id
+        budget=ModelBudget()
         try:
+            self.select_model(FLASH if self.args.checkpoint == 'auto' else self.args.checkpoint)
             (self.root/'stop').unlink(missing_ok=True);self.error=None;self.last=None
             with self.lock:
                 self.expected_scope='runtime' if self.args.runtime_physics else None
@@ -113,14 +153,19 @@ class Worker:
                 self.python(code,'Start verified three-camera feedback for Dream command')
             scope='runtime' if self.args.runtime_physics else None
             for cycle in range(self.args.cycles):
+                if self.args.checkpoint == 'auto':
+                    lift=None
+                    if self.args.runtime_physics:
+                        lift=red_cube_lift(json.loads((self.root/'runtime.json').read_text()))
+                    self.select_model(budget.choose(cycle,lift))
                 packet=self.fresh(scope=scope);time.sleep(.3)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user')
-                self.event('request.started',prompt=self.prompt,cycle=cycle+1,frames=packet['frames'],state=packet['state'])
+                self.event('request.started',checkpoint=self.checkpoint,prompt=self.prompt,cycle=cycle+1,frames=packet['frames'],state=packet['state'])
                 started=time.monotonic()
-                action,packet=request_action(self.client.get_action,lambda:self.fresh(after=time.time(),scope=scope),lambda:(self.root/'stop').exists(),lambda message:self.event('session.recovering',cycle=cycle+1,message=message),DreamSessionExpired)
+                action,packet=self.infer(budget,cycle,scope)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user; discarded pending model response')
-                self.event('request.completed',cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
-                report=self.root/'action.json';report.write_text(json.dumps({'state':packet['state'],'action':action,'execution_rows':self.args.action_rows},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
+                self.event('request.completed',checkpoint=self.checkpoint,cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
+                report=self.root/'action.json';report.write_text(json.dumps({'checkpoint':self.checkpoint,'state':packet['state'],'action':action,'execution_rows':self.args.action_rows},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
                 # Preserve raw EEF targets beside solved joints for calibration
                 # diagnosis; the controller still reads the current action file.
                 (self.recording/f'action-{cycle+1}.json').write_text(report.read_text())
@@ -217,7 +262,9 @@ class Worker:
         finally:self.ue('end_task',{'summary':'Started local three-camera preview; robot poses unchanged.','keep_view':True})
 
     def run(self):
-        configure(self.client,prepare(self.root/'model'),self.args.checkpoint)
+        self.arm=prepare(self.root/'model')
+        configure(self.client,self.arm,FLASH if self.args.checkpoint == 'auto' else self.args.checkpoint)
+        self.checkpoint=FLASH if self.args.checkpoint == 'auto' else self.args.checkpoint
         if not self.client.wait_for_ik(180):raise TimeoutError('IK initialization timed out')
         threading.Thread(target=self.poll,daemon=True).start();threading.Thread(target=self.pump,daemon=True).start();threading.Thread(target=self.stream,daemon=True).start()
         self.start_preview()
@@ -235,4 +282,4 @@ class Worker:
         finally:self.closed=True;self.client.close()
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--action-rows',type=int,default=None);p.add_argument('--runtime-physics',action='store_true');p.add_argument('--checkpoint',default='dreamlabs/dream-1-beta-flash');args=p.parse_args();Worker(args).run()
+    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--action-rows',type=int,default=None);p.add_argument('--runtime-physics',action='store_true');p.add_argument('--checkpoint',default='auto',help='auto: Flash first, at most two full-model calls on a stalled lift; or an explicit checkpoint');args=p.parse_args();Worker(args).run()

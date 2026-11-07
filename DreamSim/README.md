@@ -97,3 +97,20 @@ Camera capture starts with the worker and remains active between commands, with 
 
 
 `--action-rows 12 --cycles 16 --runtime-physics` runs a receding-horizon simulation trial: validate every returned row, execute only the first 12 predicted rows (0.6 seconds at nominal 20 Hz, slowed as necessary by joint speeds), then obtain fresh camera/state feedback before requesting again. Raw full responses remain archived. Prefix execution does not change the selected joint targets, skip joint-limit validation, or control the cube pose. It is intended to reduce open-loop contact overshoot; successful autonomous pickup remains unverified.
+
+## Bounded Flash / full routing
+
+The worker defaults to `--checkpoint auto`. Each command starts on Flash. After
+eight completed control cycles, red-cube lift below 2 cm permits at most two
+full-model inference calls (including session-renewal retries). Missing telemetry
+keeps Flash. Full-model capacity refusals disable full for the rest of that
+command and fall back to Flash with fresh camera/state feedback. Other failures
+are surfaced; no rejected trajectory is replayed. Policy switches clear the old
+observation window and wait for IK initialization before fresh feedback.
+
+Activity events show each selected/called checkpoint and fallback, and archived
+action files retain the checkpoint. An explicit `--checkpoint MODEL_ID` disables
+automatic routing for controlled comparisons. The cycle limit still bounds
+control iterations; this is a call-count policy, not a monetary spending cap or
+a guarantee that the full model performs better. The 2 cm heuristic is not a
+success criterion: the requested pickup still needs a visible, held 10 cm lift.

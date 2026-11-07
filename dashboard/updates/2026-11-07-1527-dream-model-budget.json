@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T15:15:58-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Bound Dream full-model usage while retaining Flash as the default.",
+  "why": "Balance inference usage and selectively test the full model when measured lift stalls.",
+  "where": [
+    "DreamSim/worker.py",
+    "DreamSim/model_routing.py",
+    "DreamSim/README.md"
+  ],
+  "details": "Auto routing starts Flash, allows at most two full inference calls per command after eight cycles with red-cube lift below 2 cm, and returns to Flash on full capacity refusal. Actual model calls and fallbacks are logged. All 24 DreamSim tests pass. Live deployment and successful autonomous 10 cm pickup remain pending."
+}

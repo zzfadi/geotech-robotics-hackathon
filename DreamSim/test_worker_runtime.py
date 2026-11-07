@@ -16,7 +16,7 @@ HERE = Path(__file__).resolve().parent
 def load_worker():
     modules = {
         'dream': types.SimpleNamespace(DreamClient=Mock()),
-        'dream.errors': types.SimpleNamespace(DreamSessionExpired=type('Expired',(Exception,),{})),
+        'dream.errors': types.SimpleNamespace(DreamSessionExpired=type('Expired',(Exception,),{}),DreamServerError=type('ServerError',(Exception,),{})),
         'imageio_ffmpeg': types.SimpleNamespace(get_ffmpeg_exe=Mock()),
         'model': types.SimpleNamespace(prepare=Mock()),
         'probe': types.SimpleNamespace(configure=Mock()),
@@ -35,7 +35,8 @@ class WorkerRuntimeTests(unittest.TestCase):
         self.w=self.module.Worker.__new__(self.module.Worker)
         w=self.w
         w.root=self.root;w.lock=threading.Lock();w.client=Mock()
-        w.args=types.SimpleNamespace(runtime_physics=True,cycles=0,initial_state=self.root/'initial.json')
+        w.args=types.SimpleNamespace(runtime_physics=True,cycles=0,checkpoint='auto',initial_state=self.root/'initial.json')
+        w.checkpoint=self.module.FLASH;w.arm=None
         w.command={'id':'old'};w.active_request_id=None;w.last=None;w.closed=False
         w.recording=None;w.recorded=0;w.error=None;w.prompt='';w.expected_scope=None;w.episode_started=0
         self.state={'q_left':[0]*6,'q_right':[0]*6,'gap_left_m':.04,'gap_right_m':.04}
