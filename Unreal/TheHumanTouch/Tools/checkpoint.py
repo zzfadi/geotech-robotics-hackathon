@@ -56,8 +56,10 @@ def candidate_paths():
 def hub_idle():
     with urllib.request.urlopen(POLICY["hub_url"] + "/api/state", timeout=10) as response:
         state = json.load(response)
+    # The hub retains the last task title after completion; it is not an active task ID.
+    # Unknown states defer. The editor task/animation/dirty guards remain authoritative.
     busy = [name for name, agent in state["agents"].items()
-            if agent.get("task") or agent.get("state") in {"working", "thinking", "listening"}]
+            if agent.get("state") not in {"idle", "done"}]
     if busy:
         raise RuntimeError("Agents busy: " + ", ".join(busy))
 

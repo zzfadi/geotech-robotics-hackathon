@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T12:17:02-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Fixed checkpoint idle detection: completed hub task titles no longer count as active work.",
+  "why": "The YAM station checkpoint was falsely blocked with state=done and a retained task title. User confirmed the session is ready for checkpoint.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/checkpoint.py"
+  ],
+  "details": "Three regression tests cover completed titles, active/unknown states and the retained editor active-task guard. YAM sources synchronized to Luna2; all four kinematics tests pass there. Persistence and Git delivery remain to verify."
+}
