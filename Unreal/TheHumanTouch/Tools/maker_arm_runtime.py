@@ -160,11 +160,13 @@ class Session:
         if self.phase in ('stopped','ending','error'):return
         self.commit=bool(commit and not self.error)
         if self.motion:self.motion_report(True,self.error or 'Runtime ended');self.motion=None
-        maker_arm_observer.stop()
+        # Close the editor mirror transaction BEFORE any runtime teardown.
+        # Otherwise Concert may serialize PIE capture component deletions.
         if self.mirror:
             try:self.mirror.finish(commit=self.commit)
             except Exception as error:self.error=str(error);self.commit=False
             finally:self.mirror=None
+        maker_arm_observer.stop()
         self.phase='ending';self.ending_started=time.monotonic();self.report()
         self.level.editor_request_end_play()
 

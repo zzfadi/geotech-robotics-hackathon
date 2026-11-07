@@ -70,7 +70,8 @@ class Observer:
             for item in self.cameras.values():
                 if 'actor' in item and call_camera._is_alive(item['actor']):
                     if self.world is None:unreal.get_editor_subsystem(unreal.EditorActorSubsystem).destroy_actor(item['actor'])
-                    else:item['actor'].destroy_actor()
+                    # Runtime actors belong to SIE; never destroy them from a
+                    # capture callback that may overlap an editor transaction.
             raise
 
     def _rebind(self,now):
@@ -133,9 +134,8 @@ class Observer:
             unreal.unregister_slate_post_tick_callback(self.handle);self.handle=None
         actors=[item['actor'] for item in self.cameras.values() if 'actor' in item]
         if self.world is None:call_camera._remove(actors)
-        else:
-            for actor in actors:
-                if call_camera._is_alive(actor):actor.destroy_actor()
+        # Runtime capture actors are cleaned up by SIE teardown, after the
+        # controller has closed its mirror transaction. Never delete here.
         (self.directory/'status.json').write_text(json.dumps({'running':False,'frames':self.frames}))
 
 def start(directory,seconds=30,fps=5,world=None,runtime_clone=False):

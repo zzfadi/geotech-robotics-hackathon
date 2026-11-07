@@ -127,5 +127,7 @@
   "editor_feedback_verified_after_abort": true,
   "editor_feedback_verified_after_commit": true,
   "temporary_proxies_remaining": 0,
-  "scope": "lifecycle and local measured mirror smoke; not autonomous pickup or peer replication proof"
+  "scope": "lifecycle and local measured mirror smoke; not autonomous pickup or peer replication proof",
+  "peer_safe_acceptance": false,
+  "subsequent_failure": "Luna2 Concert replay crash22:33:06UTC; PIE capture deletion joined open editor mirror transaction during teardown"
 }
