@@ -9,4 +9,4 @@ if [[ ! -f "$state_dir/initial-state.json" ]]; then
 fi
 export DREAM_API_KEY="${DREAM_API_KEY:-op://wpt2zg5ue537o7tchkgxdj7ycm/2lituqqzteubyb2mb3wazr2lwy/credential}"
 export DREAM_LOG=off
-exec "$HOME/.codex/bin/op-agents" run -- uv run --with dreamlabs-client==1.1.3 --with dreamlabs==1.0.37 --with imageio-ffmpeg python -u DreamSim/worker.py --server "${DREAM_DEBUG_URL:-http://100.84.28.59:8786}" --token-file "$state_dir/worker-token" --project "$project" --data "$state_dir/worker" --initial-state "$state_dir/initial-state.json"
+exec "$HOME/.codex/bin/op-agents" run -- uv run --with dreamlabs-client==1.1.3 --with dreamlabs==1.0.37 --with imageio-ffmpeg --with faster-whisper==1.2.1 --with av==17.0.0 python -u DreamSim/worker.py --server "${DREAM_DEBUG_URL:-http://100.84.28.59:8786}" --token-file "$state_dir/worker-token" --project "$project" --data "$state_dir/worker" --initial-state "$state_dir/initial-state.json"

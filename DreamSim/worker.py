@@ -8,7 +8,7 @@ from probe import configure
 
 class Worker:
     def __init__(self,args):
-        self.args=args;self.token=args.token_file.read_text().strip();self.command=None;self.closed=False;self.last=None
+        self.args=args;self.token=args.token_file.read_text().strip();self.command=None;self.voice=None;self.asr=None;self.closed=False;self.last=None
         self.root=args.data;self.root.mkdir(parents=True,exist_ok=True)
         self.recording=None;self.recorded=0
         self.lock=threading.Lock();self.client=DreamClient();self.prompt='';self.error=None
@@ -28,7 +28,7 @@ class Worker:
     def poll(self):
         while not self.closed:
             try:
-                response=self.api('/api/worker/next');self.command=response['command']
+                response=self.api('/api/worker/next');self.command=response['command'];self.voice=response.get('voice')
                 if self.command and self.command.get('stop'):(self.root/'stop').touch()
             except Exception:
                 # Losing the operator connection stops motion and prevents further actions.
@@ -110,14 +110,28 @@ class Worker:
                     self.python('import maker_arm_observer; maker_arm_observer.stop()','Stop local camera capture')
                     self.ue('end_task',{'summary':'Dream web command finished; see debugger for actual request and kinematic playback result. Contact/grasp success is not established.','keep_view':True})
                 except Exception as error:self.event('cleanup.failed',message=str(error))
+    def transcribe(self,voice):
+        import io
+        try:
+            from faster_whisper import WhisperModel
+            if self.asr is None:self.asr=WhisperModel('base.en',device='cpu',compute_type='int8')
+            segments,info=self.asr.transcribe(io.BytesIO(base64.b64decode(voice['audio'])),language='en',beam_size=5,vad_filter=True)
+            if info.duration>30:raise ValueError('Voice command exceeds 30 seconds')
+            text=' '.join(segment.text.strip() for segment in segments).strip()
+            if not text:raise ValueError('No speech detected')
+            self.api('/api/worker/transcript',{'id':voice['id'],'text':text})
+        except Exception as error:self.api('/api/worker/transcript',{'id':voice['id'],'error':str(error)})
     def run(self):
         configure(self.client,prepare(self.root/'model'))
         if not self.client.wait_for_ik(180):raise TimeoutError('IK initialization timed out')
         threading.Thread(target=self.poll,daemon=True).start();threading.Thread(target=self.pump,daemon=True).start()
         self.event('worker.ready',message='Unreal worker ready for text commands')
-        seen=set()
+        seen=set();heard=set()
         try:
             while True:
+                voice=self.voice
+                if voice and voice['id'] not in heard:
+                    heard.add(voice['id']);self.transcribe(voice)
                 command=self.command
                 if command and command['status']=='running' and command['id'] not in seen:
                     seen.add(command['id']);self.run_job(command)

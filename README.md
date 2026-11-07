@@ -86,4 +86,4 @@ The URDF assigns all six arm joints effort 10 and velocity 5, but upstream marks
 
 ### Dream robot control debugger
 
-[Open the Luna2 Dream debugger](http://100.84.28.59:8786/) on the tailnet to submit a text prompt and inspect camera inputs, model requests and Unreal movement. [Setup and verified behavior](DreamSim/README.md#luna2-web-debugger-and-prompt-control). Two feedback cycles have been demonstrated in the shared editor; grasp/contact physics and microphone input remain unverified.
+[Open the Luna2 Dream debugger](https://luna2.tail6864ac.ts.net/) on the tailnet to submit a text prompt and inspect camera inputs, model requests and Unreal movement. [Setup and verified behavior](DreamSim/README.md#luna2-web-debugger-and-prompt-control). Two feedback cycles have been demonstrated in the shared editor; grasp/contact physics and microphone input remain unverified.

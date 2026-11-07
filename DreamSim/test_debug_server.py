@@ -1,4 +1,4 @@
-import json,tempfile,threading,unittest,urllib.request,urllib.error
+import base64,json,tempfile,threading,unittest,urllib.request,urllib.error
 from pathlib import Path
 from http.server import ThreadingHTTPServer
 from debug_server import Handler,Store
@@ -31,6 +31,15 @@ class ServerTest(unittest.TestCase):
                 event=request('/api/events',{'kind':'test','api_key':'MUST_NOT_STORE'},server.store.token)
                 self.assertNotIn('api_key',event)
                 self.assertNotIn(server.store.token,json.dumps(request('/api/status')))
+                voice=request('/api/voice',{'audio':base64.b64encode(b'x'*200).decode()})
+                public=request('/api/status')['voice']
+                self.assertNotIn('audio',public)
+                self.assertIn('audio',request('/api/worker/next',token=server.store.token)['voice'])
+                with self.assertRaises(urllib.error.HTTPError) as e:request('/api/worker/transcript',{'id':voice['id'],'text':'unauthorized'})
+                self.assertEqual(e.exception.code,401)
+                request('/api/worker/transcript',{'id':voice['id'],'text':'Move toward the cube'},server.store.token)
+                self.assertEqual(request('/api/status')['voice']['text'],'Move toward the cube')
+                self.assertNotIn('audio',server.store.voice)
             finally:server.shutdown();server.server_close()
 
 if __name__=='__main__':unittest.main()

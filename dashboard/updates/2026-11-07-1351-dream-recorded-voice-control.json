@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:51:29-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added private HTTPS and local voice transcription; verified recorded speech drives Unreal arms",
+  "why": "Allow spoken commands through the same reviewable prompt and Dream feedback path as text.",
+  "where": [
+    "https://luna2.tail6864ac.ts.net/",
+    "DreamSim/README.md"
+  ],
+  "details": "Synthetic voice clip transcribed exactly, submitted through the browser, and completed two 48-step Unreal trajectories. Captured and decoded 11.4 s of motion. Microphone test requested separately; object contact/grasp behavior remains unverified."
+}
