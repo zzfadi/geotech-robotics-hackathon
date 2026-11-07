@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T12:09:49.535334-08:00",
+  "who": "Codex",
+  "kind": "agent",
+  "workstream": "vrxr",
+  "status": "blocked",
+  "what": "Luna2 GitHub identity changed to Geotech-Agents as requested",
+  "why": "User requested agents@geotech.one for scheduled checkpoint pushes. GitHub now identifies that account, but denies repository write access with 403.",
+  "where": [
+    "docs/checkpoints.md"
+  ],
+  "details": "Repository owner must grant Geotech-Agents write access. Task repeats every 15 minutes, active edits defer, no-op runs create no commits, failed pushes preserve commits. Credential kept in Windows credential storage; temporary bootstrap input removed."
+}

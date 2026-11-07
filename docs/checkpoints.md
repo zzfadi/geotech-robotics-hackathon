@@ -13,7 +13,7 @@ The job checks main, the Git index, remote divergence, agent activity and the ho
 
 Status and logs live under ignored `Saved/Checkpoints/`. A `deferred` status needs attention; elapsed time is not a successful checkpoint. Save dialogs, busy agents, dirty content, authentication errors or remote changes stop the operation safely. Keep scheduled-task overlapping execution disabled; the script also locks across processes. The first run is due 15 minutes after installation, then every 15 minutes while Luna2's user is logged in. Milestone runs use the same command and lock.
 
-Install/update the host schedule with `Tools/install_checkpoint_task.ps1`; it calls `Tools/run_checkpoint.ps1` in the interactive user's context. Git credentials must have write access to this repository. The job checks write access with a push dry-run even on unchanged runs and never opens unattended credential prompts. As verified on November 7, the schedule is installed, but Luna2's saved GitHub account was denied write access (403); an authorized sign-in/access correction is still required. Mac pushes of this implementation succeeded.
+Install/update the host schedule with `Tools/install_checkpoint_task.ps1`; it calls `Tools/run_checkpoint.ps1` in the interactive user's context. Git credentials must have write access to this repository. The job checks write access with a push dry-run even on unchanged runs and never opens unattended credential prompts. As verified on November 7, the schedule is installed, but Luna2 was switched to the authorized `Geotech-Agents` account (`agents@geotech.one`); GitHub still denies that account write access (403). The repository owner must grant it write access. Mac pushes of this implementation succeeded.
 
 ## Keeping transaction history short
 
