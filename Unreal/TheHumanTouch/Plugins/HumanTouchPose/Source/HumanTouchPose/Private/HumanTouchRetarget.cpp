@@ -1,6 +1,7 @@
 #include "HumanTouchRetarget.h"
 #include "Animation/AnimInstance.h"
 #include "BonePose.h"
+#include "TwoBoneIK.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "LiveLinkInstance.h"
 #include "Roles/LiveLinkAnimationTypes.h"
@@ -10,6 +11,8 @@ void UHumanTouchRetarget::Initialize()
     if (const auto *Anim = Cast<UAnimInstance>(GetOuter()))
         if (const auto *Mesh = Anim->GetSkelMeshComponent())
             MeshToWorld = Mesh->GetComponentTransform();
+    HandNeutral.Reset();
+    LegCalibration.Reset();
     LastSession.Reset();
     LastSpace.Reset();
 }
@@ -130,8 +133,12 @@ void UHumanTouchRetarget::BuildPoseFromAnimationData(float, const FLiveLinkSkele
                 TP = Ref.FindBoneIndex("pelvis"), TH = Ref.FindBoneIndex("head");
     if (TL < 0 || TR < 0 || TP < 0 || TH < 0)
         return;
-    const FVector Right = R->GetTranslation() - L->GetTranslation(),
-                  Up = Chest->GetTranslation() - Pelvis->GetTranslation();
+    const FVector ShoulderRight = R->GetTranslation() - L->GetTranslation();
+    const auto *LeftHip = Src.Find(TEXT("left_thigh"));
+    const auto *RightHip = Src.Find(TEXT("right_thigh"));
+    const FVector Right =
+        LeftHip && RightHip ? RightHip->GetTranslation() - LeftHip->GetTranslation() : ShoulderRight;
+    const FVector Up = Chest->GetTranslation() - Pelvis->GetTranslation();
     if (Right.IsNearlyZero() || Up.IsNearlyZero())
         return;
     const FVector RefRight = Rest[TR].GetTranslation() - Rest[TL].GetTranslation();
@@ -141,12 +148,14 @@ void UHumanTouchRetarget::BuildPoseFromAnimationData(float, const FLiveLinkSkele
     const bool Relative = (Space == TEXT("hip_relative") || Space == TEXT("quest_local_floor"));
     if (Session != LastSession || Space != LastSpace)
     {
-        LastSession = Session;
-        LastSpace = Space;
-        SourceOrigin = Pelvis->GetTranslation();
         const FVector FlatRight(Right.X, Right.Y, 0.);
         if (FlatRight.IsNearlyZero())
             return;
+        HandNeutral.Reset();
+        LegCalibration.Reset();
+        LastSession = Session;
+        LastSpace = Space;
+        SourceOrigin = Pelvis->GetTranslation();
         Alignment =
             Relative ? RefBasis * FRotationMatrix::MakeFromYZ(FlatRight, FVector::UpVector).ToQuat().Inverse()
                      : MeshToWorld.GetRotation().Inverse();
@@ -154,6 +163,12 @@ void UHumanTouchRetarget::BuildPoseFromAnimationData(float, const FLiveLinkSkele
     }
     static const FRigMap QuestMap(true), CameraMap(false);
     const auto &Map = Quest ? QuestMap : CameraMap;
+    const FVector PelvisInMesh =
+        Relative ? Rest[TP].GetTranslation() + Alignment.RotateVector(Pelvis->GetTranslation() - SourceOrigin)
+                 : MeshToWorld.InverseTransformPosition(Pelvis->GetTranslation());
+    auto ToMesh = [&](const FTransform &Value)
+    { return PelvisInMesh + Alignment.RotateVector(Value.GetTranslation() - Pelvis->GetTranslation()); };
+    TMap<FName, FVector> LimbDirections;
     TArray<FTransform> Current;
     Current.SetNumUninitialized(Pose.GetNumBones());
     Pose.ResetToRefPose();
@@ -169,9 +184,7 @@ void UHumanTouchRetarget::BuildPoseFromAnimationData(float, const FLiveLinkSkele
             const FQuat Basis =
                 FRotationMatrix::MakeFromYZ(Alignment.RotateVector(Right), Alignment.RotateVector(Up)).ToQuat();
             CS.SetRotation((Basis * RefBasis.Inverse() * Rest[I].GetRotation()).GetNormalized());
-            CS.SetTranslation(Relative ? Rest[I].GetTranslation() +
-                                             Alignment.RotateVector(Pelvis->GetTranslation() - SourceOrigin)
-                                       : MeshToWorld.InverseTransformPosition(Pelvis->GetTranslation()));
+            CS.SetTranslation(PelvisInMesh);
         }
         else if (Name == TEXT("head") && Head)
         {
@@ -188,12 +201,100 @@ void UHumanTouchRetarget::BuildPoseFromAnimationData(float, const FLiveLinkSkele
                 const FVector Direction = Child >= 0 ? Rest[Child].GetTranslation() - Rest[I].GetTranslation()
                                                      : Rest[I].GetTranslation() - Rest[Prev].GetTranslation();
                 const FVector RestAxis = Rest[I].GetRotation().UnrotateVector(Direction).GetSafeNormal();
-                const FVector Wanted =
+                FVector Wanted =
                     Alignment.RotateVector(To->GetTranslation() - From->GetTranslation()).GetSafeNormal();
+                // Two-bone IK uses the measured knee/elbow as its bend pole. Preserve a reachable
+                // station-space wrist/ankle through root travel; clamp unreachable reaches to bone length.
+                if (Name == "thigh_l" || Name == "thigh_r" || Name == "upperarm_l" || Name == "upperarm_r")
+                {
+                    if (const FAim *Lower = Map.Aim.Find(A->TargetChild))
+                    {
+                        const int32 Tip = Ref.FindBoneIndex(Lower->TargetChild);
+                        if (const auto *Effector = Src.Find(Lower->End); Effector && Child >= 0 && Tip >= 0)
+                        {
+                            FVector Joint, End;
+                            FVector Pole = ToMesh(*To), Goal = ToMesh(*Effector);
+                            if (Relative && (Name == "thigh_l" || Name == "thigh_r"))
+                            {
+                                const double MeasuredLength =
+                                    FVector::Distance(From->GetTranslation(), To->GetTranslation()) +
+                                    FVector::Distance(To->GetTranslation(), Effector->GetTranslation());
+                                if (MeasuredLength > 1.)
+                                {
+                                    const double Scale = FMath::Clamp(
+                                        (Direction.Size() + FVector::Distance(Rest[Tip].GetTranslation(),
+                                                                              Rest[Child].GetTranslation())) /
+                                            MeasuredLength,
+                                        .5, 2.);
+                                    // Anchor each anatomical hip once. A stationary ankle then retains the
+                                    // same target as the pelvis lowers or moves during the performance.
+                                    const FLegCalibration &Fit = LegCalibration.FindOrAdd(
+                                        Name,
+                                        {Rest[I].GetTranslation() -
+                                             Alignment.RotateVector(From->GetTranslation() - SourceOrigin) *
+                                                 Scale,
+                                         Scale});
+                                    Pole =
+                                        Fit.Anchor +
+                                        Alignment.RotateVector(To->GetTranslation() - SourceOrigin) * Fit.Scale;
+                                    Goal = Fit.Anchor +
+                                           Alignment.RotateVector(Effector->GetTranslation() - SourceOrigin) *
+                                               Fit.Scale;
+                                }
+                            }
+                            AnimationCore::SolveTwoBoneIK(
+                                CS.GetTranslation(), Rest[Child].GetTranslation(), Rest[Tip].GetTranslation(),
+                                Pole, Goal, Joint, End, Direction.Size(),
+                                FVector::Distance(Rest[Tip].GetTranslation(), Rest[Child].GetTranslation()),
+                                false, 1., 1.);
+                            Wanted = (Joint - CS.GetTranslation()).GetSafeNormal();
+                            LimbDirections.Add(A->TargetChild, (End - Joint).GetSafeNormal());
+                        }
+                    }
+                }
+                else if (const FVector *Solved = LimbDirections.Find(Name))
+                    Wanted = *Solved;
                 if (!Wanted.IsNearlyZero() && !RestAxis.IsNearlyZero())
                     CS.SetRotation((FQuat::FindBetweenNormals(CS.GetRotation().RotateVector(RestAxis), Wanted) *
                                     CS.GetRotation())
                                        .GetNormalized());
+            }
+        }
+        // A single wrist-to-finger axis loses palm roll. Fit a palm basis from two
+        // tracked knuckles, or retain the measured grip rotation delta with controllers.
+        if (Name == "hand_l" || Name == "hand_r")
+        {
+            const bool Left = Name == "hand_l";
+            const FString Side = Left ? TEXT("left") : TEXT("right");
+            const FString Suffix = Left ? TEXT("_l") : TEXT("_r");
+            const auto *Wrist = Src.Find(FName(*(Side + (Quest ? "-hand-wrist" : "_hand"))));
+            const auto *IndexMcp =
+                Src.Find(FName(*(Side + (Quest ? "-hand-index-phalanx-proximal" : "_index"))));
+            const auto *PinkyMcp =
+                Src.Find(FName(*(Side + (Quest ? "-hand-little-phalanx-proximal" : "_pinky"))));
+            const int32 RefIndex = Ref.FindBoneIndex(FName(*(TEXT("index_01") + Suffix)));
+            const int32 RefPinky = Ref.FindBoneIndex(FName(*(TEXT("pinky_01") + Suffix)));
+            if (Wrist && IndexMcp && PinkyMcp && RefIndex >= 0 && RefPinky >= 0)
+            {
+                const FVector Forward = Alignment.RotateVector(
+                    (IndexMcp->GetTranslation() + PinkyMcp->GetTranslation()) * .5 - Wrist->GetTranslation());
+                const FVector Across =
+                    Alignment.RotateVector(IndexMcp->GetTranslation() - PinkyMcp->GetTranslation());
+                if (!FVector::CrossProduct(Forward, Across).IsNearlyZero())
+                {
+                    const FVector A = Rest[RefIndex].GetTranslation(), B = Rest[RefPinky].GetTranslation();
+                    const FQuat RefPalm =
+                        FRotationMatrix::MakeFromXY((A + B) * .5 - Rest[I].GetTranslation(), A - B).ToQuat();
+                    CS.SetRotation((FRotationMatrix::MakeFromXY(Forward, Across).ToQuat() * RefPalm.Inverse() *
+                                    Rest[I].GetRotation())
+                                       .GetNormalized());
+                }
+            }
+            else if (Quest && Wrist)
+            {
+                const FQuat Measured = Alignment * Wrist->GetRotation();
+                const FQuat &Neutral = HandNeutral.FindOrAdd(Name, Measured.Inverse() * CS.GetRotation());
+                CS.SetRotation((Measured * Neutral).GetNormalized());
             }
         }
         Pose[Index] = CS.GetRelativeTransform(ParentCS);

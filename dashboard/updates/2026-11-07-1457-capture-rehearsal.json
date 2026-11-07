@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T14:57:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Added a camera-free three-subject Hub rehearsal and updated the live skeletal retargeter to solve elbows and knees from the observed bend direction and wrists and ankles from measured endpoints.",
+  "why": "Known reaches, isolated finger curls, head turns and planted camera feet expose rig errors at the visible mesh while allowing developers to rehearse with the capture hardware idle.",
+  "where": ["Capture/rehearse_performers.py", "Capture/test_rehearse_performers.py", "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Source/HumanTouchPose/Private/HumanTouchRetarget.cpp"],
+  "details": "A 40 degree head turn and roughly 91 degree index rotation reached the Quest-driven character bones. The three subjects also retained 10 cm of pelvis travel. The fixture sends only to the station Hub input on loopback UDP 17860."
+}
