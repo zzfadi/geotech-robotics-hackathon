@@ -130,6 +130,9 @@ def checkpoint(dry_run=False):
     if ahead and POLICY["push"]:
         git("push", POLICY["remote"], "HEAD:main")
         git("fetch", POLICY["remote"], POLICY["branch"])
+    elif POLICY["push"]:
+        # An empty project is not evidence that unattended GitHub write access works.
+        git("push", "--dry-run", POLICY["remote"], "HEAD:main")
     commit = git("rev-parse", "HEAD")
     if git("rev-parse", "origin/main") != commit:
         raise RuntimeError("Push not verified; local checkpoint retained for retry")
@@ -142,6 +145,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
+    os.environ["GIT_TERMINAL_PROMPT"] = "0"
+    os.environ["GCM_INTERACTIVE"] = "never"
     STATE.parent.mkdir(parents=True, exist_ok=True)
     # OS-backed lock releases on crash; a stale directory cannot disable checkpoints.
     lock = STATE.parent / "checkpoint.lock"
@@ -160,6 +165,15 @@ def main():
             result = checkpoint(args.dry_run)
         except Exception as error:
             result = {"state": "deferred", "error": str(error)}
+            try:
+                if git("diff", "--name-only", "origin/main...HEAD", "--", POLICY["content_root"]):
+                    result["session_rollover_required"] = True
+            except subprocess.CalledProcessError:
+                pass
+        # Preserve a required rollover across unchanged runs and push failures.
+        previous = json.loads(STATE.read_text()) if STATE.exists() else {}
+        if previous.get("session_rollover_required"):
+            result["session_rollover_required"] = True
         result["checked_at"] = time.time()
         if not args.dry_run:
             temp = STATE.with_suffix(".tmp")

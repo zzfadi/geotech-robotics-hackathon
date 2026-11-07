@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T12:08:20.050475-08:00",
+  "who": "Codex",
+  "kind": "agent",
+  "workstream": "vrxr",
+  "status": "blocked",
+  "what": "15-minute Luna2 checkpoint task installed; unattended GitHub push lacks permission",
+  "why": "Live checkpoint preflight passed and the initial unchanged run returned exit 0, but a push dry-run from the interactive task returned GitHub 403 for the saved Luna2 account.",
+  "where": [
+    "docs/checkpoints.md",
+    "Unreal/TheHumanTouch/Tools/checkpoint.py"
+  ],
+  "details": "User was asked to sign Luna2 into an account with repository write access or arrange access for its intended account. No credentials copied or access permissions changed. Automatic runs now check push access even with no asset changes; local commits are retained on failure."
+}
