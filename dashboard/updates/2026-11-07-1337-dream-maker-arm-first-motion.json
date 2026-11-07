@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:37:33-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Dream text inference drove both Maker Arms through a 48-step Unreal kinematic preview",
+  "why": "Establish the real image/state-to-action connection before implementing continuous text and voice control.",
+  "where": [
+    "DreamSim/README.md",
+    "Unreal/TheHumanTouch/Tools/maker_arm_playback.py"
+  ],
+  "details": "Custom IK preserves pinned CAD axes/limits. Three-camera stream verified at about 5 Hz. API response took 2.73 s. Starting pose restored after preview. Voice, feedback control and contact dynamics remain incomplete."
+}
