@@ -440,7 +440,7 @@
       const latest = trackUpdates(w.id)[0];
       if (w.status === "blocked" || (latest && latest.status === "blocked")) items.push({ k: 0, icon: "critical", glyph: "!", w, text: latest && latest.status === "blocked" ? latest.what : "Marked blocked" });
       for (const mm of w.milestones.filter(overdue)) items.push({ k: 1, icon: "serious", glyph: "⏱", w, text: `${mm.title}, ${until(mm.due)}` });
-      if (w.status === "at-risk") items.push({ k: 2, icon: "warning", glyph: "▲", w, text: "Marked at risk" });
+      if (w.status === "at-risk" || w.risk) items.push({ k: 2, icon: "warning", glyph: "▲", w, text: w.risk || "Marked at risk" });
       if (isTbd(w.owner) && w.status !== "done") items.push({ k: 3, icon: "warning", glyph: "?", w, text: "No owner yet" });
     }
     items.sort((a, b) => a.k - b.k);
@@ -493,7 +493,8 @@
         el("div", { class: "t-facts" }, pill(w.status),
           el("span", {}, "Owner ", el("b", { style: isTbd(w.owner) ? { color: "var(--warning-ink)" } : null, text: isTbd(w.owner) ? "needed" : w.owner })),
           el("span", { text: w.progress_source === "milestones" ? "Progress counts milestones" : "Progress set by the team" }),
-          el("span", { text: w.updated ? `Last update ${rel(w.updated)}` : "No updates yet" }))));
+          el("span", { text: w.updated ? `Last update ${rel(w.updated)}` : "No updates yet" })),
+        w.risk ? el("p", { class: "goal", style: { margin: "12px 0 0", color: "var(--warning-ink)", fontWeight: 600 } }, "▲ Risk: ", w.risk) : null));
     const done = w.milestones.filter((m) => m.done).length;
     const nx = nextMilestone(w);
     const stat = (label, value, note, danger) => el("div", { class: "card stat" }, el("div", { class: "label", text: label }), el("div", { class: "value", text: value }),

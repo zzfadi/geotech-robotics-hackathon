@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T12:42:00-08:00",
+  "workstream": "turn-gate",
+  "status": "done",
+  "what": "Review of turn gate (0f8c624): 17 unit tests pass, and the replay handles a normal turn, a hand reach-in interruption, recovery and a stale camera frame",
+  "why": "The gate logic is solid. What's missing is real input: nothing feeds it camera frames yet.",
+  "where": ["0f8c624", "turn_gate/gate.py", "turn_gate/test_gate.py", "docs/robot-stack-contract.md"],
+  "details": "Next: a MediaPipe Hands detector on the overhead camera feeding real observations; decide whether the voice agent or a key press sends request_turn; measure real camera and detector latency against the 0.25 s stale limit. Arm station is flagged at risk until the Maker Arm adapter for Portal is confirmed, since Portal was built for the Metal Arm.",
+  "workstream_update": { "status": "in-progress", "milestones_done": ["gate-logic"] }
+}

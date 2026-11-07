@@ -58,7 +58,7 @@ Everyone posts the same way: **add one new JSON file** to `dashboard/updates/`. 
 
 ### Tracks and milestones
 
-Tracks live in `dashboard/data/workstreams.json`. Each has an `id`, `name`, `short` (nav label), `owner`, `status`, `goal`, `paths` (repo path prefixes, so commits there count toward the track) and `milestones`, each with an `id`, `title`, `due` (ISO time) and `done`.
+Tracks live in `dashboard/data/workstreams.json`. Each has an `id`, `name`, `short` (nav label), `owner`, `status`, `goal`, an optional `risk` (one line that shows under Needs attention), `paths` (repo path prefixes, so commits there count toward the track) and `milestones`, each with an `id`, `title`, `due` (ISO time) and `done`.
 
 A track's progress is the share of its milestones that are done, unless someone sets `progress` explicitly. So the simplest way to move a track forward is to finish a milestone and say so in your update with `"workstream_update": { "milestones_done": ["<id>"] }`. To claim a track, use `"owner"` the same way, so it shows in the feed too.
 
