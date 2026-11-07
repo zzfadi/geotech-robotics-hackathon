@@ -1,0 +1,36 @@
+import json,tempfile,threading,unittest,urllib.request,urllib.error
+from pathlib import Path
+from http.server import ThreadingHTTPServer
+from debug_server import Handler,Store
+
+class ServerTest(unittest.TestCase):
+    def test_queue_auth_and_origin(self):
+        with tempfile.TemporaryDirectory() as directory:
+            server=ThreadingHTTPServer(('127.0.0.1',0),Handler);server.store=Store(Path(directory))
+            thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+            url='http://127.0.0.1:'+str(server.server_port)
+            def request(path,data=None,token=None,origin=None):
+                headers={'Content-Type':'application/json'}
+                if token:headers['Authorization']='Bearer '+token
+                if origin:headers['Origin']=origin
+                req=urllib.request.Request(url+path,data=None if data is None else json.dumps(data).encode(),headers=headers)
+                with urllib.request.urlopen(req) as r:return json.load(r)
+            try:
+                with self.assertRaises(urllib.error.HTTPError) as e:request('/api/worker/next')
+                self.assertEqual(e.exception.code,401)
+                request('/api/worker/next',token=server.store.token)
+                with self.assertRaises(urllib.error.HTTPError) as e:request('/api/command',{'prompt':'move'},origin='https://unrelated.example')
+                self.assertEqual(e.exception.code,403)
+                command=request('/api/command',{'prompt':'Move toward cube'})
+                with self.assertRaises(urllib.error.HTTPError) as e:request('/api/command',{'prompt':'duplicate'})
+                self.assertEqual(e.exception.code,409)
+                claimed=request('/api/worker/next',token=server.store.token)['command']
+                self.assertEqual(claimed['id'],command['id']);self.assertEqual(claimed['status'],'running')
+                request('/api/stop',{})
+                self.assertTrue(request('/api/status')['command']['stop'])
+                event=request('/api/events',{'kind':'test','api_key':'MUST_NOT_STORE'},server.store.token)
+                self.assertNotIn('api_key',event)
+                self.assertNotIn(server.store.token,json.dumps(request('/api/status')))
+            finally:server.shutdown();server.server_close()
+
+if __name__=='__main__':unittest.main()

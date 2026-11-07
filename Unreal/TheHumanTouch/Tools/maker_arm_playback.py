@@ -7,6 +7,7 @@ from pathlib import Path
 import time
 import unreal
 import yam_station
+import maker_arm_feedback
 from maker_arm_actions import validate
 from maker_arm_model import mounted_frames,ue_pose
 from maker_arm_station import BASES,MOUNT_YAW,VISUAL_LINKS
@@ -34,6 +35,7 @@ class Playback:
                 rotation=actual.rotation
                 if abs(sum(a*b for a,b in zip((rotation.x,rotation.y,rotation.z,rotation.w),r)))<.999999:raise ValueError('Observation orientation is stale')
             if max(abs(a-b) for a,b in zip(q,self.chunks[side][0][:6]))>.02:raise ValueError('Action starts too far from observed pose')
+        maker_arm_feedback.seed(report['state'])
         self.before=tracking.snapshot();self.undo_before=tracking.undo_count()
         self.index=-1;self.started=time.monotonic();self.callback=None
         index=unreal.SystemLibrary.begin_transaction('CoPresence',unreal.Text(tracking.transaction_title('Dream Maker Arm trajectory')),next(iter(self.actors.values())))
@@ -59,6 +61,7 @@ class Playback:
 
     def tick(self,delta):
         try:
+            if (self.output.parent/'stop').exists():self.stop('Stopped by user');return
             index=min(int((time.monotonic()-self.started)*self.hz),len(self.chunks['left'])-1)
             if index==self.index:return
             for side in BASES:
@@ -70,7 +73,13 @@ class Playback:
                     p,q=ue_pose(transforms[link]);p=[v+BASES[side][i] for i,v in enumerate(p)]
                     actor.set_actor_location_and_rotation(unreal.Vector(*p),unreal.Quat(*q).rotator(),False,True)
                     unreal.SystemLibrary.snapshot_object(actor.root_component)
-            self.index=index;self.write(False)
+            self.index=index
+            state={}
+            for side in BASES:
+                row=self.chunks[side][index]
+                state['q_'+side]=row[:6];state['gap_'+side+'_m']=row[6]*.104825
+            maker_arm_feedback.applied(state)
+            self.write(False)
             if index==len(self.chunks['left'])-1:self.stop()
         except Exception as error:self.stop(str(error))
 
@@ -88,3 +97,9 @@ def start(report,output,hz=20):
 
 def stop():
     if _active:_active.stop('Stopped by user')
+
+
+def launch(report,output,hz=20):
+    try:start(report,output,hz)
+    except Exception as error:
+        Path(output).write_text(json.dumps({'done':True,'error':str(error)}))

@@ -12,6 +12,14 @@ from dream import DreamClient
 from model import prepare
 
 
+def configure(client,arm):
+    body={'state':{'right_arm':[0,6],'right_grip':[6,7],'left_arm':[7,13],'left_grip':[13,14]},
+          'action':{'right_arm':[0,6],'right_grip':[6,7],'left_arm':[7,13],'left_grip':[13,14]},
+          'video':{role:'observation.images.'+role for role in ('overhead','wrist_l','wrist_r')},'head_camera':'overhead'}
+    body['state'].update({'right_eef_xyz':[14,17],'right_eef_rot6':[17,23],'left_eef_xyz':[23,26],'left_eef_rot6':[26,32]})
+    client.policy({'embodiment':body,'checkpoint':'dreamlabs/dream-1-beta-flash','ik':{'arm':str(arm.resolve()),'head':'eef'},'timeout_ms':30000})
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state',type=Path,required=True)
@@ -39,11 +47,7 @@ def main():
     arm=prepare(args.output.parent/'model')
     client=DreamClient()
     try:
-        body={'state':{'right_arm':[0,6],'right_grip':[6,7],'left_arm':[7,13],'left_grip':[13,14]},
-              'action':{'right_arm':[0,6],'right_grip':[6,7],'left_arm':[7,13],'left_grip':[13,14]},
-              'video':{role:'observation.images.'+role for role in ('overhead','wrist_l','wrist_r')},'head_camera':'overhead'}
-        body['state'].update({'right_eef_xyz':[14,17],'right_eef_rot6':[17,23],'left_eef_xyz':[23,26],'left_eef_rot6':[26,32]})
-        client.policy({'embodiment':body,'checkpoint':'dreamlabs/dream-1-beta-flash','ik':{'arm':str(arm.resolve()),'head':'eef'},'timeout_ms':30000})
+        configure(client,arm)
         print('Policy configured; warming custom CAD IK',flush=True)
         if not client.wait_for_ik(180):raise TimeoutError('Custom IK warmup exceeded 180 seconds')
         client.set_observation(frames,observation)

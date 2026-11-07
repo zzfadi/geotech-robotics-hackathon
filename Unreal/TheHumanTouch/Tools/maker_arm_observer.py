@@ -8,6 +8,7 @@ import time
 import unreal
 from copresence_call import call_camera
 import yam_station
+import maker_arm_feedback
 
 ROLES={'overhead':'MakerCamera_Overview','wrist_l':'MakerCamera_LeftWrist','wrist_r':'MakerCamera_RightWrist'}
 _stream=None
@@ -48,6 +49,7 @@ class Observer:
         if now-self.last<self.interval:return
         self.last=now
         try:
+            state=maker_arm_feedback.read()
             frames={}
             for role,item in self.cameras.items():
                 source=item['source']
@@ -63,7 +65,7 @@ class Observer:
                 unreal.ImageWriteBlueprintLibrary.export_to_disk(item['target'],str(path),options)
                 frames['video.'+role]=base64.b64encode(path.read_bytes()).decode('ascii')
             self.frames+=1
-            packet={'sequence':self.frames,'captured_monotonic':now,'captured_unix':time.time(),'frames':frames}
+            packet={'sequence':self.frames,'captured_monotonic':now,'captured_unix':time.time(),'frames':frames,'state':state}
             temporary=self.directory/'observation.tmp'
             temporary.write_text(json.dumps(packet));temporary.replace(self.directory/'observation.json')
         except Exception as error:

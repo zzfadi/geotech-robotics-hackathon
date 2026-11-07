@@ -1,6 +1,6 @@
 # Dream → Maker Arm Unreal integration
 
-Verified November 7, 2026: `dreamlabs/dream-1-beta-flash` accepted the three Unreal camera images and measured CAD joint state for “Move the left gripper toward the red cube on the table.” It returned two 48 × 7 trajectories in 2.73 seconds. Both were played through all 48 rows in the live shared Unreal scene in one editor transaction, then the starting pose was restored. This proves text-to-kinematic-motion integration, **not** a successful grasp, continuous feedback controller, physics articulation, or voice control. Those remain in progress.
+Verified November 7, 2026: `dreamlabs/dream-1-beta-flash` accepted the three Unreal camera images and measured CAD joint state for “Move the left gripper toward the red cube on the table.” It returned two 48 × 7 trajectories in 2.73 seconds. Both were played through all 48 rows in the live shared Unreal scene in one editor transaction, then the starting pose was restored. This proves text-to-kinematic-motion integration, **not** a successful grasp, continuous feedback controller, physics articulation, or voice control. Those remain in progress. The web debugger subsequently verified two successive feedback cycles; see below.
 
 ## Exact arm convention
 
@@ -31,3 +31,17 @@ State contains `q_left`, `q_right` (six radians each), `gap_left_m`, `gap_right_
 Checks: `python3 -m unittest discover -s DreamSim -p 'test_*.py'` plus the Unreal Tools tests `test_maker_arm_actions.py` and `test_maker_arm_model.py`.
 
 Official API source: https://github.com/dreamlabs-co/dreamlabs and https://platform.dreamlabs.ai/docs/control-loop/ .
+
+## Luna2 web debugger and prompt control
+
+Open **http://100.84.28.59:8786/** on the tailnet. The page provides a prompt box, Run in Unreal and Stop controls, three camera previews, request timing/activity, joint trajectories and the latest verified state. The page is hosted on Luna2 by scheduled task `TheHumanTouch-DreamDebugger`; the policy/Unreal worker currently runs on the Mac's shared editor. Keep that editor and worker running. A grey worker badge disables submission.
+
+The November 7 browser test submitted “Move the left gripper toward the red cube on the table.” through the actual Run button (request `ef3ae184153440c3a6870bc763ea68f1`). Two model requests took 3.74 s and 0.53 s. Both 48-step trajectories completed, with fresh camera/joint-state feedback between them. The captured overhead video shows the left gripper moving above the red cube. It does **not** establish that a cube was grasped. The 64-frame, 12.8-second H.264 clip fully decoded successfully and its initial/middle/final frames were reviewed. Captures and logs live under ignored `Saved/DreamDebugger/worker/recordings/<request-id>/`.
+
+`debug_server.py` uses only Python's standard library. `install_debugger.ps1` copies its runtime into Saved and installs the Luna2 scheduled task. It binds the tailnet IP only; the page is available to authorized tailnet peers. Browser commands require JSON and same-origin requests. Worker event and queue endpoints require a separate bearer token stored under Saved; it is never returned to the browser. Dream credentials remain in the worker environment. No public port forwarding was added.
+
+`start_worker.command` starts the Mac worker using the existing Agents Vault helper. Copy the server's `Saved/DreamDebugger/worker-token` privately to the Mac's corresponding Saved directory (already configured on these two machines). The initial zero-pose seed is checked against every actual link; it is rejected if the scene differs. Each later observation validates the tracked kinematic state against every current actor transform. An external edit or missing camera stops the loop instead of publishing invented state.
+
+A command currently runs a bounded series of three feedback cycles (the verification run used two). Stop interrupts active playback and discards a response still in flight. Each movement chunk is one shared editor transaction. The loop holds position during inference and is not yet a continuous physics controller. `Speak` uses browser speech recognition to fill the prompt for review; microphone recognition is not verified and generally needs a secure browser context. The tailnet HTTP page's tested input path is text. Voice and object-contact physics remain open goal work.
+
+Recording source frames and the playable clip are retained locally; no API keys, worker tokens, images or request logs are committed. Run `python3 -m unittest discover -s DreamSim -p 'test_*.py'` for model/frame and debugger authentication, queue, duplicate-command and cross-origin checks.

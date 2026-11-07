@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T13:45:31-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Hosted Dream debugger and prompt interface on Luna2; verified web-triggered Unreal movement",
+  "why": "Let the team submit text commands and inspect real model requests, camera observations and arm activity.",
+  "where": [
+    "http://100.84.28.59:8786/",
+    "DreamSim/README.md",
+    "DreamSim/debug_server.py",
+    "DreamSim/worker.py"
+  ],
+  "details": "Actual browser submission ran two 48-step feedback cycles (3.74 s and 0.53 s inference). Captured 12.8 s overhead animation, fully decoded and visually checked. Web server on Luna2, Unreal worker on Mac. Voice and physical grasp/contact behavior remain unverified."
+}
