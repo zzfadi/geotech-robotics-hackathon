@@ -53,13 +53,15 @@ def mounted_frames(q, gap=0.04, yaw=0.0):
     mount = mul(rotation([0, 0, 1], yaw), rotation([1, 0, 0], math.pi / 2))
     return {name: mul(mount, t) for name, t in frames(q, gap).items()}
 
-def prepare(destination=None):
-    """Combine every visual per link, preserving origins and STL millimetre scale."""
+def prepare(destination=None, geometry="visual"):
+    """Combine visual or collision parts per link, preserving origins and scale."""
+    if geometry not in ("visual", "collision"):
+        raise ValueError("Expected visual or collision geometry")
     destination = Path(destination or MODEL.parents[2] / 'Saved/CoPresenceImports/MakerArm')
     destination.mkdir(parents=True, exist_ok=True)
     result = {}
     for link in model().findall('link'):
-        visuals = link.findall('visual')
+        visuals = link.findall(geometry)
         if not visuals:
             continue
         count = 0

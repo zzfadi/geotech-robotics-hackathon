@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T13:11:13-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Derived Maker Arm inertia and joint data; imported experimental collision meshes and measured coverage.",
+  "why": "Accurate simulation needs validated collision and dynamics beyond visual CAD import.",
+  "where": [
+    "docs/maker-arm-model.md",
+    "Unreal/TheHumanTouch/Tools/maker_arm_physics.py"
+  ],
+  "details": "Eight tests pass. Whole-link hulls failed 0.5 mm coverage; part-based left jaw passes vertex coverage but needs 1,749 hulls and is not installed. Brian editor remains unavailable; guarded shared binary checkpoint is still incomplete."
+}
