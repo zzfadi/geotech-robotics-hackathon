@@ -17,7 +17,7 @@ def editors():
     found = []
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         name = (proc.info['name'] or '').lower()
-        if name in {'unrealeditor', 'unrealeditor.exe', 'unrealeditor-cmd.exe'}:
+        if name in {'unrealeditor', 'unrealeditor.exe', 'unrealeditor-cmd', 'unrealeditor-cmd.exe'}:
             found.append(proc.info)
     return found
 
@@ -44,6 +44,8 @@ def main():
                         help='Load the locally built HumanTouchPose plugin for preview and diagnostics')
     parser.add_argument('--capture-hub', metavar='IP:PORT',
                         help='Add the reachable Live Link Hub UDP Messaging endpoint alongside Concert')
+    parser.add_argument('--performers', choices=('mannequins', 'metahumans'),
+                        help='Enable capture and select the local performer cast (default with capture: mannequins)')
     args = parser.parse_args()
     if args.capture_hub:
         host, sep, port = args.capture_hub.rpartition(':')
@@ -64,8 +66,18 @@ def main():
     command=arguments(args.engine,args.local_address,args.name)
     if args.capture_hub:
         command = [arg + ',' + args.capture_hub if arg.startswith('-UDPMESSAGING_TRANSPORT_STATIC=') else arg for arg in command]
-    if args.capture_tools:
-        command.append('-EnablePlugins=HumanTouchPose')
+    if args.performers:
+        command.append('-HumanTouchPerformers=' + args.performers)
+    if args.capture_tools or args.performers:
+        # XR stations may already enable tracking plugins on this same launch.
+        for index, arg in enumerate(command):
+            if arg.lower().startswith('-enableplugins='):
+                plugins = arg.split('=', 1)[1].split(',')
+                if 'humantouchpose' not in {plugin.lower() for plugin in plugins}:
+                    command[index] = arg + ',HumanTouchPose'
+                break
+        else:
+            command.append('-EnablePlugins=HumanTouchPose')
     logdir=PROJECT/'Saved/CoPresenceLogs';logdir.mkdir(parents=True,exist_ok=True)
     # No credentials are passed in command arguments. The hub code is provisioned separately.
     with (logdir/'shared-editor-launch.log').open('ab') as log:

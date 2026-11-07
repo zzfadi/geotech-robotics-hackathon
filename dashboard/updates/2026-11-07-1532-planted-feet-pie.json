@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T15:32:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Verified the Capture Performers widget switching both ways between three clothed MetaHumans and Manny/Quinn in the same Unreal Play In Editor world, driven by synthetic Live Link Hub subjects.",
+  "why": "The station can use the lighter mannequins for daily work and switch to dressed MetaHumans for a demo while preserving measured foot placement and hand articulation.",
+  "where": ["Capture/README.md", "docs/validation/performer-casts-pie.json", "Unreal/TheHumanTouch/Plugins/HumanTouchPose"],
+  "details": "Bruce lowered his pelvis 15.971 cm and Manny lowered his 16.000 cm. Neither ankle nor forefoot moved at the recorded precision. A separate observed left-foot lift moved Bruce’s foot 8.221 cm and Manny’s 9.137 cm while the right foot stayed planted. All three outfits followed their bodies with cloth simulation off."
+}

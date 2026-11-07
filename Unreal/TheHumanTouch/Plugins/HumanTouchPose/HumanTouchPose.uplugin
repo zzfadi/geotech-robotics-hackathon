@@ -6,9 +6,73 @@
   "Description": "Receives station-local human skeletons for Live Link.",
   "Category": "Virtual Production",
   "EnabledByDefault": false,
-  "SupportedPrograms": ["LiveLinkHub"],
-  "Modules": [{"Name": "HumanTouchPose", "Type": "Runtime", "LoadingPhase": "Default", "ProgramAllowList": ["LiveLinkHub"]},
-    {"Name": "HumanTouchPerformersEditor", "Type": "Editor", "LoadingPhase": "PostEngineInit", "TargetAllowList": ["Editor"]}],
-  "Plugins": [{"Name": "LiveLink", "Enabled": true},
-    {"Name": "MetaHumanCharacter", "Enabled": true, "TargetAllowList": ["Editor"]}]
+  "SupportedPrograms": [
+    "LiveLinkHub"
+  ],
+  "Modules": [
+    {
+      "Name": "HumanTouchPose",
+      "Type": "Runtime",
+      "LoadingPhase": "Default",
+      "ProgramAllowList": [
+        "LiveLinkHub"
+      ]
+    },
+    {
+      "Name": "HumanTouchPerformersEditor",
+      "Type": "Editor",
+      "LoadingPhase": "PostEngineInit",
+      "TargetAllowList": [
+        "Editor"
+      ]
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "LiveLink",
+      "Enabled": true
+    },
+    {
+      "Name": "MetaHumanCharacter",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "IKRig",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "PerformanceCaptureCore",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "HairStrands",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "ChaosClothAsset",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "ChaosOutfitAsset",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    }
+  ]
 }

@@ -16,6 +16,13 @@ class RehearsalTest(unittest.TestCase):
                 self.assertEqual(samples["neutral"][bone], samples[pose][bone])
             self.assertNotEqual(samples["neutral"]["pelvis"], samples[pose]["pelvis"])
 
+        lifted = {row[0]: row[2:5] for row in skeleton("Human_Cam_B", "lift")}
+        for joint in ("foot", "toe"):
+            self.assertEqual(lifted["right_" + joint], samples["neutral"]["right_" + joint])
+            self.assertAlmostEqual(
+                lifted["left_" + joint][1] - samples["neutral"]["left_" + joint][1], 0.10
+            )
+
     def test_headset_curl_is_isolated_and_all_frames_use_hub_only(self):
         sock = Mock()
         for who in SUBJECTS:
