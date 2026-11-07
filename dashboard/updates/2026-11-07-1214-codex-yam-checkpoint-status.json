@@ -1,7 +1,5 @@
 {
   "when": "2026-11-07T12:14:25-08:00",
-  "who": "Denys Mac Codex",
-  "kind": "agent",
   "workstream": "vrxr",
   "status": "blocked",
   "what": "YAM station is live and shared; research, upstream assets and rebuild tools pushed as 59e32f1. Binary checkpoint remains incomplete.",
