@@ -1,0 +1,286 @@
+{
+  "request_id": "5773d12046c742619cfd7cc3a19c6502",
+  "prompt": "pick up red cube",
+  "command_status": "done",
+  "recording": {
+    "request_id": "5773d12046c742619cfd7cc3a19c6502",
+    "prompt": "pick up red cube",
+    "frames": 139,
+    "result": "done",
+    "roles": [
+      "overhead",
+      "wrist_l",
+      "wrist_r"
+    ]
+  },
+  "events": [
+    {
+      "kind": "command.queued",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "prompt": "pick up red cube",
+      "source": "text",
+      "at": 1794090043.3388045,
+      "id": "a97b9eb1ad124247acaf34fdd4d54fda"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "prompt": "pick up red cube",
+      "cycle": 1,
+      "state": {
+        "done": true,
+        "index": 48,
+        "rows": 49,
+        "error": null,
+        "scope": "editor kinematic playback",
+        "timing": {
+          "action_hz": 5.729527924742009,
+          "time_scale": 3.49068898218182,
+          "duration_seconds": 8.377653557236368,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "q_left": [
+          1.6015456064597713,
+          -0.034906584769487374,
+          0.034906584769487374,
+          1.685463593556331,
+          -0.8868207748119648,
+          -1.5093638613507465
+        ],
+        "gap_left_m": 0.09843665387347031,
+        "q_right": [
+          -1.4071812738071783,
+          -0.5136095039494387,
+          0.034906584769487374,
+          1.6950933933258052,
+          1.2133922751966892,
+          1.1447400996735044
+        ],
+        "gap_right_m": 0.10340750049366192
+      },
+      "at": 1794090046.2323163,
+      "id": "b14fd287eb74476d9a7ff14530399a27"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 1,
+      "elapsed_seconds": 3.5303412090288475,
+      "at": 1794090049.983468,
+      "id": "dc28ab76f4bc4768a340ddb043ccb896"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 1,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794090050.9511704,
+      "id": "c315eb4104ad4b68acc94dcc818f6b99"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 1,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794090051.3188581,
+      "id": "40e9a15bc2894e4bb6f00b9ec817df29"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 1,
+      "state": {
+        "done": true,
+        "index": 48,
+        "rows": 49,
+        "error": null,
+        "scope": "editor kinematic playback",
+        "timing": {
+          "action_hz": 5.234502792511049,
+          "time_scale": 3.820802240971922,
+          "duration_seconds": 9.169925378332614,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "q_left": [
+          2.287970494557094,
+          -0.034822315238155675,
+          0.9283914782784208,
+          1.6950933933258052,
+          -1.519689975084958,
+          -2.2747489422351332
+        ],
+        "gap_left_m": 0.06020107080419577,
+        "q_right": [
+          -0.09445541211358283,
+          -1.1371483611060191,
+          1.1449073052906487,
+          -0.34441235161327843,
+          0.018397671059815345,
+          0.07219876621205104
+        ],
+        "gap_right_m": 0.02053801201513428
+      },
+      "message": "49-sample kinematic trajectory finished",
+      "at": 1794090060.555211,
+      "id": "12830776a9f04ffda933a27028d92c0b"
+    },
+    {
+      "kind": "observation",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "state": {
+        "q_left": [
+          2.287970494557094,
+          -0.034822315238155675,
+          0.9283914782784208,
+          1.6950933933258052,
+          -1.519689975084958,
+          -2.2747489422351332
+        ],
+        "gap_left_m": 0.06020107080419577,
+        "q_right": [
+          -0.09445541211358283,
+          -1.1371483611060191,
+          1.1449073052906487,
+          -0.34441235161327843,
+          0.018397671059815345,
+          0.07219876621205104
+        ],
+        "gap_right_m": 0.02053801201513428
+      },
+      "at": 1794090060.879973,
+      "id": "7a0d4f1d37294140843b66e6288c6c53"
+    },
+    {
+      "kind": "request.started",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "prompt": "pick up red cube",
+      "cycle": 2,
+      "state": {
+        "q_left": [
+          2.287970494557094,
+          -0.034822315238155675,
+          0.9283914782784208,
+          1.6950933933258052,
+          -1.519689975084958,
+          -2.2747489422351332
+        ],
+        "gap_left_m": 0.06020107080419577,
+        "q_right": [
+          -0.09445541211358283,
+          -1.1371483611060191,
+          1.1449073052906487,
+          -0.34441235161327843,
+          0.018397671059815345,
+          0.07219876621205104
+        ],
+        "gap_right_m": 0.02053801201513428
+      },
+      "at": 1794090061.353181,
+      "id": "c0296269f72048b496867c2dd4f60d9b"
+    },
+    {
+      "kind": "session.recovering",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 2,
+      "message": "Dream renewed its inference session; retrying once from fresh Unreal feedback",
+      "at": 1794090064.1700618,
+      "id": "06fc93d98e3d473aa5098b558ec75606"
+    },
+    {
+      "kind": "request.completed",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 2,
+      "elapsed_seconds": 3.331267291039694,
+      "at": 1794090064.8074474,
+      "id": "d900c46afe164b11b92024e39de28d04"
+    },
+    {
+      "kind": "playback.queued",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 2,
+      "message": "Validating Dream trajectory before movement",
+      "at": 1794090065.569689,
+      "id": "4039bb52b1204ba8a3c0ea3ad942bf69"
+    },
+    {
+      "kind": "playback.started",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 2,
+      "message": "Unreal accepted trajectory; motion started",
+      "at": 1794090065.8434646,
+      "id": "63bfdc7b9af14672ad9d2b9411f4874e"
+    },
+    {
+      "kind": "playback.completed",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "cycle": 2,
+      "state": {
+        "done": true,
+        "index": 48,
+        "rows": 49,
+        "error": null,
+        "scope": "editor kinematic playback",
+        "timing": {
+          "action_hz": 5.846132200506181,
+          "time_scale": 3.421065298227146,
+          "duration_seconds": 8.21055671574515,
+          "original_rows": 48,
+          "rows": 49,
+          "grip_limit_corrections": []
+        },
+        "q_left": [
+          2.7650933265686035,
+          -0.034822314977645874,
+          3.105093479156494,
+          -0.4021175284902524,
+          -1.5350934267044065,
+          -2.665043725834027
+        ],
+        "gap_left_m": 0.050892726487379664,
+        "q_right": [
+          -1.3872628637127113,
+          -0.5128417681980805,
+          0.2636922983439645,
+          -0.239837586983934,
+          1.5113122780006256,
+          -0.5152775545220285
+        ],
+        "gap_right_m": 0.10438986832181683
+      },
+      "message": "49-sample kinematic trajectory finished",
+      "at": 1794090074.1477175,
+      "id": "9221a7e92e214d32bb44967aea54b72d"
+    },
+    {
+      "kind": "observation",
+      "request_id": "5773d12046c742619cfd7cc3a19c6502",
+      "state": {
+        "q_left": [
+          2.7650933265686035,
+          -0.034822314977645874,
+          3.105093479156494,
+          -0.4021175284902524,
+          -1.5350934267044065,
+          -2.665043725834027
+        ],
+        "gap_left_m": 0.050892726487379664,
+        "q_right": [
+          -1.3872628637127113,
+          -0.5128417681980805,
+          0.2636922983439645,
+          -0.239837586983934,
+          1.5113122780006256,
+          -0.5152775545220285
+        ],
+        "gap_right_m": 0.10438986832181683
+      },
+      "at": 1794090074.4528341,
+      "id": "6f23f485668348c2bef2f39efd152a51"
+    }
+  ],
+  "scope": "text-to-kinematic-motion plus bounded session recovery; no cube grasp or dynamic contact established"
+}

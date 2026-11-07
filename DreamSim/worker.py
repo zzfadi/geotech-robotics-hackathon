@@ -2,11 +2,13 @@
 import argparse,base64,json,os,subprocess,sys,threading,time,urllib.request
 from pathlib import Path
 from dream import DreamClient
+from dream.errors import DreamSessionExpired
 import imageio_ffmpeg
 from model import prepare
 from probe import configure
 from queueing import wait_for_editor
 from state_seed import recover_state
+from session_recovery import request_action
 
 class Worker:
     def __init__(self,args):
@@ -42,7 +44,7 @@ class Worker:
             try:
                 packet=json.loads((self.root/'cameras/observation.json').read_text())
                 if packet['sequence']!=sequence and time.time()-packet['captured_unix']<2:
-                    sequence=packet['sequence'];self.last=packet
+                    sequence=packet['sequence']
                     if self.recording:
                         self.recorded+=1
                         for role in ('overhead','wrist_l','wrist_r'):
@@ -54,6 +56,8 @@ class Worker:
                             obs['state.'+side+'_arm']=packet['state']['q_'+side]
                             obs['state.'+side+'_grip']=[packet['state']['gap_'+side+'_m']/.104825]
                         self.client.set_observation(packet['frames'],obs,timestamp=packet['captured_monotonic'])
+                    # Publish only after the observation is installed in Dream's window.
+                    self.last=packet
             except FileNotFoundError:pass
             except Exception as error:self.error=str(error)
             time.sleep(.08)
@@ -97,7 +101,8 @@ class Worker:
                 packet=self.fresh();time.sleep(.3)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user')
                 self.event('request.started',prompt=self.prompt,cycle=cycle+1,frames=packet['frames'],state=packet['state'])
-                started=time.monotonic();action=self.client.get_action()
+                started=time.monotonic()
+                action,packet=request_action(self.client.get_action,lambda:self.fresh(after=time.time()),lambda:(self.root/'stop').exists(),lambda message:self.event('session.recovering',cycle=cycle+1,message=message),DreamSessionExpired)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user; discarded pending model response')
                 self.event('request.completed',cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
                 report=self.root/'action.json';report.write_text(json.dumps({'state':packet['state'],'action':action},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))

@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:18:16-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added bounded recovery for Dream inference sessions replaced during retimed arm motion.",
+  "why": "The installed client explicitly adopts a replacement session on DreamSessionExpired and documents calling again; previous worker stopped instead.",
+  "where": [
+    "DreamSim/session_recovery.py",
+    "DreamSim/worker.py",
+    "docs/dream-session-recovery.md"
+  ],
+  "details": "Six offline tests pass. Live exact prompt pick up red cube (5773d12046c742619cfd7cc3a19c6502) completed two 49-sample trajectories (9.170 s / 8.211 s), recovering one session expiry between them. 139 frames captured for all three cameras. Kinematic control continuity verified; cube pickup not achieved."
+}
