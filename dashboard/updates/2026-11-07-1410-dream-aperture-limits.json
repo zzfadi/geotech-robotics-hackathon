@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T14:10:27-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added explicit bounded jaw endpoint saturation for Dream predictions.",
+  "why": "Correctly normalized model aperture predictions overshot full opening by 0.2\u20131.32%, causing whole trajectories to fail.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_actions.py"
+  ],
+  "details": "Only predictions within 2% of aperture range are saturated to physical travel; each correction is logged. Larger errors and invalid joints fail. Seven action tests pass; live validation in progress."
+}

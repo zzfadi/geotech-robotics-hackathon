@@ -37,7 +37,20 @@ def retime(action,state,hz=20,max_duration=15):
     Include the actual starting pose so the first grip target cannot jump. No
     out-of-position-limit or nonfinite target is repaired by this operation.
     """
-    chunks=validate(action,hz,check_speed=False)
+    # Model aperture predictions can overshoot their normalized endpoints.
+    # Saturate only a small, explicit 2% band; never exceed physical jaw travel.
+    prepared={};corrections=[]
+    for key in ('q_l_chunk','q_r_chunk'):
+        prepared[key]=[]
+        for index,values in enumerate(action[key]):
+            row=list(values)
+            if len(row)==7 and isinstance(row[6],(int,float)) and math.isfinite(row[6]):
+                grip=row[6]
+                if -.02<=grip<=1.02:
+                    row[6]=min(1.,max(0.,grip))
+                    if row[6]!=grip:corrections.append({'arm':key,'row':index,'requested':grip,'applied':row[6]})
+            prepared[key].append(row)
+    chunks=validate(prepared,hz,check_speed=False)
     root=model();limits=[j.find('limit') for j in root.findall("joint[@type='revolute']")]
     speeds=[min(float(j.get('velocity')) or 3,3) for j in limits]
     jaw_speed=2*float(root.find("joint[@name='gripper_left_joint']/limit").get('velocity'))
@@ -54,4 +67,4 @@ def retime(action,state,hz=20,max_duration=15):
     duration=(len(chunks['left'])-1)/rate
     if duration>max_duration:raise ValueError('Speed-limited action exceeds bounded playback duration')
     validate({'q_l_chunk':chunks['left'],'q_r_chunk':chunks['right']},rate,max_rows=201)
-    return chunks,{'action_hz':rate,'time_scale':scale,'duration_seconds':duration,'original_rows':len(action['q_l_chunk']),'rows':len(chunks['left'])}
+    return chunks,{'action_hz':rate,'time_scale':scale,'duration_seconds':duration,'original_rows':len(action['q_l_chunk']),'rows':len(chunks['left']),'grip_limit_corrections':corrections}
