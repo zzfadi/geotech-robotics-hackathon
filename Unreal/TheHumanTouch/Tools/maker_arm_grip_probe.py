@@ -12,11 +12,11 @@ from maker_arm_station import BASES,VISUAL_LINKS
 _probe=None
 
 class GripProbe:
-    def __init__(self,output,gap=.045,tcp_back=.04,wake=True):
+    def __init__(self,output,gap=.045,tcp_back=.04,wake=True,convex_diagnostic=False):
         self.editor=unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem);self.level=unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
         if self.editor.get_game_world() is not None:raise RuntimeError('Simulation already active')
         if animation.is_running():raise RuntimeError('Shared animation is active')
-        self.gap=gap;self.tcp_back=tcp_back;self.wake=wake
+        self.gap=gap;self.tcp_back=tcp_back;self.wake=wake;self.convex_diagnostic=convex_diagnostic
         self.output=Path(output);self.phase='starting';self.started=time.monotonic();self.samples=[];self.error=None;self.cube=None;self.callback=None
         self.original={a.get_actor_label():a.get_actor_transform() for a in unreal.GameplayStatics.get_all_actors_of_class(self.editor.get_editor_world(),unreal.StaticMeshActor) if a.get_actor_label().startswith('MakerArm_right_') or a.get_actor_label()=='MakerStation_Approximate_Block_Orange'}
         self.callback=unreal.register_slate_post_tick_callback(self.tick);self.level.editor_play_simulate()
@@ -41,6 +41,10 @@ class GripProbe:
                 self.material.set_editor_property('friction',.8);self.material.set_editor_property('restitution',0.)
                 for link in VISUAL_LINKS:
                     c=self.actors['MakerArm_right_'+link].static_mesh_component
+                    if self.convex_diagnostic and link in ('gripper_left','gripper_right'):
+                        mesh=unreal.load_asset('/Game/_Agents/Denys_Mac_Codex/MakerArm/Physics/SM_MakerArm_Collision_'+link)
+                        if not mesh:raise RuntimeError('Missing diagnostic convex mesh')
+                        c.set_static_mesh(mesh)
                     c.set_mobility(unreal.ComponentMobility.MOVABLE);c.set_collision_profile_name('BlockAllDynamic')
                     c.set_collision_enabled(unreal.CollisionEnabled.QUERY_AND_PHYSICS);c.set_simulate_physics(False);c.set_phys_material_override(self.material)
                 t=self.pose([0,-1.57,1.57,0,0,0],.08)
@@ -98,10 +102,10 @@ class GripProbe:
         lift=bool(lifted and max(lifted)>self.initial_z+5)
         released=bool(final and abs(final['cube_cm'][2]-77.5)<1)
         self.output.parent.mkdir(parents=True,exist_ok=True)
-        self.output.write_text(json.dumps({'scope':'controlled jaw fixture, not autonomous pickup','error':self.error,'editor_preserved':unchanged,'simulation_ended':simulation_ended,'wake_each_tick':self.wake,'retained_under_gravity':retained,'lifted_over_5cm':lift,'released_to_table':released,'passed':not self.error and simulation_ended and unchanged and retained and lift and released,'commanded_gap_m':self.gap,'fixture_tcp_back_m':self.tcp_back,'assumed_cube_mass_kg':.05,'assumed_friction':.8,'samples':self.samples},indent=2)+'\n')
+        self.output.write_text(json.dumps({'scope':'controlled jaw fixture, not autonomous pickup','error':self.error,'editor_preserved':unchanged,'simulation_ended':simulation_ended,'wake_each_tick':self.wake,'convex_diagnostic':self.convex_diagnostic,'retained_under_gravity':retained,'lifted_over_5cm':lift,'released_to_table':released,'passed':not self.error and simulation_ended and unchanged and retained and lift and released,'commanded_gap_m':self.gap,'fixture_tcp_back_m':self.tcp_back,'assumed_cube_mass_kg':.05,'assumed_friction':.8,'samples':self.samples},indent=2)+'\n')
 
-def start(output,gap=.045,tcp_back=.04,wake=True):
+def start(output,gap=.045,tcp_back=.04,wake=True,convex_diagnostic=False):
     global _probe
     if _probe and _probe.callback is not None:raise RuntimeError('Grip probe active')
-    try:_probe=GripProbe(output,gap,tcp_back,wake)
+    try:_probe=GripProbe(output,gap,tcp_back,wake,convex_diagnostic)
     except Exception as error:Path(output).write_text(json.dumps({'passed':False,'error':str(error)}))

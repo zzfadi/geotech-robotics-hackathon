@@ -9,5 +9,5 @@
     "docs/maker-arm-runtime-contact.md",
     "docs/validation/maker-arm-jaw-contact.json"
   ],
-  "details": "441-sample SIE fixture with awake cube failed retention and lift; block fell to table. No attachments or commanded cube lift. Simulation ended and full original editor transforms preserved. Added bounded probe cleanup and shared-animation guard; source compilation passes. Physics grasp remains unvalidated."
+  "details": "441-sample SIE fixture with awake cube failed retention and lift; block fell to table. No attachments or commanded cube lift. Simulation ended and full original editor transforms preserved. Added bounded probe cleanup and shared-animation guard; source compilation passes. Physics grasp remains unvalidated. Follow-up A/B passed retention, physical lift and release with existing coarse convex jaws in runtime only. This isolates collision mode; hull fidelity and autonomous pickup remain unvalidated. Observer recovered all three cameras after SIE."
 }
