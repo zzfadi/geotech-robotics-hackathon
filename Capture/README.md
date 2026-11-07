@@ -65,6 +65,8 @@ Run `python3 Capture/observe.py` on the capture Mac to see each sample's identit
 
 All transforms are expressed in the named frame (+X right, +Y up, -Z forward). The first bone is the root with parent -1. The receiver converts handedness and metres to UE centimetres, then computes parent-local bone transforms. Missing/late frames must expire on the robot side. Frame identity is preserved across both copies; strict simulation/render alignment additionally requires a common evaluation tick. The physical camera, headset articulation, contact authority and overlay each need independent verification.
 
+The optional [Luna2 Isaac bridge](isaac/README.md) forwards the station editor’s evaluated Hub poses and their capture references over Tailscale.
+
 ## External Maker Arm contact simulation
 
 The station can run a local MuJoCo 4.0 process with both official Maker Arm URDFs and an independently simulated tabletop token. It samples the registered human streams at a common target time, updates palm and forearm collision proxies, and returns robot poses and contact locations to Unreal. The arm holds its rest position with a provisional compliant controller. The model's dynamics, hardware registration and collision response still require physical validation. [Maker Arm model assessment](../docs/maker-arm-model.md).
@@ -114,15 +116,29 @@ uv run --script Capture/register_table.py quest --survey "$station_dir/survey.js
     --output "$station_dir/quest-session-registration.json"
 ```
 
-## Stock MetaHuman performers in the station
+## Choose the performers shown in this editor
 
-Open the shared station map with the capture plugin enabled. The editor constructs these Epic stock presets from the locally installed **MetaHuman Creator Core Data**, including when the map reloads or Play In Editor starts. Each capture-enabled editor needs the native modules built for its platform and a client connection to the **same Live Link Hub**. The previews are editor actors. The project stores the mapping and placement in source. Packaged-game characters would need assembled assets.
+Open **Tools → Capture Performers** in the shared station map and choose **Mannequins** or **MetaHumans**. The selection applies to this editor and its Play In Editor world. Each editor receives the same three Animation subjects from Hub and can pick its own cast. Switching releases the previous cast, including its hidden animation meshes. The utility also opens from the console with `HumanTouch.Performers`.
 
-| Stock preset | Hub subject | Motion |
-| --- | --- | --- |
-| Victor | `Human_Quest_A` | Quest 3/3S upper body, head, hands and available finger joints |
-| Bruce | `Human_Cam_B` | Single webcam, full body from head to toes |
-| Ada | `Human_Quest_C` | Second computer’s active Unreal XR session, including tracked head, grip or hand, and finger joints when its XR runtime exposes them |
+| Hub subject | Mannequins | MetaHumans | Capture |
+| --- | --- | --- | --- |
+| `Human_Quest_A` | Manny | Victor | Quest 3/3S upper body and available fingers |
+| `Human_Cam_B` | Manny | Bruce | One webcam, head through toes |
+| `Human_Quest_C` | Quinn | Ada | Second XR editor, head and available wrists/fingers |
+
+Mannequins are the capture-enabled startup default. Pass `--performers metahumans` or `--performers mannequins` to `Tools/join_human_touch.py` alongside the usual local address, name and Hub endpoint. For a direct editor launch add `-EnablePlugins=HumanTouchPose -HumanTouchPerformers=MetaHumans` or `-HumanTouchPerformers=Mannequins`. Append the plugin to existing `-EnablePlugins` flags when using XR. A widget selection lasts until editor restart. Keep each operating system's matching native build and the **Templates and Feature Packs** engine content for Manny/Quinn. MetaHuman mode also requires **MetaHuman Creator Core Data**. Both modes use local Epic assets. These actors are instantiated for the station editor and PIE.
+
+The source adapter uses the captured pelvis, the target reference pose, anatomical limb chains and elbow/knee poles. The MetaHuman path drives the canonical identity body, then applies Epic’s `RTG_MH_IKRig` body retargeter with a local pelvis-offset override to preserve centimetres of root travel. The face follows the body’s head and neck. The visible MetaHumans use synchronized LOD 5 (body LOD 2, face LOD 5), card or mesh hair and fitted shirt-and-shorts meshes at garment LOD 2. The outfits share the body pose and run without cloth physics. Only the hidden animation source uses full detail for the finger chains. The camera performer has a final two-bone ankle solve and a forefoot direction taken from the captured ankle and toe. The headset subjects leave the legs in their reference pose relative to the pelvis. Body/camera calibration is still needed to place real-world contacts. [Epic retargeting](https://dev.epicgames.com/documentation/metahuman/retarget-metahuman-creator-animation?lang=en-US) · [Runtime retargeting](https://dev.epicgames.com/documentation/metahuman/runtime-retargeting) · [QuickMagic chain and contact validation](https://www.quickmagic.ai/Learning/software/MetaHuman-Retargeting-Guide-MoCap-to-UE-Workflow) · [Live Link Hub](https://dev.epicgames.com/documentation/unreal-engine/live-link-hub-in-unreal-engine?lang=en-US)
+
+### Rehearse without cameras or headsets
+
+With the hardware publishers stopped, use the following command from the repository root. The fixture sends only to Hub’s loopback input. It cycles from neutral through a left reach, index curl, squat and lateral root travel with planted camera feet, then an independent left-foot lift. The Quest fixture carries upper-body joints and the webcam fixture carries legs. Switch cast in the widget and replay to compare.
+
+```sh
+python3 Capture/rehearse_performers.py --seconds-per-pose 2
+```
+
+To repeat the play-world check, enter **Simulate** on the station map, run the fixture, switch casts in **Tools → Capture Performers** and run it again. In the 16 cm squat, both ankles and both forefeet remained stationary on Bruce and Manny. Both also raised the left foot separately. [Measured PIE poses and wardrobe checks](../docs/validation/performer-casts-pie.json).
 
 ### Quest 2 on a second Mac
 

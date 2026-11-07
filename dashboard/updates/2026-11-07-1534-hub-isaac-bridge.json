@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T15:34:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added an optional station Unreal exporter, Tailscale gateway and Isaac Sim pre-physics receiver for all three Hub performers.",
+  "why": "Isaac needs to identify the exact evaluated skeleton for each physics tick, including Hub interpolation between producer frames.",
+  "where": ["Capture/isaac/README.md", "Capture/isaac/HubPoseExport", "Capture/isaac/pose_stream.py", "Capture/isaac/isaac_preview.py"],
+  "details": "In a moving Mac loopback test, 235 of 249 evaluated skeletons matched every source joint within the verifier tolerances. The other 14 had distinct evaluation IDs across transitions. Four bridge tests passed. Deployment, measured playout age and physics callback readback on Luna2 remain open."
+}

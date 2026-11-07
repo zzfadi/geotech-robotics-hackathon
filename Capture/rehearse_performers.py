@@ -8,7 +8,7 @@ import time
 import uuid
 
 SUBJECTS = ("Human_Quest_A", "Human_Cam_B", "Human_Quest_C")
-POSES = ("neutral", "reach", "curl", "squat", "step", "neutral")
+POSES = ("neutral", "reach", "curl", "squat", "step", "lift", "neutral")
 IDENTITY = (0.0, 0.0, 0.0, 1.0)
 
 
@@ -105,16 +105,17 @@ def skeleton(subject, pose):
                 )
                 parent = joint(name, parent, point)
         if not quest:
+            lift = 0.10 if pose == "lift" and side == "left" else 0.0
             thigh = joint(
                 side + "_thigh", hip, (travel + sign * 0.10, 1.01 - lowered, 0.0)
             )
             shin = joint(
                 side + "_shin",
                 thigh,
-                (sign * 0.11, 0.53 - lowered * 0.4, -0.23 if lowered else -0.025),
+                (sign * 0.11, 0.53 - lowered * 0.4 + lift / 2, -0.23 if lowered or lift else -0.025),
             )
-            ankle = joint(side + "_foot", shin, (sign * 0.11, 0.075, 0.0))
-            joint(side + "_toe", ankle, (sign * 0.11, 0.04, -0.15))
+            ankle = joint(side + "_foot", shin, (sign * 0.11, 0.075 + lift, 0.0))
+            joint(side + "_toe", ankle, (sign * 0.11, 0.04 + lift, -0.15))
     return rows
 
 

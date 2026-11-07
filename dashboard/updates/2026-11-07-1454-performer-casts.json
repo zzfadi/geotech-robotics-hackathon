@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T14:54:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Animated two stock Mannys and Quinn and the clothed Victor, Bruce and Ada MetaHumans from three synthetic subjects through the station Mac’s Live Link Hub.",
+  "why": "The shared station can show the same performers at two levels of detail, and camera-free rehearsals make retargeting errors measurable before testing with people.",
+  "where": ["Capture/README.md", "Capture/rehearse_performers.py", "Unreal/TheHumanTouch/Plugins/HumanTouchPose", "Unreal/TheHumanTouch/Tools/join_human_touch.py"],
+  "details": "Rendered all three fitted outfits. On the Quest-driven MetaHumans a fixed-palm index curl produced about 91 degrees of target rotation. The synthetic 16 cm squat and 10 cm translation reached the camera performer's pelvis. Final ankle correction and mode switching through a Multi-User map reload await an editor retest."
+}

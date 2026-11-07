@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-07",
+  "engine": "Unreal Engine 5.8.3 CL 58210709, macOS",
+  "route": "Synthetic poses to loopback UDP 17860, local Live Link Hub to the shared editor. Simulate in Editor created the PIE world.",
+  "coordinates": "World-space socket translation in centimetres. The forefoot socket is ball_l or ball_r. Displacements are rounded to 0.0001 cm.",
+  "input": {
+    "camera_subject": "Human_Cam_B",
+    "squat_cm": 16,
+    "left_foot_lift_cm": 10
+  },
+  "widget_selections": [
+    "MetaHumans",
+    "Mannequins",
+    "MetaHumans",
+    "Mannequins"
+  ],
+  "cast_count_after_each_selection": 3,
+  "casts": {
+    "MetaHumans": {
+      "world": "/Game/Maps/UEDPIE_0_TheHumanTouch.TheHumanTouch",
+      "pelvis_drop_cm": 15.971,
+      "camera_foot_displacement_cm": {
+        "foot_l": 0.0,
+        "foot_r": 0.0,
+        "ball_l": 0.0,
+        "ball_r": 0.0
+      },
+      "lift_control_cm": {
+        "foot_l": 8.221,
+        "foot_r": 0.0,
+        "ball_l": 8.221,
+        "ball_r": 0.0
+      },
+      "motion": {
+        "Human_Quest_A": {
+          "reach_cm": 68.6142,
+          "index_delta_deg": 91.46,
+          "character": "Victor",
+          "render_lod": {
+            "body": 2,
+            "face": 5,
+            "outfit": 2
+          }
+        },
+        "Human_Cam_B": {
+          "reach_cm": 69.3683,
+          "index_delta_deg": 0.0,
+          "character": "Bruce",
+          "render_lod": {
+            "body": 2,
+            "face": 5,
+            "outfit": 2
+          }
+        },
+        "Human_Quest_C": {
+          "reach_cm": 61.8543,
+          "index_delta_deg": 91.46,
+          "character": "Ada",
+          "render_lod": {
+            "body": 2,
+            "face": 5,
+            "outfit": 2
+          }
+        }
+      },
+      "continuous_squat": {
+        "frames": 156,
+        "unique_pelvis_heights_rounded_cm": 67,
+        "peak_squat_cm": 15.971,
+        "final_pelvis_offset_cm": 0.0,
+        "max_world_drift_cm": {
+          "foot_l": 0.0,
+          "foot_r": 0.0,
+          "ball_l": 0.0,
+          "ball_r": 0.0
+        }
+      }
+    },
+    "Mannequins": {
+      "world": "/Game/Maps/UEDPIE_0_TheHumanTouch.TheHumanTouch",
+      "pelvis_drop_cm": 16.0,
+      "camera_foot_displacement_cm": {
+        "foot_l": 0.0,
+        "foot_r": 0.0,
+        "ball_l": 0.0,
+        "ball_r": 0.0
+      },
+      "lift_control_cm": {
+        "foot_l": 9.137,
+        "foot_r": 0.0,
+        "ball_l": 9.137,
+        "ball_r": 0.0
+      },
+      "motion": {
+        "Human_Quest_A": {
+          "mesh": "SKM_Manny_Simple",
+          "reach_cm": 58.7876,
+          "index_delta_deg": 92.03,
+          "character": "Manny"
+        },
+        "Human_Cam_B": {
+          "mesh": "SKM_Manny_Simple",
+          "reach_cm": 58.7876,
+          "index_delta_deg": 0.0,
+          "character": "Manny"
+        },
+        "Human_Quest_C": {
+          "mesh": "SKM_Quinn_Simple",
+          "reach_cm": 59.1266,
+          "index_delta_deg": 91.0,
+          "character": "Quinn"
+        }
+      },
+      "continuous_squat": {
+        "frames": 96,
+        "unique_pelvis_heights_rounded_cm": 50,
+        "peak_squat_cm": 16.0,
+        "final_pelvis_offset_cm": 0.0,
+        "max_world_drift_cm": {
+          "foot_l": 0.0,
+          "foot_r": 0.0,
+          "ball_l": 0.0,
+          "ball_r": 0.0
+        }
+      }
+    }
+  },
+  "outfit_checks": "All three visible garments followed the pelvis and all faces followed the head within 0.1 cm during reach. Cloth simulation was off.",
+  "continuous_squat_method": "The camera fixture eased 16 cm down over 1.8 seconds, held, then eased 16 cm up over 1.8 seconds. The editor read world-space body sockets on each distinct PIE world tick throughout the six-second test. Maximum drift is relative to the initial standing frame."
+}
