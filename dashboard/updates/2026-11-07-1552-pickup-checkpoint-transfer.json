@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T15:52:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Updated the main README with the verified pickup and saved the Unreal checkpoint on Luna2.",
+  "why": "Preserve both reproducible evidence and actual scene content after the successful run.",
+  "where": [
+    "README.md",
+    "Unreal/TheHumanTouch/Content/Maps/TheHumanTouch.umap"
+  ],
+  "details": "Guarded persistence and local checkpoint commit completed. Luna2 background push failed in Windows Credential Manager; transferring its commit via Git bundle to the Mac authenticated remote, without replacing binaries under a running editor."
+}
