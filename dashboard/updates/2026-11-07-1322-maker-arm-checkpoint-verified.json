@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T13:22:54-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Verified pushed Maker Arm assets, renamed default level and latest small-camera-body map checkpoint.",
+  "why": "Distinguish durable GitHub assets from earlier live-only edits and resolve the stale checkpoint blocker status.",
+  "where": [
+    "a2c77b28",
+    "21e6d4ef",
+    "docs/checkpoints.md"
+  ],
+  "details": "Host status is pushed; both commits fetched from origin. Map defaults and committed Maps directory verified. All three participants remain in the session. Physical calibration, runtime articulation and coordinated session rollover are still incomplete."
+}

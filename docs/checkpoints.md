@@ -52,3 +52,9 @@ Validation: Win64 BuildPlugin succeeded; the Mac arm64 plugin compiled successfu
 Live verification at 20:58 UTC: the compatible Python change was reloaded on Mac and Luna2 without swapping native binaries. The next normal publication reloaded the Mac map without the old ActorFactory spawn or an empty Mac transaction. Only Brian VR produced the new empty transaction (activity 244), and the guard again deferred persistence. Brian's editor still needs the matching update; its session endpoint at this observation was `9D71A025654337CEEFDB9CAF179EEAF5`. Full native deployment and successful binary persistence are not yet verified.
 
 The user confirmed that Brian’s editor is currently unavailable. Leave that participant connected and preserve the session; do not bypass the checkpoint guard or claim the binary level has been pushed. Robot implementation can continue independently.
+
+### Verified successful checkpoints, 21:18–21:21 UTC
+
+Luna2 status now reports `pushed` for `a2c77b28f355d2aac3ddff2321a33d4617da5f88` (imported robot assets, experimental collisions, table materials and renamed map) and then `21e6d4efdc6534ac3c814bf525160374304bff2c` (the latest map with the restored small mast camera body). Both commits were fetched from GitHub; only TheHumanTouch remains in the committed Maps directory. The previous dirty-map blocker did not prevent these guarded runs. Mac and Luna2 remain connected with Brian VR. Session rollover remains pending and was not performed automatically.
+
+The Mac editor remains open. Its source commits were integrated with the host's binary checkpoint in a separate checkout on `main` at `/tmp/humantouch-main-integration-1320`, avoiding a binary file replacement under the live editor. Its original live checkout still needs synchronization after preserving work and closing safely. No success claim relies on hot-copying Content or clearing dirty flags.
