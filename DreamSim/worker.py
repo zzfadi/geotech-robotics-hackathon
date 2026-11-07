@@ -14,14 +14,14 @@ class Worker:
     def __init__(self,args):
         self.args=args;self.token=args.token_file.read_text().strip();self.command=None;self.voice=None;self.asr=None;self.closed=False;self.last=None
         self.root=args.data;self.root.mkdir(parents=True,exist_ok=True)
-        self.recording=None;self.recorded=0
+        self.recording=None;self.recorded=0;self.expected_scope=None;self.active_request_id=None;self.episode_started=0
         self.lock=threading.Lock();self.client=DreamClient();self.prompt='';self.error=None
     def api(self,path,data=None):
         body=None if data is None else json.dumps(data,default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)).encode()
         req=urllib.request.Request(self.args.server+path,data=body,headers={'Authorization':'Bearer '+self.token,'Content-Type':'application/json'})
         with urllib.request.urlopen(req,timeout=5) as response:return json.load(response)
     def event(self,kind,**kwargs):
-        try:self.api('/api/events',{'kind':kind,'request_id':(self.command or {}).get('id'),**kwargs})
+        try:self.api('/api/events',{'kind':kind,'request_id':self.active_request_id or (self.command or {}).get('id'),**kwargs})
         except Exception as error:print('Debugger event delivery failed: '+type(error).__name__,flush=True)
     def ue(self,tool,args):
         env=dict(os.environ,COPRESENCE_UNREAL_MCP_URL='http://127.0.0.1:8041/mcp')
@@ -45,19 +45,20 @@ class Worker:
                 packet=json.loads((self.root/'cameras/observation.json').read_text())
                 if packet['sequence']!=sequence and time.time()-packet['captured_unix']<2:
                     sequence=packet['sequence']
-                    if self.recording:
-                        self.recorded+=1
-                        for role in ('overhead','wrist_l','wrist_r'):
-                            prefix='frame' if role=='overhead' else role
-                            (self.recording/(prefix+'_%06d.jpg'%self.recorded)).write_bytes(base64.b64decode(packet['frames']['video.'+role]))
-                    if self.prompt:
-                        obs={'prompt':self.prompt}
-                        for side in ('left','right'):
-                            obs['state.'+side+'_arm']=packet['state']['q_'+side]
-                            obs['state.'+side+'_grip']=[packet['state']['gap_'+side+'_m']/.104825]
-                        self.client.set_observation(packet['frames'],obs,timestamp=packet['captured_monotonic'])
-                    # Publish only after the observation is installed in Dream's window.
-                    self.last=packet
+                    with self.lock:
+                        if self.recording:
+                            self.recorded+=1
+                            for role in ('overhead','wrist_l','wrist_r'):
+                                prefix='frame' if role=='overhead' else role
+                                (self.recording/(prefix+'_%06d.jpg'%self.recorded)).write_bytes(base64.b64decode(packet['frames']['video.'+role]))
+                        if self.prompt and packet['captured_unix']>=self.episode_started and (self.expected_scope is None or packet.get('scope')==self.expected_scope):
+                            obs={'prompt':self.prompt}
+                            for side in ('left','right'):
+                                obs['state.'+side+'_arm']=packet['state']['q_'+side]
+                                obs['state.'+side+'_grip']=[packet['state']['gap_'+side+'_m']/.104825]
+                            self.client.set_observation(packet['frames'],obs,timestamp=packet['captured_monotonic'])
+                        # Publish only after the observation is installed in Dream's window.
+                        self.last=packet
             except FileNotFoundError:pass
             except Exception as error:self.error=str(error)
             time.sleep(.08)
@@ -66,29 +67,34 @@ class Worker:
         while not self.closed:
             packet=self.last
             command=self.command
+            request_id=self.active_request_id or (command or {}).get('id')
             if packet and time.time()-packet['captured_unix']<2:
-                identity=((command or {}).get('id'),packet['captured_unix'])
+                identity=(request_id,packet['captured_unix'])
                 if identity!=sent:
                     try:
-                        self.api('/api/worker/frame',{'request_id':(command or {}).get('id'),'recording':bool(self.recording),'sequence':packet['sequence'],'captured_unix':packet['captured_unix'],'frames':packet['frames']})
+                        self.api('/api/worker/frame',{'request_id':request_id,'recording':bool(self.recording),'sequence':packet['sequence'],'captured_unix':packet['captured_unix'],'frames':packet['frames']})
                         sent=identity
                     except Exception:pass
             time.sleep(.5)
 
-    def fresh(self,after=0):
+    def fresh(self,after=0,scope=None):
         deadline=time.monotonic()+12
         while time.monotonic()<deadline:
             if self.error:raise RuntimeError(self.error)
-            if self.last and self.last['captured_unix']>after and time.time()-self.last['captured_unix']<2:return self.last
+            packet=self.last
+            if packet and packet['captured_unix']>max(after,self.episode_started) and time.time()-packet['captured_unix']<2 and (scope is None or packet.get('scope')==scope):return packet
             if (self.root/'stop').exists():raise RuntimeError('Stopped by user')
             time.sleep(.1)
         raise TimeoutError('No fresh verified Unreal camera/state observation')
     def run_job(self,command):
-        task=False;request_id=command['id'];result='failed'
+        task=False;runtime_started=False;request_id=command['id'];result='failed'
+        self.active_request_id=request_id
         try:
             (self.root/'stop').unlink(missing_ok=True);self.error=None;self.last=None
-            self.client.reset_episode();self.prompt=command['prompt']
-            self.recording=self.root/'recordings'/request_id;self.recording.mkdir(parents=True,exist_ok=True);self.recorded=0
+            with self.lock:
+                self.expected_scope='runtime' if self.args.runtime_physics else None
+                self.client.reset_episode();self.prompt=command['prompt'];self.episode_started=time.time()
+                self.recording=self.root/'recordings'/request_id;self.recording.mkdir(parents=True,exist_ok=True);self.recorded=0
             wait_for_editor(lambda:self.ue('begin_task',{'title':'Dream web command','request':self.prompt,'keep_view':True,'focus_x':40,'focus_y':0,'focus_z':100}),lambda:(self.root/'stop').exists(),lambda message:self.event('command.waiting',message=message));task=True
             previous=self.root/'playback.json'
             seed=self.root/'seed.json'
@@ -96,18 +102,28 @@ class Worker:
             # Reset observers between episodes so stale images cannot enter a new command.
             (self.root/'cameras/observation.json').unlink(missing_ok=True)
             code=f"import importlib, json, maker_arm_feedback, maker_arm_observer, maker_arm_playback\nfrom copresence import ui_widgets\nmaker_arm_observer.stop()\nimportlib.reload(maker_arm_feedback)\nimportlib.reload(maker_arm_playback)\nimportlib.reload(maker_arm_observer)\nmaker_arm_feedback.seed(json.load(open({str(seed)!r})))\nui_widgets.after(1, lambda: maker_arm_observer.start({str(self.root/'cameras')!r}, seconds=86400))"
-            self.python(code,'Start verified three-camera feedback for Dream command')
+            if self.args.runtime_physics:
+                runtime_status=self.root/'runtime.json'
+                runtime_status.unlink(missing_ok=True)
+                runtime_started=True
+                code=f"import maker_arm_runtime\nfrom copresence import ui_widgets\nui_widgets.after(.2,lambda:maker_arm_runtime.start({str(seed)!r},{str(runtime_status)!r},{str(self.root/'cameras')!r},mirror=True))"
+                self.python(code,'Start authoritative runtime physics and camera feedback')
+                self.wait_runtime(runtime_status,'ready')
+            else:
+                self.python(code,'Start verified three-camera feedback for Dream command')
+            scope='runtime' if self.args.runtime_physics else None
             for cycle in range(self.args.cycles):
-                packet=self.fresh();time.sleep(.3)
+                packet=self.fresh(scope=scope);time.sleep(.3)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user')
                 self.event('request.started',prompt=self.prompt,cycle=cycle+1,frames=packet['frames'],state=packet['state'])
                 started=time.monotonic()
-                action,packet=request_action(self.client.get_action,lambda:self.fresh(after=time.time()),lambda:(self.root/'stop').exists(),lambda message:self.event('session.recovering',cycle=cycle+1,message=message),DreamSessionExpired)
+                action,packet=request_action(self.client.get_action,lambda:self.fresh(after=time.time(),scope=scope),lambda:(self.root/'stop').exists(),lambda message:self.event('session.recovering',cycle=cycle+1,message=message),DreamSessionExpired)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user; discarded pending model response')
                 self.event('request.completed',cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
                 report=self.root/'action.json';report.write_text(json.dumps({'state':packet['state'],'action':action},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
                 previous.unlink(missing_ok=True)
-                self.python(f"from copresence import ui_widgets\nimport maker_arm_playback\nui_widgets.after(.2, lambda: maker_arm_playback.launch({str(report)!r},{str(previous)!r}))",'Apply bounded Dream response in one shared transaction')
+                controller='maker_arm_runtime' if self.args.runtime_physics else 'maker_arm_playback'
+                self.python(f"from copresence import ui_widgets\nimport {controller}\nui_widgets.after(.2, lambda: {controller}.launch({str(report)!r},{str(previous)!r}))",'Apply bounded Dream response to the authoritative controller')
                 self.event('playback.queued',cycle=cycle+1,message='Validating Dream trajectory before movement')
                 playback_announced=False
                 deadline=time.monotonic()+20
@@ -122,17 +138,30 @@ class Worker:
                             break
                     time.sleep(.1)
                 else:raise TimeoutError('Unreal playback did not finish')
-                self.event('playback.completed',cycle=cycle+1,state=state,message=str(state['rows'])+'-sample kinematic trajectory finished')
-                packet=self.fresh(after=time.time());self.event('observation',frames=packet['frames'],state=packet['state'])
+                mode='runtime physics' if self.args.runtime_physics else 'kinematic'
+                self.event('playback.completed',cycle=cycle+1,state=state,message=str(state['rows'])+'-sample '+mode+' trajectory finished')
+                packet=self.fresh(after=time.time(),scope=scope);self.event('observation',frames=packet['frames'],state=packet['state'])
+            if runtime_started:
+                self.finish_runtime(True)
+                runtime_started=False
             result='done'
-            self.api('/api/worker/done',{'request_id':request_id,'status':'done'})
         except Exception as error:
             stopped=(self.root/'stop').exists()
             (self.root/'stop').touch()
-            self.event('request.failed',message=str(error));self.api('/api/worker/done',{'request_id':request_id,'status':'stopped' if stopped else 'failed'})
+            result='stopped' if stopped else 'failed'
+            self.event('request.failed',message=str(error))
         finally:
-            self.prompt=''
-            recording=self.recording;self.recording=None
+            if runtime_started:
+                try:
+                    self.finish_runtime(False)
+                except Exception as error:
+                    result='failed';self.event('cleanup.failed',message='Runtime cleanup: '+str(error))
+                finally:
+                    # Aborted runtime output can never seed the restored editor.
+                    (self.root/'playback.json').unlink(missing_ok=True)
+            with self.lock:
+                self.prompt='';self.expected_scope=None
+                recording=self.recording;self.recording=None
             if recording and self.recorded:
                 for role in ('overhead','wrist_l','wrist_r'):
                     try:
@@ -144,8 +173,27 @@ class Worker:
                     except Exception as error:self.event('recording.failed',message=role+': '+str(error))
             if task:
                 try:
-                    self.ue('end_task',{'summary':'Dream web command finished; see debugger for actual request and kinematic playback result. Contact/grasp success is not established.','keep_view':True})
-                except Exception as error:self.event('cleanup.failed',message=str(error))
+                    self.ue('end_task',{'summary':'Dream web command finished; see debugger for request and controller result. Task success requires measured object verification.','keep_view':True})
+                except Exception as error:
+                    result='failed';self.event('cleanup.failed',message=str(error))
+            # Keep the queue occupied until physics, recordings and shared task
+            # cleanup finish; a new operator command must not race teardown.
+            try:self.api('/api/worker/done',{'request_id':request_id,'status':result})
+            finally:self.active_request_id=None
+    def wait_runtime(self,path,phase):
+        deadline=time.monotonic()+30
+        while time.monotonic()<deadline:
+            if path.exists():
+                state=json.loads(path.read_text())
+                if state.get('phase')==phase:return state
+                if state.get('phase') in ('error','stopped') and state.get('error'):raise RuntimeError(state['error'])
+            time.sleep(.1)
+        raise TimeoutError('Unreal runtime did not reach '+phase)
+    def finish_runtime(self,commit):
+        self.python(f"from copresence import ui_widgets\nimport maker_arm_runtime\nui_widgets.after(.2,lambda:maker_arm_runtime.stop(commit={commit!r}))",'Finish runtime physics and restore continuous editor preview')
+        state=self.wait_runtime(self.root/'runtime.json','stopped')
+        self.event('runtime.finished',state=state,message='Runtime physics ended; task outcome requires measured verification')
+        if commit and state.get('error'):raise RuntimeError(state['error'])
     def transcribe(self,voice):
         import io
         try:
@@ -184,4 +232,4 @@ class Worker:
         finally:self.closed=True;self.client.close()
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);args=p.parse_args();Worker(args).run()
+    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--runtime-physics',action='store_true');args=p.parse_args();Worker(args).run()

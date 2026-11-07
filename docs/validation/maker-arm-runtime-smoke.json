@@ -1,0 +1,131 @@
+{
+  "abort": {
+    "phase": "stopped",
+    "error": null,
+    "scope": "runtime physics (approximate convex jaws)",
+    "state": {
+      "q_left": [
+        2.7450933265686035,
+        -0.034822314977645874,
+        3.105093479156494,
+        -0.4021175284902524,
+        -1.5350934267044065,
+        -2.665043725834027
+      ],
+      "q_right": [
+        -1.4072628637127114,
+        -0.5128417681980805,
+        0.2636922983439645,
+        -0.239837586983934,
+        1.5113122780006256,
+        -0.5152775545220285
+      ],
+      "gap_left_m": 0.050892726487379664,
+      "gap_right_m": 0.10438986832181683
+    },
+    "props": {
+      "MakerStation_Approximate_Block_Green": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Orange": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Red": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      }
+    },
+    "task_success_verified": false
+  },
+  "playback": {
+    "done": true,
+    "error": null,
+    "index": 2,
+    "rows": 3,
+    "timing": {
+      "action_hz": 20.0,
+      "time_scale": 1.0,
+      "duration_seconds": 0.1,
+      "original_rows": 2,
+      "rows": 3,
+      "grip_limit_corrections": []
+    },
+    "scope": "runtime physics (approximate convex jaws)",
+    "q_left": [
+      2.7450933265686035,
+      -0.034822314977645874,
+      3.105093479156494,
+      -0.4021175284902524,
+      -1.5350934267044065,
+      -2.665043725834027
+    ],
+    "q_right": [
+      -1.4072628637127114,
+      -0.5128417681980805,
+      0.2636922983439645,
+      -0.239837586983934,
+      1.5113122780006256,
+      -0.5152775545220285
+    ],
+    "gap_left_m": 0.050892726487379664,
+    "gap_right_m": 0.10438986832181683
+  },
+  "commit": {
+    "phase": "stopped",
+    "error": null,
+    "scope": "runtime physics (approximate convex jaws)",
+    "state": {
+      "q_left": [
+        2.7650933265686035,
+        -0.034822314977645874,
+        3.105093479156494,
+        -0.4021175284902524,
+        -1.5350934267044065,
+        -2.665043725834027
+      ],
+      "q_right": [
+        -1.3872628637127113,
+        -0.5128417681980805,
+        0.2636922983439645,
+        -0.239837586983934,
+        1.5113122780006256,
+        -0.5152775545220285
+      ],
+      "gap_left_m": 0.050892726487379664,
+      "gap_right_m": 0.10438986832181683
+    },
+    "props": {
+      "MakerStation_Approximate_Block_Green": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Orange": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      },
+      "MakerStation_Approximate_Block_Red": {
+        "initial_z_cm": 77.5,
+        "max_z_cm": 77.5,
+        "final_z_cm": 77.5,
+        "simulated": true
+      }
+    },
+    "task_success_verified": false
+  },
+  "editor_feedback_verified_after_abort": true,
+  "editor_feedback_verified_after_commit": true,
+  "temporary_proxies_remaining": 0,
+  "scope": "lifecycle and local measured mirror smoke; not autonomous pickup or peer replication proof"
+}

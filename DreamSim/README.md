@@ -34,6 +34,21 @@ Official API source: https://github.com/dreamlabs-co/dreamlabs and https://platf
 
 ## Luna2 web debugger and prompt control
 
+The worker's opt-in `--runtime-physics` route is under integration. It starts one
+authoritative Simulate-in-Editor world per command, requires camera observations
+explicitly marked `runtime`, and routes Dream trajectories through the runtime
+controller. Official visual meshes remain unchanged; jaw contacts use approximate
+convex collision shapes. A controlled fixture has physically retained, lifted,
+and released a cube with those shapes; this is not an autonomous Dream pickup.
+
+Runtime commands keep the queue occupied until physics teardown, recording
+encoding, and the shared task have finished. Aborts discard runtime playback
+seeds so they cannot initialize a restored editor. Episode timestamps and camera
+scope checks exclude stale editor frames from inference. Recording writes and
+episode resets are synchronized with the capture thread. The default worker
+route remains the verified editor kinematic preview until runtime validation
+and deployment are complete.
+
 Open **https://luna2.tail6864ac.ts.net/** on the tailnet (the original HTTP address also remains available). The page provides a prompt box, Run in Unreal and Stop controls, three camera previews, request timing/activity, joint trajectories and the latest verified state. The page is hosted on Luna2 by scheduled task `TheHumanTouch-DreamDebugger`; the policy/Unreal worker currently runs on the Mac's shared editor. Keep that editor and worker running. A grey worker badge disables submission.
 
 The November 7 browser test submitted “Move the left gripper toward the red cube on the table.” through the actual Run button (request `ef3ae184153440c3a6870bc763ea68f1`). Two model requests took 3.74 s and 0.53 s. Both 48-step trajectories completed, with fresh camera/joint-state feedback between them. The captured overhead video shows the left gripper moving above the red cube. It does **not** establish that a cube was grasped. The 64-frame, 12.8-second H.264 clip fully decoded successfully and its initial/middle/final frames were reviewed. Captures and logs live under ignored `Saved/DreamDebugger/worker/recordings/<request-id>/`.

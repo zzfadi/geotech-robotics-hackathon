@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:33:30-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added opt-in runtime physics controller with scoped cameras and measured editor mirror.",
+  "why": "Ordinary editor joint playback cannot physically grasp free objects.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_runtime.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_observer.py",
+    "docs/maker-arm-runtime-controller.md"
+  ],
+  "details": "Live abort and commit lifecycle smoke passed;3sample jointmotion, runtime feedback, all3runtime camera streams, final editor validation and temporaryproxy cleanup verified. Official visual geometry preserved, coarse convex jaw contact explicitly approximate. Model-driven pickup and peer runtime replication still require combined command validation."
+}
