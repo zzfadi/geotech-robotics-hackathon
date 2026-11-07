@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T12:51:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Mac Live Link Hub streamed an external 23-bone camera solve into the shared Unreal editor. The editor and independent observer reported identical source frame identity and time.",
+  "why": "The external simulator can consume the same station sample that Unreal uses to draw the performer.",
+  "where": ["Capture/README.md", "Unreal/TheHumanTouch/Plugins/HumanTouchPose", "docs/performance-capture.md"],
+  "details": "Verified with a reference image and a clean Apple Silicon build. The USB Quest bridge passed an isolated timestamp and dual-receiver check. Live performer acquisition and table registration remain to be verified."
+}

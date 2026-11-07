@@ -39,6 +39,8 @@ def main():
     parser.add_argument('--local-address', required=True)
     parser.add_argument('--name', required=True)
     parser.add_argument('--engine', type=Path, default=Path('C:/Program Files/Epic Games/UE_5.8/Engine') if platform.system()=='Windows' else Path('/Users/Shared/Epic Games/UE_5.8/Engine'))
+    parser.add_argument('--capture-tools', action='store_true',
+                        help='Load the locally built HumanTouchPose plugin for preview and diagnostics')
     args = parser.parse_args()
     running = editors()
     if running:
@@ -48,6 +50,8 @@ def main():
     if (build['MajorVersion'],build['MinorVersion'],build['PatchVersion'],build['Changelist'])!=(5,8,3,58210709):
         raise SystemExit('Requires UE 5.8.3 CL 58210709')
     command=arguments(args.engine,args.local_address,args.name)
+    if args.capture_tools:
+        command.append('-EnablePlugins=HumanTouchPose')
     logdir=PROJECT/'Saved/CoPresenceLogs';logdir.mkdir(parents=True,exist_ok=True)
     # No credentials are passed in command arguments. The hub code is provisioned separately.
     with (logdir/'shared-editor-launch.log').open('ab') as log:

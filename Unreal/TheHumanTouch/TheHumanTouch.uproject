@@ -29,6 +29,13 @@
       "Enabled": true
     },
     {
+      "Name": "LiveLinkHub",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
       "Name": "AndroidFileServer",
       "Enabled": false
     },

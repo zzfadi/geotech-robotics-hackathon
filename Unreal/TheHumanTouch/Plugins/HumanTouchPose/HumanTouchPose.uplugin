@@ -1,0 +1,12 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "1.0",
+  "FriendlyName": "Human Touch Pose",
+  "Description": "Receives station-local human skeletons for Live Link.",
+  "Category": "Virtual Production",
+  "EnabledByDefault": false,
+  "SupportedPrograms": ["LiveLinkHub"],
+  "Modules": [{"Name": "HumanTouchPose", "Type": "Runtime", "LoadingPhase": "Default", "ProgramAllowList": ["LiveLinkHub"]}],
+  "Plugins": [{"Name": "LiveLink", "Enabled": true}]
+}
