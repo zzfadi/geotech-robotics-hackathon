@@ -1,6 +1,7 @@
 """Official Maker Arm mesh/kinematic representation, through scoped CoPresence tools.
 Physical calibration/dynamics remain unvalidated upstream. No hardware commands.
 """
+import math
 import unreal
 import yam_station
 from maker_arm_model import model, mounted_frames, ue_pose
@@ -8,13 +9,15 @@ from maker_arm_model import model, mounted_frames, ue_pose
 ASSETS = '/Game/_Agents/Denys_Mac_Codex/MakerArm'
 PREFIX = 'MakerArm_'
 BASES = dict(yam_station.BASES)  # Existing station placement, explicitly uncalibrated.
-REST = [0, -1.2, 1.4, 0.4, 0, 0]
+REST = [0, 0, 0, 0, 0, 0]
+# Overhead reference: both bases on one long edge, grippers into +X table workspace.
+MOUNT_YAW = {side: math.pi for side in BASES}
 VISUAL_LINKS = [l.get('name') for l in model().findall('link') if l.findall('visual')]
 
 def set_pose(side, q, gap=0.04):
     if side not in BASES:
         raise ValueError('Unknown arm')
-    transforms = mounted_frames(q, gap)
+    transforms = mounted_frames(q, gap, yaw=MOUNT_YAW[side])
     existing = yam_station.actors()
     labels = {n: PREFIX+side+'_'+n for n in VISUAL_LINKS}
     if any(label not in existing for label in labels.values()):

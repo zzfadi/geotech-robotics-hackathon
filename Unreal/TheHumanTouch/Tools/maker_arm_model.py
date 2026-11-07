@@ -46,9 +46,11 @@ def frames(q, gap=0.04):
             pending.remove(j)
     return out
 
-def mounted_frames(q, gap=0.04):
+def mounted_frames(q, gap=0.04, yaw=0.0):
     """Rotate CAD Y-up onto world Z-up, as documented by upstream."""
-    mount = rotation([1, 0, 0], math.pi / 2)
+    if not math.isfinite(yaw):
+        raise ValueError("Mount yaw must be finite")
+    mount = mul(rotation([0, 0, 1], yaw), rotation([1, 0, 0], math.pi / 2))
     return {name: mul(mount, t) for name, t in frames(q, gap).items()}
 
 def prepare(destination=None):

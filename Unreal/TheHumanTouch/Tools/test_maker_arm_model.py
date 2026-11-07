@@ -24,6 +24,13 @@ class MakerArmModelTest(unittest.TestCase):
                     self.assertAlmostEqual((a[i]+b[i])/2, closed['gripper_left'][i][3], places=8)
                     self.assertAlmostEqual(f['grasp_center'][i][3],closed['grasp_center'][i][3],places=8)
 
+    def test_physical_station_mount_direction(self):
+        f=mounted_frames([0]*6, yaw=math.pi)
+        self.assertLess(f["link_004"][0][3], 0)  # Folded elbow behind base.
+        self.assertGreater(f["grasp_center"][0][3], .20)  # Gripper into table.
+        self.assertAlmostEqual(f["grasp_center"][1][3], 0, places=6)
+        self.assertGreater(f["grasp_center"][2][3], .10)
+
     def test_rejects_bad_commands(self):
         for q, gap in [([0]*5,.04),([0,float('nan'),0,0,0,0],.04),([0]*6,-.01),([0]*6,.105),([0,.1,0,0,0,0],.04)]:
             with self.assertRaises(ValueError): frames(q,gap)

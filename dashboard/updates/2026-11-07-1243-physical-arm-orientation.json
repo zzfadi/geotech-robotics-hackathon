@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T12:43:59-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Rotated both Maker Arm mounts and folded their joints to match the overhead physical setup photo.",
+  "why": "Both grippers should reach across the table from the same long edge.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_station.py",
+    "docs/images/maker-arm-station.jpg"
+  ],
+  "details": "Four geometry/kinematics checks pass and pose replicated to Luna2. Mac exited during Concert map reload: the crash log identifies the Empty redirector retaining the renamed world. Host content and session remain available; client recovery and redirector cleanup are pending."
+}

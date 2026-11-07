@@ -31,3 +31,7 @@ The CAD uses Y-up geometry; upstream mentions a +90-degree X inspection display 
 ## Current project state
 
 The official source model is downloaded and its mesh references verified. Nine combined link meshes have been imported into the live Unreal scene, and both YAM arms have been replaced by 18 Maker Arm link actors. Imported bounds agree with the converted CAD vertices within 0.1 mm. All 18 actors were observed on Luna2 after Multi-User synchronization. This is currently an editor kinematic representation, not yet a physics articulation or calibrated physical twin. The map has been renamed to `/Game/Maps/TheHumanTouch`, verified active on Mac and Luna2, and selected for both default-map settings. The guarded binary checkpoint and confirmation of Brian’s active map remain unfinished.
+
+## Physical orientation reference
+
+The November 7 overhead photo places both arms on the same long table edge, reaching in parallel across the table. `maker_arm_station.py` now applies a 180-degree mount yaw to both official CAD assemblies and uses the folded zero pose; the gripper grasp frames point into +X and the elbows lie behind the bases. Dimensions and exact encoder pose are still unmeasured. Four offline checks cover model coordinates, symmetric jaws, invalid commands, and this mounting direction. The updated pose was observed on Luna2.
