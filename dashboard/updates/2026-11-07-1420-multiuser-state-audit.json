@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T14:20:17-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Verified intermediate Maker Arm motion and matching final scene state on Mac and Luna2.",
+  "why": "Connected membership and a pushed map do not alone prove actual replicated arm state.",
+  "where": [
+    "docs/multiuser-simulation-verification.md",
+    "Unreal/TheHumanTouch/Tools/multiuser_motion_audit.py"
+  ],
+  "details": "Request5773d12046c742619cfd7cc3a19c6502:657 Mac/702 Luna2 samples;95/94 distinct poses per wrist,92 shared. Final23actors match to floating precision; all3 cameras active with hidden largeicons, small centralhousingvisible. Guarded hostcheckpoint pushed d8badb2d623fd8c09b3b1eefdb93ec0b810c860f. Brian VR membership confirmed but scene independently unverified; no participant disconnected and rollover remains pending."
+}
