@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:42:09-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Measured full web-to-Dream runtime command; physical contact occurred but pickup failed.",
+  "why": "Completing arm trajectories must not be reported as successful object manipulation.",
+  "where": [
+    "docs/maker-arm-runtime-controller.md",
+    "docs/validation/dream-runtime-red-cube-command.json",
+    "docs/validation/dream-runtime-last-action.json"
+  ],
+  "details": "Exact prompt pick up red cube completed six model-driven runtime cycles and 374 frames across three cameras. Red slid 5.26 cm horizontally and rose only 0.44 cm maximum, then rested. Raw model EEF prediction already misses task position; solved FK endpoint differs by 1.84 cm left / 0.68 cm right. Observation/policy calibration remains open; no autonomous pickup claim."
+}

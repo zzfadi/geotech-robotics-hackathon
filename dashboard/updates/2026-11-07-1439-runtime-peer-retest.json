@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T14:39:42-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified corrected runtime abort and commit with the connected Luna2 peer.",
+  "why": "The initial local-only smoke missed a Concert teardown failure.",
+  "where": [
+    "docs/maker-arm-runtime-controller.md",
+    "docs/validation/maker-arm-runtime-peer-smoke.json"
+  ],
+  "details": "Bounded 3/4-sample runtime motions completed; Luna2 survived both teardowns and 24 final actor positions matched exactly. Concert 490/491/493/494 carried editor component modifications, with no PIE object/camera deletion transactions. Normal PIE package discard 492/495 is expected. Canonical REST feedback and cameras restored. Full Dream pickup remains unproven."
+}
