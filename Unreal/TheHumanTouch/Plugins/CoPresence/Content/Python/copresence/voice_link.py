@@ -152,12 +152,13 @@ def ensure_helper() -> None:
 def find_uv() -> str | None:
     """uv, also where its installers put it, since an editor started from the Dock or Explorer
     doesn't get the shell's PATH."""
-    found = shutil.which("uv")
+    found = os.environ.get("UV") or shutil.which("uv")
     if found:
         return found
     home = Path.home()
     for candidate in (home / ".local" / "bin" / "uv", home / ".local" / "bin" / "uv.exe", home / ".cargo" / "bin" / "uv",
-                      Path("/opt/homebrew/bin/uv"), Path("/usr/local/bin/uv")):
+                      Path("/opt/homebrew/bin/uv"), Path("/usr/local/bin/uv"),
+                      Path("F:/GeoVerse/AgentTools/python/bin/uv.exe")):
         if candidate.exists():
             return str(candidate)
     return None

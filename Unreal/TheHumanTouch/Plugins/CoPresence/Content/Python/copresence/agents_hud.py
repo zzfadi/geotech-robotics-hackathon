@@ -131,10 +131,10 @@ _state = {"callback": None, "elapsed": 0.0, "last_warning": "", "following": Non
 # The Agents tabs showing in Virtual Scouting's VR menu, each with its rows
 _vr_panels = {}
 _rig = follow_camera.FollowRig()
-# Agents' editors and the spectator talk to nobody, so they have no voice
+# A shared editor serves a human too, so it needs the desktop microphone/playback helper.
 _COMMAND_LINE = unreal.SystemLibrary.get_command_line().upper()
 _DESKTOP_VOICE_OPT_IN = (Path(unreal.Paths.project_saved_dir()) / "CoPresence" / "desktop_voice_enabled").is_file()
-_PERSON_EDITOR = ("-COPRESENCEAGENT" not in _COMMAND_LINE or _DESKTOP_VOICE_OPT_IN) and "-COPRESENCESPECTATOR" not in _COMMAND_LINE
+_PERSON_EDITOR = ("-COPRESENCEAGENT" not in _COMMAND_LINE or _DESKTOP_VOICE_OPT_IN or "-HUMANTOUCHSHAREDEDITOR" in _COMMAND_LINE) and "-COPRESENCESPECTATOR" not in _COMMAND_LINE
 
 
 def _avatar(name: str):

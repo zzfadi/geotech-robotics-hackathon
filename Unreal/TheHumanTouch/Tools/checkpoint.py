@@ -114,7 +114,7 @@ def checkpoint(dry_run=False):
             now = datetime.now(ZoneInfo("America/Los_Angeles"))
             update = Path("dashboard/updates") / (now.strftime("%Y-%m-%d-%H%M") + "-luna2-unreal-checkpoint-" + uuid.uuid4().hex[:8] + ".json")
             (REPO / update).write_text(json.dumps({
-                "when": now.isoformat(), "who": "Luna2 checkpoint", "kind": "agent",
+                "when": now.isoformat(),
                 "workstream": "vrxr", "status": "done", "what": "Persisted Unreal content checkpoint",
                 "why": "15-minute or milestone recovery baseline; push follows this commit.",
                 "where": paths, "details": "Concert session rollover is separately coordinated; this commit does not clear live history."

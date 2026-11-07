@@ -36,7 +36,7 @@ Build `Plugins/CoPresenceFab/CoPresenceFab.uplugin` using UE's `RunUAT BuildPlug
 
 `Tools/validate_empty_map.py` loads the baseline and checks engine version and zero authored actors. The initial map was verified on Mac and Luna2. Scoped `Tools/copresence_mcp.py call session '{}'` uses `COPRESENCE_UNREAL_MCP_URL=http://127.0.0.1:8041/mcp`; verify the returned session and peer identities. Test a read-only chat request and voice independently.
 
-Mac Codex and Luna2 Claude have both returned verified Agent Chat replies in TheHumanTouch; both avatars are visible and each machine runs one editor. Voice helpers are connected; end-to-end audible voice verification remains pending.
+Mac Codex and Luna2 Claude have both returned verified Agent Chat replies in TheHumanTouch; both avatars are visible and each machine runs one editor. On November 7 the user confirmed an audible voice call from the Mac to Luna2 Claude works. Shared-editor mode enables the human microphone/playback helper alongside the agent runner.
 
 ## Checkpoints
 

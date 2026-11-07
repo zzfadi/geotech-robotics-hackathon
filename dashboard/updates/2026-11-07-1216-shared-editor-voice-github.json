@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T12:16:16.248563-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Shared-editor voice works; Luna2 GitHub push authentication verified",
+  "why": "Shared human/agent editors were incorrectly excluded from desktop microphone/playback startup. The shared-editor marker now enables it, preserving one UE editor per machine.",
+  "where": [
+    "Unreal/TheHumanTouch/Plugins/CoPresence/Content/Python/copresence/agents_hud.py",
+    "Unreal/TheHumanTouch/README.md",
+    "docs/checkpoints.md"
+  ],
+  "details": "User confirmed Mac-to-Luna2 Claude voice works; helper log confirms the call. Both agents replied in TheHumanTouch and one editor per machine was verified. User-authorized Batname device login completed; unattended push dry-run exit 0. No private SSH key copied."
+}
