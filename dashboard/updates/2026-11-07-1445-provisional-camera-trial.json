@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:45:44-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Prepared a controlled wrist-camera and target-layout experiment for Full/Flash comparison.",
+  "why": "Previous raw EEF predictions missed the cube before IK; original camera offsets were provisional.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_calibration_trial.py",
+    "docs/maker-arm-camera-trial.md",
+    "docs/validation/maker-arm-provisional-camera-trial.json"
+  ],
+  "details": "Saved original scene/camera state; reset arms to canonical REST, moved target only during setup to (55,-30,77.5) cm, neutralized the red control proxy. Wrist-lens offset now (4,0,-4) cm aimed at (0,0,-30) cm, still uncalibrated. Frozen identical three-camera input captured and hashed for inference-only model comparison. Acceptance requires physical grasp plus >=10 cm lift and sustained hold, not arm-motion completion."
+}

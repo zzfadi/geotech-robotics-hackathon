@@ -1,0 +1,102 @@
+{
+  "phase": "stopped",
+  "error": null,
+  "scope": "runtime physics (approximate convex jaws)",
+  "state": {
+    "q_left": [
+      0.6195153573176246,
+      -1.8729945212811026,
+      2.502720409339959,
+      -1.4515496208951193,
+      -0.22193203064111577,
+      0.5471975586631084
+    ],
+    "q_right": [
+      -0.13434975526549597,
+      -1.2320347665906786,
+      0.9149732310455163,
+      0.010699262303606351,
+      0.1791912984181118,
+      -0.1078288946431
+    ],
+    "gap_left_m": 0.0028663085937499938,
+    "gap_right_m": 0.10348483404824574,
+    "contact_stop_left": [],
+    "contact_stop_right": []
+  },
+  "props": {
+    "MakerStation_Approximate_Block_Green": {
+      "initial_z_cm": 77.50007677389202,
+      "max_z_cm": 77.50007677389202,
+      "final_z_cm": 77.50007677389202,
+      "simulated": true,
+      "position_cm": [
+        53.000051262321286,
+        -12.000063443398544,
+        77.50007677389202
+      ],
+      "velocity_cm_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "speed_cm_s": 0.0,
+      "height_above_start_cm": 0.0,
+      "current_above_10cm_seconds": 0.0,
+      "max_above_10cm_seconds": 0.0,
+      "current_slow_above_10cm_seconds": 0.0,
+      "max_slow_above_10cm_seconds": 0.0,
+      "at_least_1s_slow_above_10cm": false,
+      "grasp_verified": false
+    },
+    "MakerStation_Approximate_Block_Orange": {
+      "initial_z_cm": 77.5,
+      "max_z_cm": 77.5,
+      "final_z_cm": 77.5,
+      "simulated": true,
+      "position_cm": [
+        60.0,
+        15.0,
+        77.5
+      ],
+      "velocity_cm_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "speed_cm_s": 0.0,
+      "height_above_start_cm": 0.0,
+      "current_above_10cm_seconds": 0.0,
+      "max_above_10cm_seconds": 0.0,
+      "current_slow_above_10cm_seconds": 0.0,
+      "max_slow_above_10cm_seconds": 0.0,
+      "at_least_1s_slow_above_10cm": false,
+      "grasp_verified": false
+    },
+    "MakerStation_Approximate_Block_Red": {
+      "initial_z_cm": 79.0,
+      "max_z_cm": 80.150993559952,
+      "final_z_cm": 77.50004246946777,
+      "simulated": true,
+      "position_cm": [
+        45.923835692954746,
+        -30.456534083669922,
+        77.50004246946777
+      ],
+      "velocity_cm_s": [
+        -2.873171069950331e-06,
+        -1.4575689419871196e-06,
+        -3.500511809306772e-07
+      ],
+      "speed_cm_s": 3.240702863132617e-06,
+      "height_above_start_cm": -1.4999575305322281,
+      "current_above_10cm_seconds": 0.0,
+      "max_above_10cm_seconds": 0.0,
+      "current_slow_above_10cm_seconds": 0.0,
+      "max_slow_above_10cm_seconds": 0.0,
+      "at_least_1s_slow_above_10cm": false,
+      "grasp_verified": false
+    }
+  },
+  "task_success_verified": false
+}

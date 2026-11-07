@@ -1,0 +1,167 @@
+{
+  "scope": "photo-informed provisional camera/target trial, not measured calibration",
+  "before": {
+    "created_unix": 1794091491.414525,
+    "scope": "before explicit provisional calibration trial",
+    "robot_state": {
+      "q_left": [
+        1.839569891249385,
+        -0.2911892201933825,
+        0.034880059660522315,
+        -0.09959375696790787,
+        -1.5000875829816713,
+        0.18641109847939125
+      ],
+      "q_right": [
+        0.7703193230228823,
+        -0.5172569739235028,
+        0.9870085282759229,
+        -0.36317287854381375,
+        -0.5123513378463423,
+        0.6079281568527223
+      ],
+      "gap_left_m": 0.01805903269094176,
+      "gap_right_m": 0.07052477561694964
+    },
+    "actors": {
+      "MakerCamera_LeftWrist": {
+        "position_cm": [
+          28.508150704796286,
+          -25.127463664574158,
+          100.25399229763156
+        ],
+        "quaternion_xyzw": [
+          -0.22020832967966916,
+          0.3518474448897259,
+          0.08913126235764372,
+          0.9054100094072268
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "parent": "MakerArm_left_link_007",
+        "fov_degrees": 90.0,
+        "aspect_ratio": 1.7777777910232544
+      },
+      "MakerCamera_RightWrist": {
+        "position_cm": [
+          36.23258781397597,
+          39.21259013440758,
+          117.80080802670452
+        ],
+        "quaternion_xyzw": [
+          0.21466969977452519,
+          0.414248466164755,
+          0.20952451644019576,
+          0.8593105406599905
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "parent": "MakerArm_right_link_007",
+        "fov_degrees": 90.0,
+        "aspect_ratio": 1.7777777910232544
+      },
+      "MakerCamera_Overview": {
+        "position_cm": [
+          12.5,
+          0.0,
+          138.5
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.4807627589258445,
+          0.0,
+          0.8768507111418741
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "parent": "Dreamlabs_YAM_OverviewCameraProxy",
+        "fov_degrees": 100.0,
+        "aspect_ratio": 1.7777777910232544
+      },
+      "MakerStation_Approximate_Block_Red": {
+        "position_cm": [
+          59.67269352965329,
+          -20.473700847952358,
+          77.50008084245579
+        ],
+        "quaternion_xyzw": [
+          3.2460134151517942e-06,
+          1.4304615405440407e-05,
+          0.7271051989092499,
+          0.686526058867383
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.05
+        ],
+        "parent": null,
+        "materials": [
+          "/Game/_Agents/Denys_Mac_Codex/MakerArm/M_Station_Red.M_Station_Red"
+        ]
+      },
+      "MakerStation_UnverifiedControlProxy": {
+        "position_cm": [
+          65.0,
+          85.0,
+          77.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale": [
+          0.06,
+          0.06,
+          0.04
+        ],
+        "parent": null,
+        "materials": [
+          "/Game/_Agents/Denys_Mac_Codex/YAM/M_YAM_Stop.M_YAM_Stop"
+        ]
+      }
+    }
+  },
+  "setup": {
+    "scope": "explicit provisional camera/target setup, not hardware calibration",
+    "wrist_location_local_cm": [
+      4,
+      0,
+      -4
+    ],
+    "wrist_aim_local_cm": [
+      0,
+      0,
+      -30
+    ],
+    "wrist_fov_degrees": 90,
+    "red_start_center_cm": [
+      55,
+      -30,
+      77.5
+    ],
+    "pickup_acceptance_center_z_cm": 87.5,
+    "pickup_acceptance": "physical grasp plus >=10cm lift and hold; no attachment or commanded cube path"
+  },
+  "frozen_input": {
+    "captured_unix": 1794091508.2354538,
+    "sha256": {
+      "observation.json": "75fb63746fb92b6e645ac2dba7a269b0f7e3bd260d8df5d32037c3affc32a5ad",
+      "state.json": "8cf50d0a88efbbd26f6783f0470cf1a169d808704436388c6f1920ebd7b003f4",
+      "overhead.jpg": "38e22010db95787c8dd2f0a0c624a23050741e021debb24c745471b83b880c65",
+      "wrist_l.jpg": "7c53806e38d0c900bec89991eb757cce44dfa6a8fa54aa4199c628f842ec42c8",
+      "wrist_r.jpg": "f55642364c042d818dc1129319dad56b474b1d19af270e6c989e519693fa425e"
+    }
+  }
+}

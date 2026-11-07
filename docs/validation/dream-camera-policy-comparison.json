@@ -1,0 +1,57 @@
+{
+  "scope": "Frozen-input inference comparison; no robot motion applied",
+  "prompt": "Use the left arm to pick up the red cube, lift it straight up by 10 cm, and hold it.",
+  "observation_sha256": "75fb63746fb92b6e645ac2dba7a269b0f7e3bd260d8df5d32037c3affc32a5ad",
+  "red_cube_world_cm": [
+    55,
+    -30,
+    77.5
+  ],
+  "target_left_base_m": [
+    0.35,
+    -0.1,
+    0.015
+  ],
+  "required_lift_cm": 10,
+  "results": [
+    {
+      "model": "dreamlabs/dream-1-beta",
+      "latency_seconds": 2.309482958051376,
+      "minimum_predicted_tcp_distance_cm": 7.28793863836578,
+      "minimum_row": 47,
+      "final_predicted_tcp_distance_cm": 7.28793863836578,
+      "first_target_m": [
+        0.31678417325019836,
+        -0.0028917028103023767,
+        0.11650311946868896
+      ],
+      "last_target_m": [
+        0.3272033631801605,
+        -0.0641215518116951,
+        0.07419843971729279
+      ],
+      "first_grip": 0.4375,
+      "last_grip": 0.4609375
+    },
+    {
+      "model": "dreamlabs/dream-1-beta-flash",
+      "latency_seconds": 2.4218780410010368,
+      "minimum_predicted_tcp_distance_cm": 0.38542345832389246,
+      "minimum_row": 35,
+      "final_predicted_tcp_distance_cm": 2.8932742477886637,
+      "first_target_m": [
+        0.33666104078292847,
+        -0.0028917063027620316,
+        0.12179648131132126
+      ],
+      "last_target_m": [
+        0.34170109033584595,
+        -0.11344560235738754,
+        -0.009237315505743027
+      ],
+      "first_grip": 0.6953125,
+      "last_grip": 0.6181640625
+    }
+  ],
+  "interpretation": "Flash predicts an approach near the visible target after camera/setup changes. This is not a grasp or lift result; physical execution and recording remain required."
+}
