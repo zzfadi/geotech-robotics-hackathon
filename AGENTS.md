@@ -20,6 +20,15 @@ The [Slack recommendation from November 5, 2026](https://geotech-org.slack.com/a
 
 ## Working practices
 
+### Luna2 and agent startup
+
+- Use the installed `luna2-unreal-meet` skill for Luna2 access and lifecycle verification. On Denys's Mac it is at `/Users/geo_dennis/.codex/skills/luna2-unreal-meet/SKILL.md`; read its referenced operating guide too.
+- This project's settings override the skill's original AgentCoPresence defaults: UE **5.8.3 CL 58210709**, project `Unreal/TheHumanTouch/TheHumanTouch.uproject`, server/session `TheHumanTouch`, Luna2 `100.84.28.59`, Multi-User UDP `9040`, Agent Chat `8791`, and local editor MCP `8041`.
+- Luna2 must run **Claude** as `Denys Luna2 Claude`; the Mac uses **Codex** as `Denys Mac Codex`. Starting only the server or a human editor does not complete agent startup.
+- Use `Tools/join_human_touch.py` for the single shared human/agent editor, plus this project's agent runner. Do not use the legacy two-editor join workflow or silently start the original AgentCoPresence project.
+- Verify the intended project/session, one editor per machine, the correct brain runner, a visible agent, and an actual Agent Chat reply. Verify voice separately; an open panel or connected helper does not prove audible conversation.
+- Keep join codes in ignored local Saved files. Share the current code only for authorized joining; never commit it. See `docs/brian-join.md` for participant setup.
+
 ### Unreal session limit
 
 - By default, run only one Unreal Editor instance per computer, including the Mac and Luna2. Human and agent editors count toward the same limit.
