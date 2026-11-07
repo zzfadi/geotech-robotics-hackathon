@@ -49,6 +49,31 @@ class WorkerRuntimeTests(unittest.TestCase):
         w.finish_runtime=lambda commit:self.calls.append(('runtime.finish',commit))
         self.command={'id':'current','prompt':'pick up red cube'}
 
+    def test_full_capacity_falls_back_with_fresh_packet(self):
+        w=self.w;w.checkpoint=self.module.FULL
+        error=self.module.DreamServerError('capacity');error.code='DA-2000';error.reason='pool_full'
+        w.client.get_action.side_effect=[error,{'ok':True}]
+        packets=[{'sequence':1},{'sequence':2}]
+        w.fresh=Mock(side_effect=packets)
+        w.select_model=lambda model:setattr(w,'checkpoint',model)
+        budget=self.module.ModelBudget()
+        action,packet=w.infer(budget,8,'runtime')
+        self.assertEqual(packet,packets[1]);self.assertEqual(action,{'ok':True})
+        self.assertEqual(budget.full_calls,1);self.assertTrue(budget.full_unavailable)
+        self.assertEqual(w.checkpoint,self.module.FLASH)
+        self.assertEqual(w.client.get_action.call_count,2)
+
+    def test_expiry_cannot_exceed_full_budget(self):
+        w=self.w;w.checkpoint=self.module.FULL
+        w.client.get_action.side_effect=[self.module.DreamSessionExpired('expired'),{'ok':True}]
+        w.fresh=Mock(side_effect=[{'sequence':1},{'sequence':2},{'sequence':3}])
+        w.select_model=lambda model:setattr(w,'checkpoint',model)
+        budget=self.module.ModelBudget(full_limit=1)
+        action,packet=w.infer(budget,8,'runtime')
+        self.assertEqual(budget.full_calls,1);self.assertEqual(w.checkpoint,self.module.FLASH)
+        self.assertEqual(packet,{'sequence':3})
+        self.assertEqual(w.client.get_action.call_count,2)
+
     def done(self):
         return [data for path,data in self.calls if path=='/api/worker/done']
 

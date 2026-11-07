@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T15:18:02-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified bounded model routing in a recorded 16-cycle Unreal physics trial.",
+  "why": "Confirm actual Flash/full usage and preserve an honest physical task result.",
+  "where": [
+    "DreamSim/test_worker_runtime.py",
+    "docs/validation/dream-redlift-trial7-runtime.json"
+  ],
+  "details": "Request 2faa90163f5548b297fe878be8175654 used eight Flash calls, two full calls, then six Flash calls. All trajectories completed. All three camera recordings uploaded, 313 frames each (62.6 seconds at 5 fps). Cube maximum rise was 0.4116 cm, not the required 10 cm; no successful grasp. Runtime cleanup completed. 26 DreamSim tests pass, including fresh-observation capacity fallback and a retry that cannot exceed the full call budget."
+}
