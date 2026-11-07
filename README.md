@@ -12,7 +12,7 @@ All development takes place directly on `main`. Read [AGENTS.md](AGENTS.md) for 
 
 ## Turn-taking prototype
 
-The [local turn gate](turn_gate/README.md) tests hand occupancy, observation freshness and explicit robot turns with a deterministic replay. It runs without hardware or API credentials. See the [robot stack integration boundary](docs/robot-stack-contract.md) before connecting the detector, Dream-1 or a physical arm.
+The [local turn gate](turn_gate/README.md) tests hand occupancy, observation freshness and explicit robot turns with a deterministic replay. The optional [MediaPipe camera preview](turn_gate/CAMERA.md) feeds hand observations into it, with keyboard turn requests and timing measurements. Neither needs robot access or API credentials. See the [robot stack integration boundary](docs/robot-stack-contract.md) before connecting Dream-1 or a physical arm.
 
 ## Unreal project
 
