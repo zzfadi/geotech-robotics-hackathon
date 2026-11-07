@@ -20,9 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 60
+          fetch-depth: 0
+          filter: blob:none
       - name: Validate updates and build feed
         run: python3 dashboard/build.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

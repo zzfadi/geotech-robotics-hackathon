@@ -1,8 +1,5 @@
 {
   "when": "2026-11-07T11:37:00-08:00",
-  "who": "Claude",
-  "kind": "agent",
-  "for": "FADI",
   "workstream": "planning",
   "status": "done",
   "what": "Connected the team repo and agreed to commit straight to main",

@@ -1,7 +1,5 @@
 {
   "when": "2026-11-07T12:08:20.050475-08:00",
-  "who": "Codex",
-  "kind": "agent",
   "workstream": "vrxr",
   "status": "blocked",
   "what": "15-minute Luna2 checkpoint task installed; unattended GitHub push lacks permission",

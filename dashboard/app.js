@@ -35,6 +35,23 @@
     return PALETTE[h % PALETTE.length];
   }
 
+  function avatarFor(name, source) {
+    const node = el("span", { class: "avatar", text: initials(name), "aria-hidden": "true" });
+    node.style.background = colorFor(name);
+    if (source === "github" && /^[A-Za-z0-9-]+(\[bot\])?$/.test(name)) {
+      const img = el("img", { src: `https://github.com/${encodeURIComponent(name.replace("[bot]", ""))}.png?size=72`, alt: "", loading: "lazy" });
+      img.addEventListener("error", () => img.remove());
+      node.append(img);
+    }
+    return node;
+  }
+
+  function authorLink(name, source, cls) {
+    return source === "github"
+      ? el("a", { class: cls, href: `https://github.com/${encodeURIComponent(name.replace("[bot]", ""))}`, target: "_blank", rel: "noopener", text: name })
+      : el("span", { class: cls, text: name });
+  }
+
   function initials(name) {
     const parts = String(name).replace(/[_.-]+/g, " ").trim().split(/\s+/);
     return ((parts[0] || "?")[0] + (parts[1] ? parts[1][0] : "")).toUpperCase();
@@ -149,7 +166,8 @@
   }
 
   function renderFilters() {
-    const people = [...new Set(feed.updates.map((u) => u.who))].sort((a, b) => a.localeCompare(b));
+    const people = [...new Set([...feed.updates.map((u) => u.author), ...(feed.commits || []).map((c) => c.author)])]
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
     fillSelect("f-who", "Everyone", people.map((p) => [p, p]), state.who);
     fillSelect("f-ws", "All workstreams", feed.workstreams.map((w) => [w.id, w.name]), state.ws);
     const statuses = ["done", "in-progress", "blocked", "decision", "note"];
@@ -160,16 +178,13 @@
     const wsName = Object.fromEntries(feed.workstreams.map((w) => [w.id, w.name]));
     const repo = feed.project.repo, branch = feed.project.branch || "main";
     const items = feed.updates.filter((u) =>
-      (!state.who || u.who === state.who) && (!state.ws || u.workstream === state.ws) && (!state.status || u.status === state.status));
+      (!state.who || u.author === state.who) && (!state.ws || u.workstream === state.ws) && (!state.status || u.status === state.status));
     const list = $("feed");
     list.replaceChildren(...items.map((u) => {
-      const avatar = el("span", { class: "avatar" + (u.kind === "agent" ? " agent" : ""), text: initials(u.who), "aria-hidden": "true" });
-      avatar.style.background = colorFor(u.who);
-      return el("li", { class: "entry" }, avatar,
+      return el("li", { class: "entry" }, avatarFor(u.author, u.author_source),
         el("div", {},
           el("div", { class: "entry-top" },
-            el("span", { class: "who", text: u.who }),
-            el("span", { class: "tag", text: u.kind === "agent" ? (u.for ? `agent for ${u.for}` : "agent") : "human" }),
+            authorLink(u.author, u.author_source, "who"),
             el("span", { class: "dot", text: "·" }),
             el("span", { text: wsName[u.workstream] || u.workstream }),
             el("span", { class: "dot", text: "·" }),
@@ -187,12 +202,14 @@
   function renderCommits(commits) {
     const repo = feed.project.repo;
     const list = $("commits");
-    if (!commits.length) { list.replaceChildren(el("li", { class: "commit" }, el("span", { class: "meta", text: "No commits found." }))); return; }
+    commits = commits.filter((c) => !state.who || c.author === state.who);
+    if (!commits.length) { list.replaceChildren(el("li", { class: "commit" }, el("span", { class: "meta", text: state.who ? "No recent commits from this person." : "No commits found." }))); return; }
     list.replaceChildren(...commits.slice(0, 15).map((c) => el("li", { class: "commit" },
       repo ? el("a", { class: "chip sha", href: `${repo}/commit/${c.sha}`, target: "_blank", rel: "noopener", text: c.short }) : el("span", { class: "chip sha", text: c.short }),
       el("div", { class: "msg" },
         el("div", { class: "msg-line", title: c.subject, text: c.subject }),
-        el("div", { class: "meta", text: `${c.author} · ${c.files} file${c.files === 1 ? "" : "s"}${c.areas.length ? " · " + c.areas.join(", ") : ""}` })),
+        el("div", { class: "meta" }, authorLink(c.author, c.author_source, "commit-author"),
+          ` · ${c.files} file${c.files === 1 ? "" : "s"}${c.areas.length ? " · " + c.areas.join(", ") : ""}`)),
       el("time", { class: "time", datetime: c.when, title: absTime(c.when), text: relTime(c.when) }))));
   }
 
@@ -233,7 +250,7 @@
 
   // ---------- filters ----------
   [["f-who", "who"], ["f-ws", "ws"], ["f-status", "status"]].forEach(([id, key]) => {
-    $(id).addEventListener("change", (e) => { state[key] = e.target.value; renderFeed(); });
+    $(id).addEventListener("change", (e) => { state[key] = e.target.value; renderFeed(); if (key === "who") renderCommits(feed.commits || []); });
   });
 
   load();
