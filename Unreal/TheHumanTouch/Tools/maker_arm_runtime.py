@@ -21,7 +21,7 @@ def write(path,value):
     tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(value));tmp.replace(path)
 
 class Session:
-    def __init__(self,seed_path,status_path,camera_directory,mirror=True):
+    def __init__(self,seed_path,status_path,camera_directory,mirror=True,pad_contacts=False):
         self.editor=unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
         self.level=unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
         if self.editor.get_game_world() is not None or animation.is_running():raise RuntimeError('Simulation or shared animation already active')
@@ -30,7 +30,7 @@ class Session:
         self.initial={key:candidate[key] for key in ('q_left','q_right','gap_left_m','gap_right_m')}
         maker_arm_feedback.seed(self.initial)
         self.state=maker_arm_feedback.read();self.status=Path(status_path);self.cameras=str(camera_directory)
-        self.want_mirror=mirror;self.mirror=None;self.world=None;self.proxies={};self.props={};self.evidence={};self.evidence_timers={}
+        self.pad_contacts=pad_contacts;self.want_mirror=mirror;self.mirror=None;self.world=None;self.proxies={};self.props={};self.evidence={};self.evidence_timers={}
         self.phase='starting';self.error=None;self.started=time.monotonic();self.last_motion=None;self.commit=False
         self.motion=None;self.callback=None;self.local_proxies=[];self.report()
         maker_arm_observer.stop()
@@ -43,13 +43,14 @@ class Session:
             for side in BASES:
                 for link in ('gripper_left','gripper_right'):
                     label='MakerArm_'+side+'_'+link;source=editor_actors[label]
-                    mesh=unreal.load_asset('/Game/_Agents/Denys_Mac_Codex/MakerArm/Physics/SM_MakerArm_Collision_'+link)
+                    mesh=unreal.load_asset('/Engine/BasicShapes/Cube' if self.pad_contacts else '/Game/_Agents/Denys_Mac_Codex/MakerArm/Physics/SM_MakerArm_Collision_'+link)
                     if mesh is None:raise RuntimeError('Missing diagnostic collision mesh')
                     proxy=unreal.get_editor_subsystem(unreal.EditorActorSubsystem).spawn_actor_from_class(unreal.StaticMeshActor,source.get_actor_location(),source.get_actor_rotation(),False)
                     self.local_proxies.append(proxy)
                     proxy.set_actor_label('DreamSim_RuntimeProxy_'+label)
                     proxy.set_editor_property('tags',[unreal.Name(tracking.LOCAL_ONLY_TAG)])
                     pc=proxy.static_mesh_component;pc.set_mobility(unreal.ComponentMobility.MOVABLE);pc.set_static_mesh(mesh)
+                    if self.pad_contacts:proxy.set_actor_scale3d(unreal.Vector(.03,.01,.02))
                     pc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
                     pc.set_visibility(False,False);proxy.set_actor_hidden_in_game(True)
             return True
@@ -59,8 +60,8 @@ class Session:
         self.level.editor_play_simulate()
 
     def report(self):
-        write(self.status,{'phase':self.phase,'error':self.error,'scope':'runtime physics (approximate convex jaws)',
-                          'state':self.state,'props':self.evidence,'task_success_verified':False})
+        write(self.status,{'phase':self.phase,'error':self.error,'scope':'runtime physics (approximate flat pads)' if self.pad_contacts else 'runtime physics (approximate convex jaws)',
+                          'sampled_unix':time.time(),'state':self.state,'props':self.evidence,'task_success_verified':False})
 
     def prepare(self,world):
         self.world=world
@@ -111,7 +112,7 @@ class Session:
         m=self.motion
         if not m:return
         write(m['output'],{'done':done,'error':error,'index':m['index'],'rows':len(m['chunks']['left']),
-                           'timing':m['timing'],'scope':'runtime physics (approximate convex jaws)',**self.state})
+                           'timing':m['timing'],'scope':'runtime physics (approximate flat pads)' if self.pad_contacts else 'runtime physics (approximate convex jaws)',**self.state})
 
     def tick(self,delta):
         try:
@@ -139,14 +140,23 @@ class Session:
                 for side in BASES:
                     row,index=sample(m['chunks'][side],now-m['start'],m['timing']['action_hz'])
                     frames=mounted_frames(row[:6],row[6]*.104825,yaw=MOUNT_YAW[side])
-                    gap,contacts=contact_gap(row[6]*.104825,self.state['gap_'+side+'_m'],actor_boxes(self.props,frames['link_007'],BASES[side]))
+                    gap,contacts=contact_gap(row[6]*.104825,self.state['gap_'+side+'_m'],actor_boxes(self.props,frames['link_007'],BASES[side]),flat=self.pad_contacts)
                     self.state['q_'+side]=row[:6];self.state['gap_'+side+'_m']=gap
                     self.state['contact_stop_'+side]=contacts
                     for link,t in mounted_frames(row[:6],gap,yaw=MOUNT_YAW[side]).items():
                         if link not in VISUAL_LINKS:continue
                         label='MakerArm_'+side+'_'+link;p,q=ue_pose(t);p=[p[i]+BASES[side][i] for i in range(3)]
-                        for actor in [self.actors[label]]+([self.proxies[label]] if label in self.proxies else []):
-                            actor.set_actor_location_and_rotation(unreal.Vector(*p),unreal.Quat(*q).rotator(),False,False)
+                        self.actors[label].set_actor_location_and_rotation(unreal.Vector(*p),unreal.Quat(*q).rotator(),False,False)
+                        if label in self.proxies:
+                            if self.pad_contacts:
+                                # A 3x1x2 cm flat contact pad, inner face on
+                                # each prismatic zero plane. Official visuals unchanged.
+                                offset=[0,.005 if link=='gripper_left' else -.005,-.17]
+                                pad=[row[:] for row in t]
+                                for i in range(3):pad[i][3]+=sum(t[i][j]*offset[j] for j in range(3))
+                                pp,pq=ue_pose(pad);pp=[pp[i]+BASES[side][i] for i in range(3)]
+                            else:pp,pq=p,q
+                            self.proxies[label].set_actor_location_and_rotation(unreal.Vector(*pp),unreal.Quat(*pq).rotator(),False,False)
                 m['index']=index;maker_arm_feedback.applied(self.state);maker_arm_feedback.read(self.world)
                 self.motion_report(False)
                 if index==len(m['chunks']['left'])-1:self.motion_report(True);self.motion=None
@@ -154,6 +164,8 @@ class Session:
                 actor.static_mesh_component.wake_all_rigid_bodies()
                 p=actor.get_actor_location();v=actor.static_mesh_component.get_physics_linear_velocity()
                 update_lift_evidence(self.evidence[label],self.evidence_timers[label],[p.x,p.y,p.z],[v.x,v.y,v.z],now)
+                parent=actor.get_attach_parent_actor();c=actor.static_mesh_component
+                self.evidence[label].update({'gravity_enabled':c.is_gravity_enabled(),'physics_simulated':c.is_simulating_physics(),'attached_to':parent.get_actor_label() if parent else None})
             if self.mirror:self.mirror.tick()
             self.report()
         except Exception as error:
@@ -178,12 +190,12 @@ class Session:
     def close_callback(self):
         if self.callback is not None:unreal.unregister_slate_post_tick_callback(self.callback);self.callback=None
 
-def start(seed_path,status_path,camera_directory,mirror=True):
+def start(seed_path,status_path,camera_directory,mirror=True,pad_contacts=False):
     global _session
     if _session and _session.callback is not None:raise RuntimeError('Runtime controller already active')
     candidate=Session.__new__(Session)
     try:
-        candidate.__init__(seed_path,status_path,camera_directory,mirror)
+        candidate.__init__(seed_path,status_path,camera_directory,mirror,pad_contacts)
         _session=candidate
     except Exception as error:
         if getattr(candidate,'callback',None) is not None:candidate.close_callback()

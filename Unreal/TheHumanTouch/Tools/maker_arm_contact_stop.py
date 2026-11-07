@@ -5,7 +5,7 @@ Coordinates below are metres in the official link_007 flange frame.
 import itertools
 
 
-def pad_points(points):
+def pad_points(points, flat=False):
     """Clip an oriented box to the finite finger-pad X/Z corridor.
 
     Corner order matches itertools.product in actor_boxes. Full-box projection
@@ -16,7 +16,8 @@ def pad_points(points):
     result=[]
     for face in faces:
         polygon=[points[i] for i in face]
-        for axis,bound,sign in ((0,-.02,1),(0,.02,-1),(2,-.17,1),(2,-.10,-1)):
+        corridor=((0,-.015,1),(0,.015,-1),(2,-.18,1),(2,-.16,-1)) if flat else ((0,-.02,1),(0,.02,-1),(2,-.17,1),(2,-.10,-1))
+        for axis,bound,sign in corridor:
             clipped=[]
             for a,b in zip(polygon,polygon[1:]+polygon[:1]):
                 da=(a[axis]-bound)*sign;db=(b[axis]-bound)*sign
@@ -29,7 +30,18 @@ def pad_points(points):
     return result
 
 
-def contact_gap(requested, previous, boxes, compliance=.005):
+def inner_pad_offset(z):
+    """One-jaw inner surface at X=0, sampled from pinned official CAD (metres).
+    The deeper pad is 5 mm off its joint zero plane; fingertip pad is at zero.
+    This approximate contact model does not change the original mesh or axes.
+    """
+    if z<=-.15:return 0.
+    if z>=-.13:return .005
+    if z<=-.14:return (z+.15)/.01*.00237
+    return .00237+(z+.14)/.01*(.005-.00237)
+
+
+def contact_gap(requested, previous, boxes, compliance=.005, flat=False):
     """Stop inward jaw travel at a prop intersecting both finger pads.
 
     boxes are oriented prop corners expressed in flange coordinates. Require
@@ -40,17 +52,15 @@ def contact_gap(requested, previous, boxes, compliance=.005):
         return requested, []
     result=requested; contacts=[]
     for label, points in boxes:
-        points=pad_points(points)
+        points=pad_points(points,flat=flat)
         if not points:continue
         lo=[min(p[i] for p in points) for i in range(3)]
         hi=[max(p[i] for p in points) for i in range(3)]
-        if hi[0]<-.02 or lo[0]>.02 or hi[2]<-.17 or lo[2]>-.10:
-            continue
         # Both inner faces must meet the object. A one-sided collision pushes
         # the free prop; it is not a force closure and must not latch the jaws.
         if lo[1]>=0 or hi[1]<=0:
             continue
-        stop=hi[1]-lo[1]-compliance
+        stop=max(0.,hi[1]-lo[1]-(0. if flat else 2*inner_pad_offset((lo[2]+hi[2])/2))-compliance)
         if stop>requested:
             result=max(result,min(previous,stop));contacts.append(label)
     return result, contacts

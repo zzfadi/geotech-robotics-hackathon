@@ -39,4 +39,12 @@ class ModelTest(unittest.TestCase):
             self.assertEqual(config['approach'],[0,0,-1])
             for actual,expected in zip(config['jaw'],[0,1,0]):self.assertAlmostEqual(actual,expected,places=6)
 
+    def test_opt_in_contact_center_preserves_urdf(self):
+        with tempfile.TemporaryDirectory() as a,tempfile.TemporaryDirectory() as b:
+            original=json.loads(prepare(a).read_text());contact=json.loads(prepare(b,tcp_back=.04).read_text())
+            self.assertEqual((Path(a)/original['urdf']).read_bytes(),(Path(b)/contact['urdf']).read_bytes())
+            self.assertAlmostEqual(contact['tcp'][2]-original['tcp'][2],.04)
+            self.assertEqual(contact['tcp'][:2],original['tcp'][:2])
+        with self.assertRaises(ValueError):prepare('/tmp/unused',tcp_back=.05)
+
 if __name__=='__main__':unittest.main()

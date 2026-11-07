@@ -1,0 +1,16 @@
+{
+  "scope": "actual editor transform samples during assisted Dream pickup; Brian unavailable for direct verification",
+  "request_id": "b13e9ce98c544846b94c8a91f8f95ae3",
+  "mac_frames": 571,
+  "luna_frames": 645,
+  "mac_max_red_z_cm": 89.34772229730387,
+  "luna_max_red_z_cm": 89.34772229730387,
+  "initial_red_z_cm": 78.5,
+  "final_actors_compared": 26,
+  "max_final_pose_component_error": 5.551115123125783e-16,
+  "distinct_left_wrist_poses": [
+    79,
+    73
+  ],
+  "matching_intermediate_wrist_poses": 72
+}

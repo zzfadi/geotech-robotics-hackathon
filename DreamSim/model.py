@@ -15,7 +15,8 @@ MODEL=ROOT/'Unreal/TheHumanTouch/SourceAssets/MakerArm/robot.urdf'
 REST=(0.,-1.2,.81,-.1,0.,0.)
 
 
-def prepare(destination):
+def prepare(destination,tcp_back=0.):
+    if not math.isfinite(tcp_back) or not 0<=tcp_back<=.04:raise ValueError("Simulation TCP offset must be 0..4 cm")
     destination=Path(destination);destination.mkdir(parents=True,exist_ok=True)
     digest=hashlib.sha256(MODEL.read_bytes()).hexdigest()
     provenance=json.loads((MODEL.parent/'provenance.json').read_text())
@@ -40,11 +41,12 @@ def prepare(destination):
     config={'urdf':'maker_arm_sim.urdf','base':'dream_base','flange':'link_007',
             'tcp':[float(x) for x in grasp.find('origin').get('xyz').split()],
             'approach':[0.,0.,-1.],'jaw':[float(x) for x in jaw.split()], 'rest':list(REST)}
+    config['tcp'][2]+=tcp_back
     ET.indent(derived);ET.ElementTree(derived).write(destination/config['urdf'],encoding='utf-8',xml_declaration=True)
     (destination/'maker_arm_sim.json').write_text(json.dumps(config,indent=2)+'\n')
     (destination/'provenance.json').write_text(json.dumps({'source_commit':provenance['commit'],'source_urdf_sha256':digest,
         'scope':'UE simulation only; exact CAD axes and limits; no hardware calibration',
-        'mount_rpy':[math.pi/2,0,math.pi],'joints':[j.get('name') for j in joints],
+        'simulation_tcp_back_m':tcp_back,'mount_rpy':[math.pi/2,0,math.pi],'joints':[j.get('name') for j in joints],
         'jaw_opening_m':.104825,'dream_builtin_makers_compatible':False},indent=2)+'\n')
     return destination/'maker_arm_sim.json'
 

@@ -114,3 +114,41 @@ automatic routing for controlled comparisons. The cycle limit still bounds
 control iterations; this is a call-count policy, not a monetary spending cap or
 a guarantee that the full model performs better. The 2 cm heuristic is not a
 success criterion: the requested pickup still needs a visible, held 10 cm lift.
+
+## Explicit local grasp-assistance experiment
+
+`--grasp-assist --cycles 5 --tcp-back 0 --pad-contacts --runtime-physics` is an opt-in
+hybrid test: one real Dream approach, then a local solver aligns above the
+known red test block, descends, closes and settles, and commands an 11 cm
+tool rise followed by a three-second hold. The extra 1 cm allows contact settling;
+measured object rise must still reach 10 cm. Local phases use privileged simulated
+prop position and are logged as `controller.assisted`, not Dream model output.
+The solver returns only arm joints and jaw demands through the same bounded
+controller. It never attaches the prop, writes prop transforms or disables its
+gravity. This is not proof of an unassisted Dream policy grasp or hardware fidelity.
+The fixture must be the declared 5×5×7 cm target at (60,-40,78.5) cm; arbitrary scene commands are
+not supported by this experimental mode. Default mode remains unassisted.
+
+`--pad-contacts` replaces only transient hidden jaw collision proxies with
+3×1×2 cm flat boxes at flange-local (0, ±0.5, -17) cm, including each jaw's
+prismatic motion. Their inner faces lie on the joint zero planes, matching
+the sampled CAD surface at X=0/Z=-17 cm. This is a deliberately simplified
+contact diagnostic; it is not a one-to-one collision mesh. Official visible arm
+meshes remain unchanged. The contact limiter now accounts for the sampled
+inner-face offset instead of equating joint travel with pad clearance.
+
+
+### Position-priority IK diagnostic
+
+`--position-ik --tcp-back 0` converts raw Dream end-effector positions using the
+pinned source kinematics, while softly retaining the SDK-solved orientation and
+preserving its jaw commands. It uses no prop position or scripted lift. Targets
+more than 2 mm from the constrained solution are rejected; the ordinary joint
+limits and speed retimer still apply. Raw and executed trajectories plus solver
+errors are archived separately. This option excludes `--grasp-assist`.
+
+`--verify-red-lift` holds the current robot pose when measured red-block rise
+reaches 10 cm, and finishes after at least two seconds of a slow held rise. It
+does not move the object. Visual review remains required to establish a grasp.
+Flat-pad contact limiting uses the actual 3 by 2 cm pad footprint and zero inner
+face offset, independently of the coarse CAD-jaw approximation.

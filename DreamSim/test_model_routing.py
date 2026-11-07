@@ -22,6 +22,10 @@ class RoutingTests(unittest.TestCase):
         self.assertEqual(ModelBudget().choose(9,0),FULL)
     def test_other_failures_not_hidden(self):
         self.assertFalse(ModelBudget().capacity_fallback(FULL,SimpleNamespace(code='DA-5000',reason=None)))
+    def test_dropped_block_can_escalate_within_existing_budget(self):
+        lift=red_cube_lift({'props':{'MakerStation_Approximate_Block_Red':{'max_z_cm':84,'final_z_cm':78,'initial_z_cm':78}}})
+        self.assertEqual(lift,0)
+        self.assertEqual(ModelBudget().choose(8,lift),FULL)
     def test_target_only(self):
         self.assertIsNone(red_cube_lift({'props':{}}))
         self.assertEqual(red_cube_lift({'props':{'MakerStation_Approximate_Block_Red':{'max_z_cm':80,'initial_z_cm':78}}}),2)

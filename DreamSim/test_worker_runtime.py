@@ -35,7 +35,7 @@ class WorkerRuntimeTests(unittest.TestCase):
         self.w=self.module.Worker.__new__(self.module.Worker)
         w=self.w
         w.root=self.root;w.lock=threading.Lock();w.client=Mock()
-        w.args=types.SimpleNamespace(runtime_physics=True,cycles=0,checkpoint='auto',initial_state=self.root/'initial.json')
+        w.args=types.SimpleNamespace(runtime_physics=True,cycles=0,checkpoint='auto',grasp_assist=False,pad_contacts=False,initial_state=self.root/'initial.json')
         w.checkpoint=self.module.FLASH;w.arm=None
         w.command={'id':'old'};w.active_request_id=None;w.last=None;w.closed=False
         w.recording=None;w.recorded=0;w.error=None;w.prompt='';w.expected_scope=None;w.episode_started=0

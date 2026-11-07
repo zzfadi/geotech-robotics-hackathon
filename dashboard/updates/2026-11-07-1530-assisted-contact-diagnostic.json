@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T15:30:14-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added explicit local grasp assistance and optional flat-pad physics diagnostic.",
+  "why": "Separate Dream approach quality from jaw contact failures while keeping the block free in Chaos.",
+  "where": [
+    "DreamSim/grasp_assist.py",
+    "DreamSim/worker.py",
+    "DreamSim/model.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_contact_stop.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_runtime.py",
+    "docs/maker-arm-camera-trial.md"
+  ],
+  "details": "One real Dream inference precedes four explicitly logged local-servo phases using measured simulation prop pose. Two recorded free-body pickups rose 10.27 and 10.84 cm; the repeat matched 26 final actor transforms on Mac/Luna and 72 intermediate wrist poses. Gravity remained enabled and the block unattached. This is assisted control, not an unmodified Dream-policy success. Source TCP retained (offset zero); hidden approximate flat collision pads at jaw-local Z=-17 cm. Official CAD visuals unchanged; no calibrated fidelity claim. Pure-policy position-conversion investigation continues."
+}

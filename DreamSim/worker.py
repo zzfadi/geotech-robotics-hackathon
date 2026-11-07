@@ -146,7 +146,7 @@ class Worker:
                 runtime_status=self.root/'runtime.json'
                 runtime_status.unlink(missing_ok=True)
                 runtime_started=True
-                code=f"import maker_arm_runtime\nfrom copresence import ui_widgets\nui_widgets.after(.2,lambda:maker_arm_runtime.start({str(seed)!r},{str(runtime_status)!r},{str(self.root/'cameras')!r},mirror=True))"
+                code=f"import maker_arm_runtime\nfrom copresence import ui_widgets\nui_widgets.after(.2,lambda:maker_arm_runtime.start({str(seed)!r},{str(runtime_status)!r},{str(self.root/'cameras')!r},mirror=True,pad_contacts={self.args.pad_contacts!r}))"
                 self.python(code,'Start authoritative runtime physics and camera feedback')
                 self.wait_runtime(runtime_status,'ready')
             else:
@@ -160,18 +160,32 @@ class Worker:
                     self.select_model(budget.choose(cycle,lift))
                 packet=self.fresh(scope=scope);time.sleep(.3)
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user')
-                self.event('request.started',checkpoint=self.checkpoint,prompt=self.prompt,cycle=cycle+1,frames=packet['frames'],state=packet['state'])
-                started=time.monotonic()
-                action,packet=self.infer(budget,cycle,scope)
-                if (self.root/'stop').exists():raise RuntimeError('Stopped by user; discarded pending model response')
-                self.event('request.completed',checkpoint=self.checkpoint,cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
-                report=self.root/'action.json';report.write_text(json.dumps({'checkpoint':self.checkpoint,'state':packet['state'],'action':action,'execution_rows':self.args.action_rows},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
+                assisted=self.args.grasp_assist and cycle>0
+                source='local grasp assistance' if assisted else self.checkpoint
+                if assisted:
+                    from grasp_assist import action as assisted_action,PHASES
+                    if not self.args.runtime_physics or self.args.tcp_back!=0.:raise ValueError('Grasp assistance requires runtime physics and the source TCP (--tcp-back 0)')
+                    action=assisted_action(cycle-1,packet['state'],json.loads((self.root/'runtime.json').read_text()))
+                    self.event('controller.assisted',cycle=cycle+1,message='Local grasp assistance: '+PHASES[cycle-1]+'. Uses measured simulation prop pose; not raw Dream policy output.')
+                else:
+                    self.event('request.started',checkpoint=self.checkpoint,prompt=self.prompt,cycle=cycle+1,frames=packet['frames'],state=packet['state'])
+                    started=time.monotonic()
+                    action,packet=self.infer(budget,cycle,scope)
+                    self.event('request.completed',checkpoint=self.checkpoint,cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
+                raw_action=action;ik_report=None
+                if self.args.position_ik:
+                    from position_ik import adapt
+                    action,ik_report=adapt(raw_action,packet['state'],self.args.action_rows or 12)
+                    source='Dream EEF targets with position-priority IK'
+                    self.event('controller.ik',cycle=cycle+1,message='Following Dream tool positions and jaw commands; position-priority IK, no object-pose input or scripted lift.',action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
+                if (self.root/'stop').exists():raise RuntimeError('Stopped by user; discarded pending controller response')
+                report=self.root/'action.json';report.write_text(json.dumps({'controller_source':source,'contact_mode':'approximate flat pads' if self.args.pad_contacts else 'approximate convex jaws','checkpoint':None if assisted else self.checkpoint,'state':packet['state'],'raw_action':raw_action if self.args.position_ik else None,'ik_report':ik_report,'action':action,'execution_rows':None if assisted else self.args.action_rows},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
                 # Preserve raw EEF targets beside solved joints for calibration
                 # diagnosis; the controller still reads the current action file.
                 (self.recording/f'action-{cycle+1}.json').write_text(report.read_text())
                 previous.unlink(missing_ok=True)
                 controller='maker_arm_runtime' if self.args.runtime_physics else 'maker_arm_playback'
-                self.python(f"from copresence import ui_widgets\nimport {controller}\nui_widgets.after(.2, lambda: {controller}.launch({str(report)!r},{str(previous)!r}))",'Apply bounded Dream response to the authoritative controller')
+                self.python(f"from copresence import ui_widgets\nimport {controller}\nui_widgets.after(.2, lambda: {controller}.launch({str(report)!r},{str(previous)!r}))",'Apply bounded '+source+' trajectory to the authoritative controller')
                 self.event('playback.queued',cycle=cycle+1,message='Validating Dream trajectory before movement')
                 playback_announced=False
                 deadline=time.monotonic()+20
@@ -189,6 +203,16 @@ class Worker:
                 mode='runtime physics' if self.args.runtime_physics else 'kinematic'
                 self.event('playback.completed',cycle=cycle+1,state=state,message=str(state['rows'])+'-sample '+mode+' trajectory finished')
                 packet=self.fresh(after=time.time(),scope=scope);self.event('observation',frames=packet['frames'],state=packet['state'])
+                if self.args.verify_red_lift and self.args.runtime_physics:
+                    red=json.loads((self.root/'runtime.json').read_text()).get('props',{}).get('MakerStation_Approximate_Block_Red',{})
+                    if red.get('height_above_start_cm',0)>=10 and red.get('speed_cm_s',100)<10:
+                        self.event('task.holding',message='Measured red-block rise reached 10 cm; holding the current robot pose for verification')
+                        time.sleep(2.2)
+                        if (self.root/'stop').exists():raise RuntimeError('Stopped by user during hold verification')
+                        red=json.loads((self.root/'runtime.json').read_text()).get('props',{}).get('MakerStation_Approximate_Block_Red',{})
+                        if red.get('current_slow_above_10cm_seconds',0)>=2:
+                            self.event('task.measured',message=f"Measured {red['height_above_start_cm']:.2f} cm lift held for {red['current_slow_above_10cm_seconds']:.2f} seconds; visual grasp review still required")
+                            break
             if runtime_started:
                 self.finish_runtime(True)
                 runtime_started=False
@@ -262,13 +286,13 @@ class Worker:
         finally:self.ue('end_task',{'summary':'Started local three-camera preview; robot poses unchanged.','keep_view':True})
 
     def run(self):
-        self.arm=prepare(self.root/'model')
+        self.arm=prepare(self.root/'model',tcp_back=self.args.tcp_back)
         configure(self.client,self.arm,FLASH if self.args.checkpoint == 'auto' else self.args.checkpoint)
         self.checkpoint=FLASH if self.args.checkpoint == 'auto' else self.args.checkpoint
         if not self.client.wait_for_ik(180):raise TimeoutError('IK initialization timed out')
         threading.Thread(target=self.poll,daemon=True).start();threading.Thread(target=self.pump,daemon=True).start();threading.Thread(target=self.stream,daemon=True).start()
         self.start_preview()
-        self.event('worker.ready',message='Unreal worker ready for text commands')
+        self.event('worker.ready',message='Unreal worker ready'+(' — local grasp assistance enabled for side-grasp red-block fixture' if self.args.grasp_assist else ' for text commands'))
         seen=set();heard=set()
         try:
             while True:
@@ -282,4 +306,7 @@ class Worker:
         finally:self.closed=True;self.client.close()
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--action-rows',type=int,default=None);p.add_argument('--runtime-physics',action='store_true');p.add_argument('--checkpoint',default='auto',help='auto: Flash first, at most two full-model calls on a stalled lift; or an explicit checkpoint');args=p.parse_args();Worker(args).run()
+    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--action-rows',type=int,default=None);p.add_argument('--runtime-physics',action='store_true');p.add_argument('--position-ik',action='store_true',help='Follow raw Dream EEF positions with position-priority IK');p.add_argument('--verify-red-lift',action='store_true',help='Hold and finish after a measured 10 cm red-block lift');p.add_argument('--pad-contacts',action='store_true',help='Approximate flat collision pads; official visual meshes unchanged');p.add_argument('--grasp-assist',action='store_true',help='Explicit local physics grasp servo after one Dream approach; use --cycles 5 --tcp-back 0');p.add_argument('--tcp-back',type=float,default=0.,help='Simulation-only contact-center offset behind source TCP, metres (0..0.04)');p.add_argument('--checkpoint',default='auto',help='auto: Flash first, at most two full-model calls on a stalled lift; or an explicit checkpoint');args=p.parse_args()
+    if args.grasp_assist and (args.cycles!=5 or not args.runtime_physics or args.tcp_back!=0):p.error('Grasp assistance requires --cycles 5 --runtime-physics --tcp-back 0')
+    if args.position_ik and (args.grasp_assist or args.tcp_back!=0):p.error('Position IK requires source TCP and excludes scripted grasp assistance')
+    Worker(args).run()

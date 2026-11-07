@@ -33,4 +33,5 @@ def red_cube_lift(status):
     matches=[p for name,p in props.items() if name.endswith('Block_Red')]
     if len(matches)!=1:return None
     p=matches[0]
-    return p['max_z_cm']-p['initial_z_cm']
+    # A dropped block is stalled even if it briefly rose earlier.
+    return p.get('final_z_cm',p['max_z_cm'])-p['initial_z_cm']

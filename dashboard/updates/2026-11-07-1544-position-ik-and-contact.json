@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T15:44:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Corrected Dream tool-position conversion and matched the flat-pad closure limiter to collision geometry.",
+  "why": "Recorded SDK joint solutions missed feasible Dream tool targets by centimetres; mismatched contact bounds could stop jaws before actual contact.",
+  "where": [
+    "DreamSim/position_ik.py",
+    "DreamSim/test_position_ik.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_contact_stop.py",
+    "docs/validation/dream-position-ik-trial1-runtime.json"
+  ],
+  "details": "Constrained position-priority IK follows raw Dream EEF positions without object-pose input or a scripted lift, retains jaw predictions, and uses existing speed/joint limits. First live trial tracked position but dropped the block after 3.47 cm rise. A second recorded trial uses footprint-matched 3x2 cm flat pads. Model routing now recognizes a dropped block from current height, retaining the two-call full-model cap."
+}

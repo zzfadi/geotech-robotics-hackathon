@@ -1,0 +1,32 @@
+{
+  "request_id": "b13e9ce98c544846b94c8a91f8f95ae3",
+  "videos": {
+    "unreal-motion.mp4": {
+      "frames": 147,
+      "fps": 5.0,
+      "size": [
+        320,
+        176
+      ],
+      "sha256": "1125e31b6b5b6160e261579c9cc24f732141d3cf26982f6bf9b7c9b163ab95ab"
+    },
+    "wrist_l.mp4": {
+      "frames": 147,
+      "fps": 5.0,
+      "size": [
+        320,
+        176
+      ],
+      "sha256": "b7ee00025956df7307d0d4f39bc5cbfbc80c6851f661d6e40108afcd907dcb02"
+    },
+    "wrist_r.mp4": {
+      "frames": 147,
+      "fps": 5.0,
+      "size": [
+        320,
+        176
+      ],
+      "sha256": "17903fa01c03d0e73c7b76433bcc1001febec541cec090a934e6fe730eb2561e"
+    }
+  }
+}
