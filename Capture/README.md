@@ -65,6 +65,8 @@ Run `python3 Capture/observe.py` on the capture Mac to see each sample's identit
 
 All transforms are expressed in the named frame (+X right, +Y up, -Z forward). The first bone is the root with parent -1. The receiver converts handedness and metres to UE centimetres, then computes parent-local bone transforms. Missing/late frames must expire on the robot side. Frame identity is preserved across both copies; strict simulation/render alignment additionally requires a common evaluation tick. The physical camera, headset articulation, contact authority and overlay each need independent verification.
 
+The optional [Luna2 Isaac bridge](isaac/README.md) forwards the station editor’s evaluated Hub poses and their capture references over Tailscale.
+
 ## External Maker Arm contact simulation
 
 The station can run a local MuJoCo 4.0 process with both official Maker Arm URDFs and an independently simulated tabletop token. It samples the registered human streams at a common target time, updates palm and forearm collision proxies, and returns robot poses and contact locations to Unreal. The arm holds its rest position with a provisional compliant controller. The model's dynamics, hardware registration and collision response still require physical validation. [Maker Arm model assessment](../docs/maker-arm-model.md).

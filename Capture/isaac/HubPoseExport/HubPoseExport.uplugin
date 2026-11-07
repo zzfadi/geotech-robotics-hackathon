@@ -1,0 +1,11 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "1",
+  "FriendlyName": "Human Touch Hub Pose Export",
+  "Description": "Exports evaluated Live Link Hub subjects for the Isaac Sim station bridge.",
+  "Category": "Virtual Production",
+  "EnabledByDefault": false,
+  "Modules": [{ "Name": "HubPoseExport", "Type": "Editor", "LoadingPhase": "PostEngineInit" }],
+  "Plugins": [{ "Name": "LiveLink", "Enabled": true }]
+}
