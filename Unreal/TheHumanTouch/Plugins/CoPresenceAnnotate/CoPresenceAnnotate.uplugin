@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1",
+	"FriendlyName": "CoPresence Annotate",
+	"Description": "Lets people draw on their editor to point the agents at things. A shortcut turns the editor into a sketch layer; each mark goes to the agents with what it covers, in the level or in the editor's panels, and a picture of the editor as the person saw it. It also shows a voice call's live captions along the bottom of the level viewport.",
+	"Category": "Editor",
+	"CreatedBy": "Geotech",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": true,
+	"Installed": false,
+	"EnabledByDefault": false,
+	"Modules": [
+		{
+			"Name": "CoPresenceAnnotate",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit",
+			"PlatformAllowList": [ "Mac", "Win64" ]
+		}
+	]
+}

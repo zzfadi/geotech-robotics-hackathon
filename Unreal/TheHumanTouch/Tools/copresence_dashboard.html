@@ -1,0 +1,1225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Session Dashboard</title>
+<!--
+  The session dashboard, served by the session hub (Tools/copresence_hub.py) at its address:
+  who is in the session, the agents and what they are doing, the spectator camera, and the
+  join command for a new person. Everything it changes goes through /api/control with the
+  session code. Add ?debug to the address to log what it does in the browser console.
+-->
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f4f1;
+  --surface: #fbfbf9;
+  --surface-raised: #ffffff;
+  --surface-sunken: #ebebe7;
+  --line: #deded8;
+  --text: #1b1b19;
+  --muted: #64645e;
+  --faint: #9a9a93;
+  --accent: #b9532f;
+  --accent-text: #ffffff;
+  --accent-soft: rgba(217, 119, 87, 0.15);
+  --live: #d93a3f;
+  --live-soft: rgba(217, 58, 63, 0.14);
+  --ok: #26845a;
+  --warn: #b57a0d;
+  --focus: #2f6fe0;
+  --radius: 8px;
+  --row: 60px;
+  --gutter: 16px;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #111111;
+    --surface: #171717;
+    --surface-raised: #1f1f1f;
+    --surface-sunken: #0c0c0c;
+    --line: #2a2a2a;
+    --text: #ecece6;
+    --muted: #a1a19b;
+    --faint: #6a6a65;
+    --accent: #e3906f;
+    --accent-text: #1c0e07;
+    --accent-soft: rgba(227, 144, 111, 0.16);
+    --live: #f0595d;
+    --live-soft: rgba(240, 89, 93, 0.16);
+    --ok: #4cc28a;
+    --warn: #e2a93b;
+    --focus: #79a6ff;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+button, input, select { font: inherit; color: inherit; }
+svg.icon { width: 20px; height: 20px; fill: currentColor; flex: none; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* Top bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 0 var(--gutter);
+  padding-top: env(safe-area-inset-top);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.brand h1 { margin: 0; font-size: 15px; font-weight: 650; white-space: nowrap; }
+.brand .address { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.link-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex: none; transition: background 0.3s; }
+.link-dot.online { background: var(--ok); }
+.bar-actions { display: flex; align-items: center; gap: 8px; }
+
+/* Buttons */
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid var(--line);
+  background: var(--surface-raised); cursor: pointer; white-space: nowrap; font-weight: 550;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+.button:hover { background: var(--surface-sunken); }
+.button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.button.primary:hover { filter: brightness(1.06); }
+.button.danger { color: var(--live); }
+.button:disabled { opacity: 0.45; cursor: default; filter: none; }
+.icon-button {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 20px;
+  border: 0; background: transparent; color: var(--muted); cursor: pointer; flex: none;
+  transition: background 0.15s, color 0.15s;
+}
+.icon-button:hover { background: var(--surface-sunken); color: var(--text); }
+.icon-button.active { color: var(--accent); background: var(--accent-soft); }
+.icon-button.danger:hover { color: var(--live); }
+.icon-button:disabled { opacity: 0.35; cursor: default; background: transparent; }
+.code-chip {
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px 0 12px;
+  border-radius: 18px; border: 1px solid var(--line); background: transparent; cursor: pointer; color: var(--muted);
+}
+.code-chip b { color: var(--text); font-family: var(--mono); letter-spacing: 0.08em; font-weight: 600; }
+.code-chip:hover { background: var(--surface-sunken); }
+
+/* Notice under the top bar */
+.notice {
+  display: flex; align-items: center; gap: 12px; padding: 10px var(--gutter);
+  background: var(--accent-soft); border-bottom: 1px solid var(--line);
+}
+.notice span { flex: 1; }
+
+/* Layout: two full-height panes split by a line */
+.layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  min-height: 0;
+}
+.pane { min-width: 0; overflow-y: auto; background: var(--surface); }
+.pane + .pane { border-left: 1px solid var(--line); }
+
+.section-head {
+  display: flex; align-items: center; gap: 8px; height: 48px;
+  padding: 0 8px 0 var(--gutter); border-bottom: 1px solid var(--line); background: var(--bg);
+  position: sticky; top: 0; z-index: 1;
+}
+.section-head h2 {
+  margin: 0; font-size: 12px; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+}
+.section-head .count { color: var(--faint); font-variant-numeric: tabular-nums; }
+.section-head .spacer { flex: 1; }
+
+/* Rows */
+.rows { list-style: none; margin: 0; padding: 0; }
+.row, .empty {
+  animation: row-in 0.25s ease-out;
+}
+.row {
+  display: flex; align-items: center; gap: 12px; min-height: var(--row);
+  padding: 8px 8px 8px var(--gutter); border-bottom: 1px solid var(--line);
+}
+.row.pending { opacity: 0.6; }
+.row .lead { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none; position: relative;
+  background: var(--surface-sunken); color: var(--muted); }
+.row .body { flex: 1; min-width: 0; }
+.row .title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.row .name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .sub { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.row .trail { display: flex; align-items: center; gap: 2px; flex: none; }
+.badges { display: inline-flex; gap: 6px; flex: none; }
+.badges:empty { display: none; }
+.empty { padding: 18px var(--gutter); color: var(--muted); border-bottom: 1px solid var(--line); }
+.empty .hint { margin-bottom: 10px; }
+
+.state-dot { position: absolute; right: -1px; bottom: -1px; width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--surface); background: var(--faint); }
+.state-working .state-dot, .state-saying .state-dot { background: var(--accent); }
+.state-working .state-dot { animation: pulse 1.4s ease-in-out infinite; }
+.state-thinking .state-dot { background: var(--warn); animation: pulse 1.4s ease-in-out infinite; }
+.state-done .state-dot { background: var(--ok); }
+.state-error .state-dot { background: var(--live); }
+.state-away .state-dot { background: transparent; border-color: var(--faint); }
+.state-away .name { color: var(--muted); }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 7px; border-radius: 10px;
+  font-size: 11.5px; font-weight: 600; white-space: nowrap; background: var(--surface-sunken); color: var(--muted); flex: none;
+}
+.badge.live { background: var(--live-soft); color: var(--live); }
+.badge.live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.4s ease-in-out infinite; }
+.badge.accent { background: var(--accent-soft); color: var(--accent); }
+
+/* Inline forms */
+.inline-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px var(--gutter);
+  border-bottom: 1px solid var(--line); background: var(--surface-raised); animation: row-in 0.2s ease-out; }
+.field {
+  height: 36px; padding: 0 12px; border-radius: var(--radius); border: 1px solid var(--line);
+  background: var(--surface); min-width: 0;
+}
+.field:focus { border-color: var(--focus); outline: none; }
+.field.grow { flex: 1 1 160px; }
+select.field { padding-right: 8px; }
+
+.segmented { display: inline-flex; height: 36px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; flex: none; }
+.segmented button {
+  border: 0; background: transparent; padding: 0 14px; cursor: pointer; color: var(--muted); font-weight: 550;
+  transition: background 0.15s, color 0.15s;
+}
+.segmented button + button { border-left: 1px solid var(--line); }
+.segmented button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+.segmented button:disabled { opacity: 0.4; cursor: default; }
+
+/* Spectator */
+.view {
+  position: relative; aspect-ratio: 16 / 9; background: #050505; overflow: hidden; border-bottom: 1px solid var(--line);
+}
+.view img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.view .view-empty {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; color: #8d8d88; text-align: center; padding: 16px;
+}
+.view .view-empty svg { width: 36px; height: 36px; }
+.view .overlay {
+  position: absolute; left: 12px; top: 12px; right: 12px; display: flex; gap: 6px; flex-wrap: wrap; pointer-events: none;
+}
+.view .overlay .badge { background: rgba(0, 0, 0, 0.6); color: #f2f2ee; backdrop-filter: blur(6px); }
+.view .overlay .badge.live { background: rgba(217, 58, 63, 0.9); color: #fff; }
+.control {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: var(--row);
+  padding: 10px var(--gutter); border-bottom: 1px solid var(--line);
+}
+.control > label, .control > .label { width: 64px; color: var(--muted); flex: none; }
+.control .grow { flex: 1 1 180px; min-width: 0; }
+.status-pill { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 12px;
+  font-size: 12px; font-weight: 600; background: var(--surface-sunken); color: var(--muted); }
+.status-pill.on { background: var(--accent-soft); color: var(--accent); }
+.status-pill.live { background: var(--live-soft); color: var(--live); }
+
+.fly { display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(2, 44px); gap: 6px; }
+.fly-height { display: grid; grid-template-rows: repeat(2, 44px); gap: 6px; }
+.fly button, .fly-height button {
+  display: grid; place-items: center; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface-raised); cursor: pointer; color: var(--text); touch-action: none; user-select: none;
+  -webkit-user-select: none; transition: background 0.1s;
+}
+.fly button:active, .fly-height button:active, .fly button.pressed, .fly-height button.pressed { background: var(--accent-soft); color: var(--accent); }
+.rot-right svg { transform: rotate(90deg); }
+.rot-down svg { transform: rotate(180deg); }
+.rot-left svg { transform: rotate(-90deg); }
+.mirror svg { transform: scaleX(-1); }
+.fly-hint { color: var(--muted); font-size: 12.5px; flex: 1 1 140px; }
+
+/* Dialogs */
+dialog {
+  border: 1px solid var(--line); border-radius: 14px; padding: 0; width: min(560px, calc(100vw - 32px));
+  background: var(--surface-raised); color: var(--text); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+dialog[open] { animation: dialog-in 0.2s ease-out; }
+.dialog-head { display: flex; align-items: center; gap: 8px; padding: 14px 8px 14px 20px; border-bottom: 1px solid var(--line); }
+.dialog-head h3 { margin: 0; font-size: 16px; flex: 1; }
+.dialog-body { padding: 16px 20px 20px; display: grid; gap: 14px; }
+.dialog-body .line { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.dialog-body .line > .label { width: 84px; color: var(--muted); flex: none; }
+.command {
+  display: flex; gap: 8px; align-items: flex-start; padding: 12px; border-radius: var(--radius);
+  background: var(--surface-sunken); border: 1px solid var(--line);
+}
+.command { align-items: center; padding: 6px 4px 6px 12px; }
+.command code { flex: 1; min-width: 0; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-wrap; }
+.hint { color: var(--muted); font-size: 12.5px; margin: 0; }
+
+/* Snackbar */
+.snackbar {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translate(-50%, 20px);
+  max-width: min(560px, calc(100vw - 32px)); padding: 12px 16px; border-radius: var(--radius);
+  background: #2b2b29; color: #f3f3ef; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); opacity: 0;
+  pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 10;
+}
+.snackbar.show { opacity: 1; transform: translate(-50%, 0); }
+.snackbar.error { background: #5a1d1f; }
+
+@keyframes row-in { from { opacity: 0; transform: translateY(-3px); } }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+@keyframes pulse { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before { animation: none !important; transition: none !important; }
+}
+
+/* Phones and narrow windows: one column, the spectator first */
+@media (max-width: 760px) {
+  :root { --gutter: 16px; }
+  .layout { display: flex; flex-direction: column; overflow-y: auto; }
+  .pane { overflow: visible; flex: none; }
+  .pane + .pane { border-left: 0; }
+  #spectatorPane { order: -1; border-bottom: 1px solid var(--line); }
+  .brand .address { display: none; }
+  .add-person-label { display: none; }
+  .control > label, .control > .label { width: 100%; }
+  dialog { width: 100vw; max-width: 100vw; margin: auto 0 0; border-radius: 14px 14px 0 0; }
+  .section-head { position: static; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-vr" viewBox="0 0 24 24"><path d="M3 9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-3.2a2 2 0 0 1-1.7-.95L12 15.4l-1.1 1.65a2 2 0 0 1-1.7.95H6a3 3 0 0 1-3-3zm4.5 4.8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm9 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></symbol>
+  <symbol id="i-desktop" viewBox="0 0 24 24"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"/></symbol>
+  <symbol id="i-person" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></symbol>
+  <symbol id="i-agent" viewBox="0 0 24 24"><path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zM7.5 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S9.83 13 9 13s-1.5-.67-1.5-1.5zM16 17H8v-2h8v2zm-1-4c-.83 0-1.5-.67-1.5-1.5S14.17 10 15 10s1.5.67 1.5 1.5S15.83 13 15 13z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/></symbol>
+  <symbol id="i-add" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></symbol>
+  <symbol id="i-turn" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></symbol>
+  <symbol id="i-rise" viewBox="0 0 24 24"><path d="M8 11h3v10h2V11h3l-4-4-4 4zM4 3v2h16V3H4z"/></symbol>
+  <symbol id="i-cast" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11z"/></symbol>
+  <symbol id="i-machine" viewBox="0 0 24 24"><path d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zM7 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+</svg>
+
+<header class="top-bar">
+  <div class="brand">
+    <span class="link-dot" id="linkDot" title="Connecting to the session hub"></span>
+    <h1>Session</h1>
+    <span class="address" id="address"></span>
+  </div>
+  <div class="bar-actions">
+    <button class="code-chip" id="codeChip" type="button" title="Copy the session code" hidden>Code <b id="codeText"></b><svg class="icon"><use href="#i-copy"/></svg></button>
+    <button class="button" id="enterCode" type="button" hidden>Enter code</button>
+    <button class="button primary" id="addPerson" type="button"><svg class="icon"><use href="#i-add"/></svg><span class="add-person-label">Person</span></button>
+  </div>
+</header>
+<div class="notice" id="notice" hidden><span id="noticeText"></span></div>
+
+<main class="layout">
+  <section class="pane" id="sessionPane" aria-label="Who is in the session">
+    <div class="section-head"><h2>People</h2><span class="count" id="peopleCount"></span></div>
+    <ul class="rows" id="people"></ul>
+
+    <div class="section-head">
+      <h2>Agents</h2><span class="count" id="agentCount"></span><span class="spacer"></span>
+      <button class="icon-button" id="addAgent" type="button" title="Start an agent" aria-label="Start an agent"><svg class="icon"><use href="#i-add"/></svg></button>
+    </div>
+    <form class="inline-form" id="agentForm" hidden autocomplete="off">
+      <input class="field grow" id="agentName" placeholder="Agent name, like Brian Claude" maxlength="60" required>
+      <div class="segmented" id="agentBrain" role="group" aria-label="Thinks with">
+        <button type="button" data-value="claude" aria-pressed="true">Claude</button>
+        <button type="button" data-value="codex" aria-pressed="false">Codex</button>
+      </div>
+      <select class="field" id="agentStation" aria-label="Machine"></select>
+      <button class="button primary" type="submit" id="agentStart">Start</button>
+    </form>
+    <ul class="rows" id="agents"></ul>
+
+    <div class="section-head"><h2>Machines</h2><span class="count" id="stationCount"></span></div>
+    <ul class="rows" id="stations"></ul>
+  </section>
+
+  <section class="pane" id="spectatorPane" aria-label="Spectator">
+    <div class="section-head"><h2>Spectator</h2><span class="spacer"></span><span class="status-pill" id="spectatorPill">Off</span></div>
+    <div class="view" id="view">
+      <img id="viewImage" alt="What the spectator shows" hidden>
+      <div class="view-empty" id="viewEmpty"><svg class="icon"><use href="#i-camera"/></svg><span id="viewEmptyText">The spectator is off</span></div>
+      <div class="overlay" id="viewOverlay"></div>
+    </div>
+    <div id="spectatorOn" hidden>
+      <div class="control">
+        <label for="followSelect">Follow</label>
+        <select class="field grow" id="followSelect"></select>
+        <div class="segmented" id="framing" role="group" aria-label="Framing">
+          <button type="button" data-value="behind" aria-pressed="true" title="From behind and above">Behind</button>
+          <button type="button" data-value="eyes" aria-pressed="false" title="Through their eyes">Eyes</button>
+        </div>
+      </div>
+      <div class="control" id="flyControls">
+        <span class="label">Fly</span>
+        <div class="fly" id="flyPad" tabindex="0" aria-label="Fly the camera: W A S D to move, Q E to turn, R F for up and down">
+          <button type="button" data-turn="-1,0" aria-label="Turn left"><svg class="icon"><use href="#i-turn"/></svg></button>
+          <button type="button" data-move="1,0,0" aria-label="Forward"><svg class="icon"><use href="#i-arrow"/></svg></button>
+          <button type="button" class="mirror" data-turn="1,0" aria-label="Turn right"><svg class="icon"><use href="#i-turn"/></svg></button>
+          <button type="button" class="rot-left" data-move="0,-1,0" aria-label="Left"><svg class="icon"><use href="#i-arrow"/></svg></button>
+          <button type="button" class="rot-down" data-move="-1,0,0" aria-label="Back"><svg class="icon"><use href="#i-arrow"/></svg></button>
+          <button type="button" class="rot-right" data-move="0,1,0" aria-label="Right"><svg class="icon"><use href="#i-arrow"/></svg></button>
+        </div>
+        <div class="fly-height">
+          <button type="button" data-move="0,0,1" aria-label="Up"><svg class="icon"><use href="#i-rise"/></svg></button>
+          <button type="button" class="rot-down" data-move="0,0,-1" aria-label="Down"><svg class="icon"><use href="#i-rise"/></svg></button>
+        </div>
+        <span class="fly-hint" id="flyHint">Hold to keep moving. Someone at its machine can fly it with the mouse too.</span>
+      </div>
+      <form class="control" id="meetForm" autocomplete="off">
+        <label for="meetLink">Meet</label>
+        <input class="field grow" id="meetLink" type="url" inputmode="url" placeholder="https://meet.google.com/abc-defg-hij">
+        <button class="button primary" type="submit" id="meetButton"><svg class="icon"><use href="#i-cast"/></svg><span>Show in Meet</span></button>
+        <button class="button danger" type="button" id="leaveButton" hidden>Leave call</button>
+      </form>
+      <div class="control">
+        <span class="label">Runs on</span>
+        <span class="grow" id="spectatorWhere"></span>
+        <button class="button danger" type="button" id="spectatorStop"><svg class="icon"><use href="#i-stop"/></svg>Stop</button>
+      </div>
+    </div>
+    <form class="control" id="spectatorOff" autocomplete="off">
+      <span class="label">Start on</span>
+      <select class="field grow" id="spectatorStation" aria-label="Machine"></select>
+      <button class="button primary" type="submit" id="spectatorStart"><svg class="icon"><use href="#i-play"/></svg>Start</button>
+    </form>
+    <div class="control" id="spectatorLaunching" hidden>
+      <span class="label">Runs on</span>
+      <span class="grow" id="spectatorLaunchingWhere"></span>
+      <button class="button danger" type="button" id="spectatorCancel"><svg class="icon"><use href="#i-stop"/></svg>Stop</button>
+    </div>
+  </section>
+</main>
+
+<dialog id="joinDialog" aria-labelledby="joinTitle">
+  <div class="dialog-head"><h3 id="joinTitle">Add a person</h3>
+    <button class="icon-button" type="button" data-close aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <div class="dialog-body">
+    <div class="line"><span class="label">Name</span><input class="field grow" id="joinName" placeholder="Their name" maxlength="60" autocomplete="off"></div>
+    <div class="line"><span class="label">Computer</span>
+      <div class="segmented" id="joinPlatform" role="group" aria-label="Computer">
+        <button type="button" data-value="mac" aria-pressed="true">Mac</button>
+        <button type="button" data-value="windows" aria-pressed="false">Windows</button>
+      </div></div>
+    <div class="line"><span class="label">Joins with</span>
+      <div class="segmented" id="joinMode" role="group" aria-label="Joins with">
+        <button type="button" data-value="claude" aria-pressed="true">Claude</button>
+        <button type="button" data-value="codex" aria-pressed="false">Codex</button>
+        <button type="button" data-value="none" aria-pressed="false">No agent</button>
+        <button type="button" data-value="vr" aria-pressed="false">VR</button>
+      </div></div>
+    <div class="command"><code id="joinCommand"></code>
+      <button class="icon-button" type="button" id="copyJoin" aria-label="Copy the command"><svg class="icon"><use href="#i-copy"/></svg></button></div>
+    <p class="hint" id="joinHint"></p>
+  </div>
+</dialog>
+
+<dialog id="codeDialog" aria-labelledby="codeTitle">
+  <div class="dialog-head"><h3 id="codeTitle">Session code</h3>
+    <button class="icon-button" type="button" data-close aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <form class="dialog-body" id="codeForm" autocomplete="off">
+    <p class="hint">The session code, the one the join command carries.</p>
+    <div class="line"><input class="field grow" id="codeInput" placeholder="Code" maxlength="12" autocapitalize="characters" spellcheck="false">
+      <button class="button primary" type="submit">Use it</button></div>
+    <p class="hint" id="codeError" hidden>That code didn't work.</p>
+  </form>
+</dialog>
+
+<div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const DEBUG_ENABLED = new URLSearchParams(location.search).has("debug");
+  const debug = {
+    log: (...parts) => { if (DEBUG_ENABLED) { console.log("[dashboard]", ...parts); } },
+    warn: (...parts) => { if (DEBUG_ENABLED) { console.warn("[dashboard]", ...parts); } },
+  };
+
+  const CODE_KEY = "copresence.dashboard.code";
+  // An agent's name goes into the join scripts, which only take plain ones (as the hub checks)
+  const AGENT_NAME = /^[A-Za-z0-9][A-Za-z0-9 ._-]{0,59}$/;
+  const COLOR = /^#[0-9A-Fa-f]{6}$/;
+  const NUDGE_REPEAT_MS = 280;
+  const RETRY_MS = 3000;
+  const STATE_TEXT = { working: "", thinking: "Thinking...", idle: "Waiting", done: "Done", error: "", away: "Away", saying: "" };
+
+  const elements = Object.fromEntries([...document.querySelectorAll("[id]")].map((element) => [element.id, element]));
+  let state = null;
+  // What was just asked for, shown until the hub's own answer catches up
+  const pending = { follow: null, commands: [] };
+  const seenFailures = new Set();
+  let viewShown = 0;
+  // Whether the picture plays as a stream, and when that last broke
+  let viewStreaming = false;
+  let viewStreamFailedAt = 0;
+  const VIEW_STREAM_RETRY_MS = 15000;
+
+  // Helpers ---------------------------------------------------------------------
+
+  function make(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) { element.className = className; }
+    if (text !== undefined) { element.textContent = text; }
+    return element;
+  }
+
+  function icon(name) {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "icon");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", `#i-${name}`);
+    svg.appendChild(use);
+    return svg;
+  }
+
+  function iconButton(name, label, onClick, extraClass) {
+    const button = make("button", `icon-button${extraClass ? ` ${extraClass}` : ""}`);
+    button.type = "button";
+    button.title = label;
+    button.setAttribute("aria-label", label);
+    button.appendChild(icon(name));
+    button.addEventListener("click", onClick);
+    return button;
+  }
+
+  function readStored(key) {
+    try { return localStorage.getItem(key) || ""; } catch (error) { return ""; }
+  }
+
+  function writeStored(key, value) {
+    try {
+      if (value) { localStorage.setItem(key, value); } else { localStorage.removeItem(key); }
+    } catch (error) {
+      debug.warn("storage unavailable", error);
+    }
+  }
+
+  function sessionCode() {
+    return (state && state.session && state.session.code) || readStored(CODE_KEY);
+  }
+
+  let snackTimer = 0;
+  function snack(text, isError) {
+    elements.snackbar.textContent = text;
+    elements.snackbar.classList.toggle("error", Boolean(isError));
+    elements.snackbar.classList.add("show");
+    clearTimeout(snackTimer);
+    snackTimer = setTimeout(() => elements.snackbar.classList.remove("show"), isError ? 6000 : 3500);
+  }
+
+  async function copy(text, what) {
+    try {
+      await navigator.clipboard.writeText(text);
+      snack(`${what} copied`);
+    } catch (error) {
+      snack("Couldn't copy; select it and copy it yourself", true);
+    }
+  }
+
+  // Keeps one element per key in a list, built once and then updated in place: buttons in a
+  // row survive every update, so a click on one is never lost, and only new rows slide in
+  function syncRows(list, items) {
+    const existing = new Map([...list.children].map((row) => [row.dataset.key, row]));
+    const rows = items.map(({ key, build, update }) => {
+      let row = existing.get(key);
+      if (!row) {
+        row = build();
+        row.dataset.key = key;
+        // Moving it within the list later mustn't slide it in again
+        row.addEventListener("animationend", (event) => {
+          if (event.target === row) { row.style.animation = "none"; }
+        });
+      }
+      update(row);
+      return row;
+    });
+    const same = rows.length === list.children.length && rows.every((row, index) => row === list.children[index]);
+    if (!same) { list.replaceChildren(...rows); }
+  }
+
+  function setText(element, text) {
+    if (element.textContent !== text) { element.textContent = text; }
+  }
+
+  function emptyItem(key, text) {
+    return { key, build: () => make("li", "empty"), update: (row) => setText(row, text) };
+  }
+
+  // A row: a round icon, a name with badges after it, a line under it, and buttons at the end
+  function makeRow(iconName, buttons) {
+    const row = make("li", "row");
+    const lead = make("span", "lead");
+    lead.dataset.icon = iconName;
+    lead.appendChild(icon(iconName));
+    const name = make("span", "name");
+    const badges = make("span", "badges");
+    const title = make("div", "title");
+    title.append(name, badges);
+    const sub = make("div", "sub");
+    const body = make("div", "body");
+    body.append(title, sub);
+    const trail = make("div", "trail");
+    trail.append(...buttons);
+    row.append(lead, body, trail);
+    row.parts = { lead, name, badges, sub, trail };
+    return row;
+  }
+
+  function setIcon(lead, iconName) {
+    if (lead.dataset.icon === iconName) { return; }
+    lead.dataset.icon = iconName;
+    lead.firstChild.replaceWith(icon(iconName));
+  }
+
+  function setBadges(container, badges) {
+    const signature = JSON.stringify(badges);
+    if (container.dataset.signature === signature) { return; }
+    container.dataset.signature = signature;
+    container.replaceChildren(...badges.map(([kind, label]) => make("span", `badge${kind ? ` ${kind}` : ""}`, label)));
+  }
+
+  function setPressed(group, value) {
+    for (const button of group.querySelectorAll("button")) {
+      button.setAttribute("aria-pressed", String(button.dataset.value === value));
+    }
+  }
+
+  function pressedValue(group) {
+    const button = group.querySelector('button[aria-pressed="true"]');
+    return button ? button.dataset.value : "";
+  }
+
+  function wireSegmented(group, onChange) {
+    group.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button || button.disabled) { return; }
+      setPressed(group, button.dataset.value);
+      onChange(button.dataset.value);
+    });
+  }
+
+  // Talking to the hub ----------------------------------------------------------------
+
+  async function control(action, fields) {
+    const code = sessionCode();
+    if (!code) {
+      openCodeDialog();
+      throw new Error("Enter the session code first");
+    }
+    const response = await fetch("/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CoPresence-Code": code },
+      body: JSON.stringify({ action, ...fields }),
+    });
+    const reply = await response.json().catch(() => ({}));
+    if (response.status === 403) {
+      writeStored(CODE_KEY, "");
+      openCodeDialog(true);
+      throw new Error("Wrong session code");
+    }
+    if (!response.ok) {
+      throw new Error(reply.error || `The hub answered ${response.status}`);
+    }
+    debug.log(action, reply);
+    return reply;
+  }
+
+  // Runs a command the hub hands to a station, showing it at once and until the station answers
+  async function command(action, fields, label) {
+    const local = { id: `local-${Date.now()}`, action, args: fields, state: "queued", message: "", label };
+    pending.commands.push(local);
+    render();
+    try {
+      const reply = await control(action, fields);
+      local.id = reply.command.id;
+    } catch (error) {
+      snack(error.message, true);
+    } finally {
+      pending.commands = pending.commands.filter((entry) => entry !== local);
+      if (typeof local.id === "number") {
+        state.commands = [...(state.commands || []).filter((entry) => entry.id !== local.id), { ...local, station: "", age: 0 }];
+      }
+      render();
+    }
+  }
+
+  let pollAbort = null;
+  // Resolves once someone enters a code, while the hub shows nothing without one
+  let codeEntered = null;
+  async function poll() {
+    let version = -1;
+    for (;;) {
+      try {
+        const headers = {};
+        const stored = readStored(CODE_KEY);
+        if (stored) { headers["X-CoPresence-Code"] = stored; }
+        pollAbort = new AbortController();
+        const response = await fetch(`/api/dashboard?version=${version}`, { headers, cache: "no-store", signal: pollAbort.signal });
+        if (response.status === 403) {
+          // At the session's web address the hub needs the code before it shows anything
+          writeStored(CODE_KEY, "");
+          elements.enterCode.hidden = false;
+          openCodeDialog(Boolean(stored));
+          await new Promise((resolve) => { codeEntered = resolve; });
+          version = -1;
+          continue;
+        }
+        if (!response.ok) { throw new Error(`hub answered ${response.status}`); }
+        const reply = await response.json();
+        version = reply.version;
+        if (stored && !reply.trusted) {
+          writeStored(CODE_KEY, "");
+          openCodeDialog(true);
+        }
+        state = reply;
+        setOnline(true);
+        render();
+      } catch (error) {
+        if (error.name === "AbortError") {
+          version = -1;
+          continue;
+        }
+        debug.warn("poll failed", error);
+        setOnline(false);
+        version = -1;
+        await new Promise((resolve) => setTimeout(resolve, RETRY_MS));
+      }
+    }
+  }
+
+  // Asks the hub again right away, such as once a code was entered
+  function pollNow() {
+    if (pollAbort) { pollAbort.abort(); }
+  }
+
+  function setOnline(online) {
+    elements.linkDot.classList.toggle("online", online);
+    elements.linkDot.title = online ? "Connected to the session hub" : "Can't reach the session hub; trying again";
+    elements.notice.hidden = online;
+    elements.noticeText.textContent = "Can't reach the session hub. Trying again...";
+  }
+
+  // Rendering --------------------------------------------------------------------------
+
+  function activeCommands(action, predicate) {
+    const fromHub = (state.commands || []).filter((entry) => entry.action === action && (entry.state === "queued" || entry.state === "sent"));
+    return [...pending.commands.filter((entry) => entry.action === action), ...fromHub].filter((entry) => !predicate || predicate(entry));
+  }
+
+  function reportFailures() {
+    for (const entry of state.commands || []) {
+      if (entry.state === "failed" && !seenFailures.has(entry.id) && entry.age < 60) {
+        seenFailures.add(entry.id);
+        snack(entry.message || "That didn't work", true);
+      } else if (entry.state === "done" && !seenFailures.has(entry.id) && entry.age < 60 && entry.message) {
+        seenFailures.add(entry.id);
+        snack(entry.message);
+      }
+    }
+  }
+
+  function render() {
+    if (!state) { return; }
+    reportFailures();
+    renderSession();
+    renderPeople();
+    renderAgents();
+    renderStations();
+    renderSpectator();
+  }
+
+  function renderSession() {
+    const session = state.session || {};
+    const address = session.address || (["127.0.0.1", "localhost", "::1"].includes(location.hostname) ? "" : location.hostname);
+    elements.address.textContent = address;
+    elements.codeChip.hidden = !session.code;
+    elements.codeText.textContent = session.code || "";
+    elements.enterCode.hidden = Boolean(sessionCode());
+    updateJoinCommand();
+  }
+
+  // Reads whom the spectator follows when pressed, since a row keeps its buttons
+  function makeFollowButton(name) {
+    return iconButton("camera", `Follow ${name} with the spectator`, () => {
+      const current = pending.follow || state.spectator.wanted;
+      follow(current.target === name ? "" : name, current.framing);
+    });
+  }
+
+  function updateFollowButton(button, name) {
+    const spectator = state.spectator;
+    const wanted = pending.follow || spectator.wanted;
+    const following = spectator.running && wanted.target === name;
+    const label = !spectator.running ? "Start the spectator to follow someone"
+      : following ? `The spectator follows ${name}` : `Follow ${name} with the spectator`;
+    button.classList.toggle("active", following);
+    button.disabled = !spectator.running;
+    button.title = label;
+    button.setAttribute("aria-label", label);
+  }
+
+  function renderPeople() {
+    const people = state.people || [];
+    elements.peopleCount.textContent = people.length ? String(people.length) : "";
+    const items = people.map((person) => ({
+      key: `person:${person.name}`,
+      build: () => makeRow("person", [makeFollowButton(person.name)]),
+      update: (row) => {
+        setIcon(row.parts.lead, person.kind === "vr" ? "vr" : person.kind === "desktop" ? "desktop" : "person");
+        setText(row.parts.name, person.name);
+        setText(row.parts.sub, person.talking_with ? `Talking with ${person.talking_with}`
+          : person.kind === "vr" ? "In VR" : person.kind === "desktop" ? "In the editor" : "In the session");
+        updateFollowButton(row.parts.trail.firstChild, person.name);
+      },
+    }));
+    if (!items.length) {
+      items.push(emptyItem("empty", state.roster ? "No people in the session."
+        : "People show here once an agent or the spectator is in the session."));
+    }
+    syncRows(elements.people, items);
+  }
+
+  function agentText(agent) {
+    if (agent.state === "working") { return agent.step || "Working"; }
+    if (agent.state === "saying") { return `Said "${agent.step}"`; }
+    if (agent.state === "error") { return agent.step || "Something went wrong"; }
+    if (agent.state === "done") { return agent.task ? `Done: ${agent.task}` : "Done"; }
+    return STATE_TEXT[agent.state] || agent.state;
+  }
+
+  function renderAgents() {
+    const agents = state.agents || [];
+    elements.agentCount.textContent = agents.length ? String(agents.length) : "";
+    const items = agents.map((agent) => ({
+      key: `agent:${agent.name}`,
+      build: () => {
+        const row = makeRow("agent", [makeFollowButton(agent.name),
+          iconButton("stop", `Stop ${agent.name}`, () => stopAgent(agent.name), "danger")]);
+        row.parts.lead.appendChild(make("span", "state-dot"));
+        return row;
+      },
+      update: (row) => {
+        const stopping = activeCommands("agent.stop", (entry) => entry.args.name === agent.name).length > 0;
+        row.className = `row state-${agent.state}${stopping ? " pending" : ""}`;
+        const color = COLOR.test(agent.color || "") ? agent.color : "";
+        row.parts.lead.style.background = color ? `${color}33` : "";
+        row.parts.lead.style.color = color;
+        setText(row.parts.name, agent.name);
+        const badges = [];
+        if (agent.call === "in_call") { badges.push(["live", "Live in Meet"]); }
+        if (agent.call === "joining" || agent.call === "waiting") { badges.push(["", "Joining a call"]); }
+        if (agent.in_session === false) { badges.push(["", "Not in the session"]); }
+        setBadges(row.parts.badges, badges);
+        const details = [stopping ? "Stopping..." : agentText(agent)];
+        if (agent.talking_with) { details.push(`with ${agent.talking_with}`); }
+        if (agent.station) { details.push(`on ${agent.station}`); }
+        setText(row.parts.sub, details.join(" \u00b7 "));
+        const [followButton, stopButton] = row.parts.trail.children;
+        updateFollowButton(followButton, agent.name);
+        stopButton.hidden = !agent.station;
+        stopButton.disabled = stopping;
+      },
+    }));
+    for (const entry of activeCommands("agent.start")) {
+      if (agents.some((agent) => agent.name === entry.args.name)) { continue; }
+      items.push({
+        key: `starting:${entry.args.name}`,
+        build: () => makeRow("agent", []),
+        update: (row) => {
+          row.className = "row pending";
+          setText(row.parts.name, entry.args.name);
+          setText(row.parts.sub, `Starting${entry.args.station ? ` on ${entry.args.station}` : ""}... it joins in a minute or two`);
+        },
+      });
+    }
+    if (!items.length) { items.push(emptyItem("empty", "No agents in the session.")); }
+    syncRows(elements.agents, items);
+    fillStationSelect(elements.agentStation, (station) => station.can.brains.length > 0 && hasRoom(station));
+    elements.agentStart.disabled = !elements.agentStation.value;
+  }
+
+  // A station takes as many agents at once as it says, any number when it says 0, one if it doesn't say
+  function agentRoom(station) {
+    const limit = station.can.max_agents ?? 1;
+    return limit === 0 ? Infinity : limit - station.agents.length;
+  }
+
+  function hasRoom(station) {
+    return agentRoom(station) > 0;
+  }
+
+  function stationCommand() {
+    const session = state.session || {};
+    const address = session.address || "<session address>";
+    return `uv run --script Tools/copresence_station.py start ${address} ${session.code || "<code>"}`;
+  }
+
+  function renderStations() {
+    const stations = state.stations || [];
+    elements.stationCount.textContent = stations.length ? String(stations.length) : "";
+    const items = stations.map((station) => ({
+      key: `station:${station.name}`,
+      build: () => makeRow("machine", []),
+      update: (row) => {
+        setText(row.parts.name, station.name);
+        setBadges(row.parts.badges, station.platform ? [["", station.platform === "windows" ? "Windows" : "Mac"]] : []);
+        const runs = [...station.agents.map((agent) => agent.name), ...(station.spectator.running ? ["the spectator"] : [])];
+        const can = [station.can.brains.length ? `agents (${station.can.brains.join(", ")})` : "",
+          station.can.spectator ? "the spectator" : ""].filter(Boolean);
+        const room = station.can.brains.length && station.agents.length ? agentRoom(station) : 0;
+        const more = room === Infinity ? "; room for more agents"
+          : room > 0 ? `; room for ${room} more agent${room === 1 ? "" : "s"}` : "";
+        setText(row.parts.sub, runs.length ? `Runs ${runs.join(", ")}${more}` : can.length ? `Can start ${can.join(" and ")}` : "Can't start anything");
+      },
+    }));
+    items.push({
+      key: "hint",
+      build: () => {
+        const hint = make("li", "empty");
+        const line = make("p", "hint");
+        const code = make("code");
+        const box = make("div", "command");
+        box.append(code, iconButton("copy", "Copy the station command", () => copy(stationCommand(), "Command")));
+        hint.append(line, box);
+        hint.parts = { line, code };
+        return hint;
+      },
+      update: (hint) => {
+        setText(hint.parts.line, stations.length ? "To add another machine, run this in its clone of AgentCoPresence:"
+          : "Machines that run a station start agents and the spectator from here. On one with Unreal, run this in its clone of AgentCoPresence:");
+        setText(hint.parts.code, stationCommand());
+      },
+    });
+    syncRows(elements.stations, items);
+  }
+
+  function fillStationSelect(select, usable) {
+    const stations = (state.stations || []).filter(usable);
+    const previous = select.value;
+    select.replaceChildren(...stations.map((station) => {
+      const option = make("option", "", station.name);
+      option.value = station.name;
+      return option;
+    }));
+    if (!stations.length) {
+      const option = make("option", "", "No machine can");
+      option.value = "";
+      select.appendChild(option);
+    }
+    if (stations.some((station) => station.name === previous)) { select.value = previous; }
+  }
+
+  function renderSpectator() {
+    const spectator = state.spectator;
+    const wanted = pending.follow || spectator.wanted;
+    const starting = activeCommands("spectator.start").length > 0;
+    const stopping = activeCommands("spectator.stop").length > 0;
+    const joining = activeCommands("spectator.meet").length > 0;
+    const leaving = activeCommands("spectator.leave").length > 0;
+    const live = spectator.call === "in_call";
+    const waiting = spectator.call === "joining" || spectator.call === "waiting";
+    // A station runs its editor, which hasn't said how it is doing yet
+    const launching = !spectator.running && (starting || Boolean(spectator.station));
+
+    elements.spectatorOn.hidden = !spectator.running;
+    elements.spectatorOff.hidden = spectator.running || launching;
+    elements.spectatorLaunching.hidden = !launching || !spectator.station;
+    elements.spectatorLaunchingWhere.textContent = spectator.station;
+    elements.spectatorCancel.disabled = stopping;
+    elements.spectatorPill.className = `status-pill${live ? " live" : spectator.running ? " on" : ""}`;
+    elements.spectatorPill.textContent = live ? "Live in Meet" : stopping ? "Stopping..." : spectator.running ? "On"
+      : launching ? "Starting..." : "Off";
+
+    // The picture plays as the spectator sends it; after the stream broke, a still for a while
+    const streamable = Date.now() - viewStreamFailedAt > VIEW_STREAM_RETRY_MS;
+    if (spectator.running && spectator.view && streamable && !viewStreaming) {
+      viewStreaming = true;
+      elements.viewImage.src = `/api/spectator/view.mjpg?t=${Date.now()}`;
+    } else if (spectator.running && spectator.view && !viewStreaming && spectator.view !== viewShown) {
+      viewShown = spectator.view;
+      elements.viewImage.src = `/api/spectator/view.jpg?v=${spectator.view}`;
+    } else if (!spectator.running && viewStreaming) {
+      viewStreaming = false;
+      elements.viewImage.removeAttribute("src");
+    }
+    const hasView = spectator.running && spectator.view > 0;
+    elements.viewImage.hidden = !hasView;
+    elements.viewEmpty.hidden = hasView;
+    elements.viewEmptyText.textContent = spectator.running ? "Waiting for the first picture..."
+      : launching ? "Starting the spectator... its editor takes a minute or two" : "The spectator is off";
+
+    const overlay = [];
+    if (spectator.running) {
+      if (live) { overlay.push(make("span", "badge live", "Live in Meet")); }
+      const following = spectator.target ? `${spectator.found ? "Following" : "Looking for"} ${spectator.target}` : "Flying freely";
+      overlay.push(make("span", "badge", following));
+    }
+    elements.viewOverlay.replaceChildren(...overlay);
+
+    if (spectator.running) {
+      fillFollowSelect(wanted.target);
+      setPressed(elements.framing, wanted.framing);
+      for (const button of elements.framing.querySelectorAll("button")) { button.disabled = !wanted.target; }
+      elements.flyControls.hidden = Boolean(wanted.target);
+      const station = spectator.station;
+      elements.spectatorWhere.textContent = station ? `${station}${spectator.fps ? ` \u00b7 ${spectator.fps} fps` : ""}`
+        : "Its own machine (started by hand there)";
+      elements.spectatorStop.hidden = !station;
+      elements.spectatorStop.disabled = stopping;
+      elements.meetButton.hidden = live || waiting;
+      elements.meetLink.hidden = live || waiting;
+      elements.meetLink.disabled = joining;
+      elements.meetButton.disabled = !station || joining;
+      elements.meetButton.lastChild.textContent = joining ? "Joining..." : "Show in Meet";
+      elements.meetButton.title = station ? "" : "Showing in Meet from here needs the spectator started by a station";
+      elements.leaveButton.hidden = !(live || waiting);
+      elements.leaveButton.disabled = leaving;
+      elements.leaveButton.textContent = leaving ? "Leaving..." : waiting ? "Cancel" : "Leave call";
+    } else {
+      fillStationSelect(elements.spectatorStation, (station) => station.can.spectator);
+      elements.spectatorStart.disabled = starting || !elements.spectatorStation.value;
+    }
+  }
+
+  function fillFollowSelect(target) {
+    if (document.activeElement === elements.followSelect) { return; }
+    const options = [["", "Nobody: fly freely"]];
+    for (const person of state.people || []) { options.push([person.name, person.kind === "vr" ? `${person.name} (VR)` : person.name]); }
+    for (const agent of state.agents || []) { options.push([agent.name, `${agent.name} (agent)`]); }
+    if (target && !options.some(([value]) => value === target)) { options.push([target, `${target} (not here)`]); }
+    elements.followSelect.replaceChildren(...options.map(([value, label]) => {
+      const option = make("option", "", label);
+      option.value = value;
+      return option;
+    }));
+    elements.followSelect.value = target;
+  }
+
+  // Actions ----------------------------------------------------------------------------
+
+  async function follow(target, framing) {
+    pending.follow = { target, framing: framing || "behind" };
+    render();
+    try {
+      const reply = await control("spectator.follow", pending.follow);
+      state.spectator.wanted = reply.spectator;
+    } catch (error) {
+      snack(error.message, true);
+    } finally {
+      pending.follow = null;
+      render();
+    }
+  }
+
+  function stopAgent(name) {
+    command("agent.stop", { name }, `Stopping ${name}`);
+  }
+
+  async function nudge(move, turn) {
+    try {
+      await control("spectator.nudge", { move, turn });
+    } catch (error) {
+      snack(error.message, true);
+      stopRepeating();
+    }
+  }
+
+  let repeatTimer = 0;
+  let repeatButton = null;
+  function startRepeating(button) {
+    stopRepeating();
+    repeatButton = button;
+    button.classList.add("pressed");
+    const move = (button.dataset.move || "0,0,0").split(",").map(Number);
+    const turn = (button.dataset.turn || "0,0").split(",").map(Number);
+    nudge(move, turn);
+    repeatTimer = setInterval(() => nudge(move, turn), NUDGE_REPEAT_MS);
+  }
+
+  function stopRepeating() {
+    clearInterval(repeatTimer);
+    if (repeatButton) { repeatButton.classList.remove("pressed"); }
+    repeatButton = null;
+  }
+
+  for (const pad of [elements.flyPad, elements.flyControls.querySelector(".fly-height")]) {
+    pad.addEventListener("pointerdown", (event) => {
+      const button = event.target.closest("button");
+      if (!button) { return; }
+      event.preventDefault();
+      button.setPointerCapture(event.pointerId);
+      startRepeating(button);
+    });
+    for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) {
+      pad.addEventListener(type, stopRepeating);
+    }
+    pad.addEventListener("contextmenu", (event) => event.preventDefault());
+    // Enter or Space on a focused button, which pointer events don't cover
+    pad.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button || event.detail !== 0) { return; }
+      nudge((button.dataset.move || "0,0,0").split(",").map(Number), (button.dataset.turn || "0,0").split(",").map(Number));
+    });
+  }
+
+  const KEYS = { w: [[1, 0, 0], [0, 0]], s: [[-1, 0, 0], [0, 0]], a: [[0, -1, 0], [0, 0]], d: [[0, 1, 0], [0, 0]],
+    r: [[0, 0, 1], [0, 0]], f: [[0, 0, -1], [0, 0]], q: [[0, 0, 0], [-1, 0]], e: [[0, 0, 0], [1, 0]],
+    ArrowUp: [[1, 0, 0], [0, 0]], ArrowDown: [[-1, 0, 0], [0, 0]], ArrowLeft: [[0, 0, 0], [-1, 0]], ArrowRight: [[0, 0, 0], [1, 0]] };
+  elements.flyPad.addEventListener("keydown", (event) => {
+    const key = KEYS[event.key] || KEYS[event.key.toLowerCase()];
+    if (!key) { return; }
+    event.preventDefault();
+    nudge(key[0], key[1]);
+  });
+
+  elements.followSelect.addEventListener("change", () => {
+    const wanted = pending.follow || state.spectator.wanted;
+    follow(elements.followSelect.value, wanted.framing);
+    elements.followSelect.blur();
+  });
+  wireSegmented(elements.framing, (framing) => {
+    const wanted = pending.follow || state.spectator.wanted;
+    follow(wanted.target, framing);
+  });
+
+  elements.meetForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const link = elements.meetLink.value.trim();
+    if (!/^(https:\/\/)?meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}/.test(link)) {
+      snack("Paste a Google Meet link, like https://meet.google.com/abc-defg-hij", true);
+      elements.meetLink.focus();
+      return;
+    }
+    command("spectator.meet", { link }, "Joining the call");
+  });
+  elements.leaveButton.addEventListener("click", () => command("spectator.leave", {}, "Leaving the call"));
+  elements.spectatorStop.addEventListener("click", () => command("spectator.stop", {}, "Stopping the spectator"));
+  elements.spectatorCancel.addEventListener("click", () => command("spectator.stop", {}, "Stopping the spectator"));
+  elements.spectatorOff.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const station = elements.spectatorStation.value;
+    if (station) { command("spectator.start", { station }, `Starting the spectator on ${station}`); }
+  });
+
+  elements.addAgent.addEventListener("click", () => {
+    elements.agentForm.hidden = !elements.agentForm.hidden;
+    if (!elements.agentForm.hidden) { elements.agentName.focus(); }
+  });
+  wireSegmented(elements.agentBrain, () => {});
+  elements.agentForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = elements.agentName.value.trim().replace(/\s+/g, " ");
+    if (!AGENT_NAME.test(name)) {
+      snack("Use letters, digits, spaces, dots, dashes or underscores for the name", true);
+      elements.agentName.focus();
+      return;
+    }
+    const station = elements.agentStation.value;
+    command("agent.start", { name, brain: pressedValue(elements.agentBrain), station }, `Starting ${name}`);
+    elements.agentName.value = "";
+    elements.agentForm.hidden = true;
+  });
+
+  // The join command --------------------------------------------------------------------
+
+  function updateJoinCommand() {
+    const session = (state && state.session) || {};
+    const address = session.address || (["127.0.0.1", "localhost", "::1"].includes(location.hostname) ? "<session address>" : location.hostname);
+    const code = session.code || "<code>";
+    const name = (elements.joinName.value.trim() || "Their Name").replace(/"/g, "");
+    const platform = pressedValue(elements.joinPlatform);
+    const vrButton = elements.joinMode.querySelector('[data-value="vr"]');
+    vrButton.disabled = platform === "windows";
+    if (platform === "windows" && pressedValue(elements.joinMode) === "vr") { setPressed(elements.joinMode, "claude"); }
+    const mode = pressedValue(elements.joinMode);
+    const script = platform === "windows" ? "Tools\\join-windows.bat" : "Tools/join-mac.sh";
+    elements.joinCommand.textContent = `${script} ${address} "${name}" ${code} ${mode}`;
+    const hints = {
+      claude: `They join with their editor, and their agent comes along as "${name} Claude".`,
+      codex: `They join with their editor, and their agent comes along as "${name} Codex".`,
+      none: "They join with their editor only.",
+      vr: `They join as "${name} VR" in a Quest on USB from their Mac (README, Join in VR).`,
+    };
+    elements.joinHint.textContent = `Run it in their clone of AgentCoPresence, with Unreal 5.8.3. ${hints[mode]}`;
+  }
+
+  elements.addPerson.addEventListener("click", () => {
+    updateJoinCommand();
+    elements.joinDialog.showModal();
+    elements.joinName.focus();
+  });
+  elements.joinName.addEventListener("input", updateJoinCommand);
+  wireSegmented(elements.joinPlatform, updateJoinCommand);
+  wireSegmented(elements.joinMode, updateJoinCommand);
+  elements.copyJoin.addEventListener("click", () => copy(elements.joinCommand.textContent, "Join command"));
+  elements.codeChip.addEventListener("click", () => copy(sessionCode(), "Session code"));
+
+  // The session code --------------------------------------------------------------------
+
+  function openCodeDialog(wrong) {
+    elements.codeError.hidden = !wrong;
+    if (!elements.codeDialog.open) { elements.codeDialog.showModal(); }
+    elements.codeInput.focus();
+  }
+
+  elements.enterCode.addEventListener("click", () => openCodeDialog(false));
+  elements.codeForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const code = elements.codeInput.value.trim().toUpperCase();
+    if (!code) { return; }
+    writeStored(CODE_KEY, code);
+    elements.codeInput.value = "";
+    elements.codeDialog.close();
+    if (codeEntered) {
+      codeEntered();
+      codeEntered = null;
+    }
+    pollNow();
+  });
+
+  for (const dialog of [elements.joinDialog, elements.codeDialog]) {
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog || event.target.closest("[data-close]")) { dialog.close(); }
+    });
+  }
+
+  elements.viewImage.addEventListener("error", () => {
+    if (viewStreaming) {
+      // The stream broke, or this hub has none: stills until it is tried again
+      viewStreaming = false;
+      viewStreamFailedAt = Date.now();
+      viewShown = 0;
+      render();
+      return;
+    }
+    elements.viewImage.hidden = true;
+    elements.viewEmpty.hidden = false;
+  });
+
+  poll();
+})();
+</script>
+</body>
+</html>

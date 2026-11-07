@@ -1,0 +1,150 @@
+#include "CoPresenceFabLibrary.h"
+
+#include "Async/Async.h"
+#include "CoPresenceFabModule.h"
+#include "Framework/Docking/TabManager.h"
+#include "SWebBrowser.h"
+#include "Styling/AppStyle.h"
+#include "Widgets/Docking/SDockTab.h"
+
+namespace UE::CoPresenceFab::Private
+{
+	// The Fab plugin names its tabs Fab1, Fab2 and so on, and makes its web browser a tab's
+	// whole content. The newest open one is where it shows pages.
+	constexpr int32 MaxFabTabNumber = 64;
+	const FName WebBrowserWidgetType(TEXT("SWebBrowser"));
+
+	TSharedPtr<SWebBrowser> FindFabBrowser()
+	{
+		const TSharedRef<FGlobalTabmanager>& TabManager = FGlobalTabmanager::Get();
+		for (int32 TabNumber = MaxFabTabNumber; TabNumber >= 1; --TabNumber)
+		{
+			const FTabId TabId(FName(*FString::Printf(TEXT("Fab%d"), TabNumber)));
+			const TSharedPtr<SDockTab> Tab = TabManager->FindExistingLiveTab(TabId);
+			if (!Tab.IsValid())
+			{
+				continue;
+			}
+
+			const TSharedRef<SWidget> Content = Tab->GetContent();
+			if (Content->GetType() == WebBrowserWidgetType)
+			{
+				return StaticCastSharedRef<SWebBrowser>(Content);
+			}
+		}
+		return nullptr;
+	}
+}
+
+void UCoPresenceFabChannel::Report(const FString& Json)
+{
+	if (IsInGameThread())
+	{
+		OnReport.Broadcast(Json);
+		return;
+	}
+
+	// Python listens on the game thread
+	AsyncTask(ENamedThreads::GameThread, [WeakChannel = TWeakObjectPtr<UCoPresenceFabChannel>(this), Json]()
+	{
+		if (UCoPresenceFabChannel* Channel = WeakChannel.Get())
+		{
+			Channel->OnReport.Broadcast(Json);
+		}
+	});
+}
+
+bool UCoPresenceFabLibrary::RunScriptInFabTab(const FString& Script)
+{
+	const TSharedPtr<SWebBrowser> Browser = UE::CoPresenceFab::Private::FindFabBrowser();
+	if (!Browser.IsValid())
+	{
+		return false;
+	}
+
+	Browser->ExecuteJavascript(Script);
+	return true;
+}
+
+FString UCoPresenceFabLibrary::GetFabTabUrl()
+{
+	const TSharedPtr<SWebBrowser> Browser = UE::CoPresenceFab::Private::FindFabBrowser();
+	return Browser.IsValid() ? Browser->GetUrl() : FString();
+}
+
+UCoPresenceFabChannel* UCoPresenceFabLibrary::ConnectFabTab()
+{
+	const TSharedPtr<SWebBrowser> Browser = UE::CoPresenceFab::Private::FindFabBrowser();
+	if (!Browser.IsValid())
+	{
+		return nullptr;
+	}
+
+	return FCoPresenceFabModule::Get().ConnectBrowser(Browser.ToSharedRef());
+}
+
+bool UCoPresenceFabLibrary::OpenDialog(UWidget* Content, const FText& Title)
+{
+	return FCoPresenceFabModule::Get().OpenDialog(Content, Title);
+}
+
+void UCoPresenceFabLibrary::CloseDialog(UWidget* Content)
+{
+	FCoPresenceFabModule::Get().CloseDialog(Content);
+}
+
+bool UCoPresenceFabLibrary::IsDialogOpen(UWidget* Content)
+{
+	return FCoPresenceFabModule::Get().IsDialogOpen(Content);
+}
+
+FCheckBoxStyle UCoPresenceFabLibrary::GetEditorCheckBoxStyle()
+{
+	return FAppStyle::Get().GetWidgetStyle<FCheckBoxStyle>("Checkbox");
+}
+
+void UCoPresenceFabLibrary::HoldBackNewAssets(const FString& Folder, bool bHoldBack)
+{
+	FCoPresenceFabModule::Get().HoldBackNewAssets(Folder, bHoldBack);
+}
+
+int32 UCoPresenceFabLibrary::DeleteHeldBackFiles(const FString& Folder)
+{
+	return FCoPresenceFabModule::Get().DeleteHeldBackFiles(Folder);
+}
+
+TArray<FString> UCoPresenceFabLibrary::TakeRefusedSaves()
+{
+	return FCoPresenceFabModule::Get().TakeRefusedSaves();
+}
+
+void UCoPresenceFabLibrary::PersistSessionChanges()
+{
+	FCoPresenceFabModule::Get().PersistSessionChanges();
+}
+
+bool UCoPresenceFabLibrary::PersistContentPackages(const TArray<FString>& PackageNames)
+{
+	return FCoPresenceFabModule::Get().PersistContentPackages(PackageNames);
+}
+
+
+bool UCoPresenceFabLibrary::PersistSoloPackages(const TArray<FString>& PackageNames)
+{
+	return FCoPresenceFabModule::Get().PersistSoloPackages(PackageNames);
+}
+
+TArray<FCoPresenceSharedPackage> UCoPresenceFabLibrary::SharePackages(const TArray<FString>& PackageNames)
+{
+	return FCoPresenceFabModule::Get().SharePackages(PackageNames);
+}
+
+int64 UCoPresenceFabLibrary::GetMaxSharedPackageBytes()
+{
+	return FCoPresenceFabModule::MaxSharedPackageBytes;
+}
+
+void UCoPresenceFabLibrary::QuitWithoutSaving()
+{
+	FPlatformMisc::RequestExit(false, TEXT("UCoPresenceFabLibrary::QuitWithoutSaving"));
+}

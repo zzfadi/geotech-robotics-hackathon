@@ -1,0 +1,28 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1",
+	"FriendlyName": "CoPresence Call",
+	"Description": "Films an agent the way people follow it in the Agents tab and sends that out over NDI, so the agent can show up in video calls with its live view. In the spectator's editor it films whoever the session dashboard picks, and agents' editors and the spectator tell the session hub who is in the session.",
+	"Category": "Editor",
+	"CreatedBy": "Geotech",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": true,
+	"Installed": false,
+	"EnabledByDefault": false,
+	"Plugins": [
+		{
+			"Name": "CoPresence",
+			"Enabled": true
+		},
+		{
+			"Name": "NDIMedia",
+			"Enabled": true
+		},
+		{
+			"Name": "PythonScriptPlugin",
+			"Enabled": true
+		}
+	]
+}

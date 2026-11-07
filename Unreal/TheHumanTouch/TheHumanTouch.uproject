@@ -31,6 +31,18 @@
     {
       "Name": "AndroidFileServer",
       "Enabled": false
+    },
+    {
+      "Name": "CoPresence",
+      "Enabled": true
+    },
+    {
+      "Name": "CoPresenceCall",
+      "Enabled": true
+    },
+    {
+      "Name": "CoPresenceFab",
+      "Enabled": true
     }
   ]
 }

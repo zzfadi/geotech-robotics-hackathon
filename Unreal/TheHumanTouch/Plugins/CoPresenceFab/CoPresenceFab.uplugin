@@ -1,0 +1,36 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1",
+	"FriendlyName": "CoPresence Fab",
+	"Description": "Native help for CoPresence's Fab support: adds a Fab listing through the Fab tab once a person approves it, keeps the import out of the Multi-User session until it is saved, and gives agents a web browser fab.com doesn't challenge. It also keeps agents' editors from saving levels and assets, except the content an agent shares with the session.",
+	"Category": "Editor",
+	"CreatedBy": "Geotech",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": true,
+	"Installed": false,
+	"EnabledByDefault": false,
+	"Modules": [
+		{
+			"Name": "CoPresenceFab",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [ "Mac", "Win64" ]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "WebBrowserWidget",
+			"Enabled": true
+		},
+		{
+			"Name": "ConcertSyncClient",
+			"Enabled": true
+		},
+		{
+			"Name": "MultiUserClient",
+			"Enabled": true
+		}
+	]
+}
