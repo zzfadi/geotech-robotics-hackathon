@@ -1,6 +1,6 @@
 # The Human Touch — Unreal
 
-Requires **Unreal Engine 5.8.3**, changelist **58210709**. The baseline map is `/Game/Maps/Empty`; agent presence is editor/session visualization.
+Requires **Unreal Engine 5.8.3**, changelist **58210709**. The primary map is `/Game/Maps/TheHumanTouch` (editor startup and game default); agent presence is editor/session visualization.
 
 ## Shared human and agent editor
 

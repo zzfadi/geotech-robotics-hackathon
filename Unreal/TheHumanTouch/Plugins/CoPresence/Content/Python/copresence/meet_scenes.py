@@ -6,7 +6,7 @@ runs after its transaction ends; ordinary edits still use CoPresence tools.
 import time
 import unreal
 from copresence import ui_widgets, tracking
-MAPS={'espn_studio':'/Game/Maps/espn_studio','hotel':'/Game/Maps/CoPresence','rube_goldberg':'/Game/Maps/Rubes_Kitchen','default':'/Game/Maps/GeoVerseAvatar','build':'/Game/Maps/Tomorrowland','multiuser_ai':'/Game/Maps/MultiuserAI_UE','rural_australia':'/Game/RuralAustralia/Maps/RuralAustralia_Example_01'}
+MAPS={'human_touch':'/Game/Maps/TheHumanTouch','espn_studio':'/Game/Maps/espn_studio','hotel':'/Game/Maps/CoPresence','rube_goldberg':'/Game/Maps/Rubes_Kitchen','default':'/Game/Maps/GeoVerseAvatar','build':'/Game/Maps/Tomorrowland','multiuser_ai':'/Game/Maps/MultiuserAI_UE','rural_australia':'/Game/RuralAustralia/Maps/RuralAustralia_Example_01'}
 RUNTIME={'/Game/Agent/LS_GeoVerseIdle','/Game/Agent/LS_GeoVerseSpeechRuntime'}
 status={'state':'idle'}
 poses={}

@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T12:40:51-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Renamed the live map to TheHumanTouch and set editor/game defaults; opened and verified it on Mac and Luna2.",
+  "why": "Use the requested primary project map with the official Maker Arm geometry.",
+  "where": [
+    "Unreal/TheHumanTouch/Config/DefaultEngine.ini",
+    "Unreal/TheHumanTouch/Plugins/CoPresence/Content/Python/copresence/meet_scenes.py"
+  ],
+  "details": "Resolved a hidden Unreal rename warning dialog. Host disk now contains TheHumanTouch.umap and an Empty redirector. Mac has 18 valid Maker Arm links. Binary checkpoint and Brian active-map confirmation remain pending."
+}

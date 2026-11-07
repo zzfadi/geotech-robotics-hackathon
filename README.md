@@ -16,7 +16,7 @@ The [local turn gate](turn_gate/README.md) tests hand occupancy, observation fre
 
 ## Unreal project
 
-Open [TheHumanTouch.uproject](Unreal/TheHumanTouch/TheHumanTouch.uproject) with **Unreal Engine 5.8.3** (CL 58210709). The shared scene contains the official Maker Arm link geometry; calibrated physics and the primary-map rename are in progress. See the [project instructions](Unreal/TheHumanTouch/README.md) and [AgentCoPresence migration research](docs/agentcopresence-migration.md).
+Open [TheHumanTouch.uproject](Unreal/TheHumanTouch/TheHumanTouch.uproject) with **Unreal Engine 5.8.3** (CL 58210709). The shared scene contains the official Maker Arm link geometry; the primary map is `/Game/Maps/TheHumanTouch`, configured for editor startup and game default. Calibrated physics is in progress. See the [project instructions](Unreal/TheHumanTouch/README.md) and [AgentCoPresence migration research](docs/agentcopresence-migration.md).
 
 For the two-person capture demo, see the [Mac Live Link, simulated contact and Quest overlay plan](docs/performance-capture.md), including a printable table registration target.
 
