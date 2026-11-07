@@ -20,6 +20,14 @@ The [Slack recommendation from November 5, 2026](https://geotech-org.slack.com/a
 
 ## Working practices
 
+### Unreal session limit
+
+- By default, run only one Unreal Editor instance per computer, including the Mac and Luna2. Human and agent editors count toward the same limit.
+- Before launching Unreal, inspect existing editor processes and their project/session. Reuse the existing editor when it is suitable; do not launch a duplicate or a separate companion-agent editor automatically.
+- Before switching projects or restarting, preserve unsaved work and close the existing editor gracefully. Never force-close an editor or discard changes just to satisfy this limit.
+- Multiple editor instances on one computer require an explicit user request. A Multi-User server is a separate background service and does not count as an editor instance; reuse the intended server rather than creating duplicates.
+- After startup, verify the editor count on each requested computer and confirm actual membership in the intended Multi-User session.
+
 - Read applicable repository instructions before changing files.
 - Preserve unrelated user changes and never commit credentials, tokens, private keys, or local secret files.
 - Keep documentation aligned with implemented behavior. Report what changed, what was verified, and any remaining blockers.
