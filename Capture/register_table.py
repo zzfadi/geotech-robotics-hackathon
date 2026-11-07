@@ -165,7 +165,7 @@ def camera(args, survey):
     }
 
 
-def sample_tip(sock, joint, session, seconds=0.8):
+def sample_tip(sock, joint, session, seconds=0.8, subject="Human_Quest_A"):
     # Ignore packets collected before the operator placed the fingertip.
     start = time.monotonic_ns()
     points = []
@@ -177,10 +177,7 @@ def sample_tip(sock, joint, session, seconds=0.8):
             continue
         frame = json.loads(raw)
         now = time.monotonic_ns()
-        if (
-            frame.get("subject") != "Human_Quest_A"
-            or frame.get("space") != "quest_local_floor"
-        ):
+        if frame.get("subject") != subject or frame.get("space") != "quest_local_floor":
             continue
         ns = int(frame["station_ns"])
         if ns < start or ns in stamps or not -50_000_000 <= now - ns <= 120_000_000:
@@ -188,7 +185,10 @@ def sample_tip(sock, joint, session, seconds=0.8):
         if session and frame["session"] != session:
             raise ValueError("Quest session changed; repeat registration")
         side = joint.split("-")[0]
-        if not frame.get("optical_index_tips", {}).get(
+        tip_field = (
+            "xr_hand_tips" if subject == "Human_Quest_C" else "optical_index_tips"
+        )
+        if not frame.get(tip_field, {}).get(
             side, frame.get("optical_joints", {}).get(side) == 25
         ):
             continue
@@ -233,7 +233,9 @@ def quest(args, survey):
             input(
                 f"Hold your {args.hand} index tip on {mark['name']}. Press Return while holding still. "
             )
-            p, session = sample_tip(sock, f"{args.hand}-hand-index-tip", session)
+            p, session = sample_tip(
+                sock, f"{args.hand}-hand-index-tip", session, subject=args.subject
+            )
             points.append(p)
     transform = rigid_fit(points[:-1], targets)
     fit = float(np.max(residuals(transform, points[:-1], targets)))
@@ -261,6 +263,9 @@ def main():
     cam.add_argument("--max-reprojection-px", type=float, default=3.0)
     cam.add_argument("--max-body-error-px", type=float, default=15.0)
     head = sub.add_parser("quest")
+    head.add_argument(
+        "--subject", choices=("Human_Quest_A", "Human_Quest_C"), default="Human_Quest_A"
+    )
     head.add_argument("--hand", choices=("left", "right"), default="right")
     head.add_argument("--port", type=int, default=17861)
     for p in (cam, head):

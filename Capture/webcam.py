@@ -151,6 +151,13 @@ def solve(result, image_size, rect, calibration, previous):
             if idx in AIM
             else rotations[parent]
         )
+        if name == "head" and min(confidence[[0, 7, 8]]) >= 0.65:
+            ears = points[8] - points[7]
+            facing = points[0] - xyz[idx]
+            up = np.cross(facing, ears)
+            if np.dot(up, xyz[1] - xyz[0]) < 0:
+                up = -up
+            rotation = orientation(up, ears, fallback)
         rotations.append(rotation)
         previous[name] = rotation
         score = (

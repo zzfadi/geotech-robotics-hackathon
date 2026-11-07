@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T13:49:39-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Bound stock Victor, Bruce and Ada to independent Live Link Hub subjects in the station editor. Added a clock-synchronized Quest 2 publisher for a second XR editor.",
+  "why": "Both headsets can animate distinct people while the webcam supplies a full-body third pose. The remote XR sampler uses the same open headset session as the wearer’s Unreal view.",
+  "where": [
+    "Capture/README.md",
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose",
+    "Unreal/TheHumanTouch/Tools/quest2_performer.py"
+  ],
+  "details": "All three dressed stock characters moved from Hub frames in the editor and in Simulate. A fixed Creator preview driver survived both custom-depth component re-registrations. A physical webcam run published 222 full-body samples; live mesh readings showed hand and foot motion relative to Bruce’s pelvis. The Quest 2 sampler returned 301 timestamped samples on the station Mac but no physical hand or head movement in that interval. The second Mac still needs headset motion verification."
+}

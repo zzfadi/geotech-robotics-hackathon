@@ -4,7 +4,7 @@ The external producers send each frame to two loopback UDP sockets. Live Link Hu
 
 ## Mac editor and Hub
 
-1. Build [HumanTouchPose](../Unreal/TheHumanTouch/Plugins/HumanTouchPose) with the project's UE 5.8.3 installation. Build the local editor target and copy the generated module manifest and dylib into the plugin's ignored `Binaries/Mac/` folder. From the repository root, one way to build on Apple Silicon is:
+1. Build [HumanTouchPose](../Unreal/TheHumanTouch/Plugins/HumanTouchPose) with the project's UE 5.8.3 installation. Build the local editor target and copy the generated module manifest and libraries into the plugin's ignored `Binaries/Mac/` folder. From the repository root, one way to build on Apple Silicon is:
 
    ```sh
    engine="/Users/Shared/Epic Games/UE_5.8/Engine"
@@ -17,7 +17,7 @@ The external producers send each frame to two loopback UDP sockets. Live Link Hu
      -Project="$work/CaptureBuild.uproject" -Plugin="$work/Plugins/HumanTouchPose/HumanTouchPose.uplugin" \
      -architecture=arm64 -NoHotReload -NoUBA -NoUBALocal
    mkdir -p "$plugin/Binaries/Mac"
-   cp "$work/Plugins/HumanTouchPose/Binaries/Mac/"{UnrealEditor.modules,libUnrealEditor-HumanTouchPose.dylib} "$plugin/Binaries/Mac/"
+   cp "$work/Plugins/HumanTouchPose/Binaries/Mac/"{UnrealEditor.modules,libUnrealEditor-HumanTouchPose.dylib,libUnrealEditor-HumanTouchPerformersEditor.dylib} "$plugin/Binaries/Mac/"
    ```
 
 2. Start one Hub with the station receiver. If Hub is already running, save any Hub session before quitting and reopening it with these arguments. `Listen` and the **Add → Human Touch Pose** menu item start the same receiver; use one.
@@ -28,8 +28,8 @@ The external producers send each frame to two loopback UDP sockets. Live Link Hu
      -ExecCmds=HumanTouch.Pose.Listen
    ```
 
-3. Use the existing shared project editor. The project enables Epic's built-in **Live Link Hub** plugin for editor targets. At the next normal launch, `Tools/join_human_touch.py --capture-tools` additionally loads the optional local drawing/inspection module (keep your usual join arguments and XR plugins). Confirm this editor in Hub's **Clients**. If the VPN-bound editor misses discovery, add the Hub's reachable **UDP Messaging unicast** endpoint to the editor's static endpoints while retaining the Concert endpoint; the Hub log prints its bound port. Port 17860 is for producer input only.
-4. In the Unreal console, enter `HumanTouch.Pose.Preview 1` to draw a cyan webcam skeleton and orange Quest skeleton. `HumanTouch.Pose.Inspect` evaluates the subjects and logs their exact session, sequence and station time in the editor Output Log. The drawings are transient; `HumanTouch.Pose.Preview 0` hides them. For a rigged character, use the Animation-role subject with a matching retarget mapping.
+3. Use the existing shared project editor. The project enables Epic's built-in **Live Link Hub** plugin for editor targets. At the next normal launch, `Tools/join_human_touch.py --capture-tools` additionally loads the local performer, drawing and inspection modules (keep your usual join arguments and XR plugins). Confirm this editor in Hub's **Clients**. If the VPN-bound editor misses discovery, add the Hub's reachable **UDP Messaging unicast** endpoint to the editor's static endpoints while retaining the Concert endpoint; the Hub log prints its bound port. Port 17860 is for producer input only.
+4. In the Unreal console, enter `HumanTouch.Pose.Preview 1` to draw a cyan webcam skeleton and orange Quest skeleton. `HumanTouch.Pose.Inspect` evaluates the subjects and logs their exact session, sequence and station time in the editor Output Log. The drawings are transient; `HumanTouch.Pose.Preview 0` hides them. The capture editor automatically binds the three stock performers listed below.
 5. To use direct Live Link, close the Hub receiver and use **Add → Human Touch Pose** in the editor with the local plugin enabled. Only one process may own the input socket.
 
 ## Person B: single webcam
@@ -113,3 +113,32 @@ uv run --script Capture/register_table.py camera --survey "$station_dir/survey.j
 uv run --script Capture/register_table.py quest --survey "$station_dir/survey.json" \
     --output "$station_dir/quest-session-registration.json"
 ```
+
+## Stock MetaHuman performers in the station
+
+Open the shared station map with the capture plugin enabled. The editor constructs these Epic stock presets from the locally installed **MetaHuman Creator Core Data**, including when the map reloads or Play In Editor starts. Each capture-enabled editor needs the native modules built for its platform and a client connection to the **same Live Link Hub**. The previews are editor actors. The project stores the mapping and placement in source. Packaged-game characters would need assembled assets.
+
+| Stock preset | Hub subject | Motion |
+| --- | --- | --- |
+| Victor | `Human_Quest_A` | Quest 3/3S upper body, head, hands and available finger joints |
+| Bruce | `Human_Cam_B` | Single webcam, full body from head to toes |
+| Ada | `Human_Quest_C` | Second computer’s active Unreal XR session, including tracked head, grip or hand, and finger joints when its XR runtime exposes them |
+
+### Quest 2 on a second Mac
+
+1. On the station that runs Hub, start a second listener alongside the Quest 3 browser bridge. Substitute the two actual Tailscale IPv4 addresses. The listener accepts a single connection from the named peer, synchronizes its clock to the station, assigns Ada’s subject and duplicates each frame to Hub and the robot input.
+
+   ```sh
+   uv run --script Capture/quest_bridge.py --port 17865 \
+     --listen-address "$STATION_TAILSCALE_IP" --editor-peer "$QUEST2_MAC_TAILSCALE_IP"
+   ```
+
+2. On the second Mac, synchronize the project, build its capture modules and connect its one shared editor to the existing Multi-User session and Hub. On its normal editor launch, add `--capture-tools --capture-hub "$STATION_TAILSCALE_IP:$HUB_MESSAGING_PORT"` to the project join helper. Retain the Mac’s existing OpenXR launch flags and runtime. Keep the Quest 2 in that editor’s active XR session. The headset must already deliver pose to the Mac’s OpenXR runtime. USB debugging alone only establishes ADB access.
+3. Run the following from the repository root **on the Quest 2 Mac**. It attaches the sampler to the existing editor on local port 8041. The wearer can continue viewing the station in VR throughout capture.
+
+   ```sh
+   ./Capture/start_quest2.command "$STATION_TAILSCALE_IP"
+   ```
+
+4. Inspect `quest2_performer.status()` in that editor’s Python console. The frame counter advances when the headset is tracked. On the station, `HumanTouch.Pose.Inspect` reports Ada’s sequence and clock. For acceptance, turn the wearer’s head, move each hand separately, then curl fingers with controllers down. Check Ada on both computers. The XR sampler estimates shoulders, elbows and torso from the head and hands. Grip-only tracking supplies a wrist target and leaves individual fingers at rest. The available hand joint data depends on the Mac runtime. [Meta’s supported tracking modes](https://developers.meta.com/vr/documentation/unreal/unreal-movement-overview/)
+5. Use `quest2_performer.stop()` before recentering or switching the headset. After restarting, register a physically shared table with `register_table.py quest --subject Human_Quest_C` and `--output "$station_dir/quest2-session-registration.json"` if required. Use genuinely tracked, controller-free fingertips. In the external simulation, inferred elbows stay below the forearm contact confidence threshold.

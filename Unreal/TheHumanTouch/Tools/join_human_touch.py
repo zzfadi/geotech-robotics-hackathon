@@ -4,6 +4,7 @@
 # ///
 """Launch the single shared human/agent editor; refuse duplicates across projects."""
 import argparse
+import ipaddress
 import os
 from pathlib import Path
 import platform
@@ -41,7 +42,18 @@ def main():
     parser.add_argument('--engine', type=Path, default=Path('C:/Program Files/Epic Games/UE_5.8/Engine') if platform.system()=='Windows' else Path('/Users/Shared/Epic Games/UE_5.8/Engine'))
     parser.add_argument('--capture-tools', action='store_true',
                         help='Load the locally built HumanTouchPose plugin for preview and diagnostics')
+    parser.add_argument('--capture-hub', metavar='IP:PORT',
+                        help='Add the reachable Live Link Hub UDP Messaging endpoint alongside Concert')
     args = parser.parse_args()
+    if args.capture_hub:
+        host, sep, port = args.capture_hub.rpartition(':')
+        try:
+            ipaddress.IPv4Address(host)
+            if not sep or not 1 <= int(port) <= 65535:
+                raise ValueError
+        except ValueError:
+            parser.error('--capture-hub requires an IPv4 address and UDP port')
+
     running = editors()
     if running:
         raise SystemExit('An Unreal Editor is already running (PIDs: '+', '.join(str(p['pid']) for p in running)+'). Reuse it, or preserve work and close it before relaunching. No additional editor started.')
@@ -50,6 +62,8 @@ def main():
     if (build['MajorVersion'],build['MinorVersion'],build['PatchVersion'],build['Changelist'])!=(5,8,3,58210709):
         raise SystemExit('Requires UE 5.8.3 CL 58210709')
     command=arguments(args.engine,args.local_address,args.name)
+    if args.capture_hub:
+        command = [arg + ',' + args.capture_hub if arg.startswith('-UDPMESSAGING_TRANSPORT_STATIC=') else arg for arg in command]
     if args.capture_tools:
         command.append('-EnablePlugins=HumanTouchPose')
     logdir=PROJECT/'Saved/CoPresenceLogs';logdir.mkdir(parents=True,exist_ok=True)

@@ -67,3 +67,51 @@ class QuestTransportTest(unittest.IsolatedAsyncioTestCase):
                     self.assertLess(
                         abs(int(frame["station_ns"]) - time.monotonic_ns()), 100_000_000
                     )
+
+    async def test_remote_editor_subject_and_clock_are_assigned_at_station(self):
+        from quest_bridge import editor_listener
+
+        loop = asyncio.get_running_loop()
+        with (
+            socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sim,
+            socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as hub,
+        ):
+            for udp in (sim, hub):
+                udp.bind(("127.0.0.1", 0))
+                udp.setblocking(False)
+            ports = (hub.getsockname()[1], sim.getsockname()[1])
+            listener = await editor_listener("127.0.0.1", "127.0.0.1", 0, ports, None)
+            async with listener:
+                reader, writer = await asyncio.open_connection(
+                    "127.0.0.1", listener.sockets[0].getsockname()[1]
+                )
+                ping = json.loads(await asyncio.wait_for(reader.readline(), 2))
+                frame = {
+                    "seq": 1,
+                    "client_ms": 72001,
+                    "subject": "Human_Quest_A",
+                    "bones": [
+                        ["hips", -1, 0, 1, 0, 0, 0, 0, 1, 0.45],
+                        ["head", 0, 0, 1.7, 0, 0, 0, 0, 1, 1],
+                    ],
+                }
+                for message in ({"pong": ping["ping"], "client_ms": 72000}, frame):
+                    writer.write(json.dumps(message).encode() + b"\n")
+                await writer.drain()
+                first, second = await asyncio.wait_for(
+                    asyncio.gather(
+                        loop.sock_recv(hub, 65535), loop.sock_recv(sim, 65535)
+                    ),
+                    2,
+                )
+                self.assertEqual(first, second)
+                data = json.loads(first)
+                self.assertEqual(
+                    (data["subject"], data["timing"], data["space"]),
+                    ("Human_Quest_C", "editor_xr_sample", "quest_local_floor"),
+                )
+                self.assertLess(
+                    abs(int(data["station_ns"]) - time.monotonic_ns()), 100_000_000
+                )
+                writer.close()
+                await writer.wait_closed()
