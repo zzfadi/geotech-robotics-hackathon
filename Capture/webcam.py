@@ -81,9 +81,9 @@ def orientation(direction, lateral, fallback):
     return Rotation.from_matrix(np.column_stack((x, y, np.cross(x, y)))).as_quat()
 
 
-def station_points(world, image, confidence, calibration, image_size):
+def _register_landmarks(world, image, confidence, calibration, image_size):
     if calibration is None:
-        return world @ CAMERA_TO_XR, "hip_relative"
+        return world @ CAMERA_TO_XR, "hip_relative", confidence
     if list(image_size) != calibration["image_size"]:
         raise ValueError("Camera resolution differs from calibration")
     intrinsics = np.asarray(calibration["K"], dtype=float).reshape(3, 3)
@@ -94,29 +94,46 @@ def station_points(world, image, confidence, calibration, image_size):
     # Fit the translation of the hip-centred skeleton in the camera frame using
     # undistorted rays. The model has already estimated the person's orientation.
     good = confidence > 0.65
-    if good.sum() < 6:
-        return None, None
-    pixels = (image[good] * image_size).reshape(-1, 1, 2)
+    if good.sum() < 6 or not np.isfinite(world).all() or not np.isfinite(image).all():
+        return None, None, None
+    pixels = (image * image_size).reshape(-1, 1, 2)
     rays = cv2.undistortPoints(pixels, intrinsics, distortion).reshape(-1, 2)
-    local = world[good]
-    matrix = np.tile(np.eye(2, 3), (len(rays), 1))
-    matrix[:, 2] = -rays.ravel()
-    rhs = (rays * local[:, 2:3] - local[:, :2]).ravel()
-    shift, _, rank, _ = np.linalg.lstsq(matrix, rhs, rcond=None)
-    camera_pts = world + shift
-    if rank < 3 or (camera_pts[good, 2] <= 0.05).any():
-        return None, None
-    reprojected = camera_pts[good, :2] / camera_pts[good, 2:3]
-    if (
-        np.median(
-            np.linalg.norm((reprojected - rays) * np.diag(intrinsics)[:2], axis=1)
+    matrix = np.tile(np.eye(2, 3), (len(rays), 1, 1))
+    matrix[:, :, 2] = -rays
+    rhs = rays * world[:, 2:3] - world[:, :2]
+
+    def fit(mask):
+        shift, _, rank, _ = np.linalg.lstsq(
+            matrix[mask].reshape(-1, 3), rhs[mask].ravel(), rcond=None
         )
-        > calibration["max_pixel_error"]
-    ):
-        return None, None
-    return camera_pts @ table_from_cv[:3, :3].T + table_from_cv[:3, 3], calibration[
-        "space"
-    ]
+        camera = world + shift
+        projected = cv2.projectPoints(
+            camera, np.zeros(3), np.zeros(3), intrinsics, distortion
+        )[0]
+        error = np.linalg.norm((projected - pixels).reshape(-1, 2), axis=1)
+        return camera, (error <= calibration["max_pixel_error"]) & (
+            camera[:, 2] > 0.05
+        ) & (rank == 3)
+
+    camera, agrees = fit(good)
+    inliers = good & agrees
+    # A confident but mislocated wrist must not pull the rest of the body toward it.
+    minimum = max(6, good.sum() // 2 + 1)
+    if inliers.sum() < minimum:
+        return None, None, None
+    if not np.array_equal(inliers, good):
+        camera, agrees = fit(inliers)
+        if (good & agrees).sum() < minimum:
+            return None, None, None
+    points = camera @ table_from_cv[:3, :3].T + table_from_cv[:3, 3]
+    return points, calibration["space"], np.where(agrees, confidence, 0.0)
+
+
+def station_points(world, image, confidence, calibration, image_size):
+    points, space, _ = _register_landmarks(
+        world, image, confidence, calibration, image_size
+    )
+    return points, space
 
 
 def solve(result, image_size, rect, calibration, previous):
@@ -129,7 +146,9 @@ def solve(result, image_size, rect, calibration, previous):
     x0, y0, x1, y1 = rect
     xy = (xy * [x1 - x0, y1 - y0] + [x0, y0]) / image_size
     confidence = np.array([min(p.visibility, p.presence) for p in image_landmarks])
-    points, space = station_points(world, xy, confidence, calibration, image_size)
+    points, space, confidence = _register_landmarks(
+        world, xy, confidence, calibration, image_size
+    )
     if points is None:
         return None
     xyz = np.array(
@@ -146,11 +165,16 @@ def solve(result, image_size, rect, calibration, previous):
         fallback = previous.get(
             name, rotations[parent] if parent >= 0 else [0.0, 0.0, 0.0, 1.0]
         )
-        rotation = (
-            orientation(xyz[AIM[idx]] - xyz[idx], axis, fallback)
-            if idx in AIM
-            else rotations[parent]
-        )
+        if idx in AIM:
+            end_indices = RIG[AIM[idx]][2]
+            visible = np.min(confidence[np.atleast_1d(end_indices)]) > 0
+            rotation = (
+                orientation(xyz[AIM[idx]] - xyz[idx], axis, fallback)
+                if visible
+                else fallback
+            )
+        else:
+            rotation = rotations[parent]
         if name == "head" and min(confidence[[0, 7, 8]]) >= 0.65:
             ears = points[8] - points[7]
             facing = points[0] - xyz[idx]

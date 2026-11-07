@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T15:05:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Check registered webcam joints individually against the original camera pixels before publishing them to Hub and physics.",
+  "why": "A synthetic wrist error of 16 cm previously kept 0.99 confidence and was eligible to drive contact despite its disagreement with the image.",
+  "where": ["Capture/webcam.py", "Capture/test_webcam_registration.py", "docs/performance-capture.md"],
+  "details": "A five-frame UDP rehearsal sent identical bytes to the local Hub input and the external simulation observer. Each physics tick carried its original source sequence and timestamp. The bad wrist had zero confidence, the other 22 joints stayed valid, and the affected MuJoCo forearm returned after two consistent samples. The same image ray can correspond to many depths, so physical table registration and held-out reach checks remain necessary."
+}
