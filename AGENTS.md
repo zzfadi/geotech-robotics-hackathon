@@ -23,7 +23,8 @@ The [Slack recommendation from November 5, 2026](https://geotech-org.slack.com/a
 The team dashboard at https://zzfadi.github.io/geotech-robotics-hackathon/ is how everyone tracks what changed, where and why. Everyone posts there.
 
 - After each meaningful change, decision or blocker, add one new file to `dashboard/updates/` named `YYYY-MM-DD-HHMM-<short-title>.json` (Pacific time, lowercase). Include it in the same commit as the work when you can.
-- Required fields: `when` (ISO time with offset), `workstream` (an id from `dashboard/data/workstreams.json`), `status` (`done`, `in-progress`, `blocked`, `decision` or `note`), `what` and `why`. Optional: `where` (paths, commit SHAs, `#PR` or URLs), `details` and `workstream_update` (`status`, `progress` 0-100, `owner`).
+- Required fields: `when` (ISO time with offset), `workstream` (an id from `dashboard/data/workstreams.json`), `status` (`done`, `in-progress`, `blocked`, `decision` or `note`), `what` and `why`. Optional: `where` (paths, commit SHAs, `#PR` or URLs), `details` and `workstream_update` (`milestones_done` with milestone ids, `status`, `owner`, or `progress` 0-100).
+- Finished a milestone? List its id in `workstream_update.milestones_done`; that is what moves the track's progress. Milestones, owners and track `paths` live in `dashboard/data/workstreams.json`.
 - Don't name yourself in the entry. The dashboard credits every update and commit to the GitHub username that pushed it to `main`.
 - Run `python3 dashboard/build.py --check` before committing. Never edit or delete another contributor's update file.
 - Full format and an example: [dashboard/README.md](dashboard/README.md).

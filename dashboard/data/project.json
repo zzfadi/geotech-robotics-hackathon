@@ -8,10 +8,26 @@
   "repo": "https://github.com/zzfadi/geotech-robotics-hackathon",
   "branch": "main",
   "team": [
-    { "name": "FADI", "role": "Lead, robot stack" },
-    { "name": "Brian Frager", "role": "GeoTech, VR/XR + Unreal" },
-    { "name": "Denys Dubinin", "role": "GeoTech, VR/XR + Unreal" },
-    { "name": "Saleh Aldwais", "role": "TBD" },
-    { "name": "Takeshi Okamura", "role": "TBD" }
-  ]
+    {
+      "name": "FADI",
+      "role": "Lead, robot stack"
+    },
+    {
+      "name": "Brian Frager",
+      "role": "GeoTech, VR/XR + Unreal"
+    },
+    {
+      "name": "Denys Dubinin",
+      "role": "GeoTech, VR/XR + Unreal"
+    },
+    {
+      "name": "Saleh Aldwais",
+      "role": "TBD"
+    },
+    {
+      "name": "Takeshi Okamura",
+      "role": "TBD"
+    }
+  ],
+  "headline": "Take turns with a robot arm"
 }

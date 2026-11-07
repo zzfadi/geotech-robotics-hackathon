@@ -50,7 +50,7 @@ def load_json(path, errors):
 
 
 def validate_workstreams(items, errors):
-    ids = set()
+    ids = {}
     if not isinstance(items, list):
         errors.append("data/workstreams.json: must be a list")
         return ids
@@ -61,12 +61,30 @@ def validate_workstreams(items, errors):
                 errors.append(f"{where}: '{key}' is required")
         if ws.get("status") not in WS_STATUSES:
             errors.append(f"{where}: status must be one of {sorted(WS_STATUSES)}")
-        p = ws.get("progress", 0)
-        if not isinstance(p, int) or not 0 <= p <= 100:
+        if "progress" in ws and (not isinstance(ws["progress"], int) or not 0 <= ws["progress"] <= 100):
             errors.append(f"{where}: progress must be a whole number 0-100")
+        paths = ws.get("paths", [])
+        if not isinstance(paths, list) or not all(isinstance(p, str) and p for p in paths):
+            errors.append(f"{where}: paths must be a list of repo path prefixes")
+        ms_ids = set()
+        for j, ms in enumerate(ws.get("milestones", [])):
+            mw = f"{where}.milestones[{j}]"
+            if not isinstance(ms, dict) or not isinstance(ms.get("id"), str) or not isinstance(ms.get("title"), str):
+                errors.append(f"{mw}: needs an 'id' and a 'title'")
+                continue
+            if ms["id"] in ms_ids:
+                errors.append(f"{mw}: duplicate milestone id '{ms['id']}'")
+            ms_ids.add(ms["id"])
+            if "done" in ms and not isinstance(ms["done"], bool):
+                errors.append(f"{mw}: done must be true or false")
+            if "due" in ms:
+                try:
+                    parse_when(ms["due"])
+                except Exception as exc:  # noqa: BLE001
+                    errors.append(f"{mw}: due is not an ISO time ({exc})")
         if ws.get("id") in ids:
             errors.append(f"{where}: duplicate id '{ws.get('id')}'")
-        ids.add(ws.get("id"))
+        ids[ws.get("id")] = ms_ids
     return ids
 
 
@@ -99,13 +117,22 @@ def validate_update(path, entry, ws_ids, errors, warnings):
         errors.append(f"{rel}: 'where' must be a list of text (paths, URLs or commit SHAs)")
     wu = entry.get("workstream_update")
     if wu is not None:
-        if not isinstance(wu, dict) or not set(wu) <= {"status", "progress", "owner"}:
-            errors.append(f"{rel}: workstream_update may only have status, progress, owner")
+        if not isinstance(wu, dict) or not set(wu) <= {"status", "progress", "owner", "milestones_done"}:
+            errors.append(f"{rel}: workstream_update may only have status, progress, owner, milestones_done")
         else:
             if "status" in wu and wu["status"] not in WS_STATUSES:
                 errors.append(f"{rel}: workstream_update.status must be one of {sorted(WS_STATUSES)}")
             if "progress" in wu and (not isinstance(wu["progress"], int) or not 0 <= wu["progress"] <= 100):
                 errors.append(f"{rel}: workstream_update.progress must be a whole number 0-100")
+            done = wu.get("milestones_done", [])
+            known = ws_ids.get(entry.get("workstream"), set())
+            if not isinstance(done, list) or not all(isinstance(m, str) for m in done):
+                errors.append(f"{rel}: workstream_update.milestones_done must be a list of milestone ids")
+            else:
+                for m in done:
+                    if m not in known:
+                        errors.append(f"{rel}: milestone '{m}' isn't in workstream '{entry.get('workstream')}' "
+                                      f"(ids: {sorted(known)})")
     return when
 
 
@@ -164,7 +191,7 @@ def author_of(sha, by_sha, names):
     return names.get(sha, "unknown"), "git"
 
 
-def git_commits(by_sha, limit=40):
+def git_commits(by_sha, limit=400):
     fmt = "%x1e%H%x1f%h%x1f%an%x1f%aI%x1f%s"
     try:
         out = git("log", f"-n{limit}", f"--format={fmt}", "--name-only")
@@ -190,9 +217,24 @@ def git_commits(by_sha, limit=40):
         commits.append({
             "sha": parts[0], "short": parts[1], "author": author, "author_source": source,
             "when": parts[3], "subject": parts[4],
-            "files": len(files), "areas": areas[:4],
+            "files": len(files), "areas": areas[:4], "_paths": files,
         })
     return commits
+
+
+def update_adders():
+    """Map each update file name -> SHA of the commit that first added it."""
+    result = {}
+    try:
+        out = git("log", "--reverse", "--diff-filter=A", "--no-renames", "--format=%x1e%H", "--name-only", "--", "dashboard/updates")
+    except Exception:  # noqa: BLE001
+        return result
+    for block in out.split("\x1e"):
+        sha, _, files = block.strip("\n").partition("\n")
+        for f in files.splitlines():
+            if f.strip():
+                result.setdefault(Path(f.strip()).name, sha.strip())
+    return result
 
 
 def update_authors(by_sha):
@@ -247,12 +289,26 @@ def main():
     updates.sort(key=lambda e: e["_ts"], reverse=True)
 
     # Apply workstream_update entries, oldest first, on top of workstreams.json.
-    by_id = {ws["id"]: dict(ws, updated=None) for ws in workstreams}
+    by_id = {}
+    for ws in workstreams:
+        ws = dict(ws, updated=None, milestones=[dict(m, done=bool(m.get("done"))) for m in ws.get("milestones", [])])
+        by_id[ws["id"]] = ws
     for entry in sorted(updates, key=lambda e: e["_ts"]):
         ws = by_id[entry["workstream"]]
         ws["updated"] = entry["when"]
         for key, value in (entry.get("workstream_update") or {}).items():
-            ws[key] = value
+            if key == "milestones_done":
+                for ms in ws["milestones"]:
+                    if ms["id"] in value and not ms["done"]:
+                        ms["done"], ms["done_at"] = True, entry["when"]
+            else:
+                ws[key] = value
+    for ws in by_id.values():
+        # An explicit progress (workstreams.json or a workstream_update) wins; otherwise count milestones.
+        ws["progress_source"] = "set" if "progress" in ws or not ws["milestones"] else "milestones"
+        if "progress" not in ws:
+            total = len(ws["milestones"])
+            ws["progress"] = round(100 * sum(m["done"] for m in ws["milestones"]) / total) if total else 0
     for entry in updates:
         entry.pop("_ts", None)
 
@@ -262,16 +318,39 @@ def main():
 
     by_sha = pushers(project.get("branch", "main"))
     authors = update_authors(by_sha)
+    adders = update_adders()
     for entry in updates:
-        entry["author"], entry["author_source"] = authors.get(entry.pop("file"), ("not pushed yet", "local"))
+        name = entry.pop("file")
+        entry["author"], entry["author_source"] = authors.get(name, ("not pushed yet", "local"))
+        entry["sha"] = adders.get(name)
     print(f"Authors: {len(by_sha)} commits matched to GitHub pushers" if by_sha else "Authors: git author names (no GitHub token)")
+
+    # Which tracks each commit touched: path prefixes, plus the workstream of any update it added.
+    ws_by_update_sha = {}
+    for entry in updates:
+        if entry.get("sha"):
+            ws_by_update_sha.setdefault(entry["sha"], set()).add(entry["workstream"])
+    commits = git_commits(by_sha)
+    for c in commits:
+        tracks = set(ws_by_update_sha.get(c["sha"], set()))
+        for path in c.pop("_paths"):
+            if path.startswith("dashboard/updates/"):
+                continue
+            for ws in by_id.values():
+                if any(path == p or path.startswith(p) for p in ws.get("paths", [])):
+                    tracks.add(ws["id"])
+        c["tracks"] = [ws_id for ws_id in by_id if ws_id in tracks]
+
+    times = [parse_when(c["when"]) for c in commits] + [parse_when(u["when"]) for u in updates]
+    if times and "start" not in project:
+        project["start"] = min(times).isoformat()
 
     feed = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "project": project,
         "workstreams": list(by_id.values()),
         "updates": updates,
-        "commits": git_commits(by_sha),
+        "commits": commits,
     }
     (DATA / "feed.json").write_text(json.dumps(feed, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print("Wrote dashboard/data/feed.json")

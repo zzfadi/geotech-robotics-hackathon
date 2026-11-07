@@ -2,57 +2,100 @@
   {
     "id": "planning",
     "name": "Planning & coordination",
+    "short": "Planning",
     "owner": "FADI",
     "status": "in-progress",
-    "progress": 60,
-    "goal": "Pick the stack, split the work, keep this dashboard current."
+    "goal": "Pick the stack, split the work, keep everyone pointed at the Sunday demo.",
+    "paths": ["dashboard/", "AGENTS.md", "README.md", ".github/"],
+    "milestones": [
+      { "id": "stack", "title": "Stack decided", "due": "2026-11-07T12:00:00-08:00", "done": true },
+      { "id": "dashboard", "title": "Team dashboard live", "due": "2026-11-07T12:30:00-08:00", "done": true },
+      { "id": "owners", "title": "An owner on every track", "due": "2026-11-07T14:00:00-08:00", "done": false },
+      { "id": "script", "title": "Demo script locked", "due": "2026-11-08T10:00:00-08:00", "done": false }
+    ]
   },
   {
     "id": "arm-station",
     "name": "Arm station + portal-makermods",
+    "short": "Arm station",
     "owner": "TBD",
     "status": "not-started",
-    "progress": 0,
-    "goal": "Book an arm station slot and get LiveKit's portal-makermods driving our MakerMods arm."
+    "goal": "Book an arm station slot and get LiveKit's portal-makermods driving our MakerMods arm.",
+    "paths": ["portal/", "arm/", "station/"],
+    "milestones": [
+      { "id": "slot", "title": "Arm station slot booked", "due": "2026-11-07T15:00:00-08:00", "done": false },
+      { "id": "portal", "title": "portal-makermods drives our arm", "due": "2026-11-07T19:00:00-08:00", "done": false },
+      { "id": "recording", "title": "Teleop takes recorded", "due": "2026-11-07T22:00:00-08:00", "done": false }
+    ]
   },
   {
     "id": "dream1",
     "name": "Dream-1 integration",
+    "short": "Dream-1",
     "owner": "TBD",
     "status": "not-started",
-    "progress": 0,
-    "goal": "Dream Labs API key, then Dream-1 untrained on \"move the token to the next spot\"."
+    "goal": "Dream Labs API key, then Dream-1 untrained on \"move the token to the next spot\".",
+    "paths": ["dream1/", "policy/"],
+    "milestones": [
+      { "id": "api-key", "title": "Dream Labs API key", "due": "2026-11-07T14:00:00-08:00", "done": false },
+      { "id": "first-run", "title": "First untrained token move", "due": "2026-11-07T18:00:00-08:00", "done": false },
+      { "id": "reliable", "title": "Reliable token placement", "due": "2026-11-08T09:00:00-08:00", "done": false }
+    ]
   },
   {
     "id": "turn-gate",
     "name": "Turn gate (hand in workspace)",
+    "short": "Turn gate",
     "owner": "TBD",
     "status": "not-started",
-    "progress": 0,
-    "goal": "Detect a hand in the workspace and pause or hand over control of the arm."
+    "goal": "Detect a hand in the workspace and pause or hand over control of the arm.",
+    "paths": ["turn_gate/", "turn-gate/", "vision/"],
+    "milestones": [
+      { "id": "detect", "title": "Hand detected on camera", "due": "2026-11-07T18:00:00-08:00", "done": false },
+      { "id": "wired", "title": "Gate pauses and resumes the arm", "due": "2026-11-07T23:00:00-08:00", "done": false },
+      { "id": "tuned", "title": "Tuned on the real table", "due": "2026-11-08T10:00:00-08:00", "done": false }
+    ]
   },
   {
     "id": "voice-agent",
     "name": "Voice agent (LiveKit)",
+    "short": "Voice",
     "owner": "TBD",
     "status": "not-started",
-    "progress": 0,
-    "goal": "The robot says \"your turn\" or \"I'll wait\" at the right moments."
+    "goal": "The robot says \"your turn\" or \"I'll wait\" at the right moments.",
+    "paths": ["voice/", "agent/"],
+    "milestones": [
+      { "id": "in-room", "title": "Voice agent joins the room", "due": "2026-11-07T20:00:00-08:00", "done": false },
+      { "id": "turn-lines", "title": "Speaks on turn-gate events", "due": "2026-11-08T09:00:00-08:00", "done": false }
+    ]
   },
   {
     "id": "vrxr",
     "name": "VR/XR data + Unreal",
+    "short": "VR/XR",
     "owner": "Brian Frager, Denys Dubinin",
     "status": "in-progress",
-    "progress": 20,
-    "goal": "Hand tracking for the turn gate, plus the Unreal scene and recorded takes."
+    "goal": "Hand tracking for the turn gate, plus the Unreal scene and recorded takes.",
+    "paths": ["Unreal/", "docs/agentcopresence-migration.md", "docs/brian-join.md", "docs/checkpoints.md", "docs/dreamlabs-yam.md", "docs/images/"],
+    "milestones": [
+      { "id": "baseline", "title": "Unreal baseline + CoPresence", "due": "2026-11-07T12:00:00-08:00", "done": true },
+      { "id": "yam-station", "title": "YAM station in the scene", "due": "2026-11-07T13:00:00-08:00", "done": true },
+      { "id": "checkpoints", "title": "Checkpoints push to GitHub", "due": "2026-11-07T16:00:00-08:00", "done": false },
+      { "id": "hand-feed", "title": "Hand tracking feeds the turn gate", "due": "2026-11-07T21:00:00-08:00", "done": false }
+    ]
   },
   {
     "id": "demo",
     "name": "Demo rehearsal & submission",
+    "short": "Demo",
     "owner": "TBD",
     "status": "not-started",
-    "progress": 0,
-    "goal": "End-to-end run on the real arm, a backup video, and the submission in by 3 PM Sunday."
+    "goal": "End-to-end run on the real arm, a backup video, and the submission in by 3 PM Sunday.",
+    "paths": ["demo/"],
+    "milestones": [
+      { "id": "e2e", "title": "First end-to-end run", "due": "2026-11-08T11:00:00-08:00", "done": false },
+      { "id": "video", "title": "Backup video recorded", "due": "2026-11-08T13:00:00-08:00", "done": false },
+      { "id": "submitted", "title": "Submission in", "due": "2026-11-08T15:00:00-08:00", "done": false }
+    ]
   }
 ]

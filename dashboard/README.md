@@ -1,10 +1,13 @@
 # Team dashboard
 
-Live at **https://zzfadi.github.io/geotech-robotics-hackathon/**. It shows each workstream's owner and progress, a countdown to the demo deadline (Sunday, Nov 8, 3 PM PT), every posted update (newest first, filterable by GitHub user, workstream and status), and the latest commits on `main`.
+Live at **https://zzfadi.github.io/geotech-robotics-hackathon/**.
 
-Everything is credited to the **GitHub username that pushed it to `main`**, read from GitHub's push history when the site builds. Nobody types their own name.
+- **Overview** (`index.html`): countdown to the demo (Sunday, Nov 8, 3 PM PT), overall progress, what needs attention (blocked tracks, overdue milestones, tracks with no owner), one card per track, the milestone timeline, activity by hour, who's shipping, and the latest updates and commits.
+- **Track pages** (`track.html?id=<track>`): one per track, with its owner, milestones, progress next to every other track and the clock, its activity, who's on it, and its updates and commits.
 
-GitHub Actions rebuilds and redeploys it on every push to `main` (`.github/workflows/dashboard.yml`).
+Everything is credited to the **GitHub username that pushed it to `main`**, read from GitHub's push history when the site builds. Nobody types their own name. Commits are matched to tracks by the `paths` each track lists, and by the update files they add.
+
+GitHub Actions rebuilds and redeploys the site on every push to `main` (`.github/workflows/dashboard.yml`).
 
 ## How to post an update
 
@@ -26,7 +29,7 @@ Everyone posts the same way: **add one new JSON file** to `dashboard/updates/`. 
   "why": "The arm has to pause the moment a hand enters the workspace.",
   "where": ["turn_gate/detector.py", "a1b2c3d", "https://github.com/zzfadi/geotech-robotics-hackathon/pull/3"],
   "details": "Optional extra context, one or two sentences.",
-  "workstream_update": { "status": "in-progress", "progress": 40 }
+  "workstream_update": { "status": "in-progress", "milestones_done": ["detect"] }
 }
 ```
 
@@ -39,7 +42,7 @@ Everyone posts the same way: **add one new JSON file** to `dashboard/updates/`. 
 | `why` | yes | One or two sentences: why it matters. |
 | `where` | no | Files or folders (repo paths), commit SHAs, `#12` for a PR, or full URLs. They become links. |
 | `details` | no | Anything else worth knowing. |
-| `workstream_update` | no | Moves the workstream card: any of `status` (`not-started`, `in-progress`, `at-risk`, `blocked`, `done`), `progress` (0-100) and `owner`. The newest one wins. |
+| `workstream_update` | no | Moves the track: `milestones_done` (milestone ids from `workstreams.json` that this update finished), `status` (`not-started`, `in-progress`, `at-risk`, `blocked`, `done`), `owner`, or `progress` (0-100). The newest value wins. |
 
 ### Workstream ids
 
@@ -53,7 +56,13 @@ Everyone posts the same way: **add one new JSON file** to `dashboard/updates/`. 
 | `vrxr` | VR/XR data + Unreal |
 | `demo` | Demo rehearsal & submission |
 
-To add a workstream or change its name or goal, edit `dashboard/data/workstreams.json`. To claim an owner or move progress, prefer a `workstream_update` in your update, so the change shows up in the feed too. Project facts (goal, deadline, team) live in `dashboard/data/project.json`.
+### Tracks and milestones
+
+Tracks live in `dashboard/data/workstreams.json`. Each has an `id`, `name`, `short` (nav label), `owner`, `status`, `goal`, `paths` (repo path prefixes, so commits there count toward the track) and `milestones`, each with an `id`, `title`, `due` (ISO time) and `done`.
+
+A track's progress is the share of its milestones that are done, unless someone sets `progress` explicitly. So the simplest way to move a track forward is to finish a milestone and say so in your update with `"workstream_update": { "milestones_done": ["<id>"] }`. To claim a track, use `"owner"` the same way, so it shows in the feed too.
+
+Edit `workstreams.json` directly to add or rename tracks, add milestones, or move a due time. The milestone times there now are a first draft for the team to adjust. Project facts (goal, deadline, team) live in `dashboard/data/project.json`.
 
 ## Preview locally
 

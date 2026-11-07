@@ -5,5 +5,10 @@
   "what": "Stack: Dream-1 + LiveKit portal-makermods on the Creative track; skip Isaac Sim and RL",
   "why": "Judging is on real arms and Dream-1 needs no training. Portal's one-driver-at-a-time switch gives wait-and-hold almost for free, and moving from sim to real in 30 hours is a long shot.",
   "details": "First steps: Dream Labs API key and an arm station slot, then try Dream-1 untrained on \"move the token to the next spot\". Then the hand-in-workspace check and the voice agent. Still unconfirmed: Dream-1 API docs, Portal's fit with our MakerMods arm, and the Creative judging rubric.",
-  "workstream_update": { "status": "in-progress", "progress": 60 }
+  "workstream_update": {
+    "status": "in-progress",
+    "milestones_done": [
+      "stack"
+    ]
+  }
 }

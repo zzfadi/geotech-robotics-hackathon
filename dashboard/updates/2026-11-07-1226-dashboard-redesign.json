@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T12:26:00-08:00",
+  "workstream": "planning",
+  "status": "done",
+  "what": "Dashboard redesign: overview, a page per track, milestones and charts",
+  "why": "See at a glance how close each track is to the Sunday demo, what's blocked or overdue, and who is shipping what.",
+  "where": ["dashboard/index.html", "dashboard/track.html", "dashboard/data/workstreams.json", "dashboard/README.md"],
+  "details": "Milestone due times are a first draft for the team to adjust in workstreams.json. Finish one by listing its id in workstream_update.milestones_done."
+}

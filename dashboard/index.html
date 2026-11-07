@@ -4,67 +4,93 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Team Dashboard</title>
-  <meta name="description" content="What every person and agent on the GeoTech hackathon team is doing, and how close we are to the demo.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f6fed'/%3E%3Cpath d='M8 20l5-6 4 4 7-9' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <meta name="description" content="Where the GeoTech hackathon team stands: progress toward the demo, every track, and the latest work.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Crect x='6' y='16' width='4' height='10' rx='1.5' fill='%232a78d6'/%3E%3Crect x='12' y='10' width='4' height='16' rx='1.5' fill='%23eb6834'/%3E%3Crect x='18' y='13' width='4' height='13' rx='1.5' fill='%231baf7a'/%3E%3Crect x='24' y='6' width='4' height='20' rx='1.5' fill='%23eda100'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="wrap">
-    <header class="top">
-      <div class="intro">
-        <p class="eyebrow" id="eyebrow">Physical AI Hacks</p>
-        <h1 id="title">Team dashboard</h1>
-        <p class="goal" id="goal"></p>
-        <p class="stack" id="stack"></p>
-      </div>
-      <div class="hero-cards">
-        <div class="card stat">
-          <span class="stat-label">Demo due in</span>
-          <span class="stat-value" id="countdown">–</span>
-          <span class="stat-sub" id="deadline"></span>
+<body data-page="overview">
+  <header class="bar-top">
+    <div class="wrap">
+      <a class="brand" href="./"><span class="brand-mark" id="mark" aria-hidden="true"></span><span id="brand">Team dashboard</span></a>
+      <nav class="nav" id="nav" aria-label="Tracks"></nav>
+      <button class="theme" id="theme" type="button" aria-label="Switch light or dark mode" title="Switch light or dark mode">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="stripe" id="stripe" aria-hidden="true"></div>
+  </header>
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <div class="card hero-main">
+          <p class="eyebrow" id="eyebrow">Physical AI Hacks</p>
+          <h1 id="title">Loading…</h1>
+          <p class="goal" id="goal"></p>
+          <div class="clock">
+            <div class="count" id="count" aria-live="off"></div>
+            <div class="clock-meta" id="clock-meta"></div>
+          </div>
+          <div class="timebar">
+            <div class="timebar-track" data-tip="" id="timebar"><div class="timebar-fill" id="timebar-fill"></div></div>
+            <div class="timebar-labels"><span id="t-start"></span><span id="t-end"></span></div>
+          </div>
         </div>
-        <div class="card stat">
-          <span class="stat-label">Overall progress</span>
-          <span class="stat-value" id="overall">–</span>
-          <div class="bar"><span id="overall-bar"></span></div>
-          <span class="stat-sub" id="overall-sub"></span>
+        <div class="hero-side">
+          <div class="tiles">
+            <div class="card tile" id="tile-progress"></div>
+            <div class="card tile" id="tile-milestones"></div>
+          </div>
+          <div class="card attention">
+            <h2>Needs attention</h2>
+            <p class="sub">Blocked tracks, overdue milestones and tracks without an owner</p>
+            <div id="attention"></div>
+          </div>
         </div>
-      </div>
-      <button class="theme" id="theme" type="button" aria-label="Switch color theme" title="Switch color theme">◐</button>
-    </header>
+      </section>
 
-    <section>
-      <div class="section-head">
-        <h2>Workstreams</h2>
-      </div>
-      <div class="grid" id="workstreams"></div>
-    </section>
+      <section>
+        <div class="tracks" id="tracks"></div>
+      </section>
 
-    <section>
-      <div class="section-head">
-        <h2>Activity</h2>
-        <div class="filters">
-          <label><span class="sr">GitHub user</span><select id="f-who"></select></label>
-          <label><span class="sr">Workstream</span><select id="f-ws"></select></label>
-          <label><span class="sr">Status</span><select id="f-status"></select></label>
+      <section class="card">
+        <div class="card-head">
+          <div><h2>Milestones to the demo</h2><p class="sub">Each dot is a milestone at its target time. Filled means done.</p></div>
         </div>
-      </div>
-      <ol class="feed" id="feed"></ol>
-      <p class="empty" id="feed-empty" hidden>No updates match these filters.</p>
-    </section>
+        <div class="chart" id="timeline"></div>
+      </section>
 
-    <section>
-      <div class="section-head">
-        <h2>Recent commits on main</h2>
-      </div>
-      <ol class="commits" id="commits"></ol>
-    </section>
+      <section class="charts">
+        <div class="card">
+          <h2>Activity by hour</h2>
+          <p class="sub">Updates and commits per hour, Pacific time, colored by track</p>
+          <div class="chart" id="hourly"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+        <div class="card">
+          <h2>Who's shipping</h2>
+          <p class="sub">Updates and commits by GitHub user, split by track</p>
+          <div id="contrib"></div>
+        </div>
+      </section>
 
-    <footer>
-      <a id="howto" href="#">How to post an update</a>
-      <span id="generated"></span>
-    </footer>
-  </div>
+      <section class="feed-wrap">
+        <div class="card">
+          <h2>Latest updates</h2>
+          <p class="sub">What changed, where and why</p>
+          <div class="chips" id="people"></div>
+          <ol class="feed" id="feed"></ol>
+          <button class="more" id="more" type="button" hidden>Show more</button>
+        </div>
+        <div class="card">
+          <h2>Latest commits on main</h2>
+          <p class="sub">Credited to whoever pushed them</p>
+          <ol class="commits" id="commits"></ol>
+        </div>
+      </section>
+    </div>
+    <footer class="wrap" id="footer"></footer>
+  </main>
+  <div id="tip" role="tooltip"></div>
   <script src="app.js"></script>
 </body>
 </html>
