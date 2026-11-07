@@ -123,8 +123,8 @@ def hide_camera_meshes(hide_central_body=False):
 def show_central_camera_body():
     """Show only the small physical camera proxy; retain hidden editor icons."""
     existing = yam_station.actors()
-    for label in ((yam_station.PREFIX+'OverviewCameraProxy',
-                  'MakerStation_CentralCameraLens_Approximate') if hide_central_body else ()):
+    for label in (yam_station.PREFIX+'OverviewCameraProxy',
+                  'MakerStation_CentralCameraLens_Approximate'):
         actor = existing.get(label)
         if actor is None: raise ValueError('Missing central camera proxy: '+label)
         actor.modify()
