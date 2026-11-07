@@ -1,0 +1,17 @@
+{
+  "name": "GeoTech · Physical AI Hacks",
+  "goal": "Cooperative tabletop turn-taking: a person places a token and pulls their hand back, then a MakerMods arm places the next token, and holds if the person reaches back in.",
+  "track": "Creative track",
+  "stack": "Dream-1 (Dream Labs) + LiveKit portal-makermods, hand-in-workspace turn gate, LiveKit voice agent",
+  "deadline": "2026-11-08T15:00:00-08:00",
+  "deadline_label": "Demos due Sunday, Nov 8, 3 PM PT",
+  "repo": "https://github.com/zzfadi/geotech-robotics-hackathon",
+  "branch": "main",
+  "team": [
+    { "name": "FADI", "role": "Lead, robot stack" },
+    { "name": "Brian Frager", "role": "GeoTech, VR/XR + Unreal" },
+    { "name": "Denys Dubinin", "role": "GeoTech, VR/XR + Unreal" },
+    { "name": "Saleh Aldwais", "role": "TBD" },
+    { "name": "Takeshi Okamura", "role": "TBD" }
+  ]
+}

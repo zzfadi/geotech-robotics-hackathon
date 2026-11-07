@@ -17,3 +17,6 @@
 # Python runtime caches
 __pycache__/
 *.py[cod]
+
+# Dashboard build output
+dashboard/data/feed.json

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "planning",
+    "name": "Planning & coordination",
+    "owner": "FADI",
+    "status": "in-progress",
+    "progress": 60,
+    "goal": "Pick the stack, split the work, keep this dashboard current."
+  },
+  {
+    "id": "arm-station",
+    "name": "Arm station + portal-makermods",
+    "owner": "TBD",
+    "status": "not-started",
+    "progress": 0,
+    "goal": "Book an arm station slot and get LiveKit's portal-makermods driving our MakerMods arm."
+  },
+  {
+    "id": "dream1",
+    "name": "Dream-1 integration",
+    "owner": "TBD",
+    "status": "not-started",
+    "progress": 0,
+    "goal": "Dream Labs API key, then Dream-1 untrained on \"move the token to the next spot\"."
+  },
+  {
+    "id": "turn-gate",
+    "name": "Turn gate (hand in workspace)",
+    "owner": "TBD",
+    "status": "not-started",
+    "progress": 0,
+    "goal": "Detect a hand in the workspace and pause or hand over control of the arm."
+  },
+  {
+    "id": "voice-agent",
+    "name": "Voice agent (LiveKit)",
+    "owner": "TBD",
+    "status": "not-started",
+    "progress": 0,
+    "goal": "The robot says \"your turn\" or \"I'll wait\" at the right moments."
+  },
+  {
+    "id": "vrxr",
+    "name": "VR/XR data + Unreal",
+    "owner": "Brian Frager, Denys Dubinin",
+    "status": "in-progress",
+    "progress": 20,
+    "goal": "Hand tracking for the turn gate, plus the Unreal scene and recorded takes."
+  },
+  {
+    "id": "demo",
+    "name": "Demo rehearsal & submission",
+    "owner": "TBD",
+    "status": "not-started",
+    "progress": 0,
+    "goal": "End-to-end run on the real arm, a backup video, and the submission in by 3 PM Sunday."
+  }
+]

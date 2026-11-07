@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Dashboard</title>
+  <meta name="description" content="What every person and agent on the GeoTech hackathon team is doing, and how close we are to the demo.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f6fed'/%3E%3Cpath d='M8 20l5-6 4 4 7-9' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="intro">
+        <p class="eyebrow" id="eyebrow">Physical AI Hacks</p>
+        <h1 id="title">Team dashboard</h1>
+        <p class="goal" id="goal"></p>
+        <p class="stack" id="stack"></p>
+      </div>
+      <div class="hero-cards">
+        <div class="card stat">
+          <span class="stat-label">Demo due in</span>
+          <span class="stat-value" id="countdown">–</span>
+          <span class="stat-sub" id="deadline"></span>
+        </div>
+        <div class="card stat">
+          <span class="stat-label">Overall progress</span>
+          <span class="stat-value" id="overall">–</span>
+          <div class="bar"><span id="overall-bar"></span></div>
+          <span class="stat-sub" id="overall-sub"></span>
+        </div>
+      </div>
+      <button class="theme" id="theme" type="button" aria-label="Switch color theme" title="Switch color theme">◐</button>
+    </header>
+
+    <section>
+      <div class="section-head">
+        <h2>Workstreams</h2>
+      </div>
+      <div class="grid" id="workstreams"></div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Activity</h2>
+        <div class="filters">
+          <label><span class="sr">Person or agent</span><select id="f-who"></select></label>
+          <label><span class="sr">Workstream</span><select id="f-ws"></select></label>
+          <label><span class="sr">Status</span><select id="f-status"></select></label>
+        </div>
+      </div>
+      <ol class="feed" id="feed"></ol>
+      <p class="empty" id="feed-empty" hidden>No updates match these filters.</p>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Recent commits on main</h2>
+      </div>
+      <ol class="commits" id="commits"></ol>
+    </section>
+
+    <footer>
+      <a id="howto" href="#">How to post an update</a>
+      <span id="generated"></span>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

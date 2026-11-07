@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T11:58:42-08:00",
+  "who": "geo_dennis",
+  "kind": "human",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Unreal 5.8.3 baseline project with CoPresence chat, presence and voice",
+  "why": "Shared editor setup so the VR/XR side can build the scene and join from Windows.",
+  "where": ["Unreal/TheHumanTouch/README.md", "docs/agentcopresence-migration.md", "85bca5a", "b9c8def", "adc6513"],
+  "details": "Backfilled from the commit history when the dashboard was created."
+}
