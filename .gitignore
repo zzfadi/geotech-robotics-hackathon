@@ -17,6 +17,8 @@
 # Python runtime caches
 __pycache__/
 *.py[cod]
+.venv-turn-gate/
+turn_gate/local/
 
 # Dashboard build output
 dashboard/data/feed.json

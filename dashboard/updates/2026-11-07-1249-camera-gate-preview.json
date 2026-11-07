@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T12:49:00-08:00",
+  "workstream": "turn-gate",
+  "status": "in-progress",
+  "what": "Added a MediaPipe camera-to-gate preview with workspace bounds, keyboard turn requests and timing reports.",
+  "why": "Connect actual model output to the reviewed gate and make detector delays, hand reentry and source failure testable before hardware integration.",
+  "where": ["turn_gate/CAMERA.md", "turn_gate/camera.py", "turn_gate/occupancy.py", "turn_gate/test_camera.py", "turn_gate/test_occupancy.py"],
+  "details": "R requests a turn; C simulates completion; Q quits. 41 tests pass, including watchdog operation while capture/inference stalls and cleanup on failures. Real MediaPipe inference on the official sample detected two hands and produced HOLD; the final offline check measured 11.75 ms read, 33.01 ms inference and 60.15 ms processing age. OpenCV live-camera access was denied by macOS, so live detection and latency milestones remain open. Read-start timing is an estimate, not verified sensor exposure time. No robot connected or privacy settings changed.",
+  "workstream_update": {"status": "in-progress", "milestones_done": ["request-source"]}
+}

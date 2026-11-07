@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Quest performer · The Human Touch</title>
+<style>body{margin:3rem auto;padding:0 1rem;max-width:38rem;background:#12191c;color:#eff3f4;font:18px/1.5 system-ui}button{font:inherit;padding:.6rem 1rem}canvas{display:none}</style>
+<h1>Quest performer</h1>
+<p>Put down both controllers and enable optical hand tracking. Start capture while facing the table.</p>
+<button id="start">Start body capture</button><p role="status" id="status">Ready</p><canvas id="view"></canvas>
+<script type="module">
+const status = document.querySelector("#status");
+const button = document.querySelector("#start");
+const rig = [];
+function bone(name, parent, joint = name) {
+    rig.push([name, parent, joint]);
+    return rig.length - 1;
+}
+const hips = bone("hips", -1);
+let spine = hips;
+for (const name of ["spine-lower", "spine-middle", "spine-upper", "chest"]) spine = bone(name, spine);
+bone("head", bone("neck", spine));
+for (const side of ["left", "right"]) {
+    let arm = spine;
+    for (const name of ["shoulder", "arm-upper", "arm-lower", "hand-wrist-twist", "hand-wrist"])
+        arm = bone(side + "-" + name, arm);
+    bone(side + "-hand-palm", arm);
+    for (const finger of ["thumb", "index", "middle", "ring", "little"]) {
+        let parent = arm;
+        const parts = ["metacarpal", "phalanx-proximal"];
+        if (finger !== "thumb") parts.push("phalanx-intermediate");
+        parts.push("phalanx-distal", "tip");
+        for (const part of parts) parent = bone(side + "-hand-" + finger + "-" + part, parent);
+    }
+}
+let session, ws;
+button.onclick = async () => {
+    let ending = false;
+    const report = message => status.textContent = message;
+    const end = async message => {
+        if (ending) return;
+        ending = true;
+        if (ws && ws.readyState < WebSocket.CLOSING) ws.close();
+        if (session) await session.end().catch(() => {});
+        session = null;
+        button.disabled = false;
+        report(message);
+    };
+    try {
+        button.disabled = true;
+        if (!navigator.xr) throw Error("WebXR requires a secure context on the headset.");
+        // Request while the button gesture is still active. Use native passthrough when available.
+        session = await navigator.xr.requestSession("immersive-ar", {
+            requiredFeatures: ["local-floor", "body-tracking"], optionalFeatures: ["hand-tracking"]
+        });
+        session.addEventListener("end", () => end("Capture ended."), {once:true});
+        const space = await session.requestReferenceSpace("local-floor");
+        space.addEventListener("reset", () => end("Tracking origin reset. Recheck table registration and restart."));
+        const gl = document.querySelector("#view").getContext("webgl", {xrCompatible:true, alpha:true});
+        session.updateRenderState({baseLayer:new XRWebGLLayer(session, gl)});
+        ws = new WebSocket(new URL("/pose", location.href).href.replace(/^http/, "ws"));
+        let n = 0, last = -Infinity;
+        ws.onmessage = e => {
+            const msg = JSON.parse(e.data);
+            if (msg.ping !== undefined)
+                ws.send(JSON.stringify({pong:msg.ping, client_ms:performance.now()}));
+            if (msg.error) end(msg.error);
+        };
+        ws.onclose = () => end("Station connection closed.");
+        const onFrame = (time, frame) => {
+            if (ending) return;
+            session.requestAnimationFrame(onFrame);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
+            gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);
+            if (time - last < 16 || ws.readyState !== WebSocket.OPEN || ws.bufferedAmount > 32000) return;
+            const body = frame.body, viewer = frame.getViewerPose(space);
+            if (!body || !viewer) { report("Waiting for body tracking."); return; }
+            const bones = [];
+            for (const [name,parent,joint] of rig) {
+                const jointSpace = body.get(joint);
+                const pose = name === "head" ? viewer : jointSpace && frame.getPose(jointSpace,space);
+                if (!pose && parent < 0) { report("Body tracking unavailable."); return; }
+                if (!pose) {
+                    // Preserve the hierarchy. Unavailable joints collapse onto their parent with zero validity.
+                    bones.push([name,parent,...bones[parent].slice(2,9),0]);
+                    continue;
+                }
+                const {position:p, orientation:q} = pose.transform;
+                bones.push([name,parent,p.x,p.y,p.z,q.x,q.y,q.z,q.w,pose.emulatedPosition ? 0.5 : 1]);
+            }
+            ws.send(JSON.stringify({seq:n++,client_ms:frame.predictedDisplayTime ?? time,bones}));
+            last = time;
+            if (n === 1 || n % 60 === 0) report("Streaming " + bones.length + " joints. Frame " + n);
+        };
+        session.requestAnimationFrame(onFrame);
+    } catch(e) { await end(String(e.message || e)); }
+};
+</script></html>

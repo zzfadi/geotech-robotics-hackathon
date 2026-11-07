@@ -2,7 +2,7 @@
 
 A hardware-independent prototype for the Human Touch token-placement demo. A fresh, continuously clear workspace plus an explicit turn request can grant a robot turn. Hand reentry or unusable observations revoke it. Completion returns control to the person.
 
-This package emits software decisions only. It does not detect hands, call Dream-1, join LiveKit, move an arm or verify a physical stop. The [integration boundary](../docs/robot-stack-contract.md) records what remains to connect it to the actual station.
+The gate emits software decisions only. The optional [MediaPipe camera preview](CAMERA.md) supplies hand observations and keyboard turn requests. Neither connects Dream-1, LiveKit or an arm, or verifies a physical stop. The [integration boundary](../docs/robot-stack-contract.md) records what remains to connect it to the actual station.
 
 ## Run locally
 

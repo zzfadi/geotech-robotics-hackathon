@@ -1,0 +1,4 @@
+# Optional local preview dependencies, verified with Python 3.12 on macOS arm64.
+# The gate, replay, occupancy adapter and unit tests use only the standard library.
+mediapipe==1.2.2
+opencv-contrib-python==5.0.0.93
