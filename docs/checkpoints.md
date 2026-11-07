@@ -30,3 +30,11 @@ At the next coordinated pause:
 Never remove `Saved/MultiUser` or a live database to clear history. Keep the existing session running while participants are working; report rollover as pending until coordinated.
 
 Epic references: [persistence and session behavior](https://dev.epicgames.com/documentation/unreal-engine/multi-user-editing-overview-for-unreal-engine), [session archives](https://dev.epicgames.com/documentation/unreal-engine/saving-and-restoring-session-archives-in-unreal-engine).
+
+## UE 5.8 map acknowledgement fix (prepared)
+
+The YAM milestone exposed two false blockers. A completed hub task retains its title; idle detection now uses the terminal state while keeping editor task/animation checks. The engine's live-transaction query joins save records to activities, excluding the local dummy save event generated during persistence. Read-only inspection on Luna2 found map event 54 saved/persisted through transaction 6, equal to the newest transaction, while the public pending API still returned Empty. No database records were modified.
+
+The native helper now optionally publishes loaded pending maps as ordinary map saves inside its existing explicit persistence guard. The host checkpoint waits for the server acknowledgement and may re-persist up to three times without republishing the map. Dirty or active editor state still fails the operation, and unresolved pending packages time out. The ordinary save guard remains unchanged. Four regression tests cover acknowledgements, bounded retries, active/dirty refusal and timeout.
+
+A Win64 BuildPlugin build succeeded with this fix and an explicit AssetTools map-rename helper. Deployment requires one coordinated host-editor restart; the running server/session stays intact. Runtime verification and final binary checkpoint remain pending. The user additionally requested renaming Empty to TheHumanTouch and setting both project default maps; the host rename lifecycle is prepared in Tools/rename_human_touch_map.py.

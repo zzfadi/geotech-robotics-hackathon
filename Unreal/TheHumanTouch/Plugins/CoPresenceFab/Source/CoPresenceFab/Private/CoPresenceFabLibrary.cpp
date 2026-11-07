@@ -118,9 +118,9 @@ TArray<FString> UCoPresenceFabLibrary::TakeRefusedSaves()
 	return FCoPresenceFabModule::Get().TakeRefusedSaves();
 }
 
-void UCoPresenceFabLibrary::PersistSessionChanges()
+void UCoPresenceFabLibrary::PersistSessionChanges(bool bPublishMaps)
 {
-	FCoPresenceFabModule::Get().PersistSessionChanges();
+	FCoPresenceFabModule::Get().PersistSessionChanges(bPublishMaps);
 }
 
 bool UCoPresenceFabLibrary::PersistContentPackages(const TArray<FString>& PackageNames)
@@ -147,4 +147,10 @@ int64 UCoPresenceFabLibrary::GetMaxSharedPackageBytes()
 void UCoPresenceFabLibrary::QuitWithoutSaving()
 {
 	FPlatformMisc::RequestExit(false, TEXT("UCoPresenceFabLibrary::QuitWithoutSaving"));
+}
+
+
+bool UCoPresenceFabLibrary::RenameCurrentMapForCheckpoint(const FString& TargetPackage)
+{
+	return FCoPresenceFabModule::Get().RenameCurrentMapForCheckpoint(TargetPackage);
 }

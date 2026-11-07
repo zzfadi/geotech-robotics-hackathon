@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T12:23:24-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Built Win64 map-save acknowledgement fix and guarded map-rename helper for TheHumanTouch.",
+  "why": "Unreal kept a persisted map pending because its transaction query excludes local dummy save events. User requested renaming the map and making it primary.",
+  "where": [
+    "docs/checkpoints.md",
+    "Unreal/TheHumanTouch/Tools/rename_human_touch_map.py"
+  ],
+  "details": "Native BuildPlugin succeeded. Four acknowledgement regression tests pass. Prepared for coordinated Luna2 editor restart; runtime rename and default-map settings remain pending. No database mutation or guard bypass."
+}

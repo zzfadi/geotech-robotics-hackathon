@@ -1,6 +1,10 @@
 #include "CoPresenceFabModule.h"
 
 #include "Components/Widget.h"
+#include "AssetToolsModule.h"
+#include "IAssetTools.h"
+#include "Editor.h"
+#include "Engine/World.h"
 #include "ConcertMessageData.h"
 #include "FileHelpers.h"
 #include "ConcertWorkspaceData.h"
@@ -344,7 +348,7 @@ TArray<FString> FCoPresenceFabModule::TakeRefusedSaves()
 	return MoveTemp(RefusedSaves);
 }
 
-void FCoPresenceFabModule::PersistSessionChanges()
+void FCoPresenceFabModule::PersistSessionChanges(bool bPublishMaps)
 {
 	const TSharedPtr<IConcertSyncClient> Client = UE::CoPresenceFab::Private::GetMultiUserClient();
 	if (!Client.IsValid())
@@ -353,9 +357,30 @@ void FCoPresenceFabModule::PersistSessionChanges()
 		return;
 	}
 
-	// Multi-User serializes live transactions before copying sandbox files.
-	// Edited non-live content needs the explicit selected-package path below.
+	if (!Client->GetWorkspace().IsValid())
+	{
+		return;
+	}
+	// UE 5.8's local dummy save events are excluded by the unmuted-activity
+	// query used by GatherSessionChanges. Publish an ordinary map save first:
+	// its real package activity covers the live transactions on every client.
+	// Keep this inside the explicit persistence guard; ordinary agent saves
+	// remain forbidden. Only loaded maps already pending in this workspace qualify.
+	TArray<UPackage*> Maps;
+	for (const FName Name : bPublishMaps ? Client->GetWorkspace()->GatherSessionChanges() : TArray<FName>())
+	{
+		UPackage* Package = FindPackage(nullptr, *Name.ToString());
+		if (Package && Package->HasAnyPackageFlags(PKG_ContainsMap))
+		{
+			Maps.AddUnique(Package);
+		}
+	}
 	TGuardValue<bool> Persisting(bPersisting, true);
+	if (!Maps.IsEmpty() && !UEditorLoadingAndSavingUtils::SavePackages(Maps, false))
+	{
+		UE_LOG(LogCoPresenceFab, Error, TEXT("Map publication failed; persistence cancelled"));
+		return;
+	}
 	Client->PersistAllSessionChanges();
 }
 
@@ -590,3 +615,23 @@ void FCoPresenceFabModule::ShutdownModule()
 }
 
 IMPLEMENT_MODULE(FCoPresenceFabModule, CoPresenceFab)
+
+
+bool FCoPresenceFabModule::RenameCurrentMapForCheckpoint(const FString& TargetPackage)
+{
+	UWorld* World = GEditor ? GEditor->GetEditorWorldContext().World() : nullptr;
+	if (!World || !World->GetOutermost()->GetName().StartsWith(TEXT("/Game/Maps/"))
+		|| !TargetPackage.StartsWith(TEXT("/Game/Maps/"))
+		|| !FPackageName::IsValidLongPackageName(TargetPackage)
+		|| FPackageName::DoesPackageExist(TargetPackage)
+		|| FindPackage(nullptr, *TargetPackage))
+	{
+		UE_LOG(LogCoPresenceFab, Error, TEXT("Map rename refused: invalid source or existing destination"));
+		return false;
+	}
+	const TArray<FAssetRenameData> Renames = {
+		FAssetRenameData(World, FPackageName::GetLongPackagePath(TargetPackage), FPackageName::GetLongPackageAssetName(TargetPackage))
+	};
+	TGuardValue<bool> Persisting(bPersisting, true);
+	return FModuleManager::LoadModuleChecked<FAssetToolsModule>(TEXT("AssetTools")).Get().RenameAssets(Renames);
+}

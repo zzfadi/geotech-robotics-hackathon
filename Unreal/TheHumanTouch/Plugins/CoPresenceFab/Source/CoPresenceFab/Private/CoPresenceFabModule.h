@@ -43,7 +43,8 @@ public:
 	TArray<FString> TakeRefusedSaves();
 
 	/** Multi-User's persist, with the saves it makes allowed in an agent's editor too. */
-	void PersistSessionChanges();
+	void PersistSessionChanges(bool bPublishMaps = false);
+	bool RenameCurrentMapForCheckpoint(const FString& TargetPackage);
 	bool PersistContentPackages(const TArray<FString>& PackageNames);
 	bool PersistSoloPackages(const TArray<FString>& PackageNames);
 

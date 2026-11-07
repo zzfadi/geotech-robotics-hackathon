@@ -140,11 +140,18 @@ public:
 	 * Writes the Multi-User session's changes into the project's files, as Multi-User's own
 	 * persist does: it saves live transaction packages, then copies sandbox files in.
 	 * Use PersistContentPackages for edited materials/textures without live transactions.
+	 * Pass bPublishMaps only at an explicit checkpoint boundary to publish real map-save
+	 * activities before persistence; retries should leave it false.
 	 * These are the only saves an agent's editor makes; Tools/copresence.sh save persists
 	 * through it.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "CoPresence")
-	static void PersistSessionChanges();
+	static void PersistSessionChanges(bool bPublishMaps = false);
+
+	/** Explicit operator-requested map rename, using AssetTools and the normal save guard.
+	 * Only /Game/Maps destinations are accepted; existing destinations are never replaced. */
+	UFUNCTION(BlueprintCallable, Category = "CoPresence")
+	static bool RenameCurrentMapForCheckpoint(const FString& TargetPackage);
 
 	/** Explicitly save and persist selected loaded /Game content packages. Requires a live
 	 * Multi-User workspace and human authorization. Materials/textures lack live transaction

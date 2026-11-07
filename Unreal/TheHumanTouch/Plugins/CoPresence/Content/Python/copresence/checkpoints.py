@@ -40,10 +40,30 @@ def _save():
         before = inspect()
         if before["task"] or before["animation"] or before["content"]:
             raise RuntimeError("Editing resumed; checkpoint deferred")
-        unreal.CoPresenceFabLibrary.persist_session_changes()
+        unreal.CoPresenceFabLibrary.persist_session_changes(True)
+        # A normal map save is acknowledged by the Concert server asynchronously.
+        # Keep all guards while waiting for that package event to reach this client.
+        ui_widgets.after(1.0, _verify_save)
+    except Exception as error:
+        status.update(state="error", error=str(error))
+
+
+def _verify_save():
+    try:
         after = inspect()
-        if after["maps"] or after["content"] or after["pending"]:
-            raise RuntimeError("Persistence incomplete; no Git checkpoint allowed")
+        if after["task"] or after["animation"] or after["maps"] or after["content"]:
+            raise RuntimeError("Editing resumed or dirty packages remain; no Git checkpoint allowed")
+        if after["pending"]:
+            if time.time() - status["started"] >= 15:
+                raise RuntimeError("Persistence incomplete after server acknowledgement wait; no Git checkpoint allowed")
+            # Re-persist the acknowledged revision without publishing another map save.
+            # The real server event can replace the initial local dummy revision.
+            attempts = status.get("persist_retries", 0)
+            if attempts < 3:
+                unreal.CoPresenceFabLibrary.persist_session_changes(False)
+                status["persist_retries"] = attempts + 1
+            ui_widgets.after(1.0, _verify_save)
+            return
         status.update(state="saved", finished=time.time())
     except Exception as error:
         status.update(state="error", error=str(error))

@@ -22,6 +22,7 @@ public class CoPresenceFab : ModuleRules
 			"ConcertSyncCore",
 			"MultiUserClient",
 			"UnrealEd",
+			"AssetTools",
 			"Slate",
 			"WebBrowser",
 		});
