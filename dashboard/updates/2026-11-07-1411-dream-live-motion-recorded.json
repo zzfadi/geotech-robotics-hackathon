@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T14:11:14-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified and recorded a retimed Dream response moving both Unreal arms.",
+  "why": "Proves the live camera preview can capture actual arm motion after a voice-derived request.",
+  "details": "Request d34a7a828bcf40f3848ce3bba4132baa retried the microphone transcript Pick up red box. First 49-sample trajectory completed in 7.506 s; maximum joint changes left 0.408 rad, right 2.363 rad. 66 overhead frames/13.2 s MP4 decoded and initial/middle/final views inspected; 21 three-camera packets replay in app. Second request failed because Dream expired/replaced its inference session. Cube pickup not achieved.",
+  "where": [
+    "https://luna2.tail6864ac.ts.net/",
+    "DreamSim/README.md"
+  ]
+}
