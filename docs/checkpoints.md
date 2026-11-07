@@ -58,3 +58,15 @@ The user confirmed that Brian’s editor is currently unavailable. Leave that pa
 Luna2 status now reports `pushed` for `a2c77b28f355d2aac3ddff2321a33d4617da5f88` (imported robot assets, experimental collisions, table materials and renamed map) and then `21e6d4efdc6534ac3c814bf525160374304bff2c` (the latest map with the restored small mast camera body). Both commits were fetched from GitHub; only TheHumanTouch remains in the committed Maps directory. The previous dirty-map blocker did not prevent these guarded runs. Mac and Luna2 remain connected with Brian VR. Session rollover remains pending and was not performed automatically.
 
 The Mac editor remains open. Its source commits were integrated with the host's binary checkpoint in a separate checkout on `main` at `/tmp/humantouch-main-integration-1320`, avoiding a binary file replacement under the live editor. Its original live checkout still needs synchronization after preserving work and closing safely. No success claim relies on hot-copying Content or clearing dirty flags.
+
+
+### Pickup milestone checkpoint, 23:50–23:51 UTC
+
+Guarded Luna2 persistence created `1a57580` with the raised-block map and the two
+photo-prop mesh assets. A direct SSH invocation could not access Windows
+Credential Manager for push, so its Git bundle was transferred to the Mac,
+merged and pushed as `e605314`. No binary files were replaced under either live
+editor. Luna2 then fast-forwarded its source-only difference. The normal
+interactive `TheHumanTouch-Checkpoint` scheduled task reported `unchanged` at
+`e605314`, confirming the saved state and remote match. Concert history remains
+active; no session rollover or participant disconnection was performed.

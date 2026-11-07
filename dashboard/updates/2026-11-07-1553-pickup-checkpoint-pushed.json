@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T15:53:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Pushed the successful pickup map and photo props, then verified Luna2 checkpoint recovery.",
+  "why": "Complete the saved-scene and GitHub evidence for the recorded Dream pickup.",
+  "where": [
+    "1a57580",
+    "e605314",
+    "docs/validation/dream-tall-block-success-review.json"
+  ],
+  "details": "Guarded content commit 1a57580 transferred by Git bundle and merged/pushed from Mac as e605314. Luna2 synchronized without binary replacement (already owned the saved content). Its normal interactive scheduled checkpoint returned unchanged at e605314, verifying unattended Git access in that context. Active Concert history remains intact; no session rollover or participant disconnection performed."
+}
