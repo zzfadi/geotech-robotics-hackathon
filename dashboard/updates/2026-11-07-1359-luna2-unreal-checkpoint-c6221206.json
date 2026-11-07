@@ -1,0 +1,20 @@
+{
+  "when": "2026-11-07T13:59:19.765110-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Persisted Unreal content checkpoint",
+  "why": "15-minute or milestone recovery baseline; push follows this commit.",
+  "where": [
+    "Unreal/TheHumanTouch/Content/Maps/TheHumanTouch.umap",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_base_link.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_gripper_left.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_gripper_right.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_link_002.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_link_003.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_link_004.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_link_005.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_link_006.uasset",
+    "Unreal/TheHumanTouch/Content/_Agents/Denys_Mac_Codex/MakerArm/SM_MakerArm_link_007.uasset"
+  ],
+  "details": "Concert session rollover is separately coordinated; this commit does not clear live history."
+}
