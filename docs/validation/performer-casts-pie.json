@@ -62,6 +62,18 @@
             "outfit": 2
           }
         }
+      },
+      "continuous_squat": {
+        "frames": 156,
+        "unique_pelvis_heights_rounded_cm": 67,
+        "peak_squat_cm": 15.971,
+        "final_pelvis_offset_cm": 0.0,
+        "max_world_drift_cm": {
+          "foot_l": 0.0,
+          "foot_r": 0.0,
+          "ball_l": 0.0,
+          "ball_r": 0.0
+        }
       }
     },
     "Mannequins": {
@@ -98,8 +110,21 @@
           "index_delta_deg": 91.0,
           "character": "Quinn"
         }
+      },
+      "continuous_squat": {
+        "frames": 96,
+        "unique_pelvis_heights_rounded_cm": 50,
+        "peak_squat_cm": 16.0,
+        "final_pelvis_offset_cm": 0.0,
+        "max_world_drift_cm": {
+          "foot_l": 0.0,
+          "foot_r": 0.0,
+          "ball_l": 0.0,
+          "ball_r": 0.0
+        }
       }
     }
   },
-  "outfit_checks": "All three visible garments followed the pelvis and all faces followed the head within 0.1 cm during reach. Cloth simulation was off."
+  "outfit_checks": "All three visible garments followed the pelvis and all faces followed the head within 0.1 cm during reach. Cloth simulation was off.",
+  "continuous_squat_method": "The camera fixture eased 16 cm down over 1.8 seconds, held, then eased 16 cm up over 1.8 seconds. The editor read world-space body sockets on each distinct PIE world tick throughout the six-second test. Maximum drift is relative to the initial standing frame."
 }

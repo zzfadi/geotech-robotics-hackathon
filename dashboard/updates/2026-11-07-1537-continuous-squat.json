@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T15:37:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Measured both ankles and forefeet through a continuous descent, hold and return from the spoof webcam feed in Play In Editor.",
+  "why": "Checking the entire squat catches foot sliding between the standing and crouched poses.",
+  "where": ["docs/validation/performer-casts-pie.json"],
+  "details": "All four sockets stayed fixed at the recorded precision across 156 MetaHuman and 96 mannequin frames. Bruce traversed 67 distinct pelvis heights and Manny traversed 50, rounded to 0.1 cm. Both returned to their standing height."
+}
