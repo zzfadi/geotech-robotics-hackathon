@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T12:57:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Fixed the Quest bridge dropping full-size skeletal packets on macOS.",
+  "why": "A detailed finger frame can exceed the default 9,216-byte UDP send buffer while a small test frame still succeeds.",
+  "where": ["Capture/quest_bridge.py", "Capture/test_quest_bridge.py"],
+  "details": "A 67-joint synthetic WebSocket frame now reaches two independent UDP receivers byte-for-byte with the same mapped station timestamp."
+}
