@@ -22,6 +22,11 @@ For the two-person capture demo, see the [Mac Live Link, simulated contact and Q
 
 ## Target robot: MakerMods Maker Arm
 
+The [two-arm bench handoff](arm/README.md) captures the tested candleLight/gs_usb
+setup, portable tools, pinned dependencies, offline tests and supervised gripper
+opening results (including aborted attempts). Hardware testing is paused before
+Dream application testing; only motor 7 was powered, not the lifting/wrist joints.
+
 The close-up from our station shows **MakerMods Maker Arm**. The earlier YAM model was a provisional identification and must not be used as the one-to-one model. Dream Labs supplies the Dream-1 policy; MakerMods supplies this hardware. Specifications checked November 7, 2026.
 
 ### Published hardware specifications
@@ -59,7 +64,7 @@ The pinned [Maker Arm v1 profile](https://github.com/makermods-robotics/maker-ar
 | 6 | Wrist roll | RS00 | −153.2 / 152.0 | 30 / 2.0 |
 | 7 | Gripper | RS00 | −96.0 / −2.5 | 20 / 0.5 |
 
-The profile requests 200 Hz and a 5 rad/s command-rate limit; the README documents verified macOS SLCAN updates at 25 Hz. These are software settings/transport behavior, not a guaranteed arm bandwidth. Feedback timeout and fault poll period are 250 ms. Gripper closing torque is capped at 1 Nm, with 0.5 Nm contact hold; stop temperature is 55°C and enable threshold 45°C. Its 500 ms watchdog requires compatible RS00 firmware. Joints 1–6 lack that watchdog in this SDK. These values describe upstream behavior; no hardware command has been issued by this project.
+The profile requests 200 Hz and a 5 rad/s command-rate limit; the README documents verified macOS SLCAN updates at 25 Hz. These are software settings/transport behavior, not a guaranteed arm bandwidth. Feedback timeout and fault poll period are 250 ms. Gripper closing torque is capped at 1 Nm, with 0.5 Nm contact hold; stop temperature is 55°C and enable threshold 45°C. Its 500 ms watchdog requires compatible RS00 firmware. Joints 1–6 lack that watchdog in this SDK. These values describe upstream behavior, not the separate bench tool's guards. The tested legacy grippers did not verify watchdog support; see the [bench safety limits](arm/README.md#safety-limits-and-troubleshooting).
 
 ### Official simulation model and fidelity
 

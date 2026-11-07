@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T14:12:00-08:00",
+  "workstream": "arm-station",
+  "status": "note",
+  "what": "Captured two-Maker-Arm gs_usb bench tools, offline tests, pinned setup and supervised claw-opening evidence",
+  "why": "Make the bring-up reproducible on another laptop and preserve failures and safety limitations before pausing for Dream application testing.",
+  "where": ["arm/README.md", "arm/tools/", "arm/evidence/", "arm/provenance.json"],
+  "details": "Only gripper motor 7 was powered, one arm at a time. No verified watchdog or disabled-mode telemetry on the tested legacy grippers. No Dream/Portal adapter milestone is completed."
+}
