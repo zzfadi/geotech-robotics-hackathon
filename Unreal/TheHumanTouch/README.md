@@ -36,6 +36,10 @@ Build `Plugins/CoPresenceFab/CoPresenceFab.uplugin` using UE's `RunUAT BuildPlug
 
 `Tools/validate_empty_map.py` loads the baseline and checks engine version and zero authored actors. The initial map was verified on Mac and Luna2. Scoped `Tools/copresence_mcp.py call session '{}'` uses `COPRESENCE_UNREAL_MCP_URL=http://127.0.0.1:8041/mcp`; verify the returned session and peer identities. Test a read-only chat request and voice independently.
 
-The Mac UI, agent registration, scoped session and text reply have been verified during migration. Windows agent migration and end-to-end voice verification are still in progress.
+Mac Codex and Luna2 Claude have both returned verified Agent Chat replies in TheHumanTouch; both avatars are visible and each machine runs one editor. Voice helpers are connected; end-to-end audible voice verification remains pending.
+
+## Checkpoints
+
+Luna2 checkpoints and pushes ready Unreal content to GitHub every **15 minutes**, plus completed milestones. The job defers active/unsaved work instead of committing an incomplete checkpoint. See [checkpoint operations](../../docs/checkpoints.md) and `Config/CheckpointPolicy.json`. Git commits do not clear Multi-User history: use the documented coordinated archive/fresh-session boundary to keep transaction history short.
 
 See [migration research](../../docs/agentcopresence-migration.md) for VR and later robot work.

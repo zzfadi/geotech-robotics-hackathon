@@ -1,0 +1,11 @@
+{
+  "interval_minutes": 15,
+  "host_agent": "Denys Luna2 Claude",
+  "session": "TheHumanTouch",
+  "branch": "main",
+  "remote": "origin",
+  "hub_url": "http://100.84.28.59:8791",
+  "editor_mcp_url": "http://127.0.0.1:8041/mcp",
+  "content_root": "Unreal/TheHumanTouch/Content/",
+  "push": true
+}

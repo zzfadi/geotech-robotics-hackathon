@@ -20,6 +20,17 @@ The [Slack recommendation from November 5, 2026](https://geotech-org.slack.com/a
 
 ## Working practices
 
+### Checkpoints, GitHub pushes and Multi-User history
+
+- Checkpoint the Unreal project **every 15 minutes and after completed milestones**, and push successful checkpoints to `origin/main` every 15 minutes. This standing request authorizes routine checkpoint commits/pushes; do not repeatedly ask permission.
+- Luna2 is the single automatic checkpoint writer. Run `Unreal/TheHumanTouch/Tools/checkpoint.py` through its 15-minute scheduled task; agents may invoke it at a milestone. Read `Config/CheckpointPolicy.json` and `docs/checkpoints.md` first.
+- Finish active edits and share dirty content before persistence. Do not checkpoint a partially completed agent task. Persist via the guarded CoPresence host path and verify no dirty/pending packages remain before committing.
+- Automatic commits include only Unreal `.uasset`/`.umap` files under the project's Content directory. Review and commit source/config/documentation changes as focused agent commits and push these regularly too. Never stage unrelated changes or secrets.
+- Keep transactions small in number: batch related edits into a meaningful scoped transaction; avoid per-frame edits, redundant writes, and repeated no-op setters. Keep a logical task undoable; do not make one huge unbounded transaction.
+- Git commits and persistence do **not** clear Concert history. At completed checkpoint boundaries, coordinate a fresh session: archive the old session, ensure all participants have the pushed checkpoint and preserved local work, leave the old session, and join a new session from that identical baseline. Retain the archive for recovery. Never delete live transaction databases, reset undo to simulate compaction, or restore the whole archive into the new session.
+- If people are actively editing, defer session rollover until a coordinated pause; report it as pending. Do not disconnect participants automatically. Never claim a push alone reduced the active transaction history.
+- Check `Saved/Checkpoints/status.json`; `deferred` means incomplete, and failed pushes must retain local commits for retry. Resolve divergence carefully on main; never force-push or discard work. An unchanged project needs no empty commit.
+
 ### Luna2 and agent startup
 
 - Use the installed `luna2-unreal-meet` skill for Luna2 access and lifecycle verification. On Denys's Mac it is at `/Users/geo_dennis/.codex/skills/luna2-unreal-meet/SKILL.md`; read its referenced operating guide too.
