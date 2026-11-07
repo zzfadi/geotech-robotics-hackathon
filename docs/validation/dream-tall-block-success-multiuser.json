@@ -1,0 +1,21 @@
+{
+  "request_id": "93ea04f3e6c24ffbb2449d52462041cd",
+  "mac_samples": 773,
+  "luna_samples": 838,
+  "shared_intermediate_wrist_poses": 161,
+  "compared_final_actors": 26,
+  "max_final_transform_difference": 7.105427357601002e-15,
+  "mac_final_red_center_cm": [
+    61.633728654752,
+    -43.32845288526217,
+    92.22288556050096
+  ],
+  "luna_final_red_center_cm": [
+    61.633728654752,
+    -43.32845288526217,
+    92.22288556050096
+  ],
+  "mac_max_red_z_cm": 92.32416206035239,
+  "luna_max_red_z_cm": 92.32416206035239,
+  "brian_directly_verified": false
+}

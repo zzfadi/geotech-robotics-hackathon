@@ -152,3 +152,15 @@ reaches 10 cm, and finishes after at least two seconds of a slow held rise. It
 does not move the object. Visual review remains required to establish a grasp.
 Flat-pad contact limiting uses the actual 3 by 2 cm pad footprint and zero inner
 face offset, independently of the coarse CAD-jaw approximation.
+
+### Reviewed pickup result
+
+Run `93ea04f3e6c24ffbb2449d52462041cd` used nine Flash calls and position-priority
+IK, with scripted grasp assistance disabled. The authorized taller 5×5×12 cm
+red block rose 11.25 cm and stayed above 10 cm for 5.89 seconds, with gravity on
+and no attachment. Three 69.6-second recordings and Mac/Luna2 motion comparison
+were reviewed. See `docs/maker-arm-camera-trial.md` for the controlled starting
+pose, reproduction helper and evidence. This is approximate contact simulation,
+not a calibrated hardware result. The web UI labels a command verified only
+when an authenticated, request-specific `task.verified` review event exists;
+ordinary trajectory completion retains its unverified label.

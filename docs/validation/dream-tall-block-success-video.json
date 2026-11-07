@@ -1,0 +1,38 @@
+{
+  "request_id": "93ea04f3e6c24ffbb2449d52462041cd",
+  "videos": {
+    "overhead": {
+      "frames_decoded": 348,
+      "fps": 5.0,
+      "size": [
+        320,
+        176
+      ],
+      "duration_seconds": 69.6,
+      "sha256": "ddda6b6af57e17fc3e0ec34739901ceb710d5d7106e6f60c055c1e60782cfa04",
+      "url": "https://luna2.tail6864ac.ts.net/api/recording/overhead.mp4?id=93ea04f3e6c24ffbb2449d52462041cd"
+    },
+    "wrist_l": {
+      "frames_decoded": 348,
+      "fps": 5.0,
+      "size": [
+        320,
+        176
+      ],
+      "duration_seconds": 69.6,
+      "sha256": "1ba91a1381e93806365e789612845c7b63706aefe448f718953e9ed53b0bf854",
+      "url": "https://luna2.tail6864ac.ts.net/api/recording/wrist_l.mp4?id=93ea04f3e6c24ffbb2449d52462041cd"
+    },
+    "wrist_r": {
+      "frames_decoded": 348,
+      "fps": 5.0,
+      "size": [
+        320,
+        176
+      ],
+      "duration_seconds": 69.6,
+      "sha256": "18e18d2b4f6285375145db99c95e24f2da2eb6f117ca17bbbcc231562c21f865",
+      "url": "https://luna2.tail6864ac.ts.net/api/recording/wrist_r.mp4?id=93ea04f3e6c24ffbb2449d52462041cd"
+    }
+  }
+}

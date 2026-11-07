@@ -99,3 +99,33 @@ on the table. Its initial joints are [0,-2.1318205591,0.4402033511,1.6916171860,
 and 8 cm jaw travel; the right arm remains at REST. This is an explicit initial
 pose change. All motion after submission is from Dream responses, with local
 grasp assistance disabled. The contact model remains the simplified flat pads.
+
+## Verified Dream-driven pickup — 15:47 Pacific
+
+Request `93ea04f3e6c24ffbb2449d52462041cd` successfully lifted the red block using
+nine actual Dream Flash calls, source-TCP position-priority IK and the original
+model jaw commands. Local scripted grasp assistance was **disabled**. The user
+had authorized larger/longer objects; the successful fixture is a 5×5×12 cm red
+block initially centered at (60,-40,81) cm, with open jaws already around it.
+`maker_arm_calibration_trial.prepare_tall_grasp()` reproduces this initial setup
+inside an idle scoped editor task. It does not control the runtime object.
+
+The block's final runtime center was Z=92.2459 cm: **11.2459 cm rise**. It remained
+slow and above 10 cm for **5.886 seconds**, with gravity enabled, physics active
+and no attachment. Overhead start/grasp/lift/end frames and wrist imagery were
+visually inspected. All three 348-frame MP4s decoded at 5 fps (69.6 seconds), and
+the overhead recording played in the Luna web interface. A request-specific
+`task.verified` review event now distinguishes reviewed success from mere motion
+completion; other completed commands remain unverified.
+
+Mac/Luna2 audit: 773/838 samples, 161 shared intermediate wrist poses, all 26 final
+actor transforms equal within 7.2e-15 numerical difference. Both editors saw the
+same raised block. Brian's unavailable editor was not directly verified.
+
+Evidence: `docs/validation/dream-tall-block-success-{runtime,events,video,multiuser,review}.json`.
+Replay: https://luna2.tail6864ac.ts.net/api/recording/overhead.mp4?id=93ea04f3e6c24ffbb2449d52462041cd
+
+This establishes a successful pickup in this controlled simulation setup, using
+approximate flat-pad contacts. It does not establish calibrated hardware fidelity
+or reliable acquisition from arbitrary initial positions. The earlier 7 cm block
+trials and their failures remain archived.

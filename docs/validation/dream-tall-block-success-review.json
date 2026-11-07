@@ -1,0 +1,35 @@
+{
+  "request_id": "93ea04f3e6c24ffbb2449d52462041cd",
+  "outcome": "verified simulation pickup",
+  "reviewer": "Codex",
+  "review_basis": [
+    "Inspected overhead frames 1,100,250,348 and wrist view showing block within jaws",
+    "Runtime telemetry: gravity enabled, active physics, no attachment",
+    "Initial center Z=81 cm; final runtime Z=92.24590534856851 cm; slow rise above 10 cm for 5.886164832976647 seconds",
+    "All three 348-frame 69.6-second MP4s decoded; overhead replay played in web app",
+    "Mac and Luna2: 161 shared intermediate wrist poses, 26 equal final actor transforms"
+  ],
+  "model_calls": {
+    "flash": 9,
+    "full": 0
+  },
+  "controller": "Dream EEF positions with position-priority IK; original model jaw commands; local grasp assistance disabled",
+  "fixture": {
+    "dimensions_cm": [
+      5,
+      5,
+      12
+    ],
+    "initial_center_cm": [
+      60,
+      -40,
+      81
+    ],
+    "starting_pose": "open gripper centered around block"
+  },
+  "limits": [
+    "Approximate flat-pad contact physics; not calibrated hardware fidelity",
+    "Brian editor unavailable for direct verification",
+    "Result demonstrates this controlled starting setup; not arbitrary-scene grasp reliability"
+  ]
+}

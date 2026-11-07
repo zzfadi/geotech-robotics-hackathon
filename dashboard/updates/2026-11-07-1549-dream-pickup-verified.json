@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T15:49:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Recorded and reviewed a Dream-driven 11.25 cm red-block pickup and hold.",
+  "why": "Completes the controlled pickup proof with actual free-body physics, web replay and Mac/Luna2 motion evidence.",
+  "where": [
+    "docs/maker-arm-camera-trial.md",
+    "docs/validation/dream-tall-block-success-review.json",
+    "https://luna2.tail6864ac.ts.net/"
+  ],
+  "details": "Nine Flash calls, zero full-model calls; source-TCP position-priority IK; no scripted grasp assistance. Authorized 5x5x12 cm block, open centered starting jaws. Gravity on, no attachment; 5.89 seconds held above 10 cm. Three 348-frame recordings decoded and web playback verified. 161 shared intermediate wrist poses and 26 matching final actor transforms on Mac/Luna2. Brian editor unavailable; approximate contacts, not hardware calibration."
+}

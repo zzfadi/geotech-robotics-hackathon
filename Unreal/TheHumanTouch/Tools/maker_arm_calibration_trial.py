@@ -55,3 +55,28 @@ def apply():
     return {'scope':'explicit provisional camera/target setup, not hardware calibration','wrist_location_local_cm':[5,0,-12],
             'wrist_aim_local_cm':[0,0,-17],'wrist_fov_degrees':90,'red_start_center_cm':[45,-40,78.5],'red_dimensions_cm':[7,7,7],
             'pickup_acceptance_center_z_cm':88.5,'pickup_acceptance':'physical grasp plus >=10cm lift and hold; no attachment or commanded cube path'}
+
+
+def prepare_tall_grasp():
+    """Authorized 5x5x12 cm fixture, open jaws; no runtime object control.
+
+    Invoke inside a scoped CoPresence task while the worker has no active job.
+    Source CAD kinematics place the gripper at the block center (60,-40,81) cm.
+    """
+    check_idle()
+    import maker_arm_station
+    state={'q_left':[0,-1.9683117433984114,.4323149634697194,1.5359967575109021,0,0],
+           'q_right':[0,-1.2,.81,-.1,0,0],'gap_left_m':.08,'gap_right_m':.09}
+    block=actors()[TARGET]
+    if block.get_attach_parent_actor() is not None:raise RuntimeError('Test block must be unattached')
+    for side in ('left','right'):
+        maker_arm_station.set_pose(side,state['q_'+side],state['gap_'+side+'_m'])
+    block.modify();block.root_component.modify()
+    block.set_actor_scale3d(unreal.Vector(.05,.05,.12))
+    block.set_actor_location_and_rotation(unreal.Vector(60,-40,81),unreal.Rotator(0,0,0),False,True)
+    maker_arm_feedback.seed(state)
+    p=Path(unreal.Paths.project_saved_dir())/'DreamDebugger/worker/playback.json'
+    p.parent.mkdir(parents=True,exist_ok=True)
+    p.write_text(json.dumps({'done':True,'error':None,**state}))
+    return {'state':state,'red_dimensions_cm':[5,5,12],'red_center_cm':[60,-40,81],
+            'scope':'explicit initial setup only; object remains free during simulation'}
