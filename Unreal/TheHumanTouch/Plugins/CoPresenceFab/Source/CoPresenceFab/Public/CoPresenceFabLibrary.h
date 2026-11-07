@@ -71,6 +71,14 @@ class COPRESENCEFAB_API UCoPresenceFabLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+    /** Spawn only the transient local presence class, outside editor transactions. */
+    UFUNCTION(BlueprintCallable, Category = "CoPresence|Presence")
+    static AActor* SpawnLocalPresence(UClass* ActorClass);
+
+    /** Remove only a transient CoPresenceSelf marker without editing the level. */
+    UFUNCTION(BlueprintCallable, Category = "CoPresence|Presence")
+    static bool DestroyLocalPresence(AActor* Actor);
+
 	/**
 	 * Runs a script in the page of the Fab plugin's tab.
 	 * @return False when no Fab tab is open.

@@ -1,6 +1,10 @@
 #include "CoPresenceFabLibrary.h"
 
 #include "Async/Async.h"
+#include "Editor.h"
+#include "Engine/World.h"
+#include "Engine/Level.h"
+#include "GameFramework/Actor.h"
 #include "CoPresenceFabModule.h"
 #include "Framework/Docking/TabManager.h"
 #include "SWebBrowser.h"
@@ -153,4 +157,38 @@ void UCoPresenceFabLibrary::QuitWithoutSaving()
 bool UCoPresenceFabLibrary::RenameCurrentMapForCheckpoint(const FString& TargetPackage)
 {
 	return FCoPresenceFabModule::Get().RenameCurrentMapForCheckpoint(TargetPackage);
+}
+
+
+AActor* UCoPresenceFabLibrary::SpawnLocalPresence(UClass* ActorClass)
+{
+    UWorld* World = GEditor ? GEditor->GetEditorWorldContext().World() : nullptr;
+    // A local marker must never enroll the level in a user or Concert transaction.
+    // Refuse this call during a transaction; the presence tick can try again later.
+    if (!World || World->WorldType != EWorldType::Editor || GUndo || !ActorClass
+        || !ActorClass->IsChildOf(AActor::StaticClass())
+        || !ActorClass->HasAnyClassFlags(CLASS_Transient)
+        || ActorClass->GetPathName() != TEXT("/CoPresence/BP_AgentGhost.BP_AgentGhost_C"))
+    {
+        return nullptr;
+    }
+    FActorSpawnParameters Parameters;
+    Parameters.Name = FName(*(TEXT("CoPresenceSelf_") + FGuid::NewGuid().ToString(EGuidFormats::Digits)));
+    Parameters.ObjectFlags = RF_Transient | RF_DuplicateTransient;
+    Parameters.bTemporaryEditorActor = true;
+    Parameters.bHideFromSceneOutliner = true;
+    Parameters.bCreateActorPackage = false;
+    Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    return World->SpawnActor<AActor>(ActorClass, FVector(-200, -200, 300), FRotator::ZeroRotator, Parameters);
+}
+
+bool UCoPresenceFabLibrary::DestroyLocalPresence(AActor* Actor)
+{
+    if (GUndo || !IsValid(Actor) || !Actor->HasAnyFlags(RF_Transient)
+        || !Actor->GetName().StartsWith(TEXT("CoPresenceSelf_"))
+        || !Actor->GetWorld() || Actor->GetWorld()->WorldType != EWorldType::Editor)
+    {
+        return false;
+    }
+    return Actor->GetWorld()->DestroyActor(Actor, false, false);
 }

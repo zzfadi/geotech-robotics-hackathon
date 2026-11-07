@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T12:56:44-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Removed the obsolete map redirector and prepared nontransactional spawning for local agent presence.",
+  "why": "The redirector caused a Concert reload crash; editor-factory spawning of transient local markers then generated empty level transactions after saves.",
+  "where": [
+    "docs/checkpoints.md",
+    "Unreal/TheHumanTouch/Plugins/CoPresence/Content/Python/copresence/local_presence.py",
+    "Unreal/TheHumanTouch/Plugins/CoPresenceFab/Source/CoPresenceFab/Private/CoPresenceFabLibrary.cpp"
+  ],
+  "details": "Unreal reference cleanup replicated to Mac, and a later reload completed without crashing. Win64 native build succeeded. Live deployment and a clean guarded checkpoint still need verification."
+}

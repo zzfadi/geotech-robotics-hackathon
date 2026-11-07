@@ -17,20 +17,25 @@ def ensure(world, ghost_class):
     if not agent_editor.is_agent_editor(): return
     # EditorActorSubsystem omits transient presence actors. Enumerate their class
     # even when our cached actor is valid, so hot reload cannot leave duplicates.
-    subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     existing = [a for a in unreal.GameplayStatics.get_all_actors_of_class(world, ghost_class)
                 if a.actor_has_tag('CoPresenceSelf')]
     if existing:
         actor = actor if actor in existing else existing[0]
         for duplicate in existing:
-            if duplicate != actor: subsystem.destroy_actor(duplicate)
+            if duplicate != actor and hasattr(unreal.CoPresenceFabLibrary, "destroy_local_presence"):
+                unreal.CoPresenceFabLibrary.destroy_local_presence(duplicate)
         _isolate_name(actor)
         return
-    actor = subsystem.spawn_actor_from_class(
-        ghost_class, unreal.Vector(-200, -200, 300), transient=True)
+    # EditorActorSubsystem uses the editor placement transaction even with
+    # transient=True, emitting an empty PersistentLevel transaction on reload.
+    # Old native builds keep remote Concert avatars but omit this local-only marker.
+    spawn = getattr(unreal.CoPresenceFabLibrary, "spawn_local_presence", None)
+    if spawn is None: return
+    actor = spawn(ghost_class)
+    if actor is None: return
     _isolate_name(actor)
     actor.tags = [unreal.Name(tracking.LOCAL_ONLY_TAG), unreal.Name('CoPresenceSelf')]
-    actor.set_actor_label('CoPresence_LocalAgentEyes')
+    actor.set_actor_label('CoPresence_LocalAgentEyes', mark_dirty=False)
     for component in actor.get_components_by_class(unreal.TextRenderComponent):
         if component.get_name() == 'Name': component.set_text(tracking.agent_name())
     actor.set_actor_enable_collision(False)
