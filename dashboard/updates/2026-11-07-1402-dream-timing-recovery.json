@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T14:02:42-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added bounded Dream trajectory retiming and state recovery after rejected actions.",
+  "why": "The real microphone command reached Dream but its response exceeded the configured speed cap; rejected output also hid the previous robot state.",
+  "where": [
+    "DreamSim/worker.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_actions.py"
+  ],
+  "details": "Unit tests pass. Saved real response retimes to 8.294 seconds without replacing target positions. Live revised playback and successful physics grasp remain pending."
+}

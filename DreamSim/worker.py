@@ -5,6 +5,8 @@ from dream import DreamClient
 import imageio_ffmpeg
 from model import prepare
 from probe import configure
+from queueing import wait_for_editor
+from state_seed import recover_state
 
 class Worker:
     def __init__(self,args):
@@ -67,10 +69,10 @@ class Worker:
             (self.root/'stop').unlink(missing_ok=True);self.error=None;self.last=None
             self.client.reset_episode();self.prompt=command['prompt']
             self.recording=self.root/'recordings'/request_id;self.recording.mkdir(parents=True,exist_ok=True);self.recorded=0
-            self.ue('begin_task',{'title':'Dream web command','request':self.prompt,'keep_view':True,'focus_x':40,'focus_y':0,'focus_z':100});task=True
-            seed=self.args.initial_state
+            wait_for_editor(lambda:self.ue('begin_task',{'title':'Dream web command','request':self.prompt,'keep_view':True,'focus_x':40,'focus_y':0,'focus_z':100}),lambda:(self.root/'stop').exists(),lambda message:self.event('command.waiting',message=message));task=True
             previous=self.root/'playback.json'
-            if previous.exists() and 'q_left' in json.loads(previous.read_text()):seed=previous
+            seed=self.root/'seed.json'
+            seed.write_text(json.dumps(recover_state(previous,self.root/'cameras/observation.json',self.args.initial_state)))
             # Reset observers between episodes so stale images cannot enter a new command.
             (self.root/'cameras/observation.json').unlink(missing_ok=True)
             code=f"import importlib, json, maker_arm_feedback, maker_arm_observer, maker_arm_playback\nfrom copresence import ui_widgets\nmaker_arm_observer.stop()\nimportlib.reload(maker_arm_feedback)\nimportlib.reload(maker_arm_playback)\nimportlib.reload(maker_arm_observer)\nmaker_arm_feedback.seed(json.load(open({str(seed)!r})))\nui_widgets.after(1, lambda: maker_arm_observer.start({str(self.root/'cameras')!r}, seconds=120))"
@@ -86,7 +88,7 @@ class Worker:
                 previous.unlink(missing_ok=True)
                 self.python(f"from copresence import ui_widgets\nimport maker_arm_playback\nui_widgets.after(.2, lambda: maker_arm_playback.launch({str(report)!r},{str(previous)!r}))",'Apply bounded Dream response in one shared transaction')
                 self.event('playback.started',cycle=cycle+1,message='Applying Dream joint targets in Unreal')
-                deadline=time.monotonic()+15
+                deadline=time.monotonic()+20
                 while time.monotonic()<deadline:
                     if previous.exists():
                         state=json.loads(previous.read_text())
@@ -95,11 +97,13 @@ class Worker:
                             break
                     time.sleep(.1)
                 else:raise TimeoutError('Unreal playback did not finish')
-                self.event('playback.completed',cycle=cycle+1,state=state,message='48-step kinematic trajectory finished')
+                self.event('playback.completed',cycle=cycle+1,state=state,message=str(state['rows'])+'-sample kinematic trajectory finished')
                 packet=self.fresh(after=time.time());self.event('observation',frames=packet['frames'],state=packet['state'])
             self.api('/api/worker/done',{'request_id':request_id,'status':'done'})
         except Exception as error:
-            self.event('request.failed',message=str(error));self.api('/api/worker/done',{'request_id':request_id,'status':'stopped' if (self.root/'stop').exists() else 'failed'})
+            stopped=(self.root/'stop').exists()
+            (self.root/'stop').touch()
+            self.event('request.failed',message=str(error));self.api('/api/worker/done',{'request_id':request_id,'status':'stopped' if stopped else 'failed'})
         finally:
             self.prompt=''
             recording=self.recording;self.recording=None

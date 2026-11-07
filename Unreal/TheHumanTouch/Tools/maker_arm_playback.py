@@ -8,7 +8,7 @@ import time
 import unreal
 import yam_station
 import maker_arm_feedback
-from maker_arm_actions import validate
+from maker_arm_actions import retime
 from maker_arm_model import mounted_frames,ue_pose
 from maker_arm_station import BASES,MOUNT_YAW,VISUAL_LINKS
 from copresence import tracking,animation
@@ -20,7 +20,8 @@ class Playback:
         if animation.is_running():raise RuntimeError('Another animation is active')
         self.output=Path(output);self.hz=hz
         report=json.loads(Path(report).read_text())
-        self.chunks=validate(report['action'],hz)
+        self.chunks,self.timing=retime(report['action'],report['state'],hz)
+        self.hz=self.timing['action_hz']
         existing=yam_station.actors()
         self.actors={(side,link):existing['MakerArm_'+side+'_'+link] for side in BASES for link in VISUAL_LINKS}
         # Reject a stale observation before opening a transaction or moving anything.
@@ -52,7 +53,7 @@ class Playback:
 
     def write(self,done,error=None):
         self.output.parent.mkdir(parents=True,exist_ok=True)
-        state={'done':done,'index':self.index,'rows':len(self.chunks['left']),'error':error,'scope':'editor kinematic playback'}
+        state={'done':done,'index':self.index,'rows':len(self.chunks['left']),'error':error,'scope':'editor kinematic playback','timing':self.timing}
         if self.index>=0:
             for side in BASES:
                 row=self.chunks[side][self.index]
