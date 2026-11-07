@@ -1,0 +1,8 @@
+{
+  "when": "2026-11-07T12:59:00-08:00",
+  "workstream": "vrxr",
+  "status": "note",
+  "what": "The Quest capture Mac has an on-demand ht-rejoin command for updating the shared XR editor.",
+  "why": "People can check incoming work and whether the running editor needs to reload. A fast-forward with only dashboard or documentation changes can keep the headset session open.",
+  "details": "ht-rejoin --check passed with the editor running. The Mac native plugin build and cache reuse were verified separately. The new command has not yet performed a live relaunch."
+}
