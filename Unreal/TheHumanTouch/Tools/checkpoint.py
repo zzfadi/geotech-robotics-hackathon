@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["mcp==1.30.0", "pillow>=11", "psutil>=6"]
+# dependencies = ["mcp==1.30.0", "pillow>=11", "psutil>=6", "tzdata"]
 # ///
 """Persist an idle Luna2 session, commit Unreal content, and push main.
 
@@ -13,8 +13,12 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import time
 import urllib.request
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import uuid
 
 PROJECT = Path(__file__).resolve().parents[1]
 REPO = PROJECT.parents[1]
@@ -105,8 +109,21 @@ def checkpoint(dry_run=False):
     preflight()
     paths = candidate_paths()
     if paths:
+        update = None
+        if (REPO / "dashboard/build.py").exists():
+            now = datetime.now(ZoneInfo("America/Los_Angeles"))
+            update = Path("dashboard/updates") / (now.strftime("%Y-%m-%d-%H%M") + "-luna2-unreal-checkpoint-" + uuid.uuid4().hex[:8] + ".json")
+            (REPO / update).write_text(json.dumps({
+                "when": now.isoformat(), "who": "Luna2 checkpoint", "kind": "agent",
+                "workstream": "vrxr", "status": "done", "what": "Persisted Unreal content checkpoint",
+                "why": "15-minute or milestone recovery baseline; push follows this commit.",
+                "where": paths, "details": "Concert session rollover is separately coordinated; this commit does not clear live history."
+            }, indent=2))
+            subprocess.run([sys.executable, "dashboard/build.py", "--check"], cwd=REPO, check=True)
         # Stage only persisted Unreal content, never source/config/Saved or someone's index.
         git("add", "--", *paths)
+        if update:
+            git("add", "--", update.as_posix())
         git("diff", "--cached", "--check")
         git("commit", "-m", "Checkpoint Unreal content " + time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()))
     ahead = int(git("rev-list", "--count", "origin/main..HEAD"))
