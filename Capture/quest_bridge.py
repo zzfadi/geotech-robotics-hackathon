@@ -71,7 +71,10 @@ def encode_frame(msg, session, offset_ns, rtt_ns, anchor):
         "clock_rtt_ns": rtt_ns,
         "bones": bones,
     }
-    return station_ns, json.dumps(data, separators=(",", ":"), allow_nan=False).encode()
+    encoded = json.dumps(data, separators=(",", ":"), allow_nan=False).encode()
+    if len(encoded) > 60000:
+        raise ValueError("Pose exceeds the Live Link receiver's packet limit")
+    return station_ns, encoded
 
 
 def create_app(observer_port, anchor, *, livelink_port=17860):
@@ -106,6 +109,8 @@ def create_app(observer_port, anchor, *, livelink_port=17860):
             task = asyncio.create_task(ping())
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp:
+                    # macOS defaults to 9216 bytes. A full-precision hand/body frame can exceed it.
+                    udp.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 65535)
                     async for packet in ws:
                         if packet.type != web.WSMsgType.TEXT:
                             break

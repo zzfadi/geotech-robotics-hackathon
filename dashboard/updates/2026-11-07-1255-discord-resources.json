@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T12:55:00-08:00",
+  "workstream": "planning",
+  "status": "note",
+  "what": "Discord hackathon resource roundup published in Slack with a channel mention and a project-application thread",
+  "why": "The team needs the sponsor setup guides, credit instructions, judging rubrics and Maker Arm integration lead in one place for The Human Touch.",
+  "where": [
+    "https://discord.com/channels/1486417068084432936/1568686302852022343",
+    "https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794084900953429",
+    "https://www.livekit.info/pah",
+    "https://github.com/livekit-examples/portal-makermods/tree/dc/maker_arm",
+    "https://github.com/dimensionalOS/dimos/tree/main/docs/capabilities",
+    "https://github.com/dimensionalOS/dimos/tree/hackathon/feat/metal-autoresearch"
+  ],
+  "details": "The 11:21 AM Discord announcement identifies dc/maker_arm as a Portal branch with Maker Arm support. Review it against the installed SDK and station before treating the adapter milestone as complete. LiveKit's starter guide covers Dream-1 examples and voice control. Dream Labs shared an account-first credit form and Creative/Hill Climb rubric PDFs at 11:13 AM. DIMOS shared perception/agent/memory docs, a Metal integration guide, an Autoresearch/Dream Labs branch, a CLI SOP PDF and a demonstration video. These can inform perception, learning and evaluation work, with Maker Arm compatibility still requiring verification. The connector rejected direct publishing to Slack Connect; its prepared drafts were sent through the Slack desktop app. The published parent and thread reply were verified."
+}
