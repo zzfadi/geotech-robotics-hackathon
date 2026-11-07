@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T12:34:00-08:00",
+  "workstream": "turn-gate",
+  "status": "in-progress",
+  "what": "Added a hardware-independent turn gate and deterministic replay for cooperative token placement.",
+  "why": "Test turn requests, hand reentry and observation loss while the station and policy integration are being confirmed.",
+  "where": ["turn_gate/README.md", "turn_gate/gate.py", "turn_gate/replay.py", "turn_gate/test_gate.py"],
+  "details": "17 tests pass on Python 3.9.6, with independent code review. Replay demonstrates grant, hand-triggered revocation, explicit re-request, completion and stale-observation revocation. Invalid or repeated capture timestamps cannot extend a grant; late completion cannot end a newer turn. Software-only: no camera detection, Dream-1 call, physical arm connection or audible voice verified. No physical milestone marked complete.",
+  "workstream_update": {"status": "in-progress"}
+}

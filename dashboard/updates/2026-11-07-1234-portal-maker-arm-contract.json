@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T12:34:00-08:00",
+  "workstream": "arm-station",
+  "status": "note",
+  "what": "Verified the pinned Portal example targets Metal arms; documented the Maker Arm adapter boundary.",
+  "why": "The example's driver and policy model cannot be assumed compatible with the Maker Arm model now in this repository.",
+  "where": ["docs/robot-stack-contract.md", "https://github.com/livekit-examples/portal-makermods/tree/5f916121c02aa782ac376be1aa1380ecc32e274c"],
+  "details": "Source review found repeated cached targets and camera frames that can be republished with new timestamps. Future integration needs actual capture freshness, grant-bound policy results and verified robot-side hold behavior. Station revision, installed driver and Dream-1 access remain unverified here. This is a source review, not a hardware test."
+}
