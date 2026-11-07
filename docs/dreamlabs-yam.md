@@ -1,6 +1,6 @@
 # Dreamlabs / YAM simulation research
 
-**Identification correction (November 7, 2026):** The later close-up supplied by the user clearly reads MakerMods / Maker Arm. The YAM preview below does not represent that target arm. Use [the official Maker Arm findings](maker-arm-model.md) and `SourceAssets/MakerArm` for the target hardware. The existing YAM scene has not yet been replaced.
+**Identification correction (November 7, 2026):** The later close-up supplied by the user clearly reads MakerMods / Maker Arm. The YAM preview below does not represent that target arm. Use [the official Maker Arm findings](maker-arm-model.md) and `SourceAssets/MakerArm` for the target hardware. The YAM arm actors have now been replaced with official Maker Arm meshes; the estimated table/camera layout remains.
 
 Researched November 7, 2026. The user supplied two photos of a tabletop bimanual station and requested adding the robots to TheHumanTouch.
 

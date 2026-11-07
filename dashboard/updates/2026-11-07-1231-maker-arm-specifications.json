@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T12:31:07-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Published Maker Arm specifications and distinct SDK/CAD joint limits in the main README; prepared full-link mesh conversion and kinematics.",
+  "why": "Use the latest official arm model reproducibly without confusing hardware encoder coordinates with the designer model or claiming unvalidated physical fidelity.",
+  "where": [
+    "README.md",
+    "Unreal/TheHumanTouch/Tools/maker_arm_model.py"
+  ],
+  "details": "Upstream main verified at 0245316c. Three kinematics checks pass, including independent zero-pose dimensions and symmetric jaw travel. Native Unreal import and dynamics remain in progress."
+}

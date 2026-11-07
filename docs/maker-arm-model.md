@@ -30,4 +30,4 @@ The CAD uses Y-up geometry; upstream mentions a +90-degree X inspection display 
 
 ## Current project state
 
-The official source model is downloaded and its mesh references verified. It is not yet imported into the live Unreal scene or configured as a physics articulation. The live YAM preview remains a prototype and must not be reported as an accurate Maker Arm simulation. Map rename/default-map publication and the guarded binary checkpoint are separate unfinished work.
+The official source model is downloaded and its mesh references verified. Nine combined link meshes have been imported into the live Unreal scene, and both YAM arms have been replaced by 18 Maker Arm link actors. Imported bounds agree with the converted CAD vertices within 0.1 mm. All 18 actors were observed on Luna2 after Multi-User synchronization. This is currently an editor kinematic representation, not yet a physics articulation or calibrated physical twin. Map rename/default-map publication and the guarded binary checkpoint are separate unfinished work.
