@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T13:10:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified live Mac browser webcam capture through Hub to the project editor. Added headset runtime checks and optical hand joint selection.",
+  "why": "Performers can choose a familiar camera permission surface and see when the webcam is successfully solving their pose.",
+  "where": ["Capture/webcam.html", "Capture/browser_camera.py", "Capture/quest.html", "Capture/README.md"],
+  "details": "The live camera published 65 poses in 65 frames. Unreal evaluated the last frame with 23 bones. The Quest separately supplied 67 joints; independent finger-curl motion, simultaneous live capture and station registration still need a rehearsal."
+}

@@ -71,6 +71,14 @@ def encode_frame(msg, session, offset_ns, rtt_ns, anchor):
         "clock_rtt_ns": rtt_ns,
         "bones": bones,
     }
+    if "optical_joints" in msg:
+        counts = msg["optical_joints"]
+        if not isinstance(counts, dict) or any(
+            type(counts.get(s)) is not int or not 0 <= counts[s] <= 25
+            for s in ("left", "right")
+        ):
+            raise ValueError("Invalid optical hand joint counts")
+        data["optical_joints"] = {s: counts[s] for s in ("left", "right")}
     encoded = json.dumps(data, separators=(",", ":"), allow_nan=False).encode()
     if len(encoded) > 60000:
         raise ValueError("Pose exceeds the Live Link receiver's packet limit")

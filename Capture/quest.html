@@ -9,8 +9,8 @@
 const status = document.querySelector("#status");
 const button = document.querySelector("#start");
 const rig = [];
-function bone(name, parent, joint = name) {
-    rig.push([name, parent, joint]);
+function bone(name, parent, joint = name, handJoint = null) {
+    rig.push([name, parent, joint, handJoint]);
     return rig.length - 1;
 }
 const hips = bone("hips", -1);
@@ -20,17 +20,37 @@ bone("head", bone("neck", spine));
 for (const side of ["left", "right"]) {
     let arm = spine;
     for (const name of ["shoulder", "arm-upper", "arm-lower", "hand-wrist-twist", "hand-wrist"])
-        arm = bone(side + "-" + name, arm);
+        arm = bone(side + "-" + name, arm, side + "-" + name, name === "hand-wrist" ? "wrist" : null);
     bone(side + "-hand-palm", arm);
     for (const finger of ["thumb", "index", "middle", "ring", "little"]) {
         let parent = arm;
         const parts = ["metacarpal", "phalanx-proximal"];
         if (finger !== "thumb") parts.push("phalanx-intermediate");
         parts.push("phalanx-distal", "tip");
-        for (const part of parts) parent = bone(side + "-hand-" + finger + "-" + part, parent);
+        for (const part of parts) {
+            const key = side + "-hand-" + finger + "-" + part;
+            const handFinger = finger === "thumb" ? "thumb" : (finger === "little" ? "pinky" : finger) + "-finger";
+            parent = bone(key, parent, key, handFinger + "-" + part);
+        }
     }
 }
-let session, ws;
+let session, ws, mode = "immersive-ar";
+let supportedVR = false;
+async function checkRuntime() {
+    button.disabled = true;
+    try {
+        if (!navigator.xr) throw Error("Open this page inside Quest Browser on the headset.");
+        const [ar, vr] = await Promise.all(["immersive-ar","immersive-vr"].map(m => navigator.xr.isSessionSupported(m)));
+        supportedVR = vr;
+        if (!ar && !vr) throw Error("This browser cannot see an immersive XR runtime. Open the page in Quest Browser, wear the headset, and reload.");
+        mode = ar ? "immersive-ar" : "immersive-vr";
+        status.textContent = ar ? "Ready for passthrough capture." : "Ready for VR capture.";
+        button.disabled = false;
+    } catch (error) {
+        status.textContent = String(error.message || error);
+    }
+}
+checkRuntime();
 button.onclick = async () => {
     let ending = false;
     const report = message => status.textContent = message;
@@ -47,7 +67,7 @@ button.onclick = async () => {
         button.disabled = true;
         if (!navigator.xr) throw Error("WebXR requires a secure context on the headset.");
         // Request while the button gesture is still active. Use native passthrough when available.
-        session = await navigator.xr.requestSession("immersive-ar", {
+        session = await navigator.xr.requestSession(mode, {
             requiredFeatures: ["local-floor", "body-tracking"], optionalFeatures: ["hand-tracking"]
         });
         session.addEventListener("end", () => end("Capture ended."), {once:true});
@@ -72,10 +92,17 @@ button.onclick = async () => {
             if (time - last < 16 || ws.readyState !== WebSocket.OPEN || ws.bufferedAmount > 32000) return;
             const body = frame.body, viewer = frame.getViewerPose(space);
             if (!body || !viewer) { report("Waiting for body tracking."); return; }
-            const bones = [];
-            for (const [name,parent,joint] of rig) {
+            const bones = [], hands = {}, opticalJoints = {left:0, right:0};
+            for (const source of session.inputSources) {
+                if (source.hand) hands[source.handedness] = source.hand;
+            }
+            for (const [name,parent,joint,handJoint] of rig) {
                 const jointSpace = body.get(joint);
-                const pose = name === "head" ? viewer : jointSpace && frame.getPose(jointSpace,space);
+                const side = name.startsWith("left-") ? "left" : "right";
+                const handSpace = handJoint && hands[side]?.get(handJoint);
+                const optical = handSpace && frame.getJointPose(handSpace,space);
+                if (optical) opticalJoints[side]++;
+                const pose = optical || (name === "head" ? viewer : jointSpace && frame.getPose(jointSpace,space));
                 if (!pose && parent < 0) { report("Body tracking unavailable."); return; }
                 if (!pose) {
                     // Preserve the hierarchy. Unavailable joints collapse onto their parent with zero validity.
@@ -85,11 +112,19 @@ button.onclick = async () => {
                 const {position:p, orientation:q} = pose.transform;
                 bones.push([name,parent,p.x,p.y,p.z,q.x,q.y,q.z,q.w,pose.emulatedPosition ? 0.5 : 1]);
             }
-            ws.send(JSON.stringify({seq:n++,client_ms:frame.predictedDisplayTime ?? time,bones}));
+            ws.send(JSON.stringify({seq:n++,client_ms:frame.predictedDisplayTime ?? time, optical_joints:opticalJoints, bones}));
             last = time;
-            if (n === 1 || n % 60 === 0) report("Streaming " + bones.length + " joints. Frame " + n);
+            if (n === 1 || n % 60 === 0) report("Streaming " + bones.length + " joints. Optical hand joints: " + opticalJoints.left + " left, " + opticalJoints.right + " right.");
         };
         session.requestAnimationFrame(onFrame);
-    } catch(e) { await end(String(e.message || e)); }
+    } catch(e) {
+        let message = String(e.message || e);
+        if (!session && mode === "immersive-ar" && supportedVR) {
+            mode = "immersive-vr";
+            button.textContent = "Try VR body capture";
+            message += " You can retry in VR with the button above.";
+        }
+        await end(message);
+    }
 };
 </script></html>
