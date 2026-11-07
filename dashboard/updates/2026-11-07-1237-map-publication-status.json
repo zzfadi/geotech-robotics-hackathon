@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T12:37:39-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Maker Arm geometry is live on Mac/Luna2; final map rename and binary checkpoint remain incomplete.",
+  "why": "Map saves trigger new PersistentLevel transactions on connected clients; guarded rename is awaiting a host Unreal operation.",
+  "where": [
+    "docs/checkpoints.md"
+  ],
+  "details": "Native checkpoint fix is deployed. Host PID 31272 remains live. Mac still reports Empty; defaults were not pointed at a nonexistent map. Source implementation and technical README are pushed; final Unreal asset/map checkpoint is not."
+}
