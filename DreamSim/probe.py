@@ -12,12 +12,12 @@ from dream import DreamClient
 from model import prepare
 
 
-def configure(client,arm):
+def configure(client,arm,checkpoint='dreamlabs/dream-1-beta-flash'):
     body={'state':{'right_arm':[0,6],'right_grip':[6,7],'left_arm':[7,13],'left_grip':[13,14]},
           'action':{'right_arm':[0,6],'right_grip':[6,7],'left_arm':[7,13],'left_grip':[13,14]},
           'video':{role:'observation.images.'+role for role in ('overhead','wrist_l','wrist_r')},'head_camera':'overhead'}
     body['state'].update({'right_eef_xyz':[14,17],'right_eef_rot6':[17,23],'left_eef_xyz':[23,26],'left_eef_rot6':[26,32]})
-    client.policy({'embodiment':body,'checkpoint':'dreamlabs/dream-1-beta-flash','ik':{'arm':str(arm.resolve()),'head':'eef'},'timeout_ms':30000})
+    client.policy({'embodiment':body,'checkpoint':checkpoint,'ik':{'arm':str(arm.resolve()),'head':'eef'},'timeout_ms':30000})
 
 
 def main():
@@ -28,6 +28,7 @@ def main():
     parser.add_argument('--right',type=Path,required=True)
     parser.add_argument('--prompt',required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--checkpoint',default='dreamlabs/dream-1-beta-flash')
     args=parser.parse_args()
     state=json.loads(args.state.read_text())
     frames={}
@@ -47,14 +48,14 @@ def main():
     arm=prepare(args.output.parent/'model')
     client=DreamClient()
     try:
-        configure(client,arm)
+        configure(client,arm,args.checkpoint)
         print('Policy configured; warming custom CAD IK',flush=True)
         if not client.wait_for_ik(180):raise TimeoutError('Custom IK warmup exceeded 180 seconds')
         client.set_observation(frames,observation)
         started=time.monotonic()
         action=client.get_action()
         report={'scope':'inference only; no UE motion applied','elapsed_seconds':time.monotonic()-started,
-                'prompt':args.prompt,'state':state,'action':action}
+                'prompt':args.prompt,'checkpoint':args.checkpoint,'state':state,'action':action}
         args.output.write_text(json.dumps(report,default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x),indent=2)+'\n')
         print(json.dumps({'output':str(args.output),'elapsed_seconds':report['elapsed_seconds'],
                           'chunk_shapes':{key:list(np.asarray(action[key]).shape) for key in ('q_l_chunk','q_r_chunk') if key in action}}),flush=True)

@@ -12,17 +12,22 @@ from maker_arm_station import BASES,VISUAL_LINKS
 _probe=None
 
 class GripProbe:
-    def __init__(self,output,gap=.045,tcp_back=.04,wake=True,convex_diagnostic=False):
+    def __init__(self,output,gap=.045,tcp_back=.04,wake=True,convex_diagnostic=False,contact_stop=False):
         self.editor=unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem);self.level=unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
         if self.editor.get_game_world() is not None:raise RuntimeError('Simulation already active')
         if animation.is_running():raise RuntimeError('Shared animation is active')
-        self.gap=gap;self.tcp_back=tcp_back;self.wake=wake;self.convex_diagnostic=convex_diagnostic
+        self.contact_stop=contact_stop;self.actual_gap=.08;self.gap=gap;self.tcp_back=tcp_back;self.wake=wake;self.convex_diagnostic=convex_diagnostic
         self.output=Path(output);self.phase='starting';self.started=time.monotonic();self.samples=[];self.error=None;self.cube=None;self.callback=None
         self.original={a.get_actor_label():a.get_actor_transform() for a in unreal.GameplayStatics.get_all_actors_of_class(self.editor.get_editor_world(),unreal.StaticMeshActor) if a.get_actor_label().startswith('MakerArm_right_') or a.get_actor_label()=='MakerStation_Approximate_Block_Orange'}
         self.callback=unreal.register_slate_post_tick_callback(self.tick);self.level.editor_play_simulate()
 
     def pose(self,q,gap):
         frames=mounted_frames(q,gap,yaw=math.pi)
+        if self.contact_stop and self.cube is not None:
+            from maker_arm_contact_stop import contact_gap,actor_boxes
+            gap,_=contact_gap(gap,self.actual_gap,actor_boxes({'cube':self.cube},frames['link_007'],BASES['right']))
+            frames=mounted_frames(q,gap,yaw=math.pi)
+        self.actual_gap=gap
         for link in VISUAL_LINKS:
             p,r=ue_pose(frames[link]);p=[p[i]+BASES['right'][i] for i in range(3)]
             self.actors['MakerArm_right_'+link].set_actor_location_and_rotation(unreal.Vector(*p),unreal.Quat(*r).rotator(),False,False)
@@ -69,7 +74,7 @@ class GripProbe:
                 else:gap=.08;q2=-1.27
                 self.pose([0,q2,1.57,0,0,0],gap)
                 p=self.cube.get_actor_location();v=self.cube.static_mesh_component.get_physics_linear_velocity()
-                self.samples.append({'t':elapsed,'gap_m':gap,'q2':q2,'cube_cm':[p.x,p.y,p.z],'velocity_cm_s':[v.x,v.y,v.z]})
+                self.samples.append({'t':elapsed,'gap_m':gap,'actual_gap_m':self.actual_gap,'q2':q2,'cube_cm':[p.x,p.y,p.z],'velocity_cm_s':[v.x,v.y,v.z]})
                 if elapsed>=8:self.level.editor_request_end_play();self.phase='ending';self.started=now
             elif self.phase=='ending':
                 if world is not None:
@@ -102,10 +107,10 @@ class GripProbe:
         lift=bool(lifted and max(lifted)>self.initial_z+5)
         released=bool(final and abs(final['cube_cm'][2]-77.5)<1)
         self.output.parent.mkdir(parents=True,exist_ok=True)
-        self.output.write_text(json.dumps({'scope':'controlled jaw fixture, not autonomous pickup','error':self.error,'editor_preserved':unchanged,'simulation_ended':simulation_ended,'wake_each_tick':self.wake,'convex_diagnostic':self.convex_diagnostic,'retained_under_gravity':retained,'lifted_over_5cm':lift,'released_to_table':released,'passed':not self.error and simulation_ended and unchanged and retained and lift and released,'commanded_gap_m':self.gap,'fixture_tcp_back_m':self.tcp_back,'assumed_cube_mass_kg':.05,'assumed_friction':.8,'samples':self.samples},indent=2)+'\n')
+        self.output.write_text(json.dumps({'scope':'controlled jaw fixture, not autonomous pickup','error':self.error,'editor_preserved':unchanged,'simulation_ended':simulation_ended,'wake_each_tick':self.wake,'convex_diagnostic':self.convex_diagnostic,'contact_stop':self.contact_stop,'retained_under_gravity':retained,'lifted_over_5cm':lift,'released_to_table':released,'passed':not self.error and simulation_ended and unchanged and retained and lift and released,'commanded_gap_m':self.gap,'fixture_tcp_back_m':self.tcp_back,'assumed_cube_mass_kg':.05,'assumed_friction':.8,'samples':self.samples},indent=2)+'\n')
 
-def start(output,gap=.045,tcp_back=.04,wake=True,convex_diagnostic=False):
+def start(output,gap=.045,tcp_back=.04,wake=True,convex_diagnostic=False,contact_stop=False):
     global _probe
     if _probe and _probe.callback is not None:raise RuntimeError('Grip probe active')
-    try:_probe=GripProbe(output,gap,tcp_back,wake,convex_diagnostic)
+    try:_probe=GripProbe(output,gap,tcp_back,wake,convex_diagnostic,contact_stop)
     except Exception as error:Path(output).write_text(json.dumps({'passed':False,'error':str(error)}))

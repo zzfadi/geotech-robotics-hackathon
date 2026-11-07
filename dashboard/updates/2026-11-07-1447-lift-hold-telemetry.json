@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T14:47:03-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added sustained-height telemetry and compared Full/Flash solved approach paths on frozen trial input.",
+  "why": "A high maximum frame alone cannot distinguish a held grasp from a collision ejection.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_lift_evidence.py",
+    "Unreal/TheHumanTouch/Tools/test_maker_arm_lift_evidence.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_runtime.py",
+    "docs/maker-arm-camera-trial.md"
+  ],
+  "details": "Five telemetry tests pass. Flash solved TCP path approached the prepared target center within 0.257 cm versus Full 7.476 cm on identical frozen input; no probe actuation. Tracks consecutive >=10 cm height and <=10 cm/s speed for at least one second, while grasp_verified stays false pending visual/contact review."
+}

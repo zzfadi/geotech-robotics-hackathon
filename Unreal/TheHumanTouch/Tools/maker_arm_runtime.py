@@ -6,6 +6,8 @@ from pathlib import Path
 import unreal
 import maker_arm_feedback,maker_arm_observer
 from maker_arm_actions import retime
+from maker_arm_contact_stop import contact_gap,actor_boxes
+from maker_arm_lift_evidence import update as update_lift_evidence
 from maker_arm_model import mounted_frames,ue_pose
 from maker_arm_station import BASES,MOUNT_YAW,VISUAL_LINKS
 from copresence import animation,tracking
@@ -27,7 +29,7 @@ class Session:
         self.initial={key:candidate[key] for key in ('q_left','q_right','gap_left_m','gap_right_m')}
         maker_arm_feedback.seed(self.initial)
         self.state=maker_arm_feedback.read();self.status=Path(status_path);self.cameras=str(camera_directory)
-        self.want_mirror=mirror;self.mirror=None;self.world=None;self.proxies={};self.props={};self.evidence={}
+        self.want_mirror=mirror;self.mirror=None;self.world=None;self.proxies={};self.props={};self.evidence={};self.evidence_timers={}
         self.phase='starting';self.error=None;self.started=time.monotonic();self.last_motion=None;self.commit=False
         self.motion=None;self.callback=None;self.local_proxies=[];self.report()
         maker_arm_observer.stop()
@@ -87,7 +89,7 @@ class Session:
             c.set_collision_profile_name('PhysicsActor');c.set_phys_material_override(self.material)
             c.set_mass_override_in_kg('',.05,True);c.set_enable_gravity(True);c.set_simulate_physics(True)
             if not c.is_simulating_physics():raise RuntimeError('Prop did not enter Chaos simulation')
-            self.props[label]=actor;z=actor.get_actor_location().z
+            self.props[label]=actor;self.evidence_timers[label]={};z=actor.get_actor_location().z
             self.evidence[label]={'initial_z_cm':z,'max_z_cm':z,'final_z_cm':z,'simulated':True}
         maker_arm_observer.stop()
         maker_arm_observer.start(self.cameras,seconds=180,world=world)
@@ -136,8 +138,12 @@ class Session:
                 index=min(int((now-m['start'])*m['timing']['action_hz']),len(m['chunks']['left'])-1)
                 if index!=m['index']:
                     for side in BASES:
-                        row=m['chunks'][side][index];self.state['q_'+side]=row[:6];self.state['gap_'+side+'_m']=row[6]*.104825
-                        for link,t in mounted_frames(row[:6],row[6]*.104825,yaw=MOUNT_YAW[side]).items():
+                        row=m['chunks'][side][index]
+                        frames=mounted_frames(row[:6],row[6]*.104825,yaw=MOUNT_YAW[side])
+                        gap,contacts=contact_gap(row[6]*.104825,self.state['gap_'+side+'_m'],actor_boxes(self.props,frames['link_007'],BASES[side]))
+                        self.state['q_'+side]=row[:6];self.state['gap_'+side+'_m']=gap
+                        self.state['contact_stop_'+side]=contacts
+                        for link,t in mounted_frames(row[:6],gap,yaw=MOUNT_YAW[side]).items():
                             if link not in VISUAL_LINKS:continue
                             label='MakerArm_'+side+'_'+link;p,q=ue_pose(t);p=[p[i]+BASES[side][i] for i in range(3)]
                             for actor in [self.actors[label]]+([self.proxies[label]] if label in self.proxies else []):
@@ -147,8 +153,8 @@ class Session:
                     if index==len(m['chunks']['left'])-1:self.motion_report(True);self.motion=None
             for label,actor in self.props.items():
                 actor.static_mesh_component.wake_all_rigid_bodies()
-                z=actor.get_actor_location().z;self.evidence[label]['final_z_cm']=z
-                self.evidence[label]['max_z_cm']=max(z,self.evidence[label]['max_z_cm'])
+                p=actor.get_actor_location();v=actor.static_mesh_component.get_physics_linear_velocity()
+                update_lift_evidence(self.evidence[label],self.evidence_timers[label],[p.x,p.y,p.z],[v.x,v.y,v.z],now)
             if self.mirror:self.mirror.tick()
             self.report()
         except Exception as error:

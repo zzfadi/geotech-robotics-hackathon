@@ -46,7 +46,7 @@ class RetimingTest(unittest.TestCase):
         chunks,timing=retime({'q_l_chunk':rows,'q_r_chunk':rows},state)
         self.assertEqual(timing['rows'],201)
 
-    def test_small_aperture_overshoot_is_logged_and_larger_errors_rejected(self):
+    def test_aperture_demand_saturates_at_stops_but_nonfinite_is_rejected(self):
         q=[0,-1,.8,0,0,0];state={'q_left':q,'q_right':q,'gap_left_m':.04,'gap_right_m':.04}
         action={'q_l_chunk':[q+[1.013]],'q_r_chunk':[q+[-.002]]}
         chunks,timing=retime(action,state)
@@ -54,7 +54,12 @@ class RetimingTest(unittest.TestCase):
         self.assertEqual(chunks['right'][-1][6],0)
         self.assertEqual(len(timing['grip_limit_corrections']),2)
         self.assertEqual(action['q_l_chunk'][0][6],1.013)
-        for bad in (1.021,-.021,float('nan'),float('inf')):
+        for demand,expected in ((1.021,1),(-.031,0),(3,1),(-2,0)):
+            action['q_l_chunk'][0][6]=demand
+            chunks,timing=retime(action,state)
+            self.assertEqual(chunks['left'][-1][6],expected)
+            self.assertEqual(action['q_l_chunk'][0][6],demand)
+        for bad in (float('nan'),float('inf')):
             action['q_l_chunk'][0][6]=bad
             with self.assertRaises(ValueError):retime(action,state)
     def test_does_not_repair_invalid_positions(self):

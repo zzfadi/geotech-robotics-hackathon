@@ -35,10 +35,12 @@ def retime(action,state,hz=20,max_duration=15):
     """Preserve target order/positions and uniformly slow playback to CAD speeds.
 
     Include the actual starting pose so the first grip target cannot jump. No
-    out-of-position-limit or nonfinite target is repaired by this operation.
+    out-of-joint-limit or nonfinite target is repaired by this operation.
     """
     # Model aperture predictions can overshoot their normalized endpoints.
-    # Saturate only a small, explicit 2% band; never exceed physical jaw travel.
+    # A finite aperture demand is an actuator command: saturate at the physical
+    # closed/open stops. This simulation adapter never permits negative travel,
+    # and records every saturation rather than rejecting normal policy overshoot.
     prepared={};corrections=[]
     for key in ('q_l_chunk','q_r_chunk'):
         prepared[key]=[]
@@ -46,9 +48,8 @@ def retime(action,state,hz=20,max_duration=15):
             row=list(values)
             if len(row)==7 and isinstance(row[6],(int,float)) and math.isfinite(row[6]):
                 grip=row[6]
-                if -.02<=grip<=1.02:
-                    row[6]=min(1.,max(0.,grip))
-                    if row[6]!=grip:corrections.append({'arm':key,'row':index,'requested':grip,'applied':row[6]})
+                row[6]=min(1.,max(0.,grip))
+                if row[6]!=grip:corrections.append({'arm':key,'row':index,'requested':grip,'applied':row[6]})
             prepared[key].append(row)
     chunks=validate(prepared,hz,check_speed=False)
     root=model();limits=[j.find('limit') for j in root.findall("joint[@type='revolute']")]

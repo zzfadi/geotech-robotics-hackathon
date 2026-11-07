@@ -1,0 +1,20 @@
+{
+  "scope": "controlled jaw fixture, not autonomous pickup",
+  "error": null,
+  "editor_preserved": true,
+  "simulation_ended": true,
+  "wake_each_tick": true,
+  "convex_diagnostic": true,
+  "contact_stop": true,
+  "retained_under_gravity": true,
+  "lifted_over_5cm": true,
+  "released_to_table": true,
+  "passed": true,
+  "commanded_gap_m": 0.01,
+  "fixture_tcp_back_m": 0.04,
+  "assumed_cube_mass_kg": 0.05,
+  "assumed_friction": 0.8,
+  "sample_count": 596,
+  "max_cube_z_cm": 118.08420463846328,
+  "min_actual_gap_m": 0.04607233440112852
+}

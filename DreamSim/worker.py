@@ -121,6 +121,9 @@ class Worker:
                 if (self.root/'stop').exists():raise RuntimeError('Stopped by user; discarded pending model response')
                 self.event('request.completed',cycle=cycle+1,elapsed_seconds=time.monotonic()-started,action={k:action[k] for k in ('q_l_chunk','q_r_chunk')})
                 report=self.root/'action.json';report.write_text(json.dumps({'state':packet['state'],'action':action},default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x)))
+                # Preserve raw EEF targets beside solved joints for calibration
+                # diagnosis; the controller still reads the current action file.
+                (self.recording/f'action-{cycle+1}.json').write_text(report.read_text())
                 previous.unlink(missing_ok=True)
                 controller='maker_arm_runtime' if self.args.runtime_physics else 'maker_arm_playback'
                 self.python(f"from copresence import ui_widgets\nimport {controller}\nui_widgets.after(.2, lambda: {controller}.launch({str(report)!r},{str(previous)!r}))",'Apply bounded Dream response to the authoritative controller')
@@ -214,7 +217,7 @@ class Worker:
         finally:self.ue('end_task',{'summary':'Started local three-camera preview; robot poses unchanged.','keep_view':True})
 
     def run(self):
-        configure(self.client,prepare(self.root/'model'))
+        configure(self.client,prepare(self.root/'model'),self.args.checkpoint)
         if not self.client.wait_for_ik(180):raise TimeoutError('IK initialization timed out')
         threading.Thread(target=self.poll,daemon=True).start();threading.Thread(target=self.pump,daemon=True).start();threading.Thread(target=self.stream,daemon=True).start()
         self.start_preview()
@@ -232,4 +235,4 @@ class Worker:
         finally:self.closed=True;self.client.close()
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--runtime-physics',action='store_true');args=p.parse_args();Worker(args).run()
+    p=argparse.ArgumentParser();p.add_argument('--server',required=True);p.add_argument('--token-file',type=Path,required=True);p.add_argument('--project',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--initial-state',type=Path,required=True);p.add_argument('--cycles',type=int,default=3);p.add_argument('--runtime-physics',action='store_true');p.add_argument('--checkpoint',default='dreamlabs/dream-1-beta-flash');args=p.parse_args();Worker(args).run()

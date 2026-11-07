@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T14:56:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Contact-limited jaw fixture now retains, lifts and releases a free Chaos cube under a full-close command.",
+  "why": "Direct position-driven overclosure expelled the cube. Added explicit geometric contact-stop approximation; autonomous Dream 10 cm pickup still under test.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_contact_stop.py",
+    "docs/maker-arm-runtime-contact.md"
+  ],
+  "details": "Actual aperture is fed back; no prop attachment or lift trajectory. Finite Dream aperture demands saturate to actuator travel endpoints; raw per-cycle responses retained. Worker restarted; live web preview verified."
+}
