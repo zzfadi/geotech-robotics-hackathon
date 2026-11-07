@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T14:24:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Measured runtime jaw contact independently of Dream kinematic playback.",
+  "why": "A completed arm trajectory does not prove that the simulated cube is actually grasped.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_grip_probe.py",
+    "docs/maker-arm-runtime-contact.md",
+    "docs/validation/maker-arm-jaw-contact.json"
+  ],
+  "details": "441-sample SIE fixture with awake cube failed retention and lift; block fell to table. No attachments or commanded cube lift. Simulation ended and full original editor transforms preserved. Added bounded probe cleanup and shared-animation guard; source compilation passes. Physics grasp remains unvalidated."
+}
