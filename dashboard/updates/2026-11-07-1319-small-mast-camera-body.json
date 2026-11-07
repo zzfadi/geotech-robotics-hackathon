@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T13:19:35-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Restored the small camera housing and lens at the top of the central mast.",
+  "why": "Match the requested physical camera reference while keeping oversized editor camera icons hidden.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_cameras.py"
+  ],
+  "details": "Verified the small body in the live editor. Three virtual cameras remain active; shared binary checkpoint remains pending."
+}

@@ -110,14 +110,19 @@ def hide_camera_meshes():
             primitive.modify()
             primitive.set_visibility(False, False)
             primitive.set_hidden_in_game(True, False)
-    # These are separate visual housing/lens proxies. Keep the mast itself.
+    return inspect()
+
+
+def show_central_camera_body():
+    """Show only the small physical camera proxy; retain hidden editor icons."""
+    existing = yam_station.actors()
     for label in (yam_station.PREFIX+'OverviewCameraProxy',
                   'MakerStation_CentralCameraLens_Approximate'):
         actor = existing.get(label)
-        if actor:
-            actor.modify()
-            mesh = actor.get_component_by_class(unreal.StaticMeshComponent)
-            mesh.modify()
-            mesh.set_visibility(False, False)
-            mesh.set_hidden_in_game(True, False)
-    return inspect()
+        if actor is None: raise ValueError('Missing central camera proxy: '+label)
+        actor.modify()
+        component = actor.get_component_by_class(unreal.StaticMeshComponent)
+        component.modify()
+        component.set_visibility(True, False)
+        component.set_hidden_in_game(False, False)
+    return {'central_body_visible': True, 'editor_camera_icons': 'hidden'}
