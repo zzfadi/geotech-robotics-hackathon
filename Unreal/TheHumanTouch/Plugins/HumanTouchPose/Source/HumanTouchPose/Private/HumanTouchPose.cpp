@@ -85,7 +85,7 @@ private:
         const TArray<TSharedPtr<FJsonValue>>* Bones = nullptr;
         if (!Json->TryGetNumberField(TEXT("version"), Version) || Version != 1 ||
             !Json->TryGetStringField(TEXT("subject"), Subject) ||
-            (Subject != TEXT("Human_Cam_B") && Subject != TEXT("Human_Quest_A")) ||
+            (Subject != TEXT("Human_Cam_B") && Subject != TEXT("Human_Quest_A") && Subject != TEXT("Human_Quest_C")) ||
             !Json->TryGetStringField(TEXT("space"), Space) || Space.IsEmpty() ||
             !Json->TryGetStringField(TEXT("session"), Session) || Session.IsEmpty() ||
             !Json->TryGetStringField(TEXT("seq"), Sequence) || !Sequence.IsNumeric() ||
@@ -173,12 +173,12 @@ FAutoConsoleCommand Listen(TEXT("HumanTouch.Pose.Listen"), TEXT("Add the Human T
         }
     }));
 
-FAutoConsoleCommand Inspect(TEXT("HumanTouch.Pose.Inspect"), TEXT("Evaluate the two Animation subjects and log the frame IDs."),
+FAutoConsoleCommand Inspect(TEXT("HumanTouch.Pose.Inspect"), TEXT("Evaluate the performer Animation subjects and log the frame IDs."),
     FConsoleCommandDelegate::CreateLambda([]
     {
         if (auto* Client = FindClient())
         {
-            for (const TCHAR* Subject : {TEXT("Human_Cam_B"), TEXT("Human_Quest_A")})
+            for (const TCHAR* Subject : {TEXT("Human_Cam_B"), TEXT("Human_Quest_A"), TEXT("Human_Quest_C")})
             {
                 FLiveLinkSubjectFrameData Sample;
                 if (!Client->EvaluateFrame_AnyThread(FName(Subject), ULiveLinkAnimationRole::StaticClass(), Sample)) continue;

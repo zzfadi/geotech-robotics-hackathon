@@ -2,7 +2,8 @@
 
 import json
 import time
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from threading import Lock
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import cv2
@@ -12,9 +13,12 @@ import numpy as np
 def serve(publisher, max_frames, port=17864):
     page = Path(__file__).with_name("webcam.html").read_bytes()
     active = None
+    inference = Lock()
     last_frame = 0
 
     class Handler(BaseHTTPRequestHandler):
+        timeout = 4
+
         def send_body(self, code, content, mime):
             self.send_response(code)
             self.send_header("Content-Type", mime)
@@ -56,13 +60,12 @@ def serve(publisher, max_frames, port=17864):
                 return self.reply(400, error="Missing camera session")
             now = time.monotonic_ns()
             if self.path == "/end":
-                if active == sender:
-                    active = None
+                with inference:
+                    if active == sender:
+                        active = None
                 return self.reply(200, stopped=True)
             if self.path != "/frame":
                 return self.send_error(404)
-            if active and active != sender and now - last_frame < 2_000_000_000:
-                return self.reply(409, error="Another webcam session is running")
             try:
                 n = int(self.headers["Content-Length"])
                 stamp = int(self.headers["X-Station-Ns"])
@@ -77,11 +80,21 @@ def serve(publisher, max_frames, port=17864):
                 frame = cv2.imdecode(np.frombuffer(payload, np.uint8), cv2.IMREAD_COLOR)
                 if frame is None or frame.shape[1] > 1920 or frame.shape[0] > 1080:
                     raise ValueError("Invalid camera image")
-                if active != sender:
-                    publisher.begin()
-                    active = sender
-                last_frame = now
-                detected = publisher.publish(frame, stamp, timing)
+                with inference:
+                    now = time.monotonic_ns()
+                    if now - stamp > 500_000_000:
+                        return self.reply(400, error="Camera sample expired")
+                    if active and active != sender and now - last_frame < 2_000_000_000:
+                        return self.reply(
+                            409, error="Another webcam session is running"
+                        )
+                    if max_frames is not None and publisher.seq >= max_frames:
+                        return self.reply(409, error="Capture finished")
+                    if active != sender:
+                        publisher.begin()
+                        active = sender
+                    last_frame = now
+                    detected = publisher.publish(frame, stamp, timing)
             except (TypeError, ValueError, KeyError, cv2.error) as exc:
                 return self.reply(400, error=str(exc))
             self.reply(
@@ -91,7 +104,10 @@ def serve(publisher, max_frames, port=17864):
         def log_message(self, *_):
             pass
 
-    with HTTPServer(("127.0.0.1", port), Handler) as server:
+    with ThreadingHTTPServer(("127.0.0.1", port), Handler) as server:
+        # Browsers can preconnect without sending a request. Keep serving the active tab.
+        server.timeout = 0.2
+        server.daemon_threads = False
         print(
             f"Open http://localhost:{port}/ in the Mac browser. Images are processed in memory.",
             flush=True,

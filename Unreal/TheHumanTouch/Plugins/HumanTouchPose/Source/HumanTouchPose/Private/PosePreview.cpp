@@ -58,6 +58,7 @@ public:
             {
                 DrawSubject(Context.World(), Client, TEXT("Human_Cam_B"), FColor::Cyan);
                 DrawSubject(Context.World(), Client, TEXT("Human_Quest_A"), FColor::Orange);
+                DrawSubject(Context.World(), Client, TEXT("Human_Quest_C"), FColor::Purple);
             }
         }
         return true;

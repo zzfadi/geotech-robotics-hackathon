@@ -22,7 +22,7 @@ URDF = (
     Path(__file__).resolve().parents[1]
     / "Unreal/TheHumanTouch/SourceAssets/MakerArm/robot.urdf"
 )
-SUBJECTS = ("Human_Quest_A", "Human_Cam_B")
+SUBJECTS = ("Human_Quest_A", "Human_Cam_B", "Human_Quest_C")
 SIDES = ("left", "right")
 FRESH_NS = 120_000_000
 SIM_HZ = 60
@@ -246,10 +246,10 @@ class Station:
             for side in SIDES:
                 ids = self.proxies[who, side]
                 elbow = points.get(
-                    f"{side}-arm-lower" if who == SUBJECTS[0] else f"{side}_forearm"
+                    f"{side}-arm-lower" if who != "Human_Cam_B" else f"{side}_forearm"
                 )
                 hand = points.get(
-                    f"{side}-hand-wrist" if who == SUBJECTS[0] else f"{side}_hand"
+                    f"{side}-hand-wrist" if who != "Human_Cam_B" else f"{side}_hand"
                 )
                 key = (who, side)
                 old = self.last_positions.get(key)
