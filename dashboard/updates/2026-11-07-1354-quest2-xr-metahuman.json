@@ -1,0 +1,8 @@
+{
+  "when": "2026-11-07T13:54:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Verified USB VR streaming on Quest 2 in the shared TheHumanTouch session with all three MetaHuman skinning settings enabled.",
+  "why": "Virtual Scouting changing custom depth during mode transitions crashed the Mac editor. A workstation-local XR Creative mode keeps custom depth fixed and uses the existing Scouting avatar and tools.",
+  "details": "Observed fresh H.265 frames on the headset at 2176 × 1200 with a negotiated 72 Hz refresh rate. The Quest 2 reports passthrough support. Camera passthrough was disabled in the streaming runtime and was not visually tested. The local ht-rejoin verifier recognizes both Quest 2 and Quest 3S."
+}
