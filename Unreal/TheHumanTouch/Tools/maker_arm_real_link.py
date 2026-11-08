@@ -52,6 +52,11 @@ MOVED_CM = 0.05
 MOVED_DOT = 0.99999  # |quat dot| below this counts as rotated (~0.5 deg)
 CONSISTENT_CM = 0.3  # recovered joints reproduce every link within this -> posed by FK
 IK_ITERATIONS = 10
+# Test motions advance a virtual clock by at most this per tick, so an editor hitch pauses the
+# motion instead of jumping it (the bridge rejects any target > 25 deg from its last and holds).
+MAX_TEST_STEP_S = 0.1
+LAG_ABORT_DEG = 12.0   # real arm this far behind the virtual target ...
+LAG_ABORT_S = 1.0      # ... for this long: the bridge is holding; abort and say how to resync
 
 _link = None
 
@@ -214,7 +219,9 @@ class Link:
             motion = tests.plan(action, self.q, self.gap, MOUNT_YAW, TABLE10_BASES, self.limits)
         except ValueError as error:
             return self._report(command, "rejected", str(error))
-        motion["start"] = time.monotonic()
+        motion["t"] = 0.0
+        motion["last"] = time.monotonic()
+        motion["lag_since"] = None
         motion["command"] = command
         motion["real"] = bool(real)
         self.motion = motion
@@ -227,16 +234,42 @@ class Link:
         if real and real.get("mode") == "mirror":
             self.motion = None
             return self._report(command, "aborted", "bridge switched to mirror (torque off)")
-        t = time.monotonic() - motion["start"]
+        now = time.monotonic()
+        motion["t"] += min(now - motion["last"], MAX_TEST_STEP_S)
+        motion["last"] = now
+        t = motion["t"]
+        lag = self._lag_deg(real) if motion["real"] else None
+        if lag is not None and lag > LAG_ABORT_DEG:
+            motion["lag_since"] = motion["lag_since"] or now
+            if now - motion["lag_since"] > LAG_ABORT_S:
+                self.motion = None
+                return self._report(command, "aborted", "real arm stopped following (%.0f deg behind; the bridge is "
+                                                        "holding). Type m then d in the bridge terminal to resync" % lag,
+                                    lag_deg=round(lag, 1))
+        else:
+            motion["lag_since"] = None
         for side, q in tests.sample(motion, t).items():
             self._apply(side, q, self.gap[side])
             self.source[side] = "test"
         done = t >= motion["duration_s"]
         self._report(command, "done" if done else "running",
                      "real arms follow" if motion["real"] else "virtual only (no bridge)",
-                     duration_s=round(motion["duration_s"], 2), progress=round(min(1.0, t / motion["duration_s"]), 3))
+                     duration_s=round(motion["duration_s"], 2), progress=round(min(1.0, t / motion["duration_s"]), 3),
+                     lag_deg=None if lag is None else round(lag, 1))
         if done:
             self.motion = None
+
+    def _lag_deg(self, real):
+        """Worst joint gap between the measured real arms (drive) and the last published target."""
+        if not real or real.get("mode") != "drive":
+            return None
+        worst = None
+        for side in SIDES:
+            measured = (real.get("arms") or {}).get(side, {}).get("q")
+            if measured and self.q[side] is not None:
+                gap = max(abs(math.degrees(a - b)) for a, b in zip(measured, self.q[side]))
+                worst = gap if worst is None else max(worst, gap)
+        return worst
 
     # ---- per side -----------------------------------------------------------------------
     def _mirror(self, side, arm):
