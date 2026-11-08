@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T11:11:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Confirmed the Dream handover-and-place task: 9/9, then 8/9 twice, then 8/8 with left and right re-reach retries; mirror and start-pose robustness fixes.",
+  "why": "Repeatability of the user's two-arm task (left takes the cup, right receives it and places it back) after reaching 9/9 once.",
+  "where": ["DreamSim/handover.py", "Unreal/TheHumanTouch/Tools/maker_arm_runtime_mirror.py", "Unreal/TheHumanTouch/Tools/maker_arm_fleet.py", "docs/validation/claude-cup-iterations-2026-11-07.md"],
+  "details": ["Batch 20261108-110738-815046: 8/8 on Tables 2-9. Table 1 was left out because the real-arm bridge drives its arm actors.", "A busy editor transaction now skips one 0.5 Hz mirror sample instead of stopping all tables.", "Start poses are set from exact quaternions."]
+}

@@ -98,7 +98,7 @@ class RuntimeMirror:
             self.error = str(error)
             self.finish(commit=False)
 
-    def tick(self, force=False):
+    def tick(self, force=False, required=False):
         try:
             self._valid()
             now = time.monotonic()
@@ -125,7 +125,7 @@ class RuntimeMirror:
             # drag/details edit or a Multi-User apply can hold one open. A visual sample is
             # optional: skip it and retry shortly instead of stopping every table's simulation
             # (place 8: one such moment ended all nine runs).
-            if not self._apply(measured, 'Measured runtime Maker Arm sample'):
+            if not self._apply(measured, 'Measured runtime Maker Arm sample', required=required):
                 self.skipped = getattr(self, 'skipped', 0)+1
                 self.last = now-self.period*.75
                 return False
@@ -168,8 +168,9 @@ class RuntimeMirror:
         if self.closed:
             return
         if commit:
-            # Final measured sample bypasses the normal snapshot rate limit.
-            self.tick(force=True)
+            # Final measured sample bypasses the normal snapshot rate limit and must land, or the
+            # editor keeps a mid-motion pose that the next start has to correct.
+            self.tick(force=True, required=True)
         self.closed = True
         try:
             if not commit:

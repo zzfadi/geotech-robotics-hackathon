@@ -327,3 +327,13 @@ hitches 6.5/s → 0, and 58 FPS from run start. Trade-off: arm links no longer p
   and retries; only the teardown restore still requires it.
 - Place 8 (`20261108-105434-5fc460`): **8/9** confirmation. The miss: the left jaws closed past a cup on the table
   (no contact at 4.5 cm). Left grasp misses now re-reach from the live cup position 1 cm deeper (up to 2 times).
+- Place 9 (`20261108-105751-49995f`): 8/9. The right grasp stop width varied 4.3–7.6 cm at the same planned
+  hand-to-cup offset; one table missed all three tries. Retry order is now driven by results (depth 1.5 cm /
+  offset −3.5 cm rescued 3 of 4), with up to 3 right re-reaches.
+- Place 10 start was refused twice ("Table 0 robot rotated outside the controller"). The cause was the real-arm
+  bridge (`real_arm_bridge.py`, Maker Arm mirror mode, started 11:04 by a concurrent session), which drives the
+  plain-named `MakerArm_*` actors that fleet Table 1 uses. The fleet correctly refuses to fight it. Also fixed:
+  start poses are set from the exact quaternion (a rotator round trip could miss the 1e-6 verify tolerance), and
+  the end-of-run mirror sample is required again.
+- **Place 10 (`20261108-110738-815046`, Tables 2–9 while the real arms use Table 1): 8/8 handed over and placed**,
+  0.0° tilt. One left and two right re-reaches recovered misses.

@@ -112,7 +112,12 @@ def set_pose(index, side, q, gap, existing=None):
                 and abs(sum(a*b for a, b in zip((q_now.x, q_now.y, q_now.z, q_now.w), r))) > 1-1e-9):
             continue
         actor.modify()
-        actor.set_actor_location_and_rotation(unreal.Vector(*p), unreal.Quat(*r).rotator(), False, True)
+        # Set the exact quaternion: a rotator round trip near +/-90 deg pitch misses verify()'s
+        # 1e-6 dot tolerance ("robot rotated outside the controller" on the next start).
+        pose = actor.get_actor_transform()
+        pose.translation = unreal.Vector(*p)
+        pose.rotation = unreal.Quat(*r)
+        actor.set_actor_transform(pose, False, True)
         moved += 1
     return moved
 
