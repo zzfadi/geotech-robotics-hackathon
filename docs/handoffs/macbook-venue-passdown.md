@@ -4,6 +4,8 @@ Written Sunday, Nov 8, 14:45 PST on the Mac mini, for FADI and a fresh agent ses
 
 No passwords, Wi-Fi keys, operator codes or join codes belong in this file, in chat or in any commit.
 
+The Jetson-setup session wrote a parallel, more detailed resume at the same time: [macbook-venue-resume-2026-11-08.md](macbook-venue-resume-2026-11-08.md), once it's committed. It covers the Jetson's environments, the KVM and what to report. Where the two differ, the more cautious instruction wins. This page is the short version.
+
 ## The clock decides the order
 
 Demos are judged at 3 PM ([plan](../plan.md)): a 3-minute robot demo at the station plus 2 minutes of questions, top 5 present for 5 minutes. The submission route and cutoff are **not confirmed** by the organizers (Brian, [14:33 update](../../dashboard/updates/2026-11-08-1433-submission-rubric-check.json)). Work in this order:
@@ -23,7 +25,7 @@ Demos are judged at 3 PM ([plan](../plan.md)): a 3-minute robot demo at the stat
 | FADI's can hand-off (`handoff/`, `pickup_server.py`) | Software ready and replay-tested (22 of 22). **Never run on the real arm.** | FADI | [handoff/README.md](../../handoff/README.md) |
 | Jetson test hub, edge model, voice, control center | Overnight software and simulation results | FADI | [jetson-hub-testing.md](../jetson-hub-testing.md), [plan: what landed overnight](../plan.md) |
 
-**One owner per USB-CAN adapter.** Table 10's `real_arm_service.py` holds **both** adapters on the Mac running the Unreal editor, through login agent `one.geotech.table10-agent`. Do not start `pickup_server.py`, `arm/tools/arm scan|watch|...`, MakerModsLab or any other SDK program on any machine while that service holds the adapters. Switching the arms to the `handoff/` path is a team decision. It means stopping the Table 10 service first: ask Denys, or run `zsh DreamSim/install_table10_agent.sh remove` on that Mac. Then follow handoff/README.md from row 0.
+**One owner per USB-CAN adapter.** Table 10 runs one `real_arm_service.py --left|--right` process per arm on the Mac attached to the arms, started by login agent `one.geotech.table10-agent`. The fix that made both arms work was one adapter per process ([table10-real-arms.md](../table10-real-arms.md), last section). The agent contains Denys-specific paths, so don't install it unchanged on the MacBook. Do not start `pickup_server.py`, `arm/tools/arm scan|watch|...`, MakerModsLab or any other SDK program on any machine while that service holds the adapters. Switching the arms to the `handoff/` path is a team decision. It means stopping the Table 10 service first: ask Denys, or run `zsh DreamSim/install_table10_agent.sh remove` on that Mac. Then follow handoff/README.md from row 0.
 
 Safety, unchanged: the hardware E-stop stays within reach whenever drive is on. Joints 1–6 have no motor watchdog in this SDK. **Turn arms OFF** in the panel always works.
 
@@ -32,7 +34,7 @@ Safety, unchanged: the hardware E-stop stays within reach whenever drive is on. 
 | Machine | Where | Notes |
 | --- | --- | --- |
 | FADI's MacBook | Venue | This session. It may hold Saturday's checkout and `arm/.venv`; check before reinstalling. |
-| Mac mini | Home | Development hub overnight. It holds the Jetson's dedicated SSH key (`~/.ssh/id_ed25519_jetson_orin`) and the Keychain entries for the Jetson administrator ("Jetson Orin Nano administrator 2026-11-08", account `fadi`) and the KVM administrator. It can't reach the venue kit (no Tailscale enrolled). |
+| Mac mini | Home | Development hub overnight. It holds the Jetson's dedicated SSH key (`~/.ssh/id_ed25519_jetson_orin`) and the Keychain entries for the Jetson administrator ("Jetson Orin Nano administrator 2026-11-08", account `fadi`) and the KVM administrator ("Jetson GL-RM1 administrator 2026-11-08", account `admin`). It can't reach the venue kit (no Tailscale enrolled). |
 | Jetson Orin Nano `orin-arm` | Venue, Ethernet to the Beryl LAN | Ubuntu 24.04.4, JetPack 7.2.1, user `fadi`, SSH host key **ED25519 `SHA256:1Re9L+dbMLneresWeHhOM37nO2PW7a3mjuEhyHNGvvk`**. Its Ethernet uses DHCP (NetworkManager on `enP8p1s0`), so it rejoins the reset router on its own. The C270 webcam is on its USB. All test environments live in `~/hub-tests`. |
 | GL-RM1 KVM | Venue, Beryl LAN | Keyboard path to the Jetson. Its HDMI input is empty (no DP-to-HDMI adapter), so it shows no Jetson video. It gets a new DHCP address after the reset. |
 | GL-MT3000 Beryl AX | Venue | Factory reset today. Firmware was 4.11.0 before the reset; a reset normally keeps the installed firmware. |
@@ -46,9 +48,10 @@ After a GL.iNet factory reset:
 
 1. Join the MacBook to the Wi-Fi on the label, or plug into a LAN port. Open http://192.168.8.1 and set a new admin password. Keep it in your password manager, never in the repo.
 2. Check the firmware version on the admin page.
-3. **Internet:** in Internet → Repeater, scan for the venue Wi-Fi and join it, or plug venue Ethernet into the WAN port. If the venue Wi-Fi has a sign-in page, the router's repeater settings have a portal option; finish the sign-in from the MacBook.
-4. **Find the Jetson and the KVM:** open the router's client list, or use `ping orin-arm.local` (if mDNS answers) or `arp -an | grep 192.168.8.` from the MacBook. The earlier address reservations (Jetson `192.168.8.136`, KVM `192.168.8.166`) were wiped.
-5. Optional but useful: reserve those two addresses again in the router's LAN address-reservation page, so the docs and aliases still match. Then renew the leases by unplugging each Ethernet cable for 10 s, or power-cycling the device.
+3. **Check the WAN-labeled port first.** Before the reset it was switched to LAN, so the Jetson and the KVM could both be wired. After a reset it is WAN again, and a device plugged there is not on the LAN. Move that cable to a LAN port, or set the port back to LAN in the admin UI ([GL.iNet: change WAN to LAN](https://docs.gl-inet.com/router/en/4/tutorials/change_wan_to_lan/)).
+4. **Internet:** the Beryl has only two Ethernet ports, and the Jetson and the KVM use both, so take the uplink over Wi-Fi. In Internet → Repeater, scan for the venue Wi-Fi and join it, keeping Router mode rather than Extender. If the venue Wi-Fi has a sign-in page, use the router's repeater portal option and finish the sign-in from the MacBook. Local SSH to the Jetson works even without internet.
+5. **Find the Jetson and the KVM:** open the router's client list, or use `ping orin-arm.local` (if mDNS answers) or `arp -an | grep 192.168.8.` from the MacBook. The earlier address reservations (Jetson `192.168.8.136`, KVM `192.168.8.166`) were wiped.
+6. Optional but useful: reserve those two addresses again in the router's LAN address-reservation page, so the docs and aliases still match. Then renew the leases by unplugging each Ethernet cable for 10 s, or power-cycling the device.
 
 If the admin page is not at `192.168.8.1`, read the gateway with `route -n get default | grep gateway`.
 
@@ -86,7 +89,7 @@ Host orin-arm
     IdentitiesOnly yes
 ```
 
-Check with `ssh orin-arm 'hostname; uptime'`; the answer should be `orin-arm`. Put the reserved `192.168.8.136` in `HostName` once step 1.5 is done.
+Check with `ssh orin-arm 'hostname; uptime'`; the answer should be `orin-arm`. Put the reserved `192.168.8.136` in `HostName` once step 6 of section 1 is done.
 
 ## 3. The MacBook checkout
 
@@ -109,7 +112,7 @@ Post one file in `dashboard/updates/` per meaningful change, run `python3 dashbo
 ## 4. Optional: show the Jetson at the station (no arms, nothing touches the adapters)
 
 All of these need the SSH step above. They only use `~/hub-tests` on the Jetson.
-- **Quick health check** from the MacBook repo root: `scripts/jetson_hub_check.sh`, about 20 s. It exits 1 if a suite fails.
+- **Quick health check** from the MacBook repo root: `scripts/jetson_hub_check.sh`, about 20 s. It exits 1 if a suite fails. It also fast-forwards the `~/hub-tests` checkout on the Jetson, so it isn't read-only. Don't start with `--setup`, `--engines` or `--all`: they reinstall packages, rebuild engines for about 20 minutes, or take the camera.
 - **Live hand-and-can detector on the C270**, run on the Jetson. This is the GPU path with FP16 engines, camera-bound at 15 fps. Warm it up before going live, because the first frame takes 5–12 s:
 
 ```bash
@@ -154,4 +157,4 @@ On the MacBook, run `python3 -m voice_agent.render` once. It needs macOS `say` a
 
 ## Starter prompt for the MacBook session
 
-> You're on FADI's MacBook at the hackathon venue. Repo: geotech-robotics-hackathon, branch main. First run `git status --short --branch`, preserve any local work, then `git pull --ff-only origin main`. Read AGENTS.md, then docs/handoffs/macbook-venue-passdown.md, then docs/table10-real-arms.md. The demo is judged at 3 PM. Priorities: live Table 10 demo, then a backup recording, then the submission. Never start any program that opens the USB-CAN adapters while the Table 10 real-arm service holds them. Never type, store or commit passwords; FADI types them himself. First help me finish the router-reset steps (section 1) and set up SSH to the Jetson (section 2). Then ask me what to do next.
+> You're on FADI's MacBook at the hackathon venue. Repo: geotech-robotics-hackathon, branch main. First run `git status --short --branch`, preserve any local work, then `git pull --ff-only origin main`. Read AGENTS.md, then docs/handoffs/macbook-venue-passdown.md, then docs/handoffs/macbook-venue-resume-2026-11-08.md if it exists, then docs/table10-real-arms.md (especially its last section). The demo is judged at 3 PM. Priorities: live Table 10 demo, then a backup recording, then the submission. Never start any program that opens the USB-CAN adapters while the Table 10 real-arm service holds them. Never type, store or commit passwords; FADI types them himself. First help me finish the router-reset steps (section 1) and set up SSH to the Jetson (section 2). Then ask me what to do next.
