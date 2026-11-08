@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T16:44:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Restored the Live Link exporter in the running station editor after an editor restart. All three spoof subjects exported 66 fresh Unreal evaluations each.",
+  "why": "The first Luna2 attempt reached the Mac but yielded no usable physics records. The station gateway can stay up while a restarted editor has stopped exporting.",
+  "where": [
+    "Capture/isaac/README.md"
+  ],
+  "details": "The retry requires fresh Isaac physics receipts to establish pose parity and delay."
+}

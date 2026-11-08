@@ -113,6 +113,8 @@ Start the native exporter with `HumanTouch.Isaac.Start` in the Hub-connected edi
 python3 Capture/isaac/bridge_trial.py station --bind "$STATION_TAILSCALE_IP" --luna "$LUNA_TAILSCALE_IP" --trial "$TRIAL" --output unreal.jsonl
 ```
 
+Before launching Isaac, check the current editor log for `LogHubPoseExport: Display: Exporting enabled Live Link Hub performers` and confirm the preflight wrote records for all three subjects. An editor restart creates a new evaluation session. If it happens between preflight and the remote run, enable the plugin in the new editor, start its exporter, and repeat preflight. The station gateway can keep listening after its editor has stopped exporting.
+
 On Luna, use the installed Isaac Sim Python environment to run the following command in the same checkout. The script creates a temporary Z-up physics world, registers the bridge with its pre-physics callback, steps the simulation, and writes each subject’s first application of a distinct evaluation. The default playout delay is 100 ms. The temporary world has no robot controller or hardware connection.
 
 ```powershell
