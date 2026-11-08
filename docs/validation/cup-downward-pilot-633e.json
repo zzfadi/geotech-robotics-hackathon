@@ -1,0 +1,693 @@
+{
+  "request_id": "633e53bbf08944cfb8b7f99a13bc71dd",
+  "prompt": "Use the left arm to grasp the blue drinking cup around its sides. Keep the gripper pointing vertically down toward the table throughout the approach. Close gently around the cup, then lift it straight up 10 cm and hold it upright and steady for 5 seconds. Keep the right arm still.",
+  "recorded_tables": [
+    0
+  ],
+  "results": [
+    {
+      "batch_end_lift": {
+        "measured": false
+      },
+      "policy_session_released": true,
+      "policy_session_release_error": null,
+      "cup_metrics": {
+        "MakerStation_Prop_Cup": {
+          "target": "MakerStation_Prop_Cup",
+          "fresh": true,
+          "height_cm": 0.024902218505701512,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153488092180169,
+          "tilt_degrees": 0.02271669440462717,
+          "speed_cm_s": 1.073583445962621,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": true,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        },
+        "MakerStation_Prop_Cup_02": {
+          "target": "MakerStation_Prop_Cup_02",
+          "fresh": true,
+          "height_cm": 0.024904715161554236,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153570111039073,
+          "tilt_degrees": 0.02276269662395109,
+          "speed_cm_s": 1.0743580937490902,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": true,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        },
+        "MakerStation_Prop_Cup_03": {
+          "target": "MakerStation_Prop_Cup_03",
+          "fresh": true,
+          "height_cm": 0.02490410234085516,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153471724875146,
+          "tilt_degrees": 0.022750147023910518,
+          "speed_cm_s": 1.0743314677598332,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": true,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        },
+        "MakerStation_Prop_Cup_04": {
+          "target": "MakerStation_Prop_Cup_04",
+          "fresh": true,
+          "height_cm": 0.02490473269750737,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153580727157191,
+          "tilt_degrees": 0.02276318644223651,
+          "speed_cm_s": 1.0741955960162899,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": true,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        }
+      },
+      "batch_end_cup_metrics": {
+        "MakerStation_Prop_Cup": {
+          "target": "MakerStation_Prop_Cup",
+          "fresh": false,
+          "height_cm": 0.024902218505701512,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153488092180169,
+          "tilt_degrees": 0.02271669440462717,
+          "speed_cm_s": 1.073583445962621,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": false,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        },
+        "MakerStation_Prop_Cup_02": {
+          "target": "MakerStation_Prop_Cup_02",
+          "fresh": false,
+          "height_cm": 0.024904715161554236,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153570111039073,
+          "tilt_degrees": 0.02276269662395109,
+          "speed_cm_s": 1.0743580937490902,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": false,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        },
+        "MakerStation_Prop_Cup_03": {
+          "target": "MakerStation_Prop_Cup_03",
+          "fresh": false,
+          "height_cm": 0.02490410234085516,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153471724875146,
+          "tilt_degrees": 0.022750147023910518,
+          "speed_cm_s": 1.0743314677598332,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": false,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        },
+        "MakerStation_Prop_Cup_04": {
+          "target": "MakerStation_Prop_Cup_04",
+          "fresh": false,
+          "height_cm": 0.02490473269750737,
+          "held_slow_above_10cm_s": 0.0,
+          "max_height_cm": 0.04153580727157191,
+          "tilt_degrees": 0.02276318644223651,
+          "speed_cm_s": 1.0741955960162899,
+          "physics_simulated": true,
+          "gravity_enabled": true,
+          "attached_to": null,
+          "measured": false,
+          "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+          "lift_candidate": false,
+          "lift_held": false,
+          "required_hold_seconds": 5,
+          "grasp_verified": false,
+          "task_completed": false
+        }
+      },
+      "measured_cup": null,
+      "table": "T00",
+      "name": "Hold My Beer \u2014 Table 1",
+      "prompt": "Use the left arm to grasp the blue drinking cup around its sides. Keep the gripper pointing vertically down toward the table throughout the approach. Close gently around the cup, then lift it straight up 10 cm and hold it upright and steady for 5 seconds. Keep the right arm still.",
+      "calls": 10,
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794109436.064729,
+          "observation_unix": 1794109435.917242,
+          "returned_action": true,
+          "finished_unix": 1794109438.669297
+        },
+        {
+          "call": 2,
+          "started_unix": 1794109439.599643,
+          "observation_unix": 1794109439.5481222,
+          "returned_action": true,
+          "finished_unix": 1794109440.061873
+        },
+        {
+          "call": 3,
+          "started_unix": 1794109441.155776,
+          "observation_unix": 1794109441.03461,
+          "returned_action": true,
+          "finished_unix": 1794109441.6066592
+        },
+        {
+          "call": 4,
+          "started_unix": 1794109442.5535202,
+          "observation_unix": 1794109442.507489,
+          "returned_action": true,
+          "finished_unix": 1794109443.043086
+        },
+        {
+          "call": 5,
+          "started_unix": 1794109444.091852,
+          "observation_unix": 1794109443.965535,
+          "returned_action": true,
+          "finished_unix": 1794109444.56544
+        },
+        {
+          "call": 6,
+          "started_unix": 1794109445.5393322,
+          "observation_unix": 1794109445.451707,
+          "returned_action": true,
+          "finished_unix": 1794109445.973023
+        },
+        {
+          "call": 7,
+          "started_unix": 1794109447.058335,
+          "observation_unix": 1794109446.9982111,
+          "returned_action": true,
+          "finished_unix": 1794109447.502414
+        },
+        {
+          "call": 8,
+          "started_unix": 1794109448.427584,
+          "observation_unix": 1794109448.353993,
+          "returned_action": true,
+          "finished_unix": 1794109449.055905
+        },
+        {
+          "call": 9,
+          "started_unix": 1794109450.0308611,
+          "observation_unix": 1794109449.943552,
+          "returned_action": true,
+          "finished_unix": 1794109450.57358
+        },
+        {
+          "call": 10,
+          "started_unix": 1794109451.6190348,
+          "observation_unix": 1794109451.497288,
+          "returned_action": true,
+          "finished_unix": 1794109452.084926
+        }
+      ],
+      "motion_chunks": [
+        {
+          "done": true,
+          "error": null,
+          "seq": 1,
+          "finished_unix": 1794109439.54657,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": [
+              {
+                "arm": "q_l_chunk",
+                "row": 0,
+                "requested": 1.0030594405594402,
+                "applied": 1.0
+              }
+            ]
+          },
+          "q_left": [
+            0.006469777945140754,
+            -1.305482512242208,
+            1.5967456555126252,
+            -1.3420244021141188,
+            0.010209247611198752,
+            0.06345887023954885
+          ],
+          "gap_left_m": 0.10395689887911565,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.12600674446033944
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 2,
+          "finished_unix": 1794109441.03305,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": []
+          },
+          "q_left": [
+            -0.046699773292674905,
+            -1.220029721613206,
+            1.5685801899276381,
+            -1.34533748435888,
+            0.04682645905782129,
+            0.008278084392335742
+          ],
+          "gap_left_m": 0.10290935519558563,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.0854527906290019
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 3,
+          "finished_unix": 1794109442.505246,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": []
+          },
+          "q_left": [
+            -0.16628671196210812,
+            -1.1923508976811426,
+            1.6012667521204533,
+            -1.3427340262979615,
+            0.10495263234082172,
+            -0.08705768448530071
+          ],
+          "gap_left_m": 0.10340186776114509,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.11958693866943321
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 4,
+          "finished_unix": 1794109443.963957,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": [
+              {
+                "arm": "q_l_chunk",
+                "row": 0,
+                "requested": 1.00390625,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 4,
+                "requested": 1.0078125,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 5,
+                "requested": 1.00390625,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 6,
+                "requested": 1.00390625,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 7,
+                "requested": 1.01171875,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 8,
+                "requested": 1.01953125,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 9,
+                "requested": 1.0199045745920743,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 10,
+                "requested": 1.0206967511655007,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 11,
+                "requested": 1.0226726398601396,
+                "applied": 1.0
+              }
+            ]
+          },
+          "q_left": [
+            0.017560458770121894,
+            -1.137954569580696,
+            1.36433385356187,
+            -1.15341526452836,
+            -0.037634726801369145,
+            0.0694236319459961
+          ],
+          "gap_left_m": 0.104825,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.23693289855858324
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 5,
+          "finished_unix": 1794109445.449696,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": [
+              {
+                "arm": "q_l_chunk",
+                "row": 11,
+                "requested": 1.001807437354312,
+                "applied": 1.0
+              }
+            ]
+          },
+          "q_left": [
+            0.18202681598093984,
+            -1.1815390771226677,
+            1.2134547701357659,
+            -0.9402535523190395,
+            -0.1186894437570701,
+            0.22909994119719393
+          ],
+          "gap_left_m": 0.104825,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.21316171220932045
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 6,
+          "finished_unix": 1794109446.996456,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": [
+              {
+                "arm": "q_l_chunk",
+                "row": 10,
+                "requested": 1.000778518356643,
+                "applied": 1.0
+              },
+              {
+                "arm": "q_l_chunk",
+                "row": 11,
+                "requested": 1.0049215107808855,
+                "applied": 1.0
+              }
+            ]
+          },
+          "q_left": [
+            0.31138906342522515,
+            -1.2974475628401199,
+            1.1155122946871898,
+            -0.6724976112979097,
+            -0.2076126210765246,
+            0.3389786566821503
+          ],
+          "gap_left_m": 0.104825,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.26775594102112976
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 7,
+          "finished_unix": 1794109448.3519208,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": [
+              {
+                "arm": "q_l_chunk",
+                "row": 11,
+                "requested": 1.0008468094405591,
+                "applied": 1.0
+              }
+            ]
+          },
+          "q_left": [
+            0.40172527725301194,
+            -1.417968097714305,
+            1.0960196270974518,
+            -0.520749765593808,
+            -0.30579302621205684,
+            0.4334744160626131
+          ],
+          "gap_left_m": 0.104825,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.1517478457041017
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 8,
+          "finished_unix": 1794109449.941854,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": []
+          },
+          "q_left": [
+            0.4721750616712594,
+            -1.5746811782213845,
+            1.1203463366623168,
+            -0.33748128823097795,
+            -0.2994843596113978,
+            0.4992571881491859
+          ],
+          "gap_left_m": 0.10424706132084056,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.18326847736283008
+        },
+        {
+          "done": true,
+          "error": null,
+          "seq": 9,
+          "finished_unix": 1794109451.495887,
+          "index": 12,
+          "rows": 13,
+          "timing": {
+            "action_hz": 20.0,
+            "time_scale": 1.0,
+            "duration_seconds": 0.6,
+            "original_rows": 12,
+            "rows": 13,
+            "grip_limit_corrections": []
+          },
+          "q_left": [
+            0.5314624496465151,
+            -1.7634794353213403,
+            1.0873008695349948,
+            -0.011056602474306702,
+            -0.23812576733835408,
+            0.5512788142705537
+          ],
+          "gap_left_m": 0.10312888599031172,
+          "q_right": [
+            -8.341015791761527e-08,
+            -1.3267562769368857,
+            1.5947274948757348,
+            -1.4680311465744582,
+            1.6235197063895467e-08,
+            -8.180590968960631e-08
+          ],
+          "gap_right_m": 0.1,
+          "contact_stop_left": [],
+          "contact_stop_right": [],
+          "max_joint_delta_rad": 0.3264246857566713
+        }
+      ],
+      "outcome": "error",
+      "objective": null,
+      "verification": {
+        "target": "MakerStation_Prop_Cup",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "unverified",
+        "reasons": [
+          "No structured pickup objective"
+        ]
+      },
+      "cycles_run": 9,
+      "cycles_planned": 24,
+      "lift": {
+        "measured": false
+      },
+      "error": "Cycle 10 rejected: gripper_left collision bounds enter tabletop by 0.303 cm",
+      "stopped_reason": null
+    }
+  ],
+  "finding": "Downward-gripper instruction still reached tabletop collision guard; no verified pickup."
+}
