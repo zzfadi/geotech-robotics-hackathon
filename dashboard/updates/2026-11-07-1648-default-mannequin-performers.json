@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T16:48:57-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Switched the local XR cast to two Manny mannequins and one Quinn. Project editor launches now load the mannequin cast by default.",
+  "why": "The three capture subjects can use simple skeletal meshes without assembling the MetaHuman characters, hair and outfits.",
+  "where": [
+    "Unreal/TheHumanTouch/TheHumanTouch.uproject",
+    "Capture/README.md"
+  ],
+  "details": "Verified the three visible mannequin meshes and absence of the previous cast in the active station world. The headset remained in alpha-blend mode. MetaHumans are still available as a session override."
+}
