@@ -1,0 +1,2565 @@
+{
+  "request_id": "1d280239b0b7469ea6ab190141eb8406",
+  "sample_count": 55,
+  "max_active_age_s": 1.276,
+  "max_transition_age_s": 6.386,
+  "max_done_age_s": 1.968,
+  "note": "Stopped/error table feeds continued. 2\u20133sec steady target met; teardown gap remains above target.",
+  "samples": [
+    {
+      "unix": 1794106712.999572,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.721,
+        "T01": 0.656,
+        "T02": 0.55,
+        "T03": 0.538,
+        "T04": 0.492,
+        "T05": 0.939,
+        "T06": 0.892,
+        "T07": 0.833,
+        "T08": 0.773
+      },
+      "errors": {},
+      "calls": {
+        "T00": 2,
+        "T01": 2,
+        "T02": 2,
+        "T03": 1,
+        "T04": 1,
+        "T05": 2,
+        "T06": 1,
+        "T07": 1,
+        "T08": 1
+      },
+      "capture_times": {
+        "T00": 1794106712.1714525,
+        "T01": 1794106712.2369218,
+        "T02": 1794106712.3427851,
+        "T03": 1794106712.354427,
+        "T04": 1794106712.4010231,
+        "T05": 1794106711.9532504,
+        "T06": 1794106712.0010223,
+        "T07": 1794106712.0591218,
+        "T08": 1794106712.1196108
+      }
+    },
+    {
+      "unix": 1794106714.4660969,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.63,
+        "T01": 1.147,
+        "T02": 1.09,
+        "T03": 0.983,
+        "T04": 0.972,
+        "T05": 0.925,
+        "T06": 0.872,
+        "T07": 0.815,
+        "T08": 0.756
+      },
+      "errors": {},
+      "calls": {
+        "T00": 3,
+        "T01": 2,
+        "T02": 2,
+        "T03": 1,
+        "T04": 2,
+        "T05": 2,
+        "T06": 2,
+        "T07": 1,
+        "T08": 1
+      },
+      "capture_times": {
+        "T00": 1794106713.7464805,
+        "T01": 1794106713.2292156,
+        "T02": 1794106713.2865157,
+        "T03": 1794106713.3933437,
+        "T04": 1794106713.4046948,
+        "T05": 1794106713.4512064,
+        "T06": 1794106713.504385,
+        "T07": 1794106713.5611053,
+        "T08": 1794106713.6202996
+      }
+    },
+    {
+      "unix": 1794106715.828307,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.549,
+        "T01": 0.497,
+        "T02": 0.44,
+        "T03": 0.332,
+        "T04": 0.76,
+        "T05": 0.751,
+        "T06": 0.716,
+        "T07": 0.662,
+        "T08": 0.606
+      },
+      "errors": {},
+      "calls": {
+        "T00": 4,
+        "T01": 3,
+        "T02": 3,
+        "T03": 1,
+        "T04": 2,
+        "T05": 3,
+        "T06": 2,
+        "T07": 2,
+        "T08": 2
+      },
+      "capture_times": {
+        "T00": 1794106715.1750011,
+        "T01": 1794106715.2269776,
+        "T02": 1794106715.2846048,
+        "T03": 1794106715.3919945,
+        "T04": 1794106714.9639575,
+        "T05": 1794106714.9733868,
+        "T06": 1794106715.0079525,
+        "T07": 1794106715.0619946,
+        "T08": 1794106715.1186626
+      }
+    },
+    {
+      "unix": 1794106717.269102,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.445,
+        "T01": 0.405,
+        "T02": 0.338,
+        "T03": 0.733,
+        "T04": 0.723,
+        "T05": 0.687,
+        "T06": 0.628,
+        "T07": 0.567,
+        "T08": 0.519
+      },
+      "errors": {},
+      "calls": {
+        "T00": 4,
+        "T01": 4,
+        "T02": 4,
+        "T03": 1,
+        "T04": 4,
+        "T05": 4,
+        "T06": 3,
+        "T07": 2,
+        "T08": 3
+      },
+      "capture_times": {
+        "T00": 1794106716.6915503,
+        "T01": 1794106716.731326,
+        "T02": 1794106716.7983842,
+        "T03": 1794106716.403851,
+        "T04": 1794106716.4135938,
+        "T05": 1794106716.4498372,
+        "T06": 1794106716.5082295,
+        "T07": 1794106716.5698087,
+        "T08": 1794106716.6178403
+      }
+    },
+    {
+      "unix": 1794106718.667656,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.885,
+        "T01": 0.831,
+        "T02": 0.779,
+        "T03": 0.716,
+        "T04": 1.105,
+        "T05": 1.094,
+        "T06": 0.989,
+        "T07": 0.981,
+        "T08": 0.94
+      },
+      "errors": {},
+      "calls": {
+        "T00": 5,
+        "T01": 5,
+        "T02": 5,
+        "T03": 2,
+        "T04": 5,
+        "T05": 5,
+        "T06": 4,
+        "T07": 3,
+        "T08": 4
+      },
+      "capture_times": {
+        "T00": 1794106717.672508,
+        "T01": 1794106717.7259626,
+        "T02": 1794106717.7786646,
+        "T03": 1794106717.8412974,
+        "T04": 1794106717.4526978,
+        "T05": 1794106717.462896,
+        "T06": 1794106717.5680368,
+        "T07": 1794106717.5762873,
+        "T08": 1794106717.6172307
+      }
+    },
+    {
+      "unix": 1794106720.060013,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.74,
+        "T01": 0.682,
+        "T02": 0.556,
+        "T03": 0.545,
+        "T04": 0.956,
+        "T05": 0.942,
+        "T06": 0.898,
+        "T07": 0.821,
+        "T08": 0.79
+      },
+      "errors": {},
+      "calls": {
+        "T00": 6,
+        "T01": 5,
+        "T02": 6,
+        "T03": 3,
+        "T04": 6,
+        "T05": 6,
+        "T06": 5,
+        "T07": 4,
+        "T08": 4
+      },
+      "capture_times": {
+        "T00": 1794106719.1678183,
+        "T01": 1794106719.2252922,
+        "T02": 1794106719.3520498,
+        "T03": 1794106719.3625064,
+        "T04": 1794106718.951913,
+        "T05": 1794106718.9654384,
+        "T06": 1794106719.0099216,
+        "T07": 1794106719.086447,
+        "T08": 1794106719.117141
+      }
+    },
+    {
+      "unix": 1794106721.407514,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.648,
+        "T01": 1.094,
+        "T02": 1.044,
+        "T03": 0.982,
+        "T04": 0.879,
+        "T05": 0.828,
+        "T06": 0.819,
+        "T07": 0.753,
+        "T08": 0.68
+      },
+      "errors": {},
+      "calls": {
+        "T00": 7,
+        "T01": 6,
+        "T02": 6,
+        "T03": 3,
+        "T04": 6,
+        "T05": 6,
+        "T06": 5,
+        "T07": 4,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106720.6795404,
+        "T01": 1794106720.2332227,
+        "T02": 1794106720.2830539,
+        "T03": 1794106720.3448565,
+        "T04": 1794106720.448666,
+        "T05": 1794106720.499348,
+        "T06": 1794106720.508761,
+        "T07": 1794106720.5742388,
+        "T08": 1794106720.6476946
+      }
+    },
+    {
+      "unix": 1794106723.13377,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.692,
+        "T01": 0.666,
+        "T02": 0.615,
+        "T03": 1.06,
+        "T04": 1.012,
+        "T05": 0.88,
+        "T06": 0.866,
+        "T07": 0.84,
+        "T08": 0.768
+      },
+      "errors": {
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 8,
+        "T01": 7,
+        "T02": 7,
+        "T03": 4,
+        "T04": 7,
+        "T05": 7,
+        "T06": 6,
+        "T07": 5,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106722.212301,
+        "T01": 1794106722.2387455,
+        "T02": 1794106722.2894738,
+        "T03": 1794106721.845065,
+        "T04": 1794106721.8923838,
+        "T05": 1794106722.0249748,
+        "T06": 1794106722.0386982,
+        "T07": 1794106722.0643077,
+        "T08": 1794106722.1367424
+      }
+    },
+    {
+      "unix": 1794106724.4966972,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 1.212,
+        "T01": 1.162,
+        "T02": 1.089,
+        "T03": 1.054,
+        "T04": 1.002,
+        "T05": 0.962,
+        "T06": 0.853,
+        "T07": 0.838,
+        "T08": 0.788
+      },
+      "errors": {
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 8,
+        "T01": 8,
+        "T02": 8,
+        "T03": 5,
+        "T04": 8,
+        "T05": 8,
+        "T06": 7,
+        "T07": 6,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106723.198264,
+        "T01": 1794106723.2485743,
+        "T02": 1794106723.3207781,
+        "T03": 1794106723.35619,
+        "T04": 1794106723.4082234,
+        "T05": 1794106723.4481182,
+        "T06": 1794106723.5574148,
+        "T07": 1794106723.5721955,
+        "T08": 1794106723.622008
+      }
+    },
+    {
+      "unix": 1794106725.837867,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 1.014,
+        "T01": 0.996,
+        "T02": 0.931,
+        "T03": 0.888,
+        "T04": 0.829,
+        "T05": 1.08,
+        "T06": 1.062,
+        "T07": 1.049,
+        "T08": 1.029
+      },
+      "errors": {
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 8,
+        "T01": 8,
+        "T02": 8,
+        "T03": 6,
+        "T04": 8,
+        "T05": 8,
+        "T06": 8,
+        "T07": 6,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106724.7188194,
+        "T01": 1794106724.7368307,
+        "T02": 1794106724.801241,
+        "T03": 1794106724.8442748,
+        "T04": 1794106724.9036586,
+        "T05": 1794106724.6532025,
+        "T06": 1794106724.6703596,
+        "T07": 1794106724.683858,
+        "T08": 1794106724.7041907
+      }
+    },
+    {
+      "unix": 1794106727.2147331,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.413,
+        "T01": 0.363,
+        "T02": 0.31,
+        "T03": 0.25,
+        "T04": 0.694,
+        "T05": 0.636,
+        "T06": 0.595,
+        "T07": 0.482,
+        "T08": 0.428
+      },
+      "errors": {
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 9,
+        "T01": 9,
+        "T02": 9,
+        "T03": 6,
+        "T04": 9,
+        "T05": 8,
+        "T06": 8,
+        "T07": 7,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106726.6865618,
+        "T01": 1794106726.7372892,
+        "T02": 1794106726.7900426,
+        "T03": 1794106726.849763,
+        "T04": 1794106726.4061031,
+        "T05": 1794106726.4637012,
+        "T06": 1794106726.505503,
+        "T07": 1794106726.618433,
+        "T08": 1794106726.671972
+      }
+    },
+    {
+      "unix": 1794106729.515918,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.563,
+        "T01": 0.994,
+        "T02": 0.873,
+        "T03": 0.806,
+        "T04": 0.791,
+        "T05": 0.773,
+        "T06": 0.713,
+        "T07": 0.601,
+        "T08": 0.588
+      },
+      "errors": {
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 10,
+        "T01": 10,
+        "T02": 9,
+        "T03": 7,
+        "T04": 9,
+        "T05": 9,
+        "T06": 9,
+        "T07": 8,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106728.1799269,
+        "T01": 1794106727.7494133,
+        "T02": 1794106727.8701444,
+        "T03": 1794106727.9369195,
+        "T04": 1794106727.9522047,
+        "T05": 1794106727.969713,
+        "T06": 1794106728.0301797,
+        "T07": 1794106728.1424723,
+        "T08": 1794106728.1549869
+      }
+    },
+    {
+      "unix": 1794106731.126515,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.539,
+        "T01": 0.527,
+        "T02": 0.512,
+        "T03": 0.476,
+        "T04": 0.414,
+        "T05": 0.363,
+        "T06": 0.301,
+        "T07": 0.742,
+        "T08": 0.554
+      },
+      "errors": {
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 11,
+        "T01": 11,
+        "T02": 10,
+        "T03": 8,
+        "T04": 10,
+        "T05": 10,
+        "T06": 11,
+        "T07": 8,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106730.2769468,
+        "T01": 1794106730.2893584,
+        "T02": 1794106730.304151,
+        "T03": 1794106730.3396773,
+        "T04": 1794106730.4022791,
+        "T05": 1794106730.452638,
+        "T06": 1794106730.5151432,
+        "T07": 1794106730.0738072,
+        "T08": 1794106730.2624178
+      }
+    },
+    {
+      "unix": 1794106732.497128,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 1.118,
+        "T01": 1.106,
+        "T02": 1.087,
+        "T03": 1.033,
+        "T04": 0.977,
+        "T05": 0.927,
+        "T06": 0.865,
+        "T07": 0.806,
+        "T08": 1.203
+      },
+      "errors": {
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 12,
+        "T01": 12,
+        "T02": 11,
+        "T03": 9,
+        "T04": 11,
+        "T05": 11,
+        "T06": 11,
+        "T07": 9,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106731.2566032,
+        "T01": 1794106731.2689955,
+        "T02": 1794106731.2878191,
+        "T03": 1794106731.3413646,
+        "T04": 1794106731.3974988,
+        "T05": 1794106731.4473436,
+        "T06": 1794106731.5100338,
+        "T07": 1794106731.5687363,
+        "T08": 1794106731.171473
+      }
+    },
+    {
+      "unix": 1794106733.915951,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.585,
+        "T01": 0.567,
+        "T02": 0.497,
+        "T03": 0.458,
+        "T04": 0.404,
+        "T05": 0.328,
+        "T06": 0.295,
+        "T07": 0.686,
+        "T08": 0.597
+      },
+      "errors": {
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 12,
+        "T01": 12,
+        "T02": 11,
+        "T03": 10,
+        "T04": 11,
+        "T05": 11,
+        "T06": 11,
+        "T07": 9,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106733.214524,
+        "T01": 1794106733.2317684,
+        "T02": 1794106733.3024125,
+        "T03": 1794106733.341447,
+        "T04": 1794106733.3956423,
+        "T05": 1794106733.4709892,
+        "T06": 1794106733.5045874,
+        "T07": 1794106733.1130545,
+        "T08": 1794106733.2020514
+      }
+    },
+    {
+      "unix": 1794106735.348833,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.978,
+        "T01": 0.965,
+        "T02": 0.939,
+        "T03": 0.889,
+        "T04": 0.826,
+        "T05": 0.772,
+        "T06": 0.68,
+        "T07": 0.659,
+        "T08": 0.608
+      },
+      "errors": {
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 12,
+        "T01": 12,
+        "T02": 11,
+        "T03": 10,
+        "T04": 11,
+        "T05": 12,
+        "T06": 11,
+        "T07": 10,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106734.2468991,
+        "T01": 1794106734.260084,
+        "T02": 1794106734.2867067,
+        "T03": 1794106734.336476,
+        "T04": 1794106734.399644,
+        "T05": 1794106734.4535794,
+        "T06": 1794106734.5450907,
+        "T07": 1794106734.5663872,
+        "T08": 1794106734.6175776
+      }
+    },
+    {
+      "unix": 1794106736.9917068,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.622,
+        "T01": 0.546,
+        "T02": 0.509,
+        "T03": 0.459,
+        "T04": 0.396,
+        "T05": 0.337,
+        "T06": 0.786,
+        "T07": 0.734,
+        "T08": 0.683
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 13,
+        "T02": 11,
+        "T03": 11,
+        "T04": 11,
+        "T05": 12,
+        "T06": 11,
+        "T07": 10,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106736.1765635,
+        "T01": 1794106736.2521765,
+        "T02": 1794106736.2890012,
+        "T03": 1794106736.3396664,
+        "T04": 1794106736.4023926,
+        "T05": 1794106736.4609282,
+        "T06": 1794106736.0124333,
+        "T07": 1794106736.0646546,
+        "T08": 1794106736.1150043
+      }
+    },
+    {
+      "unix": 1794106738.4054022,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.606,
+        "T01": 0.532,
+        "T02": 0.5,
+        "T03": 0.435,
+        "T04": 0.376,
+        "T05": 0.825,
+        "T06": 0.767,
+        "T07": 0.717,
+        "T08": 0.667
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 14,
+        "T02": 11,
+        "T03": 12,
+        "T04": 11,
+        "T05": 13,
+        "T06": 11,
+        "T07": 11,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106737.6733634,
+        "T01": 1794106737.747558,
+        "T02": 1794106737.7796714,
+        "T03": 1794106737.844522,
+        "T04": 1794106737.9033413,
+        "T05": 1794106737.454558,
+        "T06": 1794106737.5130293,
+        "T07": 1794106737.563175,
+        "T08": 1794106737.613069
+      }
+    },
+    {
+      "unix": 1794106739.918117,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.503,
+        "T01": 0.407,
+        "T02": 0.395,
+        "T03": 0.327,
+        "T04": 0.773,
+        "T05": 0.72,
+        "T06": 0.628,
+        "T07": 0.607,
+        "T08": 0.543
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 15,
+        "T02": 11,
+        "T03": 13,
+        "T04": 11,
+        "T05": 13,
+        "T06": 11,
+        "T07": 11,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106739.1717713,
+        "T01": 1794106739.2685375,
+        "T02": 1794106739.2798693,
+        "T03": 1794106739.3480515,
+        "T04": 1794106738.9020853,
+        "T05": 1794106738.9548392,
+        "T06": 1794106739.0471485,
+        "T07": 1794106739.0679948,
+        "T08": 1794106739.1317148
+      }
+    },
+    {
+      "unix": 1794106741.34912,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 1.05,
+        "T01": 0.954,
+        "T02": 0.935,
+        "T03": 0.877,
+        "T04": 0.823,
+        "T05": 0.775,
+        "T06": 0.716,
+        "T07": 0.655,
+        "T08": 1.102
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 14,
+        "T04": 11,
+        "T05": 14,
+        "T06": 11,
+        "T07": 12,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106740.1724532,
+        "T01": 1794106740.268517,
+        "T02": 1794106740.2877138,
+        "T03": 1794106740.3456283,
+        "T04": 1794106740.399847,
+        "T05": 1794106740.4483411,
+        "T06": 1794106740.506805,
+        "T07": 1794106740.5681355,
+        "T08": 1794106740.1204498
+      }
+    },
+    {
+      "unix": 1794106742.78227,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.979,
+        "T01": 0.925,
+        "T02": 0.841,
+        "T03": 0.815,
+        "T04": 0.761,
+        "T05": 1.2,
+        "T06": 1.15,
+        "T07": 1.084,
+        "T08": 1.036
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 15,
+        "T04": 11,
+        "T05": 15,
+        "T06": 11,
+        "T07": 13,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106741.6763809,
+        "T01": 1794106741.7305334,
+        "T02": 1794106741.8142803,
+        "T03": 1794106741.8406172,
+        "T04": 1794106741.8941374,
+        "T05": 1794106741.454859,
+        "T06": 1794106741.5049372,
+        "T07": 1794106741.5714018,
+        "T08": 1794106741.6196356
+      }
+    },
+    {
+      "unix": 1794106744.1788092,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.371,
+        "T01": 0.804,
+        "T02": 0.736,
+        "T03": 0.702,
+        "T04": 0.649,
+        "T05": 0.596,
+        "T06": 0.538,
+        "T07": 0.461,
+        "T08": 0.423
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 15,
+        "T04": 11,
+        "T05": 16,
+        "T06": 11,
+        "T07": 13,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106743.6709306,
+        "T01": 1794106743.237639,
+        "T02": 1794106743.3057117,
+        "T03": 1794106743.3393927,
+        "T04": 1794106743.392413,
+        "T05": 1794106743.4455614,
+        "T06": 1794106743.503589,
+        "T07": 1794106743.5805225,
+        "T08": 1794106743.6187427
+      }
+    },
+    {
+      "unix": 1794106745.60713,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.796,
+        "T01": 0.737,
+        "T02": 0.667,
+        "T03": 0.63,
+        "T04": 0.572,
+        "T05": 0.514,
+        "T06": 0.463,
+        "T07": 0.405,
+        "T08": 0.354
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 17,
+        "T06": 11,
+        "T07": 13,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106744.671787,
+        "T01": 1794106744.7307692,
+        "T02": 1794106744.8015416,
+        "T03": 1794106744.8385575,
+        "T04": 1794106744.8962748,
+        "T05": 1794106744.954297,
+        "T06": 1794106745.004776,
+        "T07": 1794106745.062787,
+        "T08": 1794106745.1136494
+      }
+    },
+    {
+      "unix": 1794106746.948954,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.67,
+        "T01": 0.618,
+        "T02": 0.523,
+        "T03": 0.502,
+        "T04": 0.443,
+        "T05": 0.391,
+        "T06": 0.342,
+        "T07": 0.284,
+        "T08": 0.227
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 18,
+        "T06": 11,
+        "T07": 14,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106746.1763182,
+        "T01": 1794106746.2277625,
+        "T02": 1794106746.32291,
+        "T03": 1794106746.343829,
+        "T04": 1794106746.4030473,
+        "T05": 1794106746.4550867,
+        "T06": 1794106746.503704,
+        "T07": 1794106746.5622911,
+        "T08": 1794106746.618657
+      }
+    },
+    {
+      "unix": 1794106748.312295,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.538,
+        "T01": 0.487,
+        "T02": 0.432,
+        "T03": 0.373,
+        "T04": 0.318,
+        "T05": 0.262,
+        "T06": 0.708,
+        "T07": 0.65,
+        "T08": 0.595
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 19,
+        "T06": 11,
+        "T07": 15,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106747.6768916,
+        "T01": 1794106747.7277489,
+        "T02": 1794106747.7825615,
+        "T03": 1794106747.8411767,
+        "T04": 1794106747.8962612,
+        "T05": 1794106747.9524608,
+        "T06": 1794106747.506297,
+        "T07": 1794106747.5649598,
+        "T08": 1794106747.6193466
+      }
+    },
+    {
+      "unix": 1794106749.66149,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.892,
+        "T01": 0.833,
+        "T02": 0.78,
+        "T03": 0.721,
+        "T04": 0.673,
+        "T05": 0.618,
+        "T06": 0.555,
+        "T07": 0.504,
+        "T08": 0.947
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 20,
+        "T06": 11,
+        "T07": 16,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106748.6770973,
+        "T01": 1794106748.735853,
+        "T02": 1794106748.7887433,
+        "T03": 1794106748.8477428,
+        "T04": 1794106748.8959622,
+        "T05": 1794106748.9516222,
+        "T06": 1794106749.0138245,
+        "T07": 1794106749.0650787,
+        "T08": 1794106748.6225848
+      }
+    },
+    {
+      "unix": 1794106751.046942,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.742,
+        "T01": 0.644,
+        "T02": 0.628,
+        "T03": 0.543,
+        "T04": 0.522,
+        "T05": 0.464,
+        "T06": 0.904,
+        "T07": 0.848,
+        "T08": 0.797
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 20,
+        "T06": 11,
+        "T07": 17,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106750.1746066,
+        "T01": 1794106750.272789,
+        "T02": 1794106750.2884824,
+        "T03": 1794106750.3735924,
+        "T04": 1794106750.3947914,
+        "T05": 1794106750.4523187,
+        "T06": 1794106750.0118947,
+        "T07": 1794106750.0680966,
+        "T08": 1794106750.1189578
+      }
+    },
+    {
+      "unix": 1794106752.4164171,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.635,
+        "T01": 0.574,
+        "T02": 0.524,
+        "T03": 0.425,
+        "T04": 0.41,
+        "T05": 0.356,
+        "T06": 0.804,
+        "T07": 0.742,
+        "T08": 0.68
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 21,
+        "T06": 11,
+        "T07": 17,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106751.6780431,
+        "T01": 1794106751.7394192,
+        "T02": 1794106751.7890766,
+        "T03": 1794106751.8875945,
+        "T04": 1794106751.9029186,
+        "T05": 1794106751.9573443,
+        "T06": 1794106751.5084522,
+        "T07": 1794106751.5708108,
+        "T08": 1794106751.6328912
+      }
+    },
+    {
+      "unix": 1794106753.8539252,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.578,
+        "T01": 0.528,
+        "T02": 0.475,
+        "T03": 0.416,
+        "T04": 0.849,
+        "T05": 0.806,
+        "T06": 0.75,
+        "T07": 0.693,
+        "T08": 0.64
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 22,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106753.1767156,
+        "T01": 1794106753.2274346,
+        "T02": 1794106753.2797196,
+        "T03": 1794106753.3393598,
+        "T04": 1794106752.905697,
+        "T05": 1794106752.9490101,
+        "T06": 1794106753.0056214,
+        "T07": 1794106753.0622582,
+        "T08": 1794106753.115414
+      }
+    },
+    {
+      "unix": 1794106755.231999,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.941,
+        "T01": 0.888,
+        "T02": 0.835,
+        "T03": 1.276,
+        "T04": 1.197,
+        "T05": 1.165,
+        "T06": 1.104,
+        "T07": 1.035,
+        "T08": 1.002
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 23,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106754.1741593,
+        "T01": 1794106754.2267635,
+        "T02": 1794106754.2802026,
+        "T03": 1794106753.8390033,
+        "T04": 1794106753.9181042,
+        "T05": 1794106753.9500759,
+        "T06": 1794106754.0108666,
+        "T07": 1794106754.080448,
+        "T08": 1794106754.1135051
+      }
+    },
+    {
+      "unix": 1794106756.626126,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.836,
+        "T01": 0.783,
+        "T02": 0.728,
+        "T03": 0.664,
+        "T04": 1.081,
+        "T05": 1.059,
+        "T06": 1.002,
+        "T07": 0.948,
+        "T08": 0.896
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 23,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106755.6741161,
+        "T01": 1794106755.7275867,
+        "T02": 1794106755.7817519,
+        "T03": 1794106755.8458138,
+        "T04": 1794106755.4293766,
+        "T05": 1794106755.4509501,
+        "T06": 1794106755.5077364,
+        "T07": 1794106755.5619125,
+        "T08": 1794106755.6140254
+      }
+    },
+    {
+      "unix": 1794106758.041754,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "ready",
+      "ages": {
+        "T00": 0.717,
+        "T01": 0.661,
+        "T02": 0.6,
+        "T03": 0.505,
+        "T04": 0.46,
+        "T05": 0.44,
+        "T06": 0.882,
+        "T07": 0.823,
+        "T08": 0.774
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106757.171946,
+        "T01": 1794106757.2280316,
+        "T02": 1794106757.2889497,
+        "T03": 1794106757.3844552,
+        "T04": 1794106757.429516,
+        "T05": 1794106757.4494517,
+        "T06": 1794106757.0074732,
+        "T07": 1794106757.0667458,
+        "T08": 1794106757.1157289
+      }
+    },
+    {
+      "unix": 1794106759.4006588,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 2.126,
+        "T01": 2.07,
+        "T02": 2.009,
+        "T03": 1.914,
+        "T04": 1.869,
+        "T05": 1.849,
+        "T06": 1.794,
+        "T07": 2.231,
+        "T08": 2.182
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106757.171946,
+        "T01": 1794106757.2280316,
+        "T02": 1794106757.2889497,
+        "T03": 1794106757.3844552,
+        "T04": 1794106757.429516,
+        "T05": 1794106757.4494517,
+        "T06": 1794106757.5042634,
+        "T07": 1794106757.0667458,
+        "T08": 1794106757.1157289
+      }
+    },
+    {
+      "unix": 1794106760.774678,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 3.485,
+        "T01": 3.429,
+        "T02": 3.368,
+        "T03": 3.273,
+        "T04": 3.228,
+        "T05": 3.208,
+        "T06": 3.153,
+        "T07": 3.59,
+        "T08": 3.541
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106757.171946,
+        "T01": 1794106757.2280316,
+        "T02": 1794106757.2889497,
+        "T03": 1794106757.3844552,
+        "T04": 1794106757.429516,
+        "T05": 1794106757.4494517,
+        "T06": 1794106757.5042634,
+        "T07": 1794106757.0667458,
+        "T08": 1794106757.1157289
+      }
+    },
+    {
+      "unix": 1794106762.189239,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 4.849,
+        "T01": 4.793,
+        "T02": 4.732,
+        "T03": 4.637,
+        "T04": 4.592,
+        "T05": 4.572,
+        "T06": 4.517,
+        "T07": 4.955,
+        "T08": 4.906
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106757.171946,
+        "T01": 1794106757.2280316,
+        "T02": 1794106757.2889497,
+        "T03": 1794106757.3844552,
+        "T04": 1794106757.429516,
+        "T05": 1794106757.4494517,
+        "T06": 1794106757.5042634,
+        "T07": 1794106757.0667458,
+        "T08": 1794106757.1157289
+      }
+    },
+    {
+      "unix": 1794106763.533545,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 6.281,
+        "T01": 6.225,
+        "T02": 6.164,
+        "T03": 6.068,
+        "T04": 6.023,
+        "T05": 6.003,
+        "T06": 5.948,
+        "T07": 6.386,
+        "T08": 6.337
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106757.171946,
+        "T01": 1794106757.2280316,
+        "T02": 1794106757.2889497,
+        "T03": 1794106757.3844552,
+        "T04": 1794106757.429516,
+        "T05": 1794106757.4494517,
+        "T06": 1794106757.5042634,
+        "T07": 1794106757.0667458,
+        "T08": 1794106757.1157289
+      }
+    },
+    {
+      "unix": 1794106764.962891,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.552,
+        "T01": 1.452,
+        "T02": 1.35,
+        "T03": 1.239,
+        "T04": 1.146,
+        "T05": 1.038,
+        "T06": 0.931,
+        "T07": 0.828,
+        "T08": 0.724
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106763.3067698,
+        "T01": 1794106763.406268,
+        "T02": 1794106763.5088708,
+        "T03": 1794106763.619918,
+        "T04": 1794106763.712378,
+        "T05": 1794106763.820541,
+        "T06": 1794106763.9279208,
+        "T07": 1794106764.03088,
+        "T08": 1794106764.134666
+      }
+    },
+    {
+      "unix": 1794106766.342313,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.89,
+        "T01": 0.782,
+        "T02": 0.678,
+        "T03": 0.577,
+        "T04": 0.474,
+        "T05": 0.365,
+        "T06": 0.271,
+        "T07": 1.197,
+        "T08": 1.091
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106765.362998,
+        "T01": 1794106765.471066,
+        "T02": 1794106765.574322,
+        "T03": 1794106765.675354,
+        "T04": 1794106765.778751,
+        "T05": 1794106765.887527,
+        "T06": 1794106765.981528,
+        "T07": 1794106765.05557,
+        "T08": 1794106765.16168
+      }
+    },
+    {
+      "unix": 1794106767.754698,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.253,
+        "T01": 1.128,
+        "T02": 1.024,
+        "T03": 0.928,
+        "T04": 0.827,
+        "T05": 0.723,
+        "T06": 0.615,
+        "T07": 0.508,
+        "T08": 0.406
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106766.395173,
+        "T01": 1794106766.520073,
+        "T02": 1794106766.624459,
+        "T03": 1794106766.720146,
+        "T04": 1794106766.821158,
+        "T05": 1794106766.925482,
+        "T06": 1794106767.0330582,
+        "T07": 1794106767.140625,
+        "T08": 1794106767.2422268
+      }
+    },
+    {
+      "unix": 1794106769.204365,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "running",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.578,
+        "T01": 1.541,
+        "T02": 1.434,
+        "T03": 1.333,
+        "T04": 1.19,
+        "T05": 1.123,
+        "T06": 0.991,
+        "T07": 0.878,
+        "T08": 0.79
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106768.517569,
+        "T01": 1794106767.554805,
+        "T02": 1794106767.661361,
+        "T03": 1794106767.762388,
+        "T04": 1794106767.905666,
+        "T05": 1794106767.972356,
+        "T06": 1794106768.104511,
+        "T07": 1794106768.218003,
+        "T08": 1794106768.305446
+      }
+    },
+    {
+      "unix": 1794106770.5548182,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.925,
+        "T01": 0.816,
+        "T02": 0.715,
+        "T03": 0.608,
+        "T04": 1.544,
+        "T05": 1.444,
+        "T06": 1.342,
+        "T07": 1.234,
+        "T08": 1.133
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106769.530348,
+        "T01": 1794106769.638596,
+        "T02": 1794106769.739438,
+        "T03": 1794106769.8469949,
+        "T04": 1794106768.9113548,
+        "T05": 1794106769.011277,
+        "T06": 1794106769.11294,
+        "T07": 1794106769.220429,
+        "T08": 1794106769.321928
+      }
+    },
+    {
+      "unix": 1794106771.9234781,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.267,
+        "T01": 1.166,
+        "T02": 1.066,
+        "T03": 0.958,
+        "T04": 0.853,
+        "T05": 0.748,
+        "T06": 1.681,
+        "T07": 1.582,
+        "T08": 1.472
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106770.5778391,
+        "T01": 1794106770.678594,
+        "T02": 1794106770.779076,
+        "T03": 1794106770.886296,
+        "T04": 1794106770.991198,
+        "T05": 1794106771.096676,
+        "T06": 1794106770.163478,
+        "T07": 1794106770.2625,
+        "T08": 1794106770.372993
+      }
+    },
+    {
+      "unix": 1794106773.312813,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.573,
+        "T01": 0.437,
+        "T02": 0.361,
+        "T03": 1.296,
+        "T04": 1.182,
+        "T05": 1.074,
+        "T06": 0.985,
+        "T07": 0.855,
+        "T08": 0.772
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106772.660277,
+        "T01": 1794106772.796376,
+        "T02": 1794106772.873108,
+        "T03": 1794106771.937763,
+        "T04": 1794106772.0519428,
+        "T05": 1794106772.159269,
+        "T06": 1794106772.248705,
+        "T07": 1794106772.378846,
+        "T08": 1794106772.46221
+      }
+    },
+    {
+      "unix": 1794106774.7081048,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.968,
+        "T01": 1.832,
+        "T02": 1.755,
+        "T03": 1.632,
+        "T04": 1.549,
+        "T05": 1.433,
+        "T06": 1.344,
+        "T07": 1.244,
+        "T08": 1.14
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106772.660277,
+        "T01": 1794106772.796376,
+        "T02": 1794106772.873108,
+        "T03": 1794106772.995646,
+        "T04": 1794106773.079238,
+        "T05": 1794106773.1950772,
+        "T06": 1794106773.2838001,
+        "T07": 1794106773.383529,
+        "T08": 1794106773.487466
+      }
+    },
+    {
+      "unix": 1794106776.086116,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.201,
+        "T01": 1.126,
+        "T02": 1.02,
+        "T03": 0.918,
+        "T04": 0.814,
+        "T05": 0.712,
+        "T06": 0.607,
+        "T07": 0.508,
+        "T08": 0.404
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106775.765594,
+        "T01": 1794106774.8401668,
+        "T02": 1794106774.946914,
+        "T03": 1794106775.048575,
+        "T04": 1794106775.152935,
+        "T05": 1794106775.254626,
+        "T06": 1794106775.359603,
+        "T07": 1794106775.458432,
+        "T08": 1794106775.562881
+      }
+    },
+    {
+      "unix": 1794106777.431734,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.481,
+        "T01": 0.395,
+        "T02": 0.288,
+        "T03": 1.245,
+        "T04": 1.129,
+        "T05": 1.038,
+        "T06": 0.935,
+        "T07": 0.823,
+        "T08": 0.724
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106776.842786,
+        "T01": 1794106776.929195,
+        "T02": 1794106777.036142,
+        "T03": 1794106776.079288,
+        "T04": 1794106776.194777,
+        "T05": 1794106776.286286,
+        "T06": 1794106776.3887548,
+        "T07": 1794106776.500501,
+        "T08": 1794106776.6002219
+      }
+    },
+    {
+      "unix": 1794106778.760788,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.816,
+        "T01": 0.695,
+        "T02": 0.568,
+        "T03": 0.493,
+        "T04": 1.447,
+        "T05": 1.336,
+        "T06": 1.233,
+        "T07": 1.131,
+        "T08": 1.029
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106777.8640902,
+        "T01": 1794106777.985507,
+        "T02": 1794106778.111892,
+        "T03": 1794106778.1876988,
+        "T04": 1794106777.233221,
+        "T05": 1794106777.344533,
+        "T06": 1794106777.447465,
+        "T07": 1794106777.549336,
+        "T08": 1794106777.651084
+      }
+    },
+    {
+      "unix": 1794106780.132711,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.092,
+        "T01": 0.987,
+        "T02": 0.887,
+        "T03": 0.786,
+        "T04": 0.684,
+        "T05": 0.583,
+        "T06": 0.481,
+        "T07": 1.401,
+        "T08": 1.296
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106778.9068968,
+        "T01": 1794106779.011494,
+        "T02": 1794106779.111444,
+        "T03": 1794106779.212644,
+        "T04": 1794106779.314844,
+        "T05": 1794106779.415485,
+        "T06": 1794106779.51719,
+        "T07": 1794106778.59792,
+        "T08": 1794106778.7022479
+      }
+    },
+    {
+      "unix": 1794106781.495771,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.472,
+        "T01": 1.351,
+        "T02": 1.26,
+        "T03": 1.151,
+        "T04": 1.046,
+        "T05": 0.939,
+        "T06": 0.84,
+        "T07": 0.74,
+        "T08": 0.637
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106779.929734,
+        "T01": 1794106780.050029,
+        "T02": 1794106780.141545,
+        "T03": 1794106780.250005,
+        "T04": 1794106780.355636,
+        "T05": 1794106780.462497,
+        "T06": 1794106780.561159,
+        "T07": 1794106780.661224,
+        "T08": 1794106780.764391
+      }
+    },
+    {
+      "unix": 1794106783.0104718,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.848,
+        "T01": 1.78,
+        "T02": 1.675,
+        "T03": 1.566,
+        "T04": 1.469,
+        "T05": 1.369,
+        "T06": 1.263,
+        "T07": 1.161,
+        "T08": 1.054
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106782.012672,
+        "T01": 1794106781.0812879,
+        "T02": 1794106781.186347,
+        "T03": 1794106781.294892,
+        "T04": 1794106781.3923252,
+        "T05": 1794106781.4924061,
+        "T06": 1794106781.597983,
+        "T07": 1794106781.700096,
+        "T08": 1794106781.8072379
+      }
+    },
+    {
+      "unix": 1794106784.4671528,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.292,
+        "T01": 1.188,
+        "T02": 1.088,
+        "T03": 0.985,
+        "T04": 0.884,
+        "T05": 0.783,
+        "T06": 1.7,
+        "T07": 1.599,
+        "T08": 1.489
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106783.038419,
+        "T01": 1794106783.1416378,
+        "T02": 1794106783.242097,
+        "T03": 1794106783.34534,
+        "T04": 1794106783.4456441,
+        "T05": 1794106783.5471842,
+        "T06": 1794106782.6299222,
+        "T07": 1794106782.730814,
+        "T08": 1794106782.841495
+      }
+    },
+    {
+      "unix": 1794106785.9101388,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.671,
+        "T01": 0.57,
+        "T02": 0.465,
+        "T03": 0.363,
+        "T04": 1.299,
+        "T05": 1.189,
+        "T06": 1.084,
+        "T07": 0.98,
+        "T08": 0.875
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106785.117384,
+        "T01": 1794106785.218324,
+        "T02": 1794106785.323479,
+        "T03": 1794106785.4250538,
+        "T04": 1794106784.489722,
+        "T05": 1794106784.599048,
+        "T06": 1794106784.70493,
+        "T07": 1794106784.808735,
+        "T08": 1794106784.9131
+      }
+    },
+    {
+      "unix": 1794106787.418682,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 1.138,
+        "T01": 1.036,
+        "T02": 0.932,
+        "T03": 0.832,
+        "T04": 0.727,
+        "T05": 0.62,
+        "T06": 0.516,
+        "T07": 0.414,
+        "T08": 1.343
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106786.147413,
+        "T01": 1794106786.249674,
+        "T02": 1794106786.353745,
+        "T03": 1794106786.4537568,
+        "T04": 1794106786.558074,
+        "T05": 1794106786.665537,
+        "T06": 1794106786.769465,
+        "T07": 1794106786.871327,
+        "T08": 1794106785.942152
+      }
+    },
+    {
+      "unix": 1794106788.822882,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.498,
+        "T01": 0.388,
+        "T02": 0.283,
+        "T03": 1.228,
+        "T04": 1.119,
+        "T05": 1.017,
+        "T06": 0.91,
+        "T07": 0.809,
+        "T08": 0.701
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106788.2305589,
+        "T01": 1794106788.3408508,
+        "T02": 1794106788.44545,
+        "T03": 1794106787.500104,
+        "T04": 1794106787.609188,
+        "T05": 1794106787.711712,
+        "T06": 1794106787.818341,
+        "T07": 1794106787.919109,
+        "T08": 1794106788.0277271
+      }
+    },
+    {
+      "unix": 1794106790.221469,
+      "request_id": "1d280239b0b7469ea6ab190141eb8406",
+      "status": "done",
+      "phase": "stopped",
+      "ages": {
+        "T00": 0.809,
+        "T01": 0.707,
+        "T02": 0.602,
+        "T03": 0.501,
+        "T04": 0.397,
+        "T05": 0.296,
+        "T06": 0.189,
+        "T07": 1.118,
+        "T08": 1.012
+      },
+      "errors": {
+        "T00": "left policy target unreachable within 2 mm (17.36 mm)",
+        "T01": "left policy target unreachable within 2 mm (5.03 mm)",
+        "T02": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+        "T03": "left policy target unreachable within 2 mm (6.48 mm)",
+        "T04": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+        "T06": "left policy target unreachable within 2 mm (10.46 mm)",
+        "T07": "left policy target unreachable within 2 mm (5.45 mm)",
+        "T08": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm"
+      },
+      "calls": {
+        "T00": 13,
+        "T01": 16,
+        "T02": 11,
+        "T03": 16,
+        "T04": 11,
+        "T05": 24,
+        "T06": 11,
+        "T07": 18,
+        "T08": 5
+      },
+      "capture_times": {
+        "T00": 1794106789.2757661,
+        "T01": 1794106789.3784919,
+        "T02": 1794106789.482913,
+        "T03": 1794106789.584637,
+        "T04": 1794106789.688138,
+        "T05": 1794106789.7896981,
+        "T06": 1794106789.895812,
+        "T07": 1794106788.966988,
+        "T08": 1794106789.073447
+      }
+    }
+  ]
+}

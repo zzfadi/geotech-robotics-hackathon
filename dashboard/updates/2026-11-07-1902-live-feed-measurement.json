@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T19:02:09.630364-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Measured live feed recovery across failed table trials",
+  "why": "55 samples confirm active feeds within1.276s and post-run feeds within1.968s. Teardown briefly reached6.386s, so a strict2\u20133s bound is not yet met during transitions.",
+  "where": [
+    "docs/validation/live-feed-restart-1d280239.json"
+  ]
+}
