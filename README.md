@@ -27,8 +27,9 @@ setup, portable tools, pinned dependencies, offline tests and supervised gripper
 opening results (including aborted attempts). The later [physical control and
 camera exploration](arm/docs/control-and-vision.md) connected both arms, captured
 all three robot cameras plus the laptop camera, and completed a small right-wrist
-roll/return. Whole-arm control and Dream hardware integration remain unverified;
-joint-reference discrepancies and USB connectivity are the current blockers.
+roll/return. USB reconnection and fresh four-camera capture were verified again
+at 16:42 Pacific. Whole-arm control and Dream hardware integration remain
+unverified; joint-reference discrepancies and workspace registration remain open.
 
 The close-up from our station shows **MakerMods Maker Arm**. The earlier YAM model was a provisional identification and must not be used as the one-to-one model. Dream Labs supplies the Dream-1 policy; MakerMods supplies this hardware. Specifications checked November 7, 2026.
 

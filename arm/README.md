@@ -3,8 +3,9 @@
 **Latest physical control/vision record:** [November 7 exploration](docs/control-and-vision.md).
 After the operator resumed supervised testing, both arms and all three USB cameras
 were inspected, the laptop camera was captured, and a small right-wrist roll and
-return completed. Joint-reference discrepancies and USB connectivity remain
-unresolved; whole-arm control and Dream hardware integration are not verified.
+return completed. USB reconnection was verified at 16:42 Pacific; joint-reference
+discrepancies remain unresolved. Whole-arm control and Dream hardware integration
+are not verified.
 
 The original gripper-only handoff below records the earlier pause before Dream
 testing. Its historical results remain unchanged. Do not run hardware commands

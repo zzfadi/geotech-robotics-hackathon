@@ -6,6 +6,18 @@ confirmed secured arms, a clear workspace and readiness at the physical cutoff,
 then authorized further staged control. No Dream requests or Unreal changes were
 made in this exploration.
 
+### Reconnection verification — 16:42 Pacific
+
+Both original adapter serials returned after the operator reconnected the USB
+cables. Five sampled rounds from each arm yielded fresh feedback on all 14 motors
+and zero reported fault words. The same nominal joint-limit discrepancies remain.
+All three robot UVC cameras and the laptop camera returned fresh 640×480 images
+through the packaged native helper. Robot camera IDs reverted to `0x311…` after
+the USB topology change. A fresh overview confirmed the tabletop layout; the
+right wrist view showed a cable crossing immediately in front of the jaws, so
+clearance was requested before the larger sweep. No motor was enabled during
+this reconnect inspection. See `arm/evidence/2026-11-07-usb-reconnection.json`.
+
 ## Verified hardware and software
 
 - Both Maker Arm adapters are accessible by exact serial: left `2077378045465008`,
@@ -195,6 +207,7 @@ contract. Physical Dream integration needs all of the following demonstrated:
 - A hardware execution boundary that enforces turn grants, rejects stale queued
   actions and records actual outcomes.
 
-Next motion work is staged wrist verification with the cameras restored, then
+The cameras have now been restored. Next motion work is staged wrist verification
+after clearing the visible cable, then
 operator/manufacturer-guided reference validation before any lifting-joint or
 whole-arm trajectory. No Dream API calls are needed to resolve these dependencies.

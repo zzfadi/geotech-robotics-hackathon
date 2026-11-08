@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T16:43:24-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Verified both physical arm adapters and fresh images from all three robot cameras plus the laptop after USB reconnection.",
+  "why": "Resolve the local USB blocker with actual motor feedback and camera frames before resuming the staged wrist test.",
+  "where": ["arm/evidence/2026-11-07-usb-reconnection.json", "arm/docs/control-and-vision.md"],
+  "details": "Five rounds per arm returned fresh feedback on all 14 motors and zero fault words. Nominal joint-limit discrepancies persist. Camera location IDs changed back to 0x311…; fresh images were inspected. A cable crosses immediately in front of the right gripper, so operator clearance was requested before the larger sweep. No motor enabled in this reconnect inspection."
+}
