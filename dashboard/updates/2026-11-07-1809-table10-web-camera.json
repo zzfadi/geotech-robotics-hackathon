@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T18:09:39-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added a dedicated Table 10 overhead camera card to the web panel.",
+  "why": "Show the human-interaction station separately from the nine cup simulations.",
+  "where": [
+    "DreamSim/web/index.html",
+    "DreamSim/fleet_worker.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_fleet_preview.py"
+  ],
+  "details": [
+    "Separate authenticated camera upload; no tenth Dream session.",
+    "Ten idle camera views share the existing total capture cadence."
+  ]
+}

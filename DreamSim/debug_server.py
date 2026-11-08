@@ -12,6 +12,7 @@ class Store:
     def __init__(self,path):
         self.path=path;path.mkdir(parents=True,exist_ok=True)
         self.interaction=InteractionStore(path)
+        self.interaction_preview=None
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
@@ -92,6 +93,7 @@ class Handler(BaseHTTPRequestHandler):
         relay=self.server.store.interaction
         with self.server.store.lock:
             if route.path=='/api/interaction/status':return self.send(200,relay.public())
+            if route.path=='/api/interaction/preview':return self.send(200,{'preview':self.server.store.interaction_preview,'server_time':time.time()})
             if route.path=='/api/interaction/controller/contact':
                 if not relay.authorized('controller',self.headers.get('Authorization')):return self.send(401,{'error':'Controller authentication required'})
                 try:return self.send(200,relay.next_contact(parse_qs(route.query).get('session_id',[''])[0]))
@@ -101,6 +103,17 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(data,dict):return self.send(400,{'error':'Expected JSON object'})
         relay=self.server.store.interaction
         with self.server.store.lock:
+            if self.path=='/api/interaction/worker/preview':
+                if not self.worker():return self.send(401,{'error':'Worker authentication required'})
+                value=data.get('frame');captured=data.get('captured_unix')
+                if not isinstance(value,str):raise ValueError('JPEG frame required')
+                raw=base64.b64decode(value,validate=True)
+                if len(raw)>200_000 or not raw.startswith(b'\xff\xd8') or not raw.endswith(b'\xff\xd9'):raise ValueError('Expected bounded JPEG')
+                if type(captured) not in (int,float) or not 0<captured<=time.time()+5:raise ValueError('Capture timestamp required')
+                previous=self.server.store.interaction_preview
+                if previous and captured<=previous['captured_unix']:return self.send(409,{'error':'Old camera frame'})
+                self.server.store.interaction_preview={'frame':value,'captured_unix':captured}
+                return self.send(200,{'ok':True})
             if self.path=='/api/interaction/stop':return self.send(200,relay.stop())
             role='controller' if self.path.startswith('/api/interaction/controller/') else 'producer'
             if not relay.authorized(role,self.headers.get('Authorization')):return self.send(401,{'error':'Interaction role authentication required'})

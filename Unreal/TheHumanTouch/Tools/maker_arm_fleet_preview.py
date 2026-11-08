@@ -1,4 +1,4 @@
-"""Bounded, local idle previews: nine overhead cameras, one staggered capture per tick.
+"""Bounded, local idle previews: nine fleet cameras plus the separate Table 10 camera, one staggered capture per tick.
 
 No policy calls, robot motion, or viewport changes. Start outside a transaction.
 The worker stops this observer before SIE and can restart it after teardown.
@@ -37,6 +37,7 @@ class Preview:
     def _create(self):
         sources = self._sources()
         names = ['MakerCamera_Overview'] + ['MakerFleet_T%02d__MakerCamera_Overview' % i for i in range(1, 9)]
+        names.append('MakerInteraction_T09__MakerCamera_Overview')
         missing = [name for name in names if name not in sources]
         if missing:
             raise RuntimeError('Missing overhead cameras: ' + ', '.join(missing))
@@ -55,7 +56,8 @@ class Preview:
             for component in actor.get_components_by_class(unreal.PrimitiveComponent):
                 component.set_visibility(False, False)
                 component.set_hidden_in_game(True, False)
-            self.cameras[index] = {'actor': actor, 'capture': capture, 'target': target}
+            self.cameras[index] = {'actor': actor, 'capture': capture, 'target': target,
+                                   'source_name': name, 'key': 'InteractionT10' if index == 9 else 'T%02d' % index}
         return True
 
     def _write(self, running, error=None):
@@ -81,8 +83,8 @@ class Preview:
             actor, capture, target = item['actor'], item['capture'], item['target']
             if not call_camera._is_alive(actor):
                 raise RuntimeError('Idle capture unloaded; restart preview')
-            key = 'T%02d' % self.index
-            name = 'MakerCamera_Overview' if self.index == 0 else 'MakerFleet_'+key+'__MakerCamera_Overview'
+            key = item['key']
+            name = item['source_name']
             source = self._sources().get(name)
             if source is None:
                 raise RuntimeError('Missing camera for '+key)
@@ -102,7 +104,7 @@ class Preview:
             self.frame_times[key] = time.time()
             self.sequence += 1
             self._write(True)
-            self.index = (self.index + 1) % 9
+            self.index = (self.index + 1) % len(self.cameras)
         except Exception as error:
             self.stop(str(error))
             unreal.log_error('Fleet preview: '+str(error))

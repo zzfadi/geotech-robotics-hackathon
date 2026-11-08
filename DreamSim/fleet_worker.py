@@ -623,9 +623,15 @@ class IdlePreview:
             data = Path(path).read_bytes()
             if data.startswith(b'\xff\xd8') and data.endswith(b'\xff\xd9'):
                 frames[key], stamps[key] = base64.b64encode(data).decode(), stamp
+        interaction = frames.pop('InteractionT10', None)
+        interaction_stamp = stamps.pop('InteractionT10', None)
         if frames:
             self.server.api('/api/fleet/worker/preview', {'frames': frames, 'frame_times': stamps})
             self.sent.update(stamps)
+        if interaction is not None:
+            self.server.api('/api/interaction/worker/preview',
+                            {'frame': interaction, 'captured_unix': interaction_stamp})
+            self.sent['InteractionT10'] = interaction_stamp
 
 
 def serve(args, config):
