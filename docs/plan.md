@@ -68,6 +68,15 @@ Idea flagged, not committed: **assisted intent**, where the arm infers what the 
 | 8 | LiveKit voice agent (Brian called it a must-have on Saturday) | **No owner named** (earlier: Takeshi) | Unclear if still in |
 | 9 | Run the Luna2 simulated hand-to-arm contact trial | **No owner named** | Sunday |
 | 10 | Reserve 2 hours for submission and run it | **No owner named** | Before the cutoff |
+| 11 | Jetson robot server, end to end ([brief](handoffs/jetson-end-to-end.md)) | **Needs an owner on FADI's Mac Mini** | Not required for the MVP |
+| 12 | Train and score a small model from our simulation ([brief](handoffs/small-model-training.md)) | **Needs an owner on FADI's Mac Mini** | Time-boxed, not required for the MVP |
+
+## Handoffs for the Mac Mini
+
+Two workstreams need the Mac or hardware, so they are written as briefs a fresh agent on FADI's Mac Mini can pick up from this repo:
+
+- [Jetson robot server, end to end](handoffs/jetson-end-to-end.md)
+- [Train a small model from our simulation](handoffs/small-model-training.md)
 
 ## Open questions
 

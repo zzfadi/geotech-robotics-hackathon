@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T20:40:00-08:00",
+  "workstream": "planning",
+  "status": "note",
+  "what": "Handoff briefs for the Mac Mini: Jetson robot server end to end, and training a small model from our simulation",
+  "why": "Both need the Mac or the station hardware, so a fresh agent there can pick them up from the repo.",
+  "where": ["docs/handoffs/jetson-end-to-end.md", "docs/handoffs/small-model-training.md", "docs/plan.md"],
+  "details": "Neither is required for the Hold My Beer MVP. Both need an owner."
+}
