@@ -1,6 +1,6 @@
 # The Human Touch · cloud handoff
 
-Start with the [side-by-side logo board](logo-redesign/almost-touch/README.md). **Almost Touch** is the new near-touch engraving; **Shared Vessel** is the bowl reference. The next decision is which story the title should tell: anticipation from the opening fresco or cooperation in an everyday act. Neither mark has been installed in the performance decks as part of this comparison.
+Start with the [latest Almost Touch and Shared Vessel engravings on Drive](https://drive.google.com/drive/folders/1IpI_RMz44ndKjYeFpBkBPDIaE0_RLVih). Open `before-and-after.jpg` for the drawings and `title-and-plaque.jpg` for the application proofs. The [earlier editable comparison](logo-redesign/almost-touch/README.md) provides the title layout for trying either revised mark. Both directions are in review.
 
 | Continue here | What to open |
 | --- | --- |

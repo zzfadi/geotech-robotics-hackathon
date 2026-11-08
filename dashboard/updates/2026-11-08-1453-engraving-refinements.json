@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-08T14:53:45-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Added new Almost Touch and Shared Vessel engravings and title and brass plaque proofs to the Drive scratchpad.",
+  "why": "The wider fingertip gap and single point of support at the rim clarify the two gestures at display size.",
+  "where": [
+    "demo/pitch/HANDOFF.md"
+  ]
+}
