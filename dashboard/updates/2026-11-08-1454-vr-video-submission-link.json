@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T14:54:00-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Added the uploaded VR control video to submission copy and the existing Slack review post",
+  "why": "Judges and teammates should have separate links for the physical bottle handover and VR control demonstration.",
+  "where": ["demo/submission.md", "https://youtu.be/Nhui-EnJoLI", "https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794178387401739"],
+  "details": "The submission owner supplied the VR video URL after upload. Updated the existing tagged review message rather than creating another channel announcement. No additional autonomy or reliability claim was added."
+}

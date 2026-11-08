@@ -34,7 +34,9 @@ MakerMods supplied the Maker Arm hardware, SDK and robot description. Dream Labs
 
 ## Links
 
-Demo video: https://youtu.be/GK2B8TnZ3BI
+Physical bottle-handover video: https://youtu.be/GK2B8TnZ3BI
+
+VR control video: https://youtu.be/Nhui-EnJoLI
 
 Repository: https://github.com/zzfadi/geotech-robotics-hackathon
 
@@ -44,6 +46,7 @@ Team dashboard: https://zzfadi.github.io/geotech-robotics-hackathon/
 
 ## Editorial evidence notes — do not paste into the form
 
+- **VR control video:** https://youtu.be/Nhui-EnJoLI, supplied by the submission owner after upload at 14:53 PST. Added as a separate supporting link; this addition does not establish any new autonomy, safety or repeatability claim.
 - **Video reviewed:** the 59-second unlisted upload titled “MakerMods Physical AI Hacks - Founders Inc SF - Team 01,” described as “1st pass at robot handoff to a human.” Sampled frames show the gripper at the bottle around 0:21–0:41, a raised bottle with the recipient reaching around 0:46, recipient grip at 0:51 and the open gripper beside the recipient-held bottle at 0:56. This supports the visible supervised sequence, not its control mode, perception trigger, contact sensing or success rate. Do not call it a human-to-robot can transfer: the visible sequence ends with the person taking a water bottle.
 - **Latest standup:** [Slack notes, 14:39 PST](https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794177557353809). VR-to-physical motion and simulated handover are team-reported. The notes explicitly leave human-detection/GPU integration pending and drop LiveKit vision. “Ten successful tests” is omitted because the notes do not define the test goal and earlier ten-table results differ.
 - **Physical bridge:** [Table 10 real-arm evidence](../docs/table10-real-arms.md#root-cause-found-one-usb-can-adapter-per-process-2026-11-08-144x) records both real arms completing the web UI flow after per-arm process isolation, within 2.6 degrees of Unreal while moving and with zero CAN errors. This is a separate control path/run from the uploaded bottle video.
