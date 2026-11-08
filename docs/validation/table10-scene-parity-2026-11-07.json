@@ -1,0 +1,162 @@
+{
+  "task": "t-0234",
+  "mac_equals_luna": true,
+  "mac": {
+    "bay_actors": 68,
+    "fleet_tag_leaks": [],
+    "cups_total": 40,
+    "bay_cups": 0,
+    "table": [
+      2505.0,
+      0.0,
+      72.0
+    ],
+    "arms": {
+      "MakerArm_left_base_link": [
+        2480.0,
+        -40.0,
+        76.0
+      ],
+      "MakerArm_right_base_link": [
+        2480.0,
+        40.0,
+        76.0
+      ]
+    },
+    "cameras": {
+      "MakerCamera_Overview": {
+        "position": [
+          2472.5,
+          0.0,
+          138.5
+        ],
+        "parent": "Dreamlabs_YAM_OverviewCameraProxy"
+      },
+      "MakerCamera_LeftWrist": {
+        "position": [
+          2498.93638,
+          -40.0,
+          96.84337
+        ],
+        "parent": "MakerArm_left_link_007"
+      },
+      "MakerCamera_RightWrist": {
+        "position": [
+          2498.93638,
+          40.0,
+          96.84337
+        ],
+        "parent": "MakerArm_right_link_007"
+      }
+    },
+    "number": "10",
+    "decals": [
+      "M_WallNumber_10",
+      "M_WallNumber_10",
+      "M_WallNumber_10"
+    ],
+    "room_floor": [
+      2505.0,
+      0.0,
+      -2.0
+    ],
+    "lights": [
+      [
+        "MakerEnvironment_CeilingLeft",
+        1800.0,
+        false
+      ],
+      [
+        "MakerEnvironment_CeilingRight",
+        1800.0,
+        false
+      ],
+      [
+        "MakerLighting_LocalPointFill",
+        700.0,
+        false
+      ]
+    ]
+  },
+  "luna": {
+    "bay_actors": 68,
+    "fleet_tag_leaks": [],
+    "cups_total": 40,
+    "bay_cups": 0,
+    "table": [
+      2505.0,
+      0.0,
+      72.0
+    ],
+    "arms": {
+      "MakerArm_left_base_link": [
+        2480.0,
+        -40.0,
+        76.0
+      ],
+      "MakerArm_right_base_link": [
+        2480.0,
+        40.0,
+        76.0
+      ]
+    },
+    "cameras": {
+      "MakerCamera_Overview": {
+        "position": [
+          2472.5,
+          0.0,
+          138.5
+        ],
+        "parent": "Dreamlabs_YAM_OverviewCameraProxy"
+      },
+      "MakerCamera_LeftWrist": {
+        "position": [
+          2498.93638,
+          -40.0,
+          96.84337
+        ],
+        "parent": "MakerArm_left_link_007"
+      },
+      "MakerCamera_RightWrist": {
+        "position": [
+          2498.93638,
+          40.0,
+          96.84337
+        ],
+        "parent": "MakerArm_right_link_007"
+      }
+    },
+    "number": "10",
+    "decals": [
+      "M_WallNumber_10",
+      "M_WallNumber_10",
+      "M_WallNumber_10"
+    ],
+    "room_floor": [
+      2505.0,
+      0.0,
+      -2.0
+    ],
+    "lights": [
+      [
+        "MakerEnvironment_CeilingLeft",
+        1800.0,
+        false
+      ],
+      [
+        "MakerEnvironment_CeilingRight",
+        1800.0,
+        false
+      ],
+      [
+        "MakerLighting_LocalPointFill",
+        700.0,
+        false
+      ]
+    ]
+  },
+  "existing_actor_transforms_unchanged": true,
+  "physical_commands_sent": 0,
+  "image_local": "/tmp/table10-interaction-overhead.png",
+  "scope": "Scene-only isolation and replication; force controller and physical execution not implemented by this helper"
+}

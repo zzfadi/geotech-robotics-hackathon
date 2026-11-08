@@ -1,0 +1,18 @@
+{
+  "when": "2026-11-07T18:00:44-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Added an isolated Table10 human-interaction bay",
+  "why": "Provide a dedicated virtual station without affecting the nine-table Dream fleet",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_interaction_bay.py",
+    "docs/table10-interaction-bay.md",
+    "docs/validation/table10-scene-parity-2026-11-07.json"
+  ],
+  "details": [
+    "68 new actors: official arm pair, three attached cameras, table, open room and number10",
+    "Mac/Luna parity verified; all40cups and existing actor transforms preserved",
+    "Dedicated MakerInteraction prefix/tags, no MakerFleet tags",
+    "No physical SDK commands or force-sensing claims"
+  ]
+}
