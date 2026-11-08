@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-08T08:59:00-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Added a pictorial human-and-robot emblem in the original velvet and limestone palette.",
+  "why": "The hand positions illustrate complementary assistance on the title slide and brass plaque.",
+  "where": [
+    "demo/pitch/logo-redesign/README.md",
+    "demo/pitch/logo-redesign/review.jpg"
+  ]
+}
