@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T13:40:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Table 10 Dream runner for the VR cup handover: a voice request in VR makes Dream pick up the cup at Table 10 in the editor world the headset shows; a put-down request sets it back and returns the arms to idle.",
+  "why": "Requested through the VR session for Denys: hand a cup to the robot in VR, say \"take the cup\", Dream picks it up, and the real arms can follow through the Table 10 link.",
+  "where": ["DreamSim/table10_dream.py", "DreamSim/start_table10_dream.command", "Unreal/TheHumanTouch/Tools/maker_arm_table10_dream.py", "docs/table10-real-arms.md"],
+  "details": ["Test: left arm held the cup 12.7 cm up (4.4 deg tilt) after 1 Dream grasp and 2 Dream lift calls; put-down returned the cup upright.", "Planned reach, Dream grasp with the arm held still, Dream lift with only Dream's upward motion; editor-world kinematic carry of the cup.", "Real arms were unplugged during the test; the real-arm hardware dropout under torque is documented separately."]
+}

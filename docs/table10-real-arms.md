@@ -102,3 +102,28 @@ and the left base cable or supply.
 
 The software now handles it safely: the faulted arm is released at its start pose and the page returns to ready.
 Driving needs the power and CAN chain of both arms checked first.
+
+## VR cup handover with Dream (editor world)
+
+In VR, Denys places `MakerInteraction_T09__HandoverCup` on Table 10 and says "take the cup". The VR session's voice
+trigger writes `Saved/Table10Dream/request.json`.
+
+`DreamSim/table10_dream.py` runs through `DreamSim/start_table10_dream.command`, which injects the Dream key via
+op-agents. It reports progress in `status.json` (queued, starting, running, done or failed).
+
+The pickup has three steps:
+1. a planned reach with the nearer arm that can reach the cup;
+2. a Dream grasp, with the arm held still;
+3. a Dream lift, applying only Dream's upward motion, to about 10 cm.
+
+A prompt containing put, release, drop, reset or let go sets the cup down upright and returns both arms to idle.
+
+Motion and cameras run in the editor world, the one VR shows, through `Tools/maker_arm_table10_dream.py`. The cup
+is carried kinematically while a jaw squeezes it ("editor-world kinematic carry"). The real-arm link recovers those
+poses, so the real arms follow only when the real-arm service is in drive.
+
+Tested 2026-11-08:
+- Pickup: the left arm held the cup 12.7 cm up, at 4.4° tilt, after 1 grasp and 2 lift calls.
+- Put-down: the cup was set down upright and both arms returned to idle.
+
+Reach: along the centre line (y = 0) each arm reaches x 30–50 cm only. Off-centre, each arm covers most of its half.
