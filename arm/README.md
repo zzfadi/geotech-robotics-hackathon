@@ -2,11 +2,13 @@
 
 **Latest physical control/vision record:** [November 7 exploration](docs/control-and-vision.md).
 After the operator resumed supervised testing, both arms and all three USB cameras
-were inspected, the laptop camera was captured, and a small right-wrist roll and
-return completed. USB reconnection was verified at 16:42 Pacific; joint-reference
-discrepancies remain unresolved. Whole-arm control and Dream hardware integration
-are not verified. The later cleared-workspace 8° wrist attempt was rejected before
-enable by velocity feedback; the new encoder-window diagnostic is read-only.
+were inspected, and two right-wrist 8° routines plus right-elbow 15° and 30°
+lift/return routines completed. The elbow routine holds joints 1–6 with the pinned
+SDK gravity model, excludes the gripper, checks live overview frames and uses
+verified return before release. One earlier 30° startup failed at neutral preload;
+all cameras later disconnected and were restored before the successful run.
+General whole-arm control, calibrated pickup and Dream hardware integration are
+not verified. Joint/camera registration and gripper transmission remain open.
 
 The original gripper-only handoff below records the earlier pause before Dream
 testing. Its historical results remain unchanged. Do not run hardware commands
@@ -210,7 +212,7 @@ Read [robot-stack-contract.md](../docs/robot-stack-contract.md) for the existing
 policy/camera/freshness/cancellation boundary, and
 [maker-arm-model.md](../docs/maker-arm-model.md) for the separate kinematic model.
 Keep SDK motor radians separate from URDF radians and uncalibrated jaw gap.
-The later supervised wrist-only work is recorded in the exploration linked above.
+The later supervised wrist and elbow-lift work is recorded in the exploration linked above.
 The Dream application's hardware/stop contract still requires verification before
 policy-driven physical control.
 

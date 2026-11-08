@@ -250,7 +250,7 @@ and retain failures, verify scene clearance and resolve the cause with the opera
 There is no unattended hardware controller in this handoff.
 
 Camera bursts use `bash arm/tools/camera_inspect NEW_DIRECTORY 100 CAMERA_ID`.
-They save at most 100 JPEGs at no more than approximately 5 per second, plus sample
+They save at most 300 JPEGs at no more than approximately 5 per second, plus sample
 PTS and host receipt times. Each run requires a new directory to preserve evidence.
 The report identifies missing/failed sources; no cached image masquerades as fresh.
 The launcher requires Xcode command-line tools and normal camera permission. It
@@ -275,7 +275,79 @@ contract. Physical Dream integration needs all of the following demonstrated:
 - A hardware execution boundary that enforces turn grants, rejects stale queued
   actions and records actual outcomes.
 
-The cameras have been restored and cable clearance confirmed. Next motion work
-depends on resolving the wrist feedback discrepancy before staged verification, then
-operator/manufacturer-guided reference validation before any lifting-joint or
-whole-arm trajectory. No Dream API calls are needed to resolve these dependencies.
+The staged wrist and elbow routines below establish bounded joint control only.
+The next pickup dependency is a measured table/object reference and validated
+camera-to-arm/jaw mapping. No Dream API calls are needed to resolve those physical
+dependencies, and a policy reply cannot substitute for them.
+
+## Six-joint hold and elbow lifts — 17:03–17:11 Pacific
+
+`lift_probe` enables the first six stock SDK joints, retaining factory gains and
+gravity feedforward; motor 7 is excluded. Joint limits and zeros are unchanged.
+The original folded right shoulder was about −0.08°, just outside its −3.2°
+upper soft limit; the SDK moved it inward to that limit. This is explicit in the
+recorded start/target arrays. Admission permits only up to 4° of this shoulder
+discrepancy, not an arbitrary out-of-range start on other joints.
+
+| Trial | Measured elbow | Outcome |
+| --- | --- | --- |
+| 15° lift | 10.80° → 25.35° → 10.12° after stop | Completed; SDK verified rest; release acknowledged |
+| First 30° startup | 10.34° at rest | Motor 6 neutral preload not acknowledged; SDK released before starting the control loop; no lift |
+| 30° lift after reconnection | 10.34° → 39.84° → 9.99° after stop | Completed; SDK verified rest; release acknowledged |
+
+The successful 30° trajectory took 20.69 seconds for outbound/return sampling.
+Peak measured elbow effort was 4.97 Nm; peak measured shoulder effort 1.23 Nm.
+All 14 motors provided fresh post-test feedback, zero fault words, no warning or
+fault flags, and temperatures no higher than 34 °C. Legacy firmware still cannot
+independently verify enabled/disabled mode or a motor watchdog.
+
+Controls: 3°/s target rate, 2° positional demand cap relative to measured pose,
+4° envelope margin, 250 ms motor freshness, 20°/s reported-speed guard, 42 °C
+trial temperature guard, per-joint measured effort guards of
+`[1.5, 5, 6, 2.5, 1, 1]` Nm. Segments must converge within 25 seconds. The SDK
+return runs at 3°/s with its 2° arrival tolerance and a tightened 4° settle
+tolerance. Failure requests a measured-pose hold and retains the interactive
+controller process. It does not unconditionally disable or disconnect an elevated
+arm. An operator must inspect an abort before selecting a recovery action.
+Disk-write failures cannot terminate the holding loop. SDK startup can itself
+release on enable failure, so the report distinguishes startup failure from an
+active hold. A regression test prevents `stop()` in CONNECTED state from being
+misreported as a physical return.
+
+During the first larger attempt all three USB cameras disappeared from AVFoundation
+and IOUSB while both CAN adapters remained enumerated. The operator reconnected
+the hub, restoring all four views. The Mac camera had been repositioned: it now
+shows both arm fronts and the yellow cylinder, making it useful for lift review.
+The successful 30° routine has 300-frame overview and front recordings, each about
+60 seconds and covering the complete trajectory. A combined clip aligns frames
+using host receipt times, not calibrated sensor exposure times. Raw media remains
+under ignored `arm/local/lift-30deg-final-2026-11-07/`.
+
+Powered lift runs require an interactive terminal and a running, visually verified
+overview burst. The current lift helper checks for a newly written JPEG at least
+every second before enable and throughout each trajectory segment. Camera loss
+halts target advancement and requests a hold; this is image liveness, not hand
+detection, collision avoidance, or a hardware stop. Do not run another CAN reader
+while a controller owns that arm. Start the camera recorder in a separate terminal
+and allow it to produce frames before starting the motor command:
+
+```sh
+bash arm/tools/camera_inspect arm/local/NEW_CAPTURE 300 CURRENT_OVERVIEW_CAMERA_ID
+# In another interactive terminal, after visually checking the view:
+bash arm/tools/arm lift_probe right --move --operator-cutoff --step-deg 30 \
+  --camera-directory arm/local/NEW_CAPTURE --output arm/results/NEW_LIFT.json
+```
+
+These are instructions for a supervised, cleared bench with an operator at the
+physical cutoff, not an unattended routine or authorization to retry a fault.
+The camera recorder is bounded and ends after its requested frames. `RETURN`
+uses the SDK's verified-stop path after inspection; `SUPPORTED_RELEASE` is only
+for an arm that the operator has physically supported. Never kill the holding
+process as a substitute for recovery.
+
+The yellow cylinder is visible between the arms in the overview and front views.
+No grasp was attempted: its dimensions, table/base registration, grasp pose and
+jaw transmission are unmeasured. A ruler/calibration grid and cylinder dimensions
+were requested to establish a measured reference before reaching. See
+`arm/evidence/2026-11-07-elbow-lifts.json` for compact run evidence, source hashes,
+startup-failure interpretation and post-test feedback.

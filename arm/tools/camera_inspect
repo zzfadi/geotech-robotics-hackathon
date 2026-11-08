@@ -2,7 +2,7 @@
 # Build a local macOS camera-permission app and save timestamped snapshots.
 set -euo pipefail
 if [[ "${1:---help}" == --help || "${1:---help}" == -h ]]; then
-  echo 'Usage: bash arm/tools/camera_inspect NEW_OUTPUT_DIRECTORY [FRAMES_1_TO_100] [CAMERA_ID_OR_all]'
+  echo 'Usage: bash arm/tools/camera_inspect NEW_OUTPUT_DIRECTORY [FRAMES_1_TO_300] [CAMERA_ID_OR_all]'
   echo 'Captures three KD-USB cameras and the MacBook camera locally; no network or arm access.'
   exit 0
 fi
@@ -11,8 +11,8 @@ if [[ $# -lt 1 || $# -gt 3 || "$(uname -s)" != Darwin ]]; then
   exit 2
 fi
 frames="${2:-1}"
-if [[ ! "$frames" =~ ^[1-9][0-9]?$ && "$frames" != 100 ]]; then
-  echo 'Frame count must be between 1 and 100.' >&2
+if [[ ! "$frames" =~ ^[1-9][0-9]{0,2}$ ]] || (( frames > 300 )); then
+  echo 'Frame count must be between 1 and 300.' >&2
   exit 2
 fi
 tool_dir="$(cd "$(dirname "$0")" && pwd)"
