@@ -290,5 +290,63 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(real[0]["executor"], "local")
 
 
+class LiveLoopTests(unittest.TestCase):
+    """Drive vision.run.live with a fake camera and detector, so no cv2 or model is needed."""
+
+    def test_live_loop_records_a_replayable_trace_and_summary(self):
+        import io
+        import sys
+        import tempfile
+        import types
+        from contextlib import redirect_stdout
+        from unittest import mock
+
+        import vision.yolo_source as yolo_source
+        from vision import run
+
+        class Capture:
+            def __init__(self, source):
+                self.reads = 0
+
+            def isOpened(self):
+                return True
+
+            def read(self):
+                import time
+                time.sleep(0.025)  # about 40 fps, so the steady interval passes
+                self.reads += 1
+                return (self.reads <= 40, object())
+
+            def release(self):
+                pass
+
+        class Detector:
+            def __init__(self, *args, **kwargs):
+                pass
+
+            def __call__(self, frame, captured_at):
+                return FrameDetections(captured_at, (hand(), can()))
+
+        fake_cv2 = types.SimpleNamespace(VideoCapture=Capture)
+        with tempfile.TemporaryDirectory() as tmp:
+            trace = Path(tmp) / "trace.jsonl"
+            args = run.main.__globals__["argparse"].Namespace(
+                detect="x.pt", pose=None, imgsz=320, video=Path("clip.mp4"), camera=None,
+                target="real", no_dream=False, local_mode="local_scripted", max_seconds=30.0,
+                record=trace, show=False, verbose=False)
+            out = io.StringIO()
+            with mock.patch.dict(sys.modules, {"cv2": fake_cv2}), \
+                    mock.patch.object(yolo_source, "UltralyticsDetector", Detector), redirect_stdout(out):
+                self.assertEqual(run.live(args), 0)
+            summary = json.loads(out.getvalue().splitlines()[-1])
+            self.assertEqual(summary["frames"], 41)
+            self.assertEqual(summary["invalid_frames"], 1)
+            self.assertIn("offer_steady", summary["moments"])
+            records = [json.loads(line) for line in trace.read_text().splitlines()]
+            self.assertEqual(len(records), 41)
+            replayed = [a["action"] for r in replay(records) for a in r["actions"]]
+            self.assertIn("start_handoff", replayed)
+
+
 if __name__ == "__main__":
     unittest.main()

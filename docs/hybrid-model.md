@@ -120,7 +120,9 @@ Base Dream-1 is a two-arm model; single-arm use on our Maker Arm is unconfirmed 
 
 ## What's built and what's open
 
-Built and tested in the cloud (no camera, no arm): the moment tracker, the router, the coordinator that drives the existing turn gate, a replay CLI, an example handoff trace, and an optional Ultralytics adapter. 27 tests pass. The adapter is tested against stand-in result objects only; it has not run with real Ultralytics models, because the PyTorch download was blocked from the cloud machine.
+Built and tested in the cloud (no camera, no arm): the moment tracker, the router, the coordinator that drives the existing turn gate, a replay CLI, an example handoff trace, an optional Ultralytics adapter, and a live webcam loop with a preview window, a session summary and recording to replay traces. 28 tests pass. The adapter and live loop are tested against stand-ins only; they have not run with real Ultralytics models or a camera, because the PyTorch download was blocked from the cloud machine.
+
+Tonight's test on the Orin Nano with a webcam and no arm is step by step in [vision/README.md](../vision/README.md#tonight-orin-nano-plus-a-webcam-no-arm).
 
 Open for the 9 AM standup:
 
