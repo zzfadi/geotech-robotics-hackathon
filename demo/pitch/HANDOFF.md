@@ -1,6 +1,8 @@
 # The Human Touch · cloud handoff
 
-The current logo studies are [Almost Touch](https://drive.google.com/drive/folders/1IpI_RMz44ndKjYeFpBkBPDIaE0_RLVih) and [Galactic Energy](https://drive.google.com/drive/folders/1umQT9TK7_6UAwohqBk3oTNoSRYdAbe4G). Galactic Energy replaces the Shared Vessel bowl with a spiral of stars suspended above the human palm and reaching Emmy’s fingertip. Its Drive folder includes the transparent emblem, SVG, and title and plaque proofs. The [earlier editable comparison](logo-redesign/almost-touch/README.md) provides the title layout.
+Open the [mirrored-palm galaxy style studies](https://drive.google.com/drive/folders/1YVeyrgsiEpJEnIELAmikmD7CfirYcvar) for the current round. Compare cut paper, cloisonné enamel, marble relief, and illuminated glass in `comparison.jpg`. The cut-paper mark also has transparent PNG and single-color SVG files.
+
+Earlier logo studies include [Almost Touch](https://drive.google.com/drive/folders/1IpI_RMz44ndKjYeFpBkBPDIaE0_RLVih) and [Galactic Energy](https://drive.google.com/drive/folders/1umQT9TK7_6UAwohqBk3oTNoSRYdAbe4G). Galactic Energy replaces the Shared Vessel bowl with a spiral of stars suspended above the human palm and reaching Emmy’s fingertip. Its Drive folder includes the transparent emblem, SVG, and title and plaque proofs. The [earlier editable comparison](logo-redesign/almost-touch/README.md) provides the title layout.
 
 | Continue here | What to open |
 | --- | --- |
