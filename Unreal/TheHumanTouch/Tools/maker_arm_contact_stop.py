@@ -57,6 +57,11 @@ def contact_gap(requested, previous, boxes, compliance=.005, flat=False):
         return requested, []
     result=requested; contacts=[]
     for label, points in boxes:
+        if isinstance(points,dict) and points.get('material_cells'):
+            stop=_hollow_stop(requested,previous,points,compliance,flat)
+            if stop is not None and stop>requested:
+                result=max(result,min(previous,stop));contacts.append(label)
+            continue
         points=pad_points(points,flat=flat)
         if not points:continue
         lo=[min(p[i] for p in points) for i in range(3)]
@@ -89,30 +94,78 @@ def local_bounds_points(lo, hi, tapered_cup=False):
     return result
 
 
+def _hollow_stop(requested, previous, shape, compliance, flat):
+    """Closing-only material sweeps, preserving the hollow cavity.
+
+    Each convex shell cell is clipped to the finite X/Z pad volume. The
+    advancing inner face detects entry into material; the 1cm flat pad's
+    trailing face is included in broad overlap, but moving away from an
+    already-touching inner wall is not misclassified as force closure.
+    This does not implement outward/internal gripping or remove Chaos contact.
+    """
+    hits={1:[], -1:[]}
+    half=previous/2;target=requested/2
+    thickness=.01 if flat else .02  # Legacy CAD contact envelope is approximate.
+    for cell in shape['material_cells']:
+        # Exact AABB rejection only; retain128-sector geometry fidelity.
+        corners=[shape['points'][i] for i in set(itertools.chain.from_iterable(cell))]
+        xlo,xhi,zlo,zhi=(-.015,.015,-.18,-.16) if flat else (-.02,.02,-.17,-.10)
+        if (max(p[0] for p in corners)<xlo or min(p[0] for p in corners)>xhi or
+                max(p[2] for p in corners)<zlo or min(p[2] for p in corners)>zhi):continue
+        points=pad_points({'points':shape['points'],'faces':cell},flat=flat)
+        if not points:continue
+        offset=0. if flat else inner_pad_offset((min(p[2] for p in points)+max(p[2] for p in points))/2)
+        for sign in (1,-1):
+            ys=[sign*p[1]-offset for p in points]
+            lo,hi=min(ys),max(ys)
+            # Whole finite-pad swept volume must meet material on this side.
+            if hi<target or lo>half+thickness or hi<=0:continue
+            # Material only behind the advancing face: closing moves AWAY
+            # from this inner wall; never latch solely because it is nearby.
+            if lo>half+1e-9:continue
+            hits[sign].append(min(half,hi))
+    if not hits[1] or not hits[-1]:return None
+    return max(0.,max(hits[1])+max(hits[-1])-compliance)
+
+
 @lru_cache(maxsize=32)
 def cup_contact_shape(lo, hi, segments=128):
-    """Conservative circular outer frustum, not a yaw-dependent square box.
+    """Hollow authored cup: outerR3/4, innerR2.8/3.8, 0.3cm base.
 
-    The authored cup has outer radii 3/4 cm and height 12 cm. Bounds supply
-    units/scale; bottom radius is 3/4 of rim radius. Circumscribed polygon
-    encloses the round surface (128 sides: radial excess <= 0.0013 cm).
-    Finite-pad clipping uses all side faces and end caps. This models the
-    exterior envelope, not cavity contacts or a measured Chaos impulse.
+    Local bounds encode scale. Outer facets conservatively circumscribe the
+    circle; inner facets inscribe the empty cavity. Material is a union of
+    convex wall sectors plus a solid bottom frustum, never a filled rim cap.
+    At128segments inner chord intrusion is <0.012mm for the nominal cup.
     """
-    if segments < 16:raise ValueError('Cup envelope needs at least 16 sides')
+    if segments<16:raise ValueError('Cup envelope needs at least16sides')
     center=[(lo[i]+hi[i])/2 for i in range(2)]
     radius=[(hi[i]-lo[i])/2 for i in range(2)]
+    height=hi[2]-lo[2]
+    if height<=0 or min(radius)<=0:raise ValueError('Invalid cup bounds')
+    bottom_top=lo[2]+height*.025
+    outer_bottom_top=.75+.25*.025
     enclosure=1/math.cos(math.pi/segments)
+    rings=((lo[2],.75*enclosure),(bottom_top,outer_bottom_top*enclosure),
+           (hi[2],enclosure),(bottom_top,.7),(hi[2],.95))
     points=[]
-    for z,factor in ((lo[2],.75),(hi[2],1.)):
+    for z,factor in rings:
         for k in range(segments):
             angle=2*math.pi*k/segments
-            points.append([center[0]+radius[0]*factor*enclosure*math.cos(angle),
-                           center[1]+radius[1]*factor*enclosure*math.sin(angle),z])
-    faces=[tuple(range(segments)),tuple(range(segments,2*segments))]
-    faces.extend((k,(k+1)%segments,(k+1)%segments+segments,k+segments)
-                 for k in range(segments))
-    return {'points':tuple(tuple(p) for p in points),'faces':tuple(faces)}
+            points.append((center[0]+radius[0]*factor*math.cos(angle),
+                           center[1]+radius[1]*factor*math.sin(angle),z))
+    cells=[];faces=[]
+    # Solid base has no cavity: clips correctly even inside its thickness.
+    base=[tuple(range(segments)),tuple(range(segments,2*segments))]
+    base.extend((k,(k+1)%segments,(k+1)%segments+segments,k+segments) for k in range(segments))
+    cells.append(tuple(base));faces.extend(base)
+    for k in range(segments):
+        j=(k+1)%segments
+        # Lower outer/inner, upper outer/inner sector corners.
+        a,b,c,d=segments+k,segments+j,3*segments+j,3*segments+k
+        e,f,g,h=2*segments+k,2*segments+j,4*segments+j,4*segments+k
+        cell=((a,b,c,d),(e,h,g,f),(a,e,f,b),(d,c,g,h),(a,d,h,e),(b,f,g,c))
+        cells.append(cell);faces.extend(cell)
+    return {'points':tuple(points),'faces':tuple(faces),'material_cells':tuple(cells)}
 
 
 def broad_phase(corners):
@@ -142,6 +195,6 @@ def actor_boxes(actors, flange, base):
             # Only nearby candidates need the 256 transformed ring vertices.
             if not broad_phase(corners):continue
             shape=cup_contact_shape(*bounds)
-            result.append((label,{'points':[convert(p) for p in shape['points']], 'faces':shape['faces']}))
+            result.append((label,{'points':[convert(p) for p in shape['points']], 'faces':shape['faces'], 'material_cells':shape['material_cells']}))
         else:result.append((label,corners))
     return result

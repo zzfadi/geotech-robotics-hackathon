@@ -57,8 +57,38 @@ class CupContact(unittest.TestCase):
         gap,_=contact_gap(0,.1,[('cup',shape)],compliance=.005,flat=True)
         width=max(p[1] for p in pad_points(shape,True))-min(p[1] for p in pad_points(shape,True))
         self.assertAlmostEqual(gap,width-.005)
-        self.assertEqual(contact_gap(0,.02,[('cup',shape)],flat=True)[0],.02)
+        # Both finite pads start inside empty cavity; closing must not latch.
+        self.assertEqual(contact_gap(0,.02,[('cup',shape)],flat=True),(0,[]))
         self.assertEqual(contact_gap(.10,.02,[('cup',shape)],flat=True),(.10,[]))
+
+    def test_hollow_cavity_with_rotated_cup_does_not_latch(self):
+        for tilt in (0,.1,.3):
+            for yaw in (0,.27,1.2):
+                self.assertEqual(contact_gap(0,.01,[('cup',self.shape(tilt=tilt,yaw=yaw))],flat=True),(0,[]))
+
+    def test_solid_bottom_still_limits_closing(self):
+        shape=self.shape(offset=(0,0,-.1115))
+        gap,names=contact_gap(0,.02,[('cup',shape)],flat=True)
+        self.assertGreater(gap,0)
+        self.assertEqual(names,['cup'])
+
+    def test_wall_sector_not_full_width_projection(self):
+        shape=self.shape()
+        self.assertEqual(contact_gap(.005,.01,[('cup',shape)],flat=True),(.005,[]))
+        gap,names=contact_gap(.04,.10,[('cup',shape)],flat=True)
+        self.assertGreater(gap,.04);self.assertEqual(names,['cup'])
+
+    def test_finite_pad_edge_hits_wall_even_when_center_line_misses(self):
+        shape=self.shape(offset=(.04,0,-.17))
+        gap,names=contact_gap(0,.1,[('cup',shape)],flat=True)
+        self.assertGreater(gap,0);self.assertEqual(names,['cup'])
+
+    def test_narrow_cavity_and_scale(self):
+        raw=cup_contact_shape((-.02,-.02,-.06),(.02,.02,.06))
+        shape=dict(raw,points=[(x,y,z-.17) for x,y,z in raw['points']])
+        self.assertEqual(contact_gap(0,.01,[('narrow',shape)],flat=True),(0,[]))
+        gap,names=contact_gap(0,.06,[('narrow',shape)],flat=True)
+        self.assertGreater(gap,.025);self.assertEqual(names,['narrow'])
 
     def test_broad_phase_only_rejects_outside_candidates(self):
         corners=local_bounds_points((-.04,-.04,-.23),(.04,.04,-.11))
