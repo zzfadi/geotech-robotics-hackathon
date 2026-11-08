@@ -1,8 +1,30 @@
-# Team plan: Hold My Beer (updated Saturday night, Nov 7)
+# Team plan: Hold My Beer (updated Saturday night, Nov 7, 8:35 PM)
 
 This is the working plan for Sunday, rebuilt from Brian's **Day 1 EOD sync** (Brian and Denys, posted in #geotech-robotics at 7:04 PM) and the repo as it stood at 8:10 PM. The history of how we got here, including every Saturday decision, is in [the Saturday Slack log](slack-log-2026-11-07.md). Where tonight's notes change an earlier decision, it is marked **Supersedes**.
 
 Credentials stay out of this file. The Dream key is the `DREAM_API_KEY` environment variable from the team password manager.
+
+## Needs a decision
+
+Nobody owns these yet, and nothing below assigns them. Settle them first thing Sunday at the latest.
+
+**No owner yet**
+
+- The beer handoff on the real arm: take a can from a person's hand, then the fist bump.
+- The hold interlock: Isaac → LiveKit "hold" message into our arm controller, dry-run tested.
+- The Isaac → Unreal stream over LiveKit.
+- The LiveKit voice agent.
+- Submission: block about 2 hours and run it.
+- The Luna2 simulated hand-to-arm contact trial.
+
+**Open questions**
+
+- How Dream-1 and Codex share the physical arm: which moves Dream-1 drives and which Codex scripts directly.
+- Is the voice agent still a must-have? The EOD notes don't mention it.
+- Is the hold interlock (and the turn gate) in the MVP?
+- When exactly is submission due, given "on site by 3 PM" and polishing time after the deadline? Who owns it?
+- Ten parallel simulations or nine? Nine run today.
+- Should Luna2's Isaac scene-parity scripts be committed to the repo?
 
 ## The goal
 
@@ -12,11 +34,11 @@ Brian holds out a beer, a physical Maker Arm reaches out and takes it, then fist
 
 | Topic | Earlier plan (Saturday afternoon) | Now (EOD sync) |
 | --- | --- | --- |
-| Who drives the physical arm | Dream-1 as the default "brain" for the real run (Brian, 4:40 PM), voice order → LiveKit agent → Dream-1 | **Supersedes:** the arm is driven directly through the Maker Arm SDK by a coding agent (Codex). Dream Labs is skipped on the real arm for now and may come back later as a tool call for specific tasks. Long term, maybe open-weights arm control. |
+| Who drives the physical arm | Dream-1 as the default "brain" for the real run (Brian, 4:40 PM), voice order → LiveKit agent → Dream-1 | **Supersedes:** a coding agent (Codex) drives the arm directly through the Maker Arm SDK. The EOD notes skipped Dream Labs on the real arm for now, but FADI confirmed at 8:31 PM that **we keep using the Dream API** alongside Codex, not Codex alone. How the two split the real arm is open (see Needs a decision). Long term, maybe open-weights arm control. |
 | Where Dream-1 runs | Real arm, with optional sim rehearsal | Simulated arms in Unreal: virtual cameras send frames to the Dream API, Dream returns positions, the SDK moves the virtual arms (Denys). |
 | Demo story | "Voice order → packed tray", then a cube push in Isaac | **Supersedes:** "Hold my beer" gag, fist bump, then the parallel-sim and capture story. |
 | What the simulation is for | Rehearsal and visuals | Collecting real human interaction data and benchmarking models against simulated humans. Visuals are secondary. |
-| Pause when someone is in the way | Isaac's "hold" message pauses Dream-1 through the portal task monitor | Still the design, but with no Dream-1 on the real arm the hold has to go into our own SDK controller. Not mentioned in the EOD notes, so it is an open question whether it is in the MVP. |
+| Pause when someone is in the way | Isaac's "hold" message pauses Dream-1 through the portal task monitor | Still the design, but the hold has to stop whichever drives the arm, Codex or Dream-1, so it goes into our own SDK controller. Not mentioned in the EOD notes, so it is an open question whether it is in the MVP. |
 
 Unchanged from Saturday: Isaac does the physics and streams results into Unreal over LiveKit; Unreal only draws what Isaac owns; the hold is a **software interlock, not a safety stop**, and the station operator stays on the e-stop; freeze the table layout before rehearsals; if the stream drops, Unreal holds the last pose and shows "sim offline". Details are in the Slack log under "Decisions Brian confirmed at 4:54 PM".
 
@@ -68,22 +90,13 @@ Idea flagged, not committed: **assisted intent**, where the arm infers what the 
 | 8 | LiveKit voice agent (Brian called it a must-have on Saturday) | **No owner named** (earlier: Takeshi) | Unclear if still in |
 | 9 | Run the Luna2 simulated hand-to-arm contact trial | **No owner named** | Sunday |
 | 10 | Reserve 2 hours for submission and run it | **No owner named** | Before the cutoff |
-| 11 | Jetson robot server, end to end ([brief](handoffs/jetson-end-to-end.md)) | **Needs an owner on FADI's Mac Mini** | Not required for the MVP |
-| 12 | Train and score a small model from our simulation ([brief](handoffs/small-model-training.md)) | **Needs an owner on FADI's Mac Mini** | Time-boxed, not required for the MVP |
+| 11 | Jetson robot server, end to end ([brief](handoffs/jetson-end-to-end.md)) | FADI, working on the Mac from this repo | Tonight; not required for the MVP |
+| 12 | Train and score a small model from our simulation ([brief](handoffs/small-model-training.md)) | FADI, working on the Mac from this repo | Tonight, time-boxed; not required for the MVP |
 
 ## Handoffs for the Mac Mini
 
-Two workstreams need the Mac or hardware, so they are written as briefs a fresh agent on FADI's Mac Mini can pick up from this repo:
+Two workstreams need the Mac or hardware. FADI owns both and works them on the Mac from this repo, with whichever agents run there; the briefs are written so a fresh agent can start cold:
 
 - [Jetson robot server, end to end](handoffs/jetson-end-to-end.md)
 - [Train a small model from our simulation](handoffs/small-model-training.md)
 
-## Open questions
-
-- Is the voice agent still a must-have? The EOD notes don't mention it.
-- Is the hold interlock (and the turn gate) in the MVP, given the arm is now on direct SDK control?
-- Does Dream-1 come back to the physical arm at all this weekend?
-- Ten parallel simulations or nine? Nine run today.
-- When exactly is the submission due, given "on site by 3 PM" and polishing time after the deadline?
-- Who owns submission?
-- Should Luna2's Isaac scene-parity scripts be committed to the repo?

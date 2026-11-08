@@ -1,10 +1,10 @@
 # Handoff: Jetson robot server, end to end
 
-**Owner: needed, an agent on FADI's Mac Mini.** Written Saturday night, Nov 7, from [the team plan](../plan.md), the [Table 10 connection plan](../table10-sdk-connection.md), the [arm bench handoff](../../arm/README.md) and the Slack sources summarized in [the Saturday log](../slack-log-2026-11-07.md). Nothing in this brief has been run on a Jetson.
+**Owner: FADI, working on the Mac from this repo** (with whichever agents run there). Written Saturday night, Nov 7, from [the team plan](../plan.md), the [Table 10 connection plan](../table10-sdk-connection.md), the [arm bench handoff](../../arm/README.md) and the Slack sources summarized in [the Saturday log](../slack-log-2026-11-07.md). Nothing in this brief has been run on a Jetson.
 
 ## Goal
 
-An NVIDIA Jetson (Orin preferred; a Jetson Nano was the board named on Nov 7) becomes the station's robot server. It owns both Maker Arms' CAN adapters, runs the SDK and our holding controller, reads the robot cameras, and reports measured arm state to the rest of the stack. The coding agent (Codex) drives the arm through it, the way it drove the right arm from a laptop on Saturday.
+An NVIDIA Jetson (Orin preferred; a Jetson Nano was the board named on Nov 7) becomes the station's robot server. It owns both Maker Arms' CAN adapters, runs the SDK and our holding controller, reads the robot cameras, and reports measured arm state to the rest of the stack. Codex drives the arm through it, the way it drove the right arm from a laptop on Saturday, and the Dream API stays in use alongside it. The Jetson only owns the hardware and the guards; whichever brain sends a move goes through the same controller and the same hold.
 
 End to end means: command in → Jetson controller → arm moves → measured state out to Luna2/Unreal, with a working hold (pause) and a verified return to rest.
 
@@ -35,7 +35,7 @@ Credentials: relay bearer tokens live in ignored files on Luna2 (`Saved/DreamDeb
 4. **Offline checks first.** `bash arm/tools/arm --help`, `bash arm/tools/arm test`. These don't touch hardware.
 5. **Read-only hardware.** With the arms powered by the station operator, `scan` and `watch` both adapters; confirm left/right by adapter serial. One CAN owner at a time: stop any laptop session first.
 6. **Cameras on Linux.** `arm/tools/camera_inspect` is a macOS Swift helper. Add a Linux path (V4L2 via OpenCV) that returns the same 640×480 frames from the three robot UVC cameras.
-7. **Controller.** Run `pickup_server.py` on the Jetson, bound to localhost. Codex reaches it over an SSH tunnel from the Mac, never over an open port. Replay Saturday's right-arm pickup as the acceptance test.
+7. **Controller.** Run `pickup_server.py` on the Jetson, bound to localhost. Codex reaches it over an SSH tunnel from the Mac, never over an open port. Replay Saturday's right-arm pickup as the acceptance test. When Dream-1 drives the real arm, its returned targets go through this same controller and its limits, never straight to the motors.
 8. **Telemetry out.** Feed measured joint state to the Luna2 relay over Tailscale using the existing Table 10 contract (one arm per session today). Measure feedback age at the relay.
 9. **Hold in.** Add a `hold` path to the controller: freeze at the measured pose (no power-off; the arms have no brakes). Test it with hardware output disabled, then in a dry run. It is a software interlock, not a safety stop.
 10. **Return and shutdown.** Verify `rest` returns both arms to the verified rest pose before torque release.
