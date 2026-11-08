@@ -63,4 +63,42 @@ class PositionIKTests(unittest.TestCase):
         self.assertTrue(all(row==expected for row in out['q_r_chunk']))
         with self.assertRaises(ValueError):adapt(action,self.fixture['state'])
 
+
+    def test_recorded_failures_execute_only_verified_original_target_prefix(self):
+        from compiled_fk import ArmFK
+        fk=ArmFK()
+        data=json.loads((Path(__file__).parent/'fixtures/position_ik_prefix_regression.json').read_text())
+        expected={'T06':10,'T03':5,'T01':3,'T07':2,'T00':3}
+        for case in data['cases']:
+            with self.subTest(table=case['table']):
+                before=copy.deepcopy(case)
+                output,report=adapt(case['action'],case['state'],active_sides=['left'],allow_prefix=True)
+                count=expected[case['table']]
+                self.assertEqual(len(output['q_l_chunk']),count)
+                self.assertEqual(len(output['q_r_chunk']),count)
+                self.assertTrue(report['_execution']['truncated'])
+                self.assertTrue(report['_execution']['requires_fresh_replan'])
+                self.assertEqual(report['_execution']['rejected_targets'][0]['row'],count)
+                self.assertGreater(report['_execution']['rejected_targets'][0]['position_error_m'],.002)
+                for i,row in enumerate(output['q_l_chunk'][1:],1):
+                    target=case['action']['per_key']['action.left_eef_xyz'][i]
+                    self.assertLessEqual(np.linalg.norm(fk.pose(row[:6])[:3,3]-target),.002)
+                    self.assertEqual(row[6],case['action']['q_l_chunk'][i][6])
+                self.assertEqual(case,before)
+
+    def test_prefix_never_skips_failed_first_target(self):
+        action=copy.deepcopy(self.fixture['action'])
+        action['per_key']['action.left_eef_xyz'][1]=[100,100,100]
+        with self.assertRaisesRegex(ValueError,'unreachable'):
+            adapt(action,self.fixture['state'],active_sides=['left'],allow_prefix=True)
+
+    def test_two_active_arms_share_earliest_feasible_prefix(self):
+        action=copy.deepcopy(self.fixture['action'])
+        action['per_key']['action.left_eef_xyz'][4]=[100,100,100]
+        action['per_key']['action.right_eef_xyz'][2]=[100,100,100]
+        output,report=adapt(action,self.fixture['state'],allow_prefix=True)
+        self.assertEqual(len(output['q_l_chunk']),2)
+        self.assertEqual(len(output['q_r_chunk']),2)
+        self.assertEqual(report['_execution']['executed_rows'],2)
+
 if __name__=='__main__':unittest.main()

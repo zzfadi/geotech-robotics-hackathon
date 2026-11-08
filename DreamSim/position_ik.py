@@ -23,13 +23,20 @@ def orientation_reference(q, bounds, epsilon=1e-4):
     return np.clip(q,low,high)
 
 
-def adapt(action,state,rows=12,active_sides=None):
-    result=copy.deepcopy(action);report={}
+def adapt(action,state,rows=12,active_sides=None,allow_prefix=False):
+    """Optionally return only a feasible original-target prefix for fresh replanning.
+
+    The 2 mm tolerance is unchanged. A rejected first target still fails; no
+    target is projected, replaced, skipped or executed beyond the first failure.
+    Callers must bound repeated truncations and request new measured feedback.
+    """
+    result=copy.deepcopy(action);report={};failures=[];accepted_metrics={}
     active_sides = set(('left','right') if active_sides is None else active_sides)
     if not active_sides or not active_sides <= {'left','right'}:
         raise ValueError('Invalid active sides')
     active_key = 'q_l_chunk' if 'left' in active_sides else 'q_r_chunk'
-    count = min(rows, len(action[active_key]))
+    count = min(rows, len(action[active_key]));requested_count=count
+    if allow_prefix and count<2:raise ValueError('Feasible-prefix execution requires an actionable target')
     fk=ArmFK()
     limits=[j.find('limit') for j in model().findall("joint[@type='revolute']")]
     bounds=(np.array([float(j.get('lower')) for j in limits])+1e-8,np.array([float(j.get('upper')) for j in limits])-1e-8)
@@ -57,8 +64,30 @@ def adapt(action,state,rows=12,active_sides=None):
             solved=least_squares(residual,np.clip(q,*bounds),bounds=bounds,max_nfev=100,ftol=1e-7,xtol=1e-7,gtol=1e-7)
             q=solved.x;f=fk.pose(q)
             error=float(np.linalg.norm(f[:3,3]-xyz[i]));angle=float(np.linalg.norm(Rotation.from_matrix(desired.T@f[:3,:3]).as_rotvec()))
-            if error>.002:raise ValueError(f'{side} policy target unreachable within 2 mm ({error*1000:.2f} mm)')
+            if error>.002:
+                message=f'{side} policy target unreachable within 2 mm ({error*1000:.2f} mm)'
+                if not allow_prefix or len(output)<2:raise ValueError(message)
+                failures.append({'side':side,'row':i,'position_error_m':error,'reason':message})
+                break
             output.append(q.tolist()+[float(original[i,6])]);errors.append(error);angles.append(angle)
         result[key]=output
+        accepted_metrics[side]=(errors,angles)
         report[side]={'max_position_error_m':max(errors,default=0.),'max_orientation_deviation_radians':max(angles,default=0.),'rows':count,'orientation_source':'policy_eef_rot6' if rotations is not None else 'legacy_sdk_joint_reference'}
+    # Both arms execute the same time prefix. No later valid row can bypass
+    # an earlier failed target on either active arm.
+    executed=min(len(result[key]) for key in ('q_l_chunk','q_r_chunk'))
+    maximum_displacement=0.
+    for side,key in [('left','q_l_chunk'),('right','q_r_chunk')]:
+        result[key]=result[key][:executed];report[side]['rows']=executed
+        if side in active_sides:
+            errors,angles=accepted_metrics[side]
+            report[side]['max_position_error_m']=max(errors[:executed-1],default=0.)
+            report[side]['max_orientation_deviation_radians']=max(angles[:executed-1],default=0.)
+            start=fk.pose(state['q_'+side])[:3,3]
+            maximum_displacement=max(maximum_displacement,*(float(np.linalg.norm(fk.pose(row[:6])[:3,3]-start)) for row in result[key]))
+    report['_execution']={'requested_rows':requested_count,'executed_rows':executed,
+                          'truncated':executed<requested_count,'rejected_targets':failures,
+                          'max_tcp_displacement_m':maximum_displacement,
+                          'requires_fresh_replan':executed<requested_count,
+                          'position_tolerance_m':.002}
     return result,report

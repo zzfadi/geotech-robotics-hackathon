@@ -33,7 +33,7 @@ sys.path.insert(0, str(REPO/'Unreal/TheHumanTouch/Tools'))
 from maker_arm_fleet_layout import normalize_config, JAW_MAX_M  # noqa: E402
 from queueing import wait_for_editor  # noqa: E402
 
-FLASH = 'dreamlabs/dream-1-beta-flash'
+STANDARD = 'dreamlabs/dream-1-beta'
 # Dream's configure stages a shared temporary URDF; serialize setup, not inference.
 _SETUP_LOCK = threading.Lock()
 # Ten live table simulations share bounded provider capacity; do not drop excess tables.
@@ -267,6 +267,8 @@ class TableRun:
         max_tilt = objective.get('max_tilt_deg')
         after = time.time() - 1
         target = self.v['target']['label']
+        from action_prefix_guard import PrefixGuard
+        prefix_guard = PrefixGuard()
         for cycle in range(self.v['cycles']):
             if self.stopped():
                 self.result['stopped_reason'] = 'fleet stopped'
@@ -287,12 +289,16 @@ class TableRun:
             if self.v['position_ik'] and not self.args.dry_run:
                 from position_ik import adapt
                 active = [active_side] if active_side else None
-                action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12, active_sides=active)
+                action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12, active_sides=active, allow_prefix=True)
             if active_side and not self.args.dry_run:
                 action = constrain_motion_side(action, packet['state'], active_side)
+            execution = (ik or {}).get('_execution') or {}
+            if execution.get('truncated'):
+                self.log('Executing feasible policy prefix %s/%s rows; replan from fresh feedback' %
+                         (execution.get('executed_rows'), execution.get('requested_rows')))
             report = self.dir/('action-%02d.json' % (cycle+1))
             write_json(report, {'state': packet['state'], 'action': action, 'raw_action': raw if ik else None,
-                                'ik_report': ik, 'motion_side': active_side, 'execution_rows': None if self.args.dry_run else self.v['action_rows'],
+                                'ik_report': ik, 'motion_side': active_side, 'execution_rows': None if self.args.dry_run else execution.get('executed_rows', self.v['action_rows']),
                                 'checkpoint': None if self.args.dry_run else self.v['checkpoint'],
                                 'controller_source': 'dry-run hold' if self.args.dry_run else
                                 ('Dream EEF + position IK' if ik else 'Dream joint targets')})
@@ -317,11 +323,19 @@ class TableRun:
                 for side in ('left', 'right')
                 for a, b in zip(packet['state']['q_'+side], playback.get('q_'+side, packet['state']['q_'+side])))
             self.result['motion_chunks'].append(motion_evidence)
-            after = (playback.get('finished_unix') or time.time()) - .001
+            after = playback.get('finished_unix') or time.time()
             self.result['cycles_run'] = cycle+1
             lift = lift_verdict(self.status(), target, hold_seconds, max_tilt)
             self.result['lift'] = lift
             self.log('cycle %d done (inference %.2fs) lift %.2f cm' % (cycle+1, inference, lift.get('height_cm', 0.)))
+            gap_delta = max(abs(playback.get('gap_'+side+'_m', packet['state']['gap_'+side+'_m'])-
+                                packet['state']['gap_'+side+'_m']) for side in ('left','right'))
+            bounded_stop = prefix_guard.observe(execution, motion_evidence['max_joint_delta_rad'], gap_delta)
+            if bounded_stop:
+                self.result['error'] = bounded_stop
+                self.result['stopped_reason'] = bounded_stop
+                self.log(bounded_stop)
+                return
             if lift.get('height_cm', 0) >= 10:
                 self.log('target above 10 cm; holding pose for %.1f s to measure retention' % (hold_seconds+.2))
                 hold_until = time.monotonic()+hold_seconds+.2
@@ -406,7 +420,7 @@ def make_client(variant, run):
         arm = prepare(run/('model-tcp%03d' % round(variant['tcp_back']*1000)), tcp_back=variant['tcp_back'])
         client = DreamClient()
         try:
-            checkpoint = FLASH if variant['checkpoint'] == 'auto' else variant['checkpoint']
+            checkpoint = STANDARD if variant['checkpoint'] == 'auto' else variant['checkpoint']
             configure(client, arm, checkpoint)
         except Exception:
             client.close()

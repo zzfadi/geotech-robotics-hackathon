@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T19:03:39-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Execute feasible policy prefixes and replan from fresh measured feedback.",
+  "why": "Five real policy horizons contained valid early actions followed by unreachable targets; rejecting the whole horizon discarded valid progress.",
+  "where": [
+    "DreamSim/position_ik.py",
+    "DreamSim/fleet_worker.py",
+    "DreamSim/action_prefix_guard.py",
+    "DreamSim/fixtures/position_ik_prefix_regression.json"
+  ],
+  "details": "Preserves exact policy target order, official joint limits and2mm reach tolerance. Zero-action prefixes still fail. Stops after3 consecutive truncated playbacks without measured joint/gripper motion, or6 consecutive truncated horizons overall. Selected arm constraints remain enforced. Auto checkpoint now resolves standard Dream, not Flash.19 combined offline regression tests passed; no new live inference or pickup success claimed."
+}
