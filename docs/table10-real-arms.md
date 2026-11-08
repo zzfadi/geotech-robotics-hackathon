@@ -140,3 +140,12 @@ instance ticking. One sweep found 5 link instances and 2 runtimes running togeth
   alternating joint targets: a plausible contributor to the motor dropouts under torque.
 - Both modules' `start()` now stops stray instances of themselves, including ones orphaned by a reload.
 - Re-test the real arms with a single link before concluding it is only hardware.
+
+**Retest with a single link (14:2x):** the same dropout happened. The right elbow_flex lost feedback 0.32 s after
+torque on. There were no CAN errors during drive, then a burst of error frames after release, which looks like that
+motor rebooting. The duplicate links were therefore not the cause.
+
+Next hardware checks:
+- the right elbow motor's power/CAN connector and cable at the elbow joint;
+- whether the supply can hold voltage when the motors enable;
+- swapping the elbow cable, or the arm, to see whether the fault moves with it.
