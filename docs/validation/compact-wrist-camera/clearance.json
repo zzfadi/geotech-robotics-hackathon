@@ -1,0 +1,266 @@
+{
+  "idle": {
+    "point_base_m": [
+      -0.16935760160069002,
+      -1.1768470832167454e-08,
+      0.20649636538425342
+    ],
+    "nearest": [
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_026_solid_026.stl",
+        "surface_distance_mm": 18.30377310628249,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_022_solid_022.stl",
+        "surface_distance_mm": 23.373337089289517,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_027_solid_027.stl",
+        "surface_distance_mm": 27.08524099144498,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_right",
+        "mesh": "meshes/part_041_solid_041.stl",
+        "surface_distance_mm": 56.44736595206591,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_left",
+        "mesh": "meshes/part_034_solid_034.stl",
+        "surface_distance_mm": 56.45220636736847,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl",
+        "surface_distance_mm": 56.782736607871286,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      }
+    ],
+    "inside": [],
+    "nonwatertight": [
+      {
+        "link": "base_link",
+        "mesh": "meshes/part_001_solid_001.stl",
+        "surface_distance_mm": 229.69479144642418,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_002",
+        "mesh": "meshes/part_002_solid_002.stl",
+        "surface_distance_mm": 167.08478855610383,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_003",
+        "mesh": "meshes/part_015_solid_015.stl",
+        "surface_distance_mm": 186.51236549672007,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_004",
+        "mesh": "meshes/part_018_solid_018.stl",
+        "surface_distance_mm": 170.25791690995305,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_005",
+        "mesh": "meshes/part_052_solid_052.stl",
+        "surface_distance_mm": 91.36177821768395,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_006",
+        "mesh": "meshes/part_050_solid_050.stl",
+        "surface_distance_mm": 92.61763600096978,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_022_solid_022.stl",
+        "surface_distance_mm": 23.373337089289517,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_left",
+        "mesh": "meshes/part_033_solid_033.stl",
+        "surface_distance_mm": 59.224392593574414,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_right",
+        "mesh": "meshes/part_040_solid_040.stl",
+        "surface_distance_mm": 59.22442044947597,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      }
+    ]
+  },
+  "moved": {
+    "point_base_m": [
+      -0.43361572241134405,
+      0.0879322870747491,
+      0.15940237617961794
+    ],
+    "nearest": [
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_026_solid_026.stl",
+        "surface_distance_mm": 18.303773106282417,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_022_solid_022.stl",
+        "surface_distance_mm": 23.373337089289457,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_027_solid_027.stl",
+        "surface_distance_mm": 27.085240991444927,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_right",
+        "mesh": "meshes/part_041_solid_041.stl",
+        "surface_distance_mm": 56.4473659520659,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_left",
+        "mesh": "meshes/part_034_solid_034.stl",
+        "surface_distance_mm": 56.452206367368476,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl",
+        "surface_distance_mm": 56.782736607871286,
+        "watertight": true,
+        "inside": false,
+        "inside_aabb": false
+      }
+    ],
+    "inside": [],
+    "nonwatertight": [
+      {
+        "link": "base_link",
+        "mesh": "meshes/part_001_solid_001.stl",
+        "surface_distance_mm": 435.16280988311115,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_002",
+        "mesh": "meshes/part_002_solid_002.stl",
+        "surface_distance_mm": 408.70302044203214,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_003",
+        "mesh": "meshes/part_015_solid_015.stl",
+        "surface_distance_mm": 250.4414800877513,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_004",
+        "mesh": "meshes/part_018_solid_018.stl",
+        "surface_distance_mm": 169.8331821721625,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_005",
+        "mesh": "meshes/part_052_solid_052.stl",
+        "surface_distance_mm": 91.50801409139171,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_006",
+        "mesh": "meshes/part_050_solid_050.stl",
+        "surface_distance_mm": 92.61547968536257,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "link_007",
+        "mesh": "meshes/part_022_solid_022.stl",
+        "surface_distance_mm": 23.373337089289457,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_left",
+        "mesh": "meshes/part_033_solid_033.stl",
+        "surface_distance_mm": 59.22439259357442,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      },
+      {
+        "link": "gripper_right",
+        "mesh": "meshes/part_040_solid_040.stl",
+        "surface_distance_mm": 59.224420449475964,
+        "watertight": false,
+        "inside": null,
+        "inside_aabb": false
+      }
+    ]
+  }
+}

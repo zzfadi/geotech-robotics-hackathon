@@ -3,9 +3,9 @@
 Both images have world +X at the top and +Y at the right, with no side mirror.
 The virtual stand-off/FOV remain uncalibrated, not a physical sensor match.
 """
-LOCATION_CM=(14.,20.,8.)
+LOCATION_CM=(3.,0.,-11.8)
 TARGET_CM=(10.,0.,-25.)
-FOV_DEGREES=110.
+FOV_DEGREES=90.
 
 
 def apply(indices=range(9),location_cm=None,target_cm=None):
