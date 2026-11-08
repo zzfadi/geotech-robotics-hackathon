@@ -738,6 +738,17 @@ class IdlePreview:
             self.sent['InteractionT10'] = interaction_stamp
 
 
+def poll_fleet_work(server, hello, maintenance=False):
+    """Maintenance keeps camera heartbeat alive but never claims work/reset."""
+    tables=[{**t,'ready':False,'error':'Maintenance: live cameras only; commands and resets disabled'} for t in hello] if maintenance else hello
+    server.api('/api/fleet/worker/hello', {'tables':tables,'expected_tables':list(range(9)),
+                                         'reset_supported':not maintenance})
+    if maintenance:
+        state=server.api('/api/fleet')
+        return {'command':None,'reset':None,'preview_enabled':state.get('preview_enabled',True)}
+    return server.api('/api/fleet/worker/next')
+
+
 def serve(args, config):
     """Daemon: warm Dream sessions, then run whatever the web page queues."""
     import base64
@@ -772,8 +783,7 @@ def serve(args, config):
     print('Fleet worker ready: %d tables%s' % (len(usable), ' (dry run)' if args.dry_run else ''), flush=True)
     while True:
         try:
-            server.api('/api/fleet/worker/hello', {'tables': hello, 'expected_tables': list(range(9)), 'reset_supported': True})
-            next_reply = server.api('/api/fleet/worker/next')
+            next_reply = poll_fleet_work(server,hello,getattr(args,'maintenance',False))
             command = next_reply['command']
         except Exception as error:
             print('debugger unreachable: %s' % error, flush=True)
@@ -918,6 +928,7 @@ def main():
     p.add_argument('--cycles', type=int, default=None, help="override every table's cycle count")
     p.add_argument('--tables', default=None, help='comma-separated table numbers to run, e.g. 1,3,5')
     p.add_argument('--serve', action='store_true', help='run commands queued from the Luna2 web page')
+    p.add_argument('--maintenance',action='store_true',help='serve live cameras but never claim commands or resets; restart without flag to enable work')
     p.add_argument('--server', default='http://100.84.28.59:8786')
     p.add_argument('--token-file', type=Path, default=None, help='default <project>/Saved/DreamDebugger/worker-token')
     args = p.parse_args()

@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T19:55:38-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Added opt-in fleet maintenance mode for live cameras without claiming simulation or reset requests.",
+  "why": "Keep previews available during contact diagnostics while preventing user commands from racing a controlled maintenance window.",
+  "where": [
+    "DreamSim/fleet_worker.py",
+    "DreamSim/test_fleet_maintenance.py"
+  ],
+  "details": [
+    "--serve --maintenance advertises all sessions unavailable/reset disabled and never polls the work-claim endpoint.",
+    "Normal polling unchanged; two focused tests passed.",
+    "Source only: worker startup deferred for authorized next zero-API diagnostic. Exit maintenance by graceful idle shutdown and restart without the flag."
+  ]
+}
