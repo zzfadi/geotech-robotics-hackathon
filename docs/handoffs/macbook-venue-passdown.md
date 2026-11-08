@@ -8,7 +8,7 @@ The Jetson-setup session wrote a parallel, more detailed resume at the same time
 
 ## The clock decides the order
 
-Demos are judged at 3 PM ([plan](../plan.md)): a 3-minute robot demo at the station plus 2 minutes of questions, top 5 present for 5 minutes. The submission route and cutoff are **not confirmed** by the organizers (Brian, [14:33 update](../../dashboard/updates/2026-11-08-1433-submission-rubric-check.json)). Work in this order:
+Demos are judged at 3 PM ([plan](../plan.md)): a 3-minute robot demo at the station plus 2 minutes of questions, top 5 present for 5 minutes. The submission route and cutoff are **not confirmed** by the organizers (Brian, [14:33 update](../../dashboard/updates/2026-11-08-1433-submission-rubric-check.json)). **Read Brian's final checklist in Slack first** ([post](https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794177726558499), [14:42 update](../../dashboard/updates/2026-11-08-1442-final-checklist-posted.json)). It has suggested roles for all five of us, not yet accepted, time boxes through 3 PM, the rubric weights, and the latest standup's camera-recognizer decision. Where it differs from this page, the checklist wins. Work in this order:
 
 1. The live demo works (the Table 10 real-arm path below).
 2. A backup recording exists and plays offline.
