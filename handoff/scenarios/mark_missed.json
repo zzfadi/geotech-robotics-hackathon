@@ -1,0 +1,4 @@
+{"name": "Fallback: the can was moved off the mark, the wrist camera sees no can, so the jaws never close",
+ "mode": "mark", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 60, "can_in_jaws": false}],
+ "expect": {"outcome": "failed", "reason": "can_not_at_mark", "grasp_attempts": 0, "holding": false, "final_step": "halted"}}

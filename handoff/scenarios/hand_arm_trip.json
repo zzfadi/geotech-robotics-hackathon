@@ -1,0 +1,5 @@
+{"name": "The arm server's guard trips mid-approach: report it, send nothing more",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "arm": {"trip_at": 3.5},
+ "timeline": [{"from": 0, "to": 60}],
+ "expect": {"outcome": "failed", "reason": "arm_error", "final_step": "halted"}}

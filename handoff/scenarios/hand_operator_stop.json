@@ -1,0 +1,4 @@
+{"name": "Operator types s mid-approach: nothing else moves",
+ "mode": "hand", "operator": [[1.0, "go"], [3.2, "stop"]],
+ "timeline": [{"from": 0, "to": 60}],
+ "expect": {"outcome": "stopped", "reason": "operator_stop", "final_step": "halted"}}

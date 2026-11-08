@@ -54,8 +54,9 @@ def _at(segments: List[dict], t: float) -> Optional[dict]:
 class ReplayFeed:
     """Pushes scripted detector frames into the fuser as simulated time passes."""
 
-    def __init__(self, segments: List[dict], fuser: Fuser, clock: FakeClock, fps: float):
-        self.segments, self.fuser, self.clock = segments, fuser, clock
+    def __init__(self, segments: List[dict], fuser: Fuser, clock: FakeClock, fps: float,
+                 keys=FLAG_KEYS):
+        self.segments, self.fuser, self.clock, self.keys = segments, fuser, clock, keys
         self.dt = 1.0 / fps
         self.next_t = segments[0]["start"] if segments else 0.0
         self.end = segments[-1]["end"] if segments else 0.0
@@ -67,7 +68,7 @@ class ReplayFeed:
             if s and not s["missing"]:
                 msg = {"captured_at": round(self.next_t, 4), "valid": bool(s["valid"])}
                 if s["valid"]:
-                    msg.update({k: s[k] for k in FLAG_KEYS})
+                    msg.update({k: s[k] for k in self.keys})
                 self.fuser.push(msg)
             self.next_t += self.dt
 
@@ -77,9 +78,12 @@ def run_scenario(sc: dict, cfg: Optional[Config] = None, emit=None) -> Result:
     clock = FakeClock(limit=float(sc.get("limit_s", 300)))
     segments = _segments(sc["timeline"])
     fuser = Fuser(Zones(), stale_after_s=cfg.timing.stale_after_s)
-    feed = ReplayFeed(segments, fuser, clock, float(sc.get("fps", 15)))
+    feed = ReplayFeed(segments, fuser, clock, float(sc.get("fps", 15)),
+                      ("hand_in_path",) if sc.get("path_only") else FLAG_KEYS)
 
     def truth(t: float) -> bool:
+        if "truth_can" in sc:
+            return bool(sc["truth_can"])
         s = _at(segments, t)
         if s is None:
             return False
@@ -103,9 +107,9 @@ def run_scenario(sc: dict, cfg: Optional[Config] = None, emit=None) -> Result:
 def check(sc: dict, result: Result) -> List[str]:
     problems = []
     for key, want in sc.get("expect", {}).items():
-        got = getattr(result, key)
         if key.startswith("max_") or key.startswith("min_"):
             continue
+        got = getattr(result, key)
         if got != want:
             problems.append("%s: expected %r, got %r" % (key, want, got))
     exp = sc.get("expect", {})

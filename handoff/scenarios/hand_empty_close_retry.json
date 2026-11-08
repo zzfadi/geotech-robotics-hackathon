@@ -1,0 +1,9 @@
+{"name": "Detector says can, jaws close on nothing (false positive), open and take it on the second try",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "timeline": [
+   {"from": 0, "to": 8},
+   {"from": 8, "to": 12, "can_in_jaws": true, "hand_on_can": true, "truth_can": false},
+   {"from": 12, "to": 16, "can_in_jaws": false, "hand_on_can": false},
+   {"from": 16, "to": 20, "can_in_jaws": true, "hand_on_can": true},
+   {"from": 20, "to": 60, "can_in_jaws": true, "hand_on_can": false}],
+ "expect": {"outcome": "success", "reason": "held", "grasp_attempts": 2}}
