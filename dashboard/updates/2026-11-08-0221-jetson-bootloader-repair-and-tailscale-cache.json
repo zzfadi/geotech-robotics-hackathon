@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T02:21:19-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Second-install bootloader package repaired; Tailscale ARM64 cache prepared for the eventual installed host.",
+  "why": "Separate verified package recovery from the still-pending OEM steps, SSD boot and remote-host setup.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "The retry failed at about 02:13:28 Pacific on generated boot-control board-name matching. Failure logs were privately archived and both copies hash-checked. After backup, only the two board names were corrected; APT reinstall attempts failed, but the exact ISO nvidia-l4t-bootloader 39.2.1-20260806224157 installed via dpkg with exit 0, reports install ok installed, and dpkg audit is empty; repair evidence is privately archived with both copies hash-checked. Vendor normalization selected the Nano Super compatible name and reported matching QSPI versions with no new capsule needed. Remaining OEM late commands, first SSD boot and persistent SSH are pending. Tailscale 1.104.5 Noble ARM64/keyring cache passes recorded signature-chain verification and independent artifact hash/size checks; not installed, started, authenticated or activated, and Ubuntu dependencies are not cached."
+}

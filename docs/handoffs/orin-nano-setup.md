@@ -1,6 +1,6 @@
 # Jetson Orin Nano setup: USB installer, NVMe, SSH
 
-**Current status, November 8, 2026: firmware updated; NVMe reinstall in progress.** The post-update UEFI screen directly verifies **`39.2.1-gcid-46758480`**. Two update-progress screens were observed with black-screen/reboot intervals; no 100% frame was captured, so the verified result is the new UEFI version. At approximately **02:00 Pacific**, the agent explicitly selected **Boot Manager → SanDisk USB → Install r39.2.1 → Install on NVMe** under the user's fresh-setup authorization. The installer then began partitioning **`nvme0n1`**, directly visible at **02:01:41 Pacific / 10:01:41 UTC**. **No separate erase-confirmation prompt appeared before partitioning.** By **02:03:50 Pacific**, the installer was in the package phase, displaying “Installing many packages” and an estimated 15-minute wait. It remains active; this estimate is not completion evidence. Installation completion, installed-system boot and persistent SSH remain unverified. Keep power and installer media connected while it runs.
+**Current status, November 8, 2026: bootloader package repaired; remaining installation steps and first SSD boot pending.** UEFI **`39.2.1-gcid-46758480`** is verified. The retry passed partitioning and reached package installation, but `nvidia-l4t-bootloader` rejected the generated boot-control board name. Its private evidence archive is saved and hashed. The boot-control board names were corrected after backup, and installing the exact ISO bootloader package with `dpkg --install` succeeded with exit 0. Remaining OEM late commands, completed installation, installed-system boot and persistent SSH remain unverified. Tailscale packages are prepared separately for the eventual installed host; they have not been installed or activated.
 
 At approximately **01:17 Pacific / 09:17 UTC**, the user-started JetPack 7.2.1 / Jetson Linux 39.2.1 installer stopped with **“An error occurred. Press enter to start a shell.”** An agent-sent **Enter through the KVM** opened the diagnostic shell, directly verifying local keyboard delivery. The pre-recovery read-only `bios_version` check returned **`36.4.2-gcid-38685322`**, unchanged from the starting firmware. Prior NVMe partitioning, extraction and package progress remain recorded below; recovery SSH was access to this failed installer, not the final OS.
 
@@ -53,7 +53,17 @@ Temporary SSH to **`root@192.168.8.136`** with a dedicated key enabled evidence 
 
 After preservation, the Jetson was rebooted into firmware setup. [NVIDIA's startup reference](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) directs explicit USB selection in Boot Manager, **Y within the 30-second QSPI prompt**, and waiting for **both capsule-update passes**, including expected reboots. UEFI Boot Manager explicitly selected the SanDisk USB. At the timed prompt before GRUB, **Y was sent with 19 seconds remaining**; `/private/tmp/jetson-firmware-recovery-06.png` confirms **“User confirmed. Proceeding with capsule update.”** Two subsequent update-progress screens were seen with black-screen/reboot intervals. Although no 100% frame was captured, the later UEFI screen in `/private/tmp/jetson-firmware-watch-hand-observation-11.png` directly verifies **`39.2.1-gcid-46758480`**, establishing the firmware result. Do not treat the previous temporary SSH session as current reachability after reboot.
 
-The agent then selected the SanDisk USB explicitly, followed by **Install r39.2.1 → Install on NVMe**, at approximately 02:00 Pacific. The target had been identified as **SHPP41-1000GM, 931.5G** and fresh setup was user-authorized. Partitioning started automatically without a separate erase-confirmation prompt; `/private/tmp/jetson-retry-watch-hand-observation-03.png` shows `nvme0n1` partition work at 02:01:41 Pacific. It progressed to installing many packages by 02:03:50 Pacific, with an estimated 15-minute wait. **Do not interrupt the active reinstall or assume another confirmation will appear.** For future attempts, treat the Install/autoinstall selection itself as potentially destructive. Suggested hostname remains `orin-arm`; successful installation, final account, root device and persistent SSH still need verification.
+The agent then selected the SanDisk USB explicitly, followed by **Install r39.2.1 → Install on NVMe**, at approximately 02:00 Pacific. The target had been identified as **SHPP41-1000GM, 931.5G** and fresh setup was user-authorized. Partitioning started automatically without a separate erase-confirmation prompt; `/private/tmp/jetson-retry-watch-hand-observation-03.png` shows `nvme0n1` partition work at 02:01:41 Pacific. It progressed to installing many packages by 02:03:50 Pacific, with an estimated 15-minute wait, then failed during `nvidia-l4t-bootloader` configuration. The estimate did not establish completion. For future attempts, treat the Install/autoinstall selection itself as potentially destructive. Suggested hostname remains `orin-arm`; successful installation, final account, root device and persistent SSH still need verification.
+
+## Second installation failure and targeted repair
+
+The retry failed at approximately **02:13:28 Pacific** in `nvidia-l4t-bootloader` post-install configuration (the second crash timestamp records this time). The saved traceback shows the in-target APT reinstall command returned **100**, and the package post-install script returned **1**. Its error is **`3767--0005--1--jetson-orin-nx-devkit-16gb- does not match any known boards`**. The target's `/etc/nv_boot_control.conf` contained the same `jetson-orin-nx-devkit-16gb` name in `TNSPEC` and `COMPATIBLE_SPEC`. This is a second failure after the verified firmware update, distinct from the first DTB-match error.
+
+Evidence is preserved privately at **`/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/retry-bootloader-failure.tar.gz`**, SHA-256 **`3cc4d1b27f14b8eaf30ae95a342cd72e321a10a24a351a8924ca6256523bfcf0`**. Both the working and private-volume copies were independently hash-checked. The archive includes installer/package logs, boot-control configuration and scripts, plus **`/var/crash/1794132808.244395971.install_fail.crash`**. Raw logs remain outside Git.
+
+After backing up the original configuration, the two board-name fields were corrected to `jetson-orin-nano-devkit`; the remaining board identifiers were preserved. With the required `/proc`, `/sys` and EFI-variable mounts available in the target, APT reinstall attempts by package name and local Debian package returned **“Internal Error, No file name.”** Installing the exact ISO **`nvidia-l4t-bootloader` version `39.2.1-20260806224157`** using `dpkg --install` then completed with **exit 0**.
+
+The vendor scripts normalized **CompatibleSpec** to **`jetson-orin-nano-devkit-super`**, while TNSPEC retained **`jetson-orin-nano-devkit`**. The log reports matching current/package QSPI values **2556417** and **“No need to trigger capsule update.”** This establishes successful package repair, not completed OEM setup or a bootable installed system. The package now reports **`install ok installed`**, and **`dpkg --audit` is empty**. The repair log `/target/root/jetson-installer-repair-20261108/reinstall-dpkg.log` and supporting evidence are preserved privately in **`/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/bootloader-repair-evidence.tar.gz`**, SHA-256 **`d15872aa5b974a88a2f5c6d3d25036f1441095444e85ec39d8915cd3becb565a`**. Both archive copies were independently hash-checked. Remaining OEM late commands and first SSD boot still need verification before deploying the arm runtime.
 
 ## Proposed portable LAN — separate travel router
 
@@ -82,6 +92,12 @@ Keep the arm environment on **Python 3.12**: the pinned NumPy/SciPy require it, 
 
 The separate `vision/run.py` preview uses OpenCV camera capture, but `vision/README.md` currently documents a JetPack 6 Torch setup. Verify a JetPack 7.2.1-compatible vision environment before using it here. The base arm cache does not contain that vision stack, and the preview does not establish the three-camera snapshot contract required by the pickup workflow.
 
+## Prepared Tailscale package cache
+
+`/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/tailscale-ubuntu-noble-arm64` contains **Tailscale 1.104.5 for Ubuntu 24.04 ARM64**, archive-keyring package **1.35.181**, repository metadata, a manifest and install notes. The recorded verification chain uses Tailscale's HTTPS-retrieved repository key to verify `InRelease`, its hashes to verify the package indexes, and the indexes to verify package sizes/hashes. All seven cached artifact sizes and SHA-256 values were independently rechecked against the manifest. The key was not separately verified out of band.
+
+This is a prepared package cache: **nothing has been installed, started, authenticated or activated on the Jetson**. Ubuntu dependencies such as required `iptables` and recommended `iproute2` are not included, so it is not a complete offline dependency repository. Package installation can start `tailscaled`; use the cache only after the installed host is verified and the intended network/account setup is ready. Keep authentication separate and verify access after joining the intended tailnet. No route, exit-node, Tailscale SSH or public-sharing capability is preconfigured.
+
 ## Board facts — update from observed results
 
 | Field | Value |
@@ -90,18 +106,18 @@ The separate `vision/run.py` preview uses OpenCV camera capture, but `vision/REA
 | Firmware before | Photo verified: `36.4.2-gcid-38685322`, build date `2024-12-12` |
 | Firmware in failed installer | Historical pre-recovery `bios_version`: `36.4.2-gcid-38685322` |
 | Firmware after recovery | UEFI directly verified: `39.2.1-gcid-46758480`; no 100% update frame captured |
-| Current boot observation | NVMe reinstall progressed to package installation at 02:03:50 Pacific; estimated 15-minute wait, still active |
-| Target JetPack / L4T / Ubuntu | Reinstall route: 7.2.1 / 39.2.1 / 24.04; installation in progress, successful final OS boot unverified |
+| Current boot observation | Second-install bootloader package repaired with dpkg exit 0; remaining OEM late commands and first SSD boot pending |
+| Target JetPack / L4T / Ubuntu | Route: 7.2.1 / 39.2.1 / 24.04; bootloader repair verified, installation completion and final OS boot pending |
 | Console | DisplayPort/C270 view; KVM USB configured/high-speed; agent Enter directly opened diagnostic shell, HDMI empty |
 | KVM local / cloud | Authenticated cloud console from this Mac; settled P2P, no HDMI signal; cloud-route keyboard and off-site access unverified |
 | KVM network | Mac Wi-Fi → Ethernet Internet Sharing active; bridge100 192.168.2.1, KVM DHCP 192.168.2.2 |
 | Travel router | GL-MT3000 Beryl AX admin UI v4.11.0 after user-started upgrade; internet HTTP check passed; home GL-MT6000 unchanged |
 | Portable LAN status | Port 1 saved as LAN; reserved KVM 192.168.8.166 / Jetson 192.168.8.136; KVM still on Mac 192.168.2.2, cable move/access pending |
 | Jetson IPv4 | Temporary installer at 192.168.8.136 before reboot; installed-OS address not yet verified |
-| Installer media | Validated 16 GB SanDisk Cruzer Blade; reused for verified firmware update and active NVMe reinstall |
-| OS target | Pre-reinstall lsblk: /dev/nvme0n1, 931.5G, SHPP41-1000GM, partitions 1–15 and /target mount; current reinstall installing packages, successful installed boot unverified |
+| Installer media | Validated 16 GB SanDisk Cruzer Blade; reused for verified firmware update and second NVMe install attempt |
+| OS target | Pre-reinstall lsblk: /dev/nvme0n1, 931.5G, SHPP41-1000GM, partitions 1–15 and /target mount; bootloader package repaired after second failure, successful installed boot unverified |
 | System Python / arm environment Python | Device results pending; isolated arm Python 3.12 planned |
-| Hostname / username / Tailscale | Final account/hostname and Tailscale unverified; recovery used installer root account only |
+| Hostname / username / Tailscale | Final account/hostname unverified; Tailscale 1.104.5 cache prepared only, not installed or activated |
 | Power mode / fan / temperatures | Not yet verified |
 | SSH key login / offline arm tests | Dedicated-key recovery SSH verified before reboot; persistent installed-OS SSH and arm tests unverified |
 

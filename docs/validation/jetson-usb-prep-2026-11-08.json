@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Authenticated KVM cloud console from this Mac settles on P2P/no HDMI; Beryl address reservations verified while physical KVM move remains pending; NVMe reinstall installing packages",
+  "scope": "Second-install bootloader package repaired with backed-up board-name correction and exact ISO dpkg install exit 0; remaining OEM late commands/first SSD boot pending; Tailscale cache prepared only",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -54,7 +54,7 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "NVMe reinstall in package phase; no active-install key test sent through cloud console",
+    "observation": "Temporary installer recovery: bootloader package repair verified, remaining OEM late commands and first SSD boot pending",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
@@ -62,7 +62,7 @@
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
     "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
     "cloud": "Authenticated console launched via glkvm.com Remote Control; settled P2P/no HDMI from this Mac, off-site/relay/keyboard path unverified",
-    "updated_at": "2026-11-08T02:09:16-08:00",
+    "updated_at": "2026-11-08T02:21:19-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
@@ -155,15 +155,16 @@
     }
   },
   "pending": [
-    "Observe active NVMe reinstall through completion/reboot without interrupting power or removing installer media",
+    "Complete and verify remaining OEM late commands and installer outcome; bootloader package repair is verified but full installation is not",
     "Verify successful installed OS boot, actual root device and final OS versions",
     "Establish persistent installed-OS account and key-based SSH; previous root SSH was temporary failed-installer recovery only",
     "Record RAM and run cached arm environment/offline checks after installed-host verification",
     "Await KVM cable move to Beryl Port 1, then verify reserved 192.168.8.166 is leased and accessible through that port",
     "Verify complete portable LAN without Mac sharing and off-site access separately; preserve home GL-MT6000",
-    "After active installation, verify cloud-route keyboard/video and off-site access separately; current cloud-console proof is same-Mac P2P only"
+    "When appropriate after recovery, verify cloud-route keyboard/video and off-site access separately; current cloud-console proof is same-Mac P2P only",
+    "After installed-host verification, prepare Tailscale dependencies/install and intended tailnet authentication; cache preparation alone does not establish remote access"
   ],
-  "updated_at": "2026-11-08T02:09:16-08:00",
+  "updated_at": "2026-11-08T02:21:55-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -533,24 +534,152 @@
     ],
     "agent_triggered_install_or_erase": true,
     "separate_erase_confirmation_observed_before_partitioning": false,
-    "status": "in-progress",
-    "active_directly_verified": true,
+    "status": "repair-in-progress",
+    "active_directly_verified": false,
     "target_device": "/dev/nvme0n1",
     "target_model_previously_verified": "SHPP41-1000GM",
     "target_lsblk_size_previously_verified": "931.5G",
-    "latest_stage": "Installing many packages; displayed estimated wait of 15 minutes",
+    "latest_stage": "Bootloader package repair succeeded; remaining OEM late commands and first SSD boot pending",
     "progress_observed_at": "2026-11-08T02:03:50-08:00",
     "completion_verified": false,
     "installed_os_boot_verified": false,
     "persistent_ssh_verified": false,
-    "current_instruction": "Observe installation without interrupting power or removing media; do not assume a further erase confirmation will appear",
-    "updated_at": "2026-11-08T02:09:16-08:00",
+    "current_instruction": "Complete and verify remaining OEM late commands and installer outcome, then verify first SSD boot before runtime provisioning",
+    "updated_at": "2026-11-08T02:21:19-08:00",
     "partitioning_observation": {
       "observed_at": "2026-11-08T02:01:41-08:00",
       "local_screenshot": "/private/tmp/jetson-retry-watch-hand-observation-03.png"
     },
     "progress_evidence": "Direct webcam observation; installer remains running",
     "displayed_wait_minutes": 15,
-    "wait_estimate_is_completion_evidence": false
+    "wait_estimate_is_completion_evidence": false,
+    "package_progress_observation": {
+      "observed_at": "2026-11-08T02:03:50-08:00",
+      "stage": "Installing many packages; displayed estimated wait of 15 minutes",
+      "evidence": "Direct webcam observation; installer remains running"
+    },
+    "failure": {
+      "package": "nvidia-l4t-bootloader",
+      "stage": "in-target APT reinstall and bootloader post-install configuration",
+      "apt_exit_status": 100,
+      "postinst_exit_status": 1,
+      "error": "3767--0005--1--jetson-orin-nx-devkit-16gb- does not match any known boards",
+      "target_config": "/target/etc/nv_boot_control.conf",
+      "generated_board_name": "jetson-orin-nx-devkit-16gb",
+      "affected_fields": [
+        "TNSPEC",
+        "COMPATIBLE_SPEC"
+      ],
+      "crash_path": "/var/crash/1794132808.244395971.install_fail.crash",
+      "evidence": "Read-only inspection of preserved retry archive",
+      "observed_at": "2026-11-08T02:13:28-08:00",
+      "time_evidence": "Second crash epoch 1794132808; recorded by primary recovery session"
+    },
+    "private_evidence_archive": {
+      "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/retry-bootloader-failure.tar.gz",
+      "working_copy": "/private/tmp/jetson-install-recovery-20261108/retry-bootloader-failure.tar.gz",
+      "sha256": "3cc4d1b27f14b8eaf30ae95a342cd72e321a10a24a351a8924ca6256523bfcf0",
+      "both_copies_hash_verified": true,
+      "contents_scope": "Installer/crash/package logs, target boot-control config and bootloader scripts",
+      "raw_logs_committed": false
+    },
+    "targeted_repair": {
+      "updated_at": "2026-11-08T02:21:55-08:00",
+      "status": "bootloader package repair succeeded; remaining installer steps pending",
+      "backup_before_edit": true,
+      "scope": "Corrected only two boot-control board names; other identifiers preserved",
+      "corrected_board_name": "jetson-orin-nano-devkit",
+      "affected_fields": [
+        "TNSPEC",
+        "COMPATIBLE_SPEC"
+      ],
+      "target_mounts_prepared": [
+        "/proc",
+        "/sys",
+        "EFI variables"
+      ],
+      "apt_reinstall_attempts": {
+        "forms": [
+          "Package name",
+          "Local Debian package"
+        ],
+        "result": "Internal Error, No file name"
+      },
+      "successful_installer": "dpkg --install exact ISO bootloader package",
+      "package": "nvidia-l4t-bootloader",
+      "package_version": "39.2.1-20260806224157",
+      "dpkg_exit_status": 0,
+      "configuration_success_verified": true,
+      "vendor_normalized_compatible_spec_board_name": "jetson-orin-nano-devkit-super",
+      "tnspec_board_name": "jetson-orin-nano-devkit",
+      "current_qspi_value": 2556417,
+      "package_qspi_value": 2556417,
+      "capsule_log_result": "No need to trigger capsule update",
+      "target_log": "/target/root/jetson-installer-repair-20261108/reinstall-dpkg.log",
+      "repair_log_private_preservation_verified": true,
+      "remaining_oem_late_commands_verified": false,
+      "installation_completion_verified": false,
+      "installed_os_boot_verified": false,
+      "package_status": "install ok installed",
+      "dpkg_audit_output_empty": true,
+      "private_evidence_archive": {
+        "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/bootloader-repair-evidence.tar.gz",
+        "working_copy": "/private/tmp/jetson-install-recovery-20261108/bootloader-repair-evidence.tar.gz",
+        "sha256": "d15872aa5b974a88a2f5c6d3d25036f1441095444e85ec39d8915cd3becb565a",
+        "both_copies_hash_verified": true,
+        "raw_logs_committed": false
+      }
+    }
+  },
+  "tailscale_package_cache": {
+    "prepared_at": "2026-11-08T10:11:56.866552+00:00",
+    "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/tailscale-ubuntu-noble-arm64",
+    "manifest_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/tailscale-ubuntu-noble-arm64/MANIFEST.json",
+    "target": {
+      "distribution": "Ubuntu 24.04 noble",
+      "architecture": "arm64",
+      "tailscale_version": "1.104.5"
+    },
+    "keyring_version": "1.35.181",
+    "state": "Prepared only; not installed, started, authenticated or activated",
+    "verification": {
+      "trust_root": "Tailscale repository key retrieved via official HTTPS URL; no separate out-of-band key verification.",
+      "signing_fingerprint": "2596A99EAAB33821893C0A79458CA832957F5868",
+      "inrelease_signature_verified_with_gpgv": true,
+      "arm64_and_all_packages_gz_sha256_verified_against_inrelease": true,
+      "deb_sha256_and_sizes_verified_against_signed_package_indexes": true
+    },
+    "all_seven_artifact_sizes_and_sha256_rechecked": true,
+    "dependencies": {
+      "required": [
+        "iptables"
+      ],
+      "recommended": [
+        "tailscale-archive-keyring (>= 1.35.181)",
+        "iproute2"
+      ],
+      "ubuntu_dependency_packages_cached": false
+    },
+    "install_can_start_tailscaled": true,
+    "packages": [
+      {
+        "name": "tailscale_1.104.5_arm64.deb",
+        "size": 37508766,
+        "sha256": "7ce61e75d15c1269d0aebe3ed59524b83225121cba1b8ea682d04594195f6bc1"
+      },
+      {
+        "name": "tailscale-archive-keyring_1.35.181_all.deb",
+        "size": 3082,
+        "sha256": "dfefafbbc1046114f8c99256a8e6fbec44d27bd2dd8db8ab9d4c5a99087aec90"
+      }
+    ],
+    "jetson_installation_verified": false,
+    "daemon_started": false,
+    "authenticated": false,
+    "device_activated": false,
+    "sources": [
+      "https://pkgs.tailscale.com/stable/#ubuntu-noble",
+      "https://tailscale.com/docs/install/linux"
+    ]
   }
 }
