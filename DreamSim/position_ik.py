@@ -11,6 +11,15 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'Unreal/TheHumanTouch/
 from maker_arm_model import model,mounted_frames
 
 
+def orientation_reference(q, bounds, epsilon=1e-4):
+    """Correct SDK roundoff only for the soft orientation reference."""
+    q=np.asarray(q,dtype=float)
+    low,high=bounds
+    if not np.isfinite(q).all() or np.any(q<low-epsilon) or np.any(q>high+epsilon):
+        raise ValueError('Policy orientation reference outside model limits')
+    return np.clip(q,low,high)
+
+
 def adapt(action,state,rows=12):
     result=copy.deepcopy(action);report={}
     limits=[j.find('limit') for j in model().findall("joint[@type='revolute']")]
@@ -23,7 +32,7 @@ def adapt(action,state,rows=12):
         count=min(rows,len(original));q=np.array(state['q_'+side],dtype=float)
         output=[q.tolist()+[float(original[0,6])]];errors=[];angles=[]
         for i in range(1,count):
-            desired=np.array(mounted_frames(original[i,:6],0,yaw=math.pi)['grasp_center'])[:3,:3]
+            desired=np.array(mounted_frames(orientation_reference(original[i,:6],bounds),0,yaw=math.pi)['grasp_center'])[:3,:3]
             prior=q.copy()
             def residual(v):
                 f=np.array(mounted_frames(v,0,yaw=math.pi)['grasp_center'])

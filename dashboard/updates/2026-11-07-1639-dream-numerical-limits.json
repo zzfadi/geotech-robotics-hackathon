@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T16:39:05-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Correct tiny Dream IK orientation-reference limit overshoot",
+  "why": "Four stations in the first parallel trial rejected numerical errors below 0.0001 rad; larger violations still fail",
+  "where": [
+    "DreamSim/position_ik.py",
+    "DreamSim/test_position_ik.py"
+  ],
+  "details": [
+    "Only the soft orientation reference is clamped; solver outputs remain bounded and raw responses retained",
+    "51 DreamSim tests passed; live fleet rerun remains in progress"
+  ]
+}

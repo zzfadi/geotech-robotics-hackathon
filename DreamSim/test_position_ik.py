@@ -1,7 +1,7 @@
 import copy,json,math,unittest
 from pathlib import Path
 import numpy as np
-from position_ik import adapt,mounted_frames
+from position_ik import adapt,mounted_frames,orientation_reference
 
 class PositionIKTests(unittest.TestCase):
     @classmethod
@@ -22,6 +22,12 @@ class PositionIKTests(unittest.TestCase):
             if side=='left':self.assertGreater(max(before),.01)
             self.assertEqual(self.result[key][0][:6],self.fixture['state']['q_'+side])
         self.assertEqual(self.fixture,self.original)
+
+    def test_reference_clamps_only_tiny_sdk_limit_roundoff(self):
+        bounds=(np.array([-1.]*6),np.array([0.]*6))
+        self.assertEqual(orientation_reference([6.1e-5]*6,bounds).tolist(),[0.]*6)
+        with self.assertRaisesRegex(ValueError,'outside model limits'):
+            orientation_reference([.001]*6,bounds)
 
     def test_rejects_nonfinite_targets(self):
         action=copy.deepcopy(self.fixture['action'])
