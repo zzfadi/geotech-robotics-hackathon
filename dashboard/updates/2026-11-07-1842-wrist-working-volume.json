@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T18:42:54-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Widened virtual wristcamera working-volume framing on nine tables.",
+  "why": "Actual7cmcamera stand-off cropped12cmcups during approach; savednearpose comparison nowshows fullbluecup and bothfingers.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_wrist_framing.py",
+    "docs/validation/wrist-framing-2026-11-07/audit.json"
+  ],
+  "details": "18virtualcameras use flange-local(20,0,-12)cm aimingexactCADTCP, same90degreeHFOV. No robot/physicalcamera geometry or contact changes. Botharms restored/verified. Opticsuncalibrated; future policy trial required."
+}

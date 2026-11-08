@@ -1,0 +1,47 @@
+{
+  "scope": "Uncalibrated simulation-only virtual camera framing; no hardware extrinsic claim",
+  "task": "t-0259",
+  "camera_count": 18,
+  "physical_geometry_changed": false,
+  "arm_pose_restored_and_verified": true,
+  "hfov_degrees": 90,
+  "capture_resolution": [
+    320,
+    176
+  ],
+  "target_flange_local_cm": [
+    0,
+    0,
+    -16.9638704618
+  ],
+  "before_camera_flange_local_cm": [
+    5,
+    0,
+    -12
+  ],
+  "after_camera_flange_local_cm": [
+    20,
+    0,
+    -12
+  ],
+  "near_pose_source": "20261107-183819-10a56c/T00/action-07.json final executed left row",
+  "limitations": [
+    "Near-grasp comparison uses saved arm pose with cup in its initial stable pose, no physics during diagnostic.",
+    "Wrist cameras show grasp workspace; overhead remains needed to locate distant cups at idle.",
+    "No Dream inference run yet with revised optics; framing improvement does not prove policy pickup success."
+  ],
+  "before_tcp_distance_cm": 7.045566688459526,
+  "before_approx_vertical_span_at_tcp_cm": 7.750123357305479,
+  "after_tcp_distance_cm": 20.60679523753101,
+  "after_approx_vertical_span_at_tcp_cm": 22.66747476128411,
+  "luna2_readonly_verified": {
+    "camera_count": 18,
+    "relative_location_cm": [
+      20,
+      0,
+      -12
+    ],
+    "hfov_degrees": 90,
+    "method": "PinnedSSH remote live MCP8041 CameraActor components, after scoped task"
+  }
+}
