@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T19:00:14-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Stop failed cup episodes after a measured fall below the tabletop.",
+  "why": "A cup ejected from the table continued consuming policy requests without a reachable pickup target.",
+  "where": [
+    "DreamSim/fleet_worker.py",
+    "DreamSim/test_fallen_cup.py"
+  ],
+  "details": "A fresh, gravity-enabled, unattached physical cup more than20cm below its initial height ends the episode as failed before another inference request. No recovery motion or success is fabricated. Focused tests cover freshness, threshold, physics validity and session release. Read-only nine-table camera monitoring showed maximum1.276s image age during active SIE, including failed tables; a6.386s teardown transition remains to improve."
+}

@@ -75,6 +75,22 @@ def constrain_motion_side(action, state, side):
     return result
 
 
+def target_cup_fell(table_status, target, now=None):
+    """Conservative terminal failure, not grasp evidence or a recovery trajectory."""
+    import math
+    if target not in {'MakerStation_Prop_Cup'+suffix for suffix in ('','_02','_03','_04','_05')}:
+        return False
+    status = table_status or {}
+    now = time.time() if now is None else now
+    stamp = status.get('sampled_unix')
+    prop = status.get('props', {}).get(target, {})
+    height = prop.get('height_above_start_cm')
+    return (type(stamp) in (int,float) and math.isfinite(stamp) and 0 <= now-stamp <= 2
+            and type(height) in (int,float) and math.isfinite(height) and height < -20.
+            and prop.get('physics_simulated') is True and prop.get('gravity_enabled') is True
+            and prop.get('attached_to') is None)
+
+
 def lift_verdict(table_status, target, hold_seconds=2.0, max_tilt_deg=None):
     """Numbers only. Never a grasp claim: video review is still required."""
     p = (table_status or {}).get('props', {}).get(target)
@@ -150,6 +166,7 @@ class TableRun:
         self.run = run
         self.args = args
         self.client = client
+        self.target_fell = False
         self.result = {'table': self.key, 'name': variant['name'], 'prompt': variant['prompt'],
                        'checkpoint': variant['checkpoint'], 'position_ik': variant['position_ik'],
                        'pad_contacts': variant['pad_contacts'], 'action_rows': variant['action_rows'],
@@ -254,6 +271,11 @@ class TableRun:
             if self.stopped():
                 self.result['stopped_reason'] = 'fleet stopped'
                 return
+            if target_cup_fell(self.status(), target):
+                self.target_fell = True
+                self.result['stopped_reason'] = 'target cup fell more than 20 cm below its starting height'
+                self.log(self.result['stopped_reason'])
+                return
             packet = self.fresh(after)
             started = time.monotonic()
             action, used = self.infer(packet)
@@ -337,6 +359,8 @@ class TableRun:
         self.result['verification'] = verification
         if self.args.dry_run:
             self.result['outcome'] = 'dry_run'
+        elif self.target_fell:
+            self.result['outcome'] = 'failed'
         elif self.stopped():
             self.result['outcome'] = 'stopped'
         elif self.result['error']:
