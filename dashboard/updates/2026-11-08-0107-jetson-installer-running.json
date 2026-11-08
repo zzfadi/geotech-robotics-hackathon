@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T01:07:15-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "User restored KVM keyboard operation and started the Jetson installer; webcam verifies NVMe installation in progress.",
+  "why": "The cable change cleared the user-facing HID blocker and allowed the prepared USB to reach the OS installation stage.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "User reports USB-C-to-USB-C data reconnect, working keyboard and install selection. Adjusted webcam captures directly show nvme0n1 partitions 1-15, partitioning/extraction finished and installed-system configuration running. Keyboard operation is user-confirmed; no exploratory input was sent during installation. Target model/capacity, final firmware, completion and SSH remain unverified. Observe without interrupting; no arm milestone marked complete. A fresh read-only KVM USB diagnostic now returns configured/high-speed, directly verifying host attachment after the reconnect."
+}

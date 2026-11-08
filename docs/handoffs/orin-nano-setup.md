@@ -1,6 +1,6 @@
 # Jetson Orin Nano setup: USB installer, NVMe, SSH
 
-**Current preparation route, November 8, 2026:** JetPack **7.2.1 / Jetson Linux 39.2.1** USB installer, with the attached **1 TB NVMe SSD** as the proposed OS target. The user has authorized erasing the old **16 GB SanDisk Cruzer Blade** for installation media. **SSD erasure/installation is not yet authorized:** confirm the intended SSD and its contents with the user at the installer's target-selection step before confirming installation.
+**Current activity, November 8, 2026:** the **user started the JetPack 7.2.1 / Jetson Linux 39.2.1 USB installer** after reconnecting the KVM data cable and reporting that the keyboard worked. Webcam captures now directly show Ubuntu Subiquity/curtin installation on **`nvme0n1`**, progressing through partitioning and extraction to installed-system configuration. **Do not interrupt the active installation.** The reported attached 1 TB SSD's exact model, capacity and prior contents were not independently confirmed; installer completion, final firmware, installed OS and SSH remain unverified.
 
 No microSD is available. The earlier JetPack 6 microSD plan is retained below only as an archival fallback. It is not the current setup sequence.
 
@@ -8,8 +8,8 @@ No microSD is available. The earlier JetPack 6 microSD plan is retained below on
 
 - User-provided photos show UEFI firmware **`36.4.2-gcid-38685322`**, dated **2024-12-12**. This satisfies NVIDIA's firmware prerequisite for the USB route; it does not establish an installed OS. [NVIDIA firmware check](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html#firmware-gate).
 - The photographed **`Start HTTP Boot over IPv4`** screen is a network-boot attempt, not proof of Ubuntu or SSH. A direct **DisplayPort monitor is now available** for the local boot menu and installer.
-- The **JetPack 7.2.1 USB is ready**: the 5,035,601,920-byte ISO was downloaded from NVIDIA, its local SHA-256 recorded, and balenaEtcher 2.1.9 completed flashing and validation with one successful target. The SanDisk was then safely ejected, and the user has since confirmed inserting it into the Jetson. See [USB preparation evidence](../validation/jetson-usb-prep-2026-11-08.json). Booting this installer on the Jetson remains pending. The older 6.2.1 SD ZIP is not this USB installer.
-- The SSD's contents, partitions, model/serial and bootability remain unconfirmed. Its reported 1 TB capacity alone does not identify a safe erase target.
+- The **JetPack 7.2.1 USB is ready**: the 5,035,601,920-byte ISO was downloaded from NVIDIA, its local SHA-256 recorded, and balenaEtcher 2.1.9 completed flashing and validation with one successful target. The SanDisk was then safely ejected, and the user has since confirmed inserting it into the Jetson. See [USB preparation evidence](../validation/jetson-usb-prep-2026-11-08.json). The user then selected the install entry, and active installation is directly visible on the webcam. The older 6.2.1 SD ZIP is not this USB installer.
+- Fresh captures show `nvme0n1` partitions 1–15 configured, the partitioning and extract stages finished, then `curthooks` configuring the installed system and installing missing packages. The initial frame cut off the screen bottom; later adjusted captures establish this progress. The NVMe model/capacity, prior contents, final root device and completed installation remain unverified.
 - JetPack 7.2.1 uses **Ubuntu 24.04**, while the archived JetPack 6 route uses Ubuntu 22.04. Do not apply the old `r36.5` repository edits or 6.x APT-upgrade commands on the new 7.x system. [NVIDIA release information](https://developer.nvidia.com/embedded/jetpack/downloads).
 
 ## Prepare the authorized USB
@@ -22,33 +22,33 @@ Re-identify the **SanDisk Cruzer Blade, 16 GB**, previously mounted as `UBUNTU 1
 
 Use the direct DisplayPort monitor for this installation. Keep the included 19 V power supply connected and provide a verified keyboard path. Keep robot CAN adapters disconnected during OS setup; check the heatsink and fan before workloads.
 
-Current user-reported wiring: Mac Ethernet → GL-RM1; Mac USB-C → KVM power; KVM USB-C device/HID → Jetson USB-A. The KVM's HDMI input and USB-A host port are empty; the latter is not needed for keyboard control. This Ethernet cable serves the KVM, not the Jetson; arrange the Jetson's networking during first boot.
+Latest user-reported wiring: Mac Ethernet → GL-RM1; Mac USB-C → KVM power; the KVM data/HID cable was reconnected **USB-C → USB-C** to the Jetson, after which keyboard interaction worked. The earlier USB-C → Jetson USB-A connection was not working. The KVM's HDMI input and USB-A host port are empty; the latter is not needed for keyboard control. This Ethernet cable serves the KVM, not the Jetson; arrange the Jetson's networking during first boot.
 
 **KVM setup verified on November 8:** Mac Internet Sharing **Wi-Fi → Ethernet** is active on `bridge100` at `192.168.2.1`; the KVM received DHCP address **`192.168.2.2`**. Fresh local administrator setup completed after the requested reset. The local UI reports firmware **V1.9.2 release1 (RM1)**. Its generated administrator password is stored in the Mac login Keychain; no credential value is recorded here.
 
 The user-approved Google sign-in and GLKVM **Bind** completed. Device **`GL-RM1-569`** is green/online in the cloud at `192.168.2.2`, with no paid plan activated. This verifies account binding and online status; an actual remote-control session remains unverified. Keep passwords, tokens, account identifiers and verification codes out of Git.
 
-**Keyboard delivery remains unresolved.** Keyboard input is enabled in KVM settings. Two virtual **V** clicks, including a focus attempt, produced no visible character at the webcam-observed `Shell>` prompt. The UI tooltip read **“Keyboard captured, inactive.”** Inspection of the public KVM client code maps that state to capture being enabled while the HID keyboard is offline or busy; HDMI presence is not that tooltip's condition. The user has been asked to reseat only the KVM keyboard/mouse USB cable into another Jetson USB-A port, preserving KVM power and the SanDisk installer. A read-only check in the KVM built-in terminal returned **`not attached`** for `/sys/class/udc/*/state` and **`UNKNOWN`** for current speed, confirming no USB host connection at that check. This physical USB/HID check is pending; use a known data-capable cable if reseating does not restore it. Verify input visibly before using it for Boot Manager or the time-limited installer firmware prompt.
+**USB host attachment is now directly verified, and keyboard interaction worked according to the user.** After the USB-C-to-USB-C data-cable reconnect, the user reported working keyboard control and selected the install entry described as “Install …39.something.” A fresh read-only KVM terminal check returned **`configured` / `high-speed`** for USB gadget state/current speed, clearing the earlier connection-level blocker. The agent has not independently sent and observed a successful keypress; no further test key is needed during this active installation.
 
-The user-authorized **Logitech C270** on the Mac can observe the DisplayPort monitor. 1280×720 captures showed an idle **UEFI Interactive Shell `Shell>` prompt**. The view is angled but usable for boot-state inspection; confirm small installer labels before acting. Its AVFoundation index changed from 1 to 0 during setup, so re-identify the C270 before future captures.
+Earlier evidence is retained: two virtual **V** attempts produced no character at `Shell>`, the tooltip said **“Keyboard captured, inactive,”** and a read-only KVM terminal check of `/sys/class/udc/*/state` and current speed returned **`not attached` / `UNKNOWN`**. Those results describe the earlier cable state, not the current user-reported working connection.
+
+The user-authorized **Logitech C270** on the Mac can observe the DisplayPort monitor. Earlier 1280×720 captures showed an idle **UEFI Interactive Shell `Shell>` prompt**; the latest adjusted captures show active Subiquity/curtin installation. The view is angled; keep the full screen visible to distinguish progress, errors and completion. Its AVFoundation index changed from 1 to 0 during setup, so re-identify the C270 before future captures.
 
 The **GL.iNet Comet GL-RM1** remains an optional console: **Jetson DisplayPort → DP-to-HDMI adapter/cable → Comet HD IN**; separately connect **Jetson USB host → Comet USB-Device**, plus Comet power/network. The available DisplayPort/USB-C cable is not a video connection to this KVM. [GL.iNet connection guide](https://docs.gl-inet.com/kvm/en/user_guide/gl-rm1/quick_setup_guide/). Jetson USB-C does not output video; NVIDIA supports passive or active DP-to-HDMI adapters. [NVIDIA hardware layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html).
 
-## Supervised installer sequence after USB validation
+## Active installation — observe without interrupting
 
-Follow [NVIDIA's Orin Nano quick start](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) at the local console:
+The user has already launched installation; partitioning and source extraction are visibly complete, and installed-system configuration is running. Keep power and the installer USB connected. Do not restart, return to Boot Manager, send exploratory keys or remove media while this work continues. Wait for the installer's completion/reboot instructions and capture the complete screen.
 
-1. The user has inserted the validated USB. Once keyboard control is verified, type **`exit`** at the current UEFI `Shell>` prompt and press Enter, inspect the returned firmware menu, then choose **Boot Manager → SanDisk USB**. From the NVIDIA splash, **Esc → Boot Manager** is the alternative route. Do not select the HTTP/network entry.
-2. Watch for the QSPI firmware confirmation. With existing 36.x firmware, press **Y within 30 seconds** when proceeding with the firmware update. A missed prompt requires restarting the installer.
-3. Allow **both capsule-update passes** and their expected reboots to finish. Never interrupt power. Record the resulting firmware version.
-4. Choose **Install Jetson ISO r39.2.1**, then inspect storage selection. **Stop before confirming installation:** show the proposed NVMe's device identity, capacity and any displayed partitions to the user. Obtain confirmation to erase that intended 1 TB SSD; do not substitute another disk or the USB installer.
-5. Only after that confirmation, continue installation. The selected target is erased. Follow the reboot/media-removal prompt, then finish licence, account and network setup.
+Do not promise a later disk-confirmation prompt: this attempt has already written partitions on `nvme0n1`. For any future reinstall, treat an **Install/autoinstall menu selection as potentially destructive** and confirm the intended device and erasure before selecting it. The user launched the current installation.
 
-Suggested hostname: `orin-arm`; record the actual username. Booting the installer or completing its firmware phase does not prove the SSD installation succeeded.
+[NVIDIA's startup reference](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) covers explicit USB selection in Boot Manager, the 30-second **Y** QSPI prompt and two capsule-update passes. Completion of those firmware passes was not independently observed in this run. Verify the final firmware version after installation instead of restarting to repeat them.
+
+Suggested hostname after installation: `orin-arm`; record the actual username. Installation progress is not proof of a successful installed-system boot.
 
 ## Verify the installed system and SSH
 
-After installation has been authorized and completed:
+After the active installation completes and the Jetson boots from its installed target:
 
 1. Record `uname -a`, `cat /etc/nv_tegra_release`, `cat /etc/os-release`, `sudo nvbootctrl dump-slots-info`, `python3 --version`, `findmnt /`, `lsblk -f` and `df -h /`. Confirm the root filesystem belongs to the intended NVMe before changing packages. Compare actual L4T/Ubuntu versions with the selected 39.2.1/24.04 route.
 2. Install `openssh-server`, enable it with `sudo systemctl enable --now ssh`, and record `hostname -I`. Connect from the Mac with the actual username/IP; verify the host key against the local console, install the intended public SSH key, and verify another key-based login.
@@ -72,13 +72,13 @@ The separate `vision/run.py` preview uses OpenCV camera capture, but `vision/REA
 | Model / RAM | Orin Nano reported; exact module/RAM still unverified |
 | Firmware before | Photo verified: `36.4.2-gcid-38685322`, build date `2024-12-12` |
 | Firmware after installer | Not yet verified |
-| Current boot observation | Initial photos show HTTP boot; later Logitech webcam capture shows UEFI `Shell>`; installed OS not established |
-| Target JetPack / L4T / Ubuntu | Prepared route: 7.2.1 / 39.2.1 / 24.04; installation pending |
-| Console | Direct DisplayPort monitor visible through Logitech C270; UEFI `Shell>` remains visible, keyboard delivery unresolved, KVM HDMI empty |
+| Current boot observation | User started installer; webcam shows `nvme0n1` partitioning/extraction finished and installed-system configuration in progress |
+| Target JetPack / L4T / Ubuntu | Installer route: 7.2.1 / 39.2.1 / 24.04; installation active, final versions unverified |
+| Console | DisplayPort monitor visible through C270; KVM USB state directly verified configured/high-speed; keyboard worked per user, agent keypress verification pending, HDMI empty |
 | KVM local / cloud | Admin initialized; V1.9.2 release1 (RM1); GL-RM1-569 bound and online at 192.168.2.2; actual remote-control session unverified |
 | KVM network | Mac Wi-Fi → Ethernet Internet Sharing active; bridge100 192.168.2.1, KVM DHCP 192.168.2.2 |
-| Installer media | 16 GB SanDisk Cruzer Blade flashed and validated by Etcher 2.1.9; user confirmed insertion into Jetson, installer boot pending |
-| OS target | Attached 1 TB NVMe proposed; identity/content confirmation and erase authorization pending |
+| Installer media | 16 GB SanDisk Cruzer Blade flashed/validated by Etcher 2.1.9; inserted into Jetson, installer now running |
+| OS target | Installer has configured `nvme0n1` partitions 1–15; exact model/capacity and prior contents not independently verified |
 | System Python / arm environment Python | Device results pending; isolated arm Python 3.12 planned |
 | Hostname / username / LAN or Tailscale address | Not yet verified |
 | Power mode / fan / temperatures | Not yet verified |

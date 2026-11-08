@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Installer USB prepared and verified on Mac; insertion into Jetson user-confirmed; KVM admin, network and cloud binding verified; HID, Jetson installation and SSH pending",
+  "scope": "User reconnected KVM data cable and started installer; webcam directly verifies NVMe installation progressing beyond partitioning; completion, final firmware and SSH unverified",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -31,7 +31,11 @@
     "eject_result": "Disk /dev/disk6 ejected",
     "device_number_scope": "At this write only; re-identify before any future operation",
     "inserted_into_jetson": true,
-    "insertion_evidence": "User confirmed insertion; installer boot remains unverified"
+    "insertion_evidence": "User confirmed insertion, then reported selecting installer; active installation now directly observed",
+    "insertion_evidence_history": [
+      "User confirmed insertion; installer boot remains unverified"
+    ],
+    "installer_boot_verified": true
   },
   "project_bundle": {
     "file": "geotech-robotics-hackathon-119d38b.bundle",
@@ -50,7 +54,7 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "UEFI Interactive Shell with idle Shell> prompt; two virtual V key attempts produced no visible character",
+    "observation": "Subiquity/curtin install logs show nvme0n1 partitions 1-15 configured, partitioning and extraction finished, then curthooks configuring installed system/installing missing packages",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
@@ -58,7 +62,7 @@
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
     "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
     "cloud": "Approved Google sign-in and Bind completed; GL-RM1-569 green online; actual remote-control session unverified",
-    "updated_at": "2026-11-08T00:51:55-08:00",
+    "updated_at": "2026-11-08T01:07:15-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
@@ -88,27 +92,118 @@
       "focus_attempted": true,
       "visible_character_observed": false,
       "tooltip": "Keyboard captured, inactive",
-      "status": "physical USB/HID connection check pending",
+      "status": "USB host attachment directly verified after reconnect; keyboard operation user-confirmed; agent keypress not tested during active install",
       "tooltip_source": "Public KVM client JavaScript inspection",
       "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
-      "next_check": "User asked to reseat only the KVM keyboard/mouse USB cable into another Jetson USB-A port, preserving KVM power and SanDisk installer",
-      "physical_cable_check_completed": false,
+      "next_check": "No exploratory keypress during active installation; independently verify agent control later when safe",
+      "physical_cable_check_completed": true,
       "usb_gadget_diagnostic": {
         "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
         "state": "not attached",
         "current_speed": "UNKNOWN",
         "scope": "Read-only through authenticated KVM built-in terminal; no USB host connection observed"
+      },
+      "recovery": {
+        "evidence": "User report",
+        "connection": "KVM data/HID cable USB-C to Jetson USB-C",
+        "keyboard_worked": true,
+        "user_selected_installer": true,
+        "reported_menu_label": "Install ...39.something",
+        "earlier_failure_fields_are_historical": true
+      },
+      "usb_gadget_diagnostic_after_reconnect": {
+        "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
+        "state": "configured",
+        "current_speed": "high-speed",
+        "scope": "Read-only through same authenticated KVM built-in terminal; USB host connection directly verified",
+        "local_screenshot": "/private/tmp/jetson-kvm-usb-state-after-reconnect.png",
+        "agent_keypress_on_jetson_verified": false
       }
-    }
+    },
+    "hid_verification_scope": "User-reported successful keyboard interaction and install selection after USB-C-to-USB-C cable reconnect; agent has not independently sent/observed a successful keypress",
+    "agent_keypress_verified": false,
+    "usb_host_attachment_directly_verified": true,
+    "hid_delivery_user_confirmed": true
   },
   "pending": [
-    "Complete requested physical KVM USB/HID cable check, then verify keyboard delivery visibly through the C270",
-    "Select the inserted, verified USB in UEFI Boot Manager and verify installer boot",
-    "Complete documented QSPI update with Y within 30-second prompt and allow both capsule passes",
-    "Identify intended NVMe and obtain its erase confirmation before installing",
-    "Complete Jetson initial setup/network/SSH and verify installed versions/root device",
-    "Verify an actual GLKVM remote-control session; cloud online status alone is insufficient",
+    "Observe active installation through completion without interrupting it; retain full-screen outcome/error evidence",
+    "Follow actual completion/reboot/media-removal prompts and verify installed-system boot",
+    "Record final firmware, L4T/Ubuntu versions, NVMe model/capacity and actual root device",
+    "Complete Jetson initial account/network/SSH setup",
+    "Independently verify an agent-sent key and actual GLKVM remote-control session when safe; user operation already succeeded",
     "Run cached arm environment and offline checks on actual Jetson"
   ],
-  "updated_at": "2026-11-08T00:51:55-08:00"
+  "updated_at": "2026-11-08T01:07:15-08:00",
+  "status_history": [
+    {
+      "recorded_at": "2026-11-08T00:51:55-08:00",
+      "scope": "Installer USB prepared and verified on Mac; insertion into Jetson user-confirmed; KVM admin, network and cloud binding verified; HID, Jetson installation and SSH pending",
+      "console_observation": "UEFI Interactive Shell with idle Shell> prompt; two virtual V key attempts produced no visible character",
+      "hid_delivery_verified": false,
+      "hid_check": {
+        "keyboard_enabled_in_settings": true,
+        "virtual_key": "V",
+        "click_attempts": 2,
+        "focus_attempted": true,
+        "visible_character_observed": false,
+        "tooltip": "Keyboard captured, inactive",
+        "status": "physical USB/HID connection check pending",
+        "tooltip_source": "Public KVM client JavaScript inspection",
+        "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
+        "next_check": "User asked to reseat only the KVM keyboard/mouse USB cable into another Jetson USB-A port, preserving KVM power and SanDisk installer",
+        "physical_cable_check_completed": false,
+        "usb_gadget_diagnostic": {
+          "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
+          "state": "not attached",
+          "current_speed": "UNKNOWN",
+          "scope": "Read-only through authenticated KVM built-in terminal; no USB host connection observed"
+        }
+      },
+      "pending": [
+        "Complete requested physical KVM USB/HID cable check, then verify keyboard delivery visibly through the C270",
+        "Select the inserted, verified USB in UEFI Boot Manager and verify installer boot",
+        "Complete documented QSPI update with Y within 30-second prompt and allow both capsule passes",
+        "Identify intended NVMe and obtain its erase confirmation before installing",
+        "Complete Jetson initial setup/network/SSH and verify installed versions/root device",
+        "Verify an actual GLKVM remote-control session; cloud online status alone is insufficient",
+        "Run cached arm environment and offline checks on actual Jetson"
+      ]
+    }
+  ],
+  "installation": {
+    "recorded_at": "2026-11-08T01:07:15-08:00",
+    "started_by": "user",
+    "agent_triggered_install_or_erase": false,
+    "active_directly_verified": true,
+    "screenshots": [
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-a.png",
+        "observation": "Subiquity/curtin partitioning with nvme0n1 text; bottom of display cut off"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-b.png",
+        "observation": "nvme0n1 partitions 1-15 configured; partitioning finished; extracting install sources to disk"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-c.png",
+        "observation": "Extract stage finished; configuring installed system and installing missing packages through curthooks"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-d.png",
+        "observation": "NVIDIA/Ubuntu package list and active installing packages progress; screen estimates 15 minutes"
+      }
+    ],
+    "screenshot_scope": "Local webcam captures inspected directly; paths are local evidence, not committed image artifacts",
+    "visible_target_device": "nvme0n1",
+    "partitioning_stage_finished": true,
+    "extract_stage_finished": true,
+    "latest_stage": "Installing NVIDIA and Ubuntu packages; screen estimates 15 minutes",
+    "target_model_capacity_independently_verified": false,
+    "target_prior_contents_independently_verified": false,
+    "final_firmware_verified": false,
+    "completion_verified": false,
+    "installed_os_boot_verified": false,
+    "ssh_verified": false,
+    "current_instruction": "Observe progress without interrupting power, removing installer USB or sending exploratory keys"
+  }
 }
