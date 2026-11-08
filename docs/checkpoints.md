@@ -70,3 +70,22 @@ editor. Luna2 then fast-forwarded its source-only difference. The normal
 interactive `TheHumanTouch-Checkpoint` scheduled task reported `unchanged` at
 `e605314`, confirming the saved state and remote match. Concert history remains
 active; no session rollover or participant disconnection was performed.
+
+## Session rollover, 2026-11-08 23:3x UTC
+
+Requested by Denys after the Mac editor came back with disjointed Table 10 arms and replayed about 20,000 session
+activities on rejoin.
+1. Luna2 was fast-forwarded to `origin/main`. The checkpoint task pushed `09c422f` (`TheHumanTouch.umap`,
+   `MI_ArmHandle`).
+2. The Mac editor was quit gracefully. Its live checkout had on-disk `SM_MakerArm_*` meshes and a map that differed
+   from Luna2's, plus 52 missing shared assets, which caused the disjointed arms there. All 62 files were copied
+   from `09c422f`; the 10 overwritten files are kept in `Saved/ContentBackup-20261108-rollover`.
+3. The Luna2 server task `TheHumanTouch-MultiUser` now uses
+   `-CONCERTWORKINGDIR=…/Saved/MultiUser/Working-20261108-rollover`.
+   - The old live session database is kept unchanged in `…/Saved/MultiUser/Working/EE12E35D4225D490F42696B32F4A37E1`
+     for recovery.
+   - Luna2's editor reconnected and created the fresh session `727A917548F3C33373837DBCD0AB9922` with no history.
+4. The Mac editor was relaunched with `Saved/XR/join_vr.py` and joined the fresh session.
+
+Next rollover: repeat the same steps with a new working folder name. Nothing is deleted. Before a client joins,
+sync each client's Content to the checkpoint commit, or it loads its own stale assets.
