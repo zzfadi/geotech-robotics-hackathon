@@ -1,0 +1,11 @@
+{
+  "generator": "Built-in Imagegen",
+  "gallery": "Architectural editorial photograph, wide 16:9. Front-on view into a grand yet spare Louvre-inspired museum bay, softly fluted limestone pilasters at far sides, carved cornice above, warm polished marble floor below, a single low deep oxblood velvet rope far toward bottom corners between patinated brass stanchions. CENTRAL FEATURE IS A VERY LARGE COMPLETELY BLANK FLAT LIMESTONE WALL facing the camera straight on, centered and perfectly vertical; wall clear between horizontal 17% and 83% and vertical 10% and 75%. A portrait lens keeps all verticals parallel. Overhead clerestory casts raking daylight from left, delicate patina. No door, no art, no text, no visitors. Premium architectural magazine. Quiet, real, monumental.",
+  "milkmaid": "A remarkably faithful museum-quality 16:9 painted-world adaptation of Vermeer's The Milkmaid, preserving the actual original supplied as first reference on the left of an expanded horizontal composition. Embed Emmy, the human-size photoreal ivory ceramic humanoid supplied in reference 2 and 3, INSIDE the same kitchen, standing at the right edge of the same table. The milkmaid in her yellow bodice and blue apron tips her terracotta jug; Emmy gently steadies the brown ceramic bowl with both articulated hands. Her full recognizably humanoid head, shoulders and torso are clearly visible, in three-quarter profile looking down at the bowl. Match daylight from the left casement window. Preserve the original artist's impasto, quiet shadow, basket of bread and blue cloth, and keep Emmy sharply photoreal with the approved fine crown seam and smooth symmetric ivory torso. One painting composition from edge to edge, no labels, no words, no frame yet; do not introduce industrial machinery or additional people. Timeless, intimate, dignified.",
+  "references": [
+    "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
+    "../../brand-kit-final/emmy/turnaround/01-front-left.png",
+    "../../brand-kit-final/emmy/details/08-face.png"
+  ],
+  "installation": "Photographic gallery background. Inner image rectangle (112,58) to (1808,1012) on a 1920 × 1080 canvas. All five installations share this rectangle and frame."
+}
