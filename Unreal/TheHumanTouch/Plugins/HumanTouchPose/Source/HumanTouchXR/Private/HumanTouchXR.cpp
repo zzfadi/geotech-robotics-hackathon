@@ -77,7 +77,8 @@ public:
             {
                 const FString& Label = It->GetActorLabel(false);
                 if (!Label.StartsWith(TEXT("MakerEnvironment_")) &&
-                    !(Label.StartsWith(TEXT("MakerFleet_")) && Label.Contains(TEXT("__MakerEnvironment_"))) &&
+                    !((Label.StartsWith(TEXT("MakerFleet_")) || Label.StartsWith(TEXT("MakerInteraction_T09__"))) &&
+                      (Label.Contains(TEXT("__MakerEnvironment_")) || Label.Contains(TEXT("__WallNumber_")))) &&
                     !It->ActorHasTag(TEXT("PassthroughBackground")))
                     continue;
                 TInlineComponentArray<UPrimitiveComponent*> Components(*It);

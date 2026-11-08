@@ -29,6 +29,8 @@
     }
   ],
   "Plugins": [
+    {"Name": "XRBase", "Enabled": true, "TargetAllowList": ["Editor"]},
+    {"Name": "OpenXRHandTracking", "Enabled": true, "TargetAllowList": ["Editor"]},
     {"Name": "OpenXR", "Enabled": true, "TargetAllowList": ["Editor"]},
     {
       "Name": "LiveLink",

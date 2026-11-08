@@ -1,4 +1,5 @@
 #include "HumanTouchXRTable.h"
+#include "HumanTouchCornerCapture.h"
 
 #include "Components/PrimitiveComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -33,24 +34,57 @@ FDelegateHandle RecenterHandle;
 FTSTicker::FDelegateHandle TickHandle;
 IConsoleObject* AlignCommand = nullptr;
 double CaptureAt = -1;
+FHumanTouchCornerCapture Survey;
+TOptional<FTransform> VerifiedRoom;
+TArray<FVector> VerifiedModel;
+int32 VerifiedNumber = INDEX_NONE;
+double NextGeometryCheck = 0;
+IConsoleObject* SurveyCommand = nullptr;
 FString Message;
 int32 LastMissing = INDEX_NONE;
 
 void ForgetRoom()
 {
+    if (Survey.IsRunning() || VerifiedRoom.IsSet())
+        Survey.Cancel(TEXT("Tracking origin changed. Repeat the corner survey."));
+    VerifiedRoom.Reset();
     MeasuredEdgePose.Reset();
     PlacedAvatar.Reset();
     CaptureAt = -1;
 }
 
+FString Prefix(int32 Number)
+{
+    if (Number == 1) return TEXT("");
+    if (Number == 10) return TEXT("MakerInteraction_T09__");
+    return FString::Printf(TEXT("MakerFleet_T%02d__"), Number - 1);
+}
+
 FString StationLabel(int32 Number, const TCHAR* Base)
 {
-    return Number == 1 ? FString(Base) : FString::Printf(TEXT("MakerFleet_T%02d__%s"), Number - 1, Base);
+    return Prefix(Number) + Base;
+}
+
+// Earlier map revisions used the fleet prefix for the tenth station.
+FString ScenePrefix(UWorld* World, int32 Number)
+{
+    if (Number != 10 || !World) return Prefix(Number);
+    const FString Table = TEXT("Dreamlabs_YAM_Table");
+    if (PlacedTable.IsValid() && PlacedTable->GetWorld() == World)
+    {
+        const FString& Label = PlacedTable->GetActorLabel(false);
+        if (Label == Prefix(10)+Table || Label == TEXT("MakerFleet_T09__")+Table)
+            return Label.LeftChop(Table.Len());
+    }
+    for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
+        if (It->GetActorLabel(false) == Prefix(10)+Table) return Prefix(10);
+    return TEXT("MakerFleet_T09__");
 }
 
 int32 OwnerNumber(const FString& Label)
 {
     // Fleet T00 is the sticker on the original station, whose geometry predates this prefix.
+    if (Label.StartsWith(TEXT("MakerInteraction_T09__"))) return 10;
     if (Label.StartsWith(TEXT("MakerFleet_T")))
     {
         FString Index, Suffix;
@@ -121,7 +155,7 @@ public:
         const int32 Number = HumanTouchXRTable::Number();
         if (CachedWorld.Get() != World || CachedNumber != Number || Now >= NextRefresh)
         {
-            const FString TableLabel = StationLabel(Number, TEXT("Dreamlabs_YAM_Table"));
+            const FString TableLabel = ScenePrefix(World,Number) + TEXT("Dreamlabs_YAM_Table");
             bool bFoundTable = false;
             Hidden.Reset();
             for (TActorIterator<AActor> It(World); It; ++It)
@@ -169,25 +203,65 @@ bool Tick(float)
         return true;
     }
     auto& XR = *GEngine->XRSystem;
-    if (MeasuredEdgePose.IsSet() && XR.GetTrackingOrigin() != MeasuredOrigin)
+    if ((MeasuredEdgePose.IsSet() || Survey.IsRunning() || VerifiedRoom.IsSet()) && XR.GetTrackingOrigin() != MeasuredOrigin)
         ForgetRoom();
     UWorld* World = GEditor->GetEditorWorldContext().World();
     if (!IsStation(World))
+    {
+        ForgetRoom();
         return true;
+    }
     if (!EyeView)
         EyeView = FSceneViewExtensions::NewExtension<FStationEyeView>();
     const int32 Number = HumanTouchXRTable::Number();
+    if (Survey.IsRunning())
+    {
+        FTransform Solved;
+        const bool bSameAvatar = PlacedAvatar.IsValid() && PlacedAvatar->GetWorld() == World &&
+            PlacedAvatar->GetActorScale3D().Equals(FVector::OneVector, 0.001);
+        if (Survey.Tick(World, Number, bSameAvatar && XR.HasValidTrackingPosition() && HasLiveViewer(), Solved))
+        {
+            VerifiedRoom = Solved;
+            VerifiedNumber = Number;
+            VerifiedModel = Survey.Targets();
+            MeasuredEdgePose.Reset();
+            PlacedAvatar.Reset();
+        }
+    }
+    if (Survey.CheckFailed)
+    {
+        VerifiedRoom.Reset();
+        Survey.CheckFailed = false;
+    }
+    if (VerifiedRoom.IsSet() && (Number != VerifiedNumber || FPlatformTime::Seconds() >= NextGeometryCheck))
+    {
+        NextGeometryCheck = FPlatformTime::Seconds() + 1;
+        TArray<FVector> Current;
+        FString Error;
+        bool bMatches = Number == VerifiedNumber && XR.HasValidTrackingPosition() && HasLiveViewer() &&
+            FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World,Number), Current, Error);
+        // Moving links are expected after registration. Fixed mounting holes and
+        // tabletop corners must still be in the same place after a Concert reload.
+        for (int32 I=0; bMatches && I<Current.Num(); ++I)
+            if (I != 7 && I != 11) bMatches = Current[I].Equals(VerifiedModel[I],0.1);
+        if (!bMatches)
+        {
+            VerifiedRoom.Reset();
+            PlacedAvatar.Reset();
+            Survey.Cancel(TEXT("Survey expired after a station or viewer change. Repeat the corner survey."));
+        }
+    }
     const bool bCapture = CaptureAt >= 0 && FPlatformTime::Seconds() >= CaptureAt;
     if (!bCapture && PlacedAvatar.IsValid() && PlacedTable.IsValid() &&
         PlacedAvatar->GetWorld() == World &&
-        PlacedTable->GetActorLabel(false) == StationLabel(Number, TEXT("Dreamlabs_YAM_Table")) &&
+        PlacedTable->GetActorLabel(false) == ScenePrefix(World,Number) + TEXT("Dreamlabs_YAM_Table") &&
         PlacedTable->GetActorTransform().Equals(PlacedTableTransform))
         return true;
     const UClass* AvatarClass = FindObject<UClass>(nullptr, TEXT("/Script/XRCreative.XRCreativeAvatar"));
     if (!AvatarClass)
         return true;
-    const FString TableLabel = StationLabel(Number, TEXT("Dreamlabs_YAM_Table"));
-    const FString FloorLabel = StationLabel(Number, TEXT("MakerEnvironment_Floor"));
+    const FString TableLabel = ScenePrefix(World,Number) + TEXT("Dreamlabs_YAM_Table");
+    const FString FloorLabel = ScenePrefix(World,Number) + TEXT("MakerEnvironment_Floor");
     AActor* Avatar = nullptr;
     AStaticMeshActor* Table = nullptr;
     AActor* Floor = nullptr;
@@ -254,12 +328,20 @@ bool Tick(float)
             UE_LOG(LogHumanTouchTable, Warning, TEXT("%s"), *Message);
             return true;
         }
+        VerifiedRoom.Reset();
+        Survey.ClearNotice();
         MeasuredEdgePose.Emplace(HeadRotation, Head);
         MeasuredOrigin = XR.GetTrackingOrigin();
     }
     // Concert can replace the map and avatar at checkpoints. The measured point
     // belongs to tracking space and can be reused with the new table geometry.
-    if (MeasuredEdgePose.IsSet())
+    if (VerifiedRoom.IsSet())
+    {
+        Room = VerifiedRoom->GetTranslation();
+        Yaw = VerifiedRoom->Rotator().Yaw;
+        Message = FString::Printf(TEXT("Table %d corner registration applied at unit scale."), Number);
+    }
+    else if (MeasuredEdgePose.IsSet())
     {
         const FTransform Aligned = RoomAtNearEdge(Edge, Room.Z, Yaw, MeasuredEdgePose->GetTranslation(),
                                                   MeasuredEdgePose->Rotator().Yaw);
@@ -286,9 +368,43 @@ int32 HumanTouchXRTable::Number()
 }
 bool HumanTouchXRTable::IsHidingOthers() { return HideOtherTables.GetValueOnGameThread() != 0; }
 void HumanTouchXRTable::HideOthers(bool bHide) { HideOtherTables->Set(bHide ? 1 : 0, ECVF_SetByConsole); }
-FString HumanTouchXRTable::Status() { return Message; }
+FString HumanTouchXRTable::Status() { return Survey.Status().IsEmpty() ? Message : Survey.Status(); }
+bool HumanTouchXRTable::SurveyRunning() { return Survey.IsRunning(); }
+bool HumanTouchXRTable::CanCheckSurvey() { return VerifiedRoom.IsSet() && !Survey.IsRunning(); }
+void HumanTouchXRTable::CheckSurvey()
+{
+    if (CanCheckSurvey() && GEditor)
+    {
+        UWorld* World = GEditor->GetEditorWorldContext().World();
+        Survey.BeginCheck(Number(), ScenePrefix(World,Number()), World, VerifiedRoom.GetValue());
+    }
+}
+void HumanTouchXRTable::CancelSurvey() { Survey.Cancel(TEXT("Survey cancelled.")); }
+void HumanTouchXRTable::CaptureMark() { Survey.Next(); }
+void HumanTouchXRTable::BeginSurvey(bool bProbe)
+{
+    UWorld* World = GEditor ? GEditor->GetEditorWorldContext().World() : nullptr;
+    if (!IsStation(World) || !GEngine || !GEngine->XRSystem || !GEngine->StereoRenderingDevice ||
+        !GEngine->StereoRenderingDevice->IsStereoEnabled() || !HasLiveViewer() ||
+        !PlacedAvatar.IsValid() || PlacedAvatar->GetWorld() != World ||
+        !PlacedAvatar->GetActorScale3D().Equals(FVector::OneVector, 0.001))
+    {
+        Survey.Cancel(TEXT("Enter station XR with the live headset before starting a corner survey."));
+        return;
+    }
+    MeasuredOrigin = GEngine->XRSystem->GetTrackingOrigin();
+    if (MeasuredOrigin != EHMDTrackingOrigin::LocalFloor && MeasuredOrigin != EHMDTrackingOrigin::Stage)
+    {
+        Survey.Cancel(TEXT("Select a floor-level tracking origin before surveying."));
+        return;
+    }
+    CaptureAt = -1;
+    Survey.Begin(Number(), ScenePrefix(World,Number()), World, bProbe);
+}
 void HumanTouchXRTable::AlignAfter(double Seconds)
 {
+    if (Survey.IsRunning()) CancelSurvey();
+    Survey.ClearNotice();
     CaptureAt = FPlatformTime::Seconds() + Seconds;
     Message = Seconds > 0 ? TEXT("Aligning in five seconds. Look straight across the table.") : TEXT("Waiting for headset pose.");
 }
@@ -304,12 +420,40 @@ void HumanTouchXRTable::Startup()
         {
             HumanTouchXRTable::AlignAfter(Args.Num() == 1 && Args[0] == TEXT("delay") ? 5.0 : 0.0);
         }));
+    SurveyCommand = IConsoleManager::Get().RegisterConsoleCommand(TEXT("HumanTouch.Survey"),
+        TEXT("HumanTouch.Survey start|hand|capture|check|cancel|layout|status"), FConsoleCommandWithArgsDelegate::CreateLambda(
+        [](const TArray<FString>& Args)
+        {
+            if (Args.Num()==1 && Args[0]==TEXT("layout") && GEditor)
+            {
+                TArray<FVector> Marks;
+                FString Error;
+                auto* World = GEditor->GetEditorWorldContext().World();
+                if (FHumanTouchCornerCapture::Geometry(World,ScenePrefix(World,HumanTouchXRTable::Number()),Marks,Error))
+                {
+                    UE_LOG(LogHumanTouchTable,Display,TEXT("Survey layout: table %d, %.1f x %.1f cm, surface %.1f cm above floor, L1/R1 %.1f/%.1f cm above tabletop"),
+                        HumanTouchXRTable::Number(), FVector::Dist(Marks[0],Marks[1]),FVector::Dist(Marks[1],Marks[2]),
+                        Marks[0].Z-Marks[HumanTouchCorners::Floor].Z,Marks[4].Z-Marks[0].Z,Marks[8].Z-Marks[0].Z);
+                    for (int32 I=0; I<Marks.Num(); ++I)
+                        UE_LOG(LogHumanTouchTable,Display,TEXT("  %s: %s"),HumanTouchCorners::Name(I),*Marks[I].ToString());
+                }
+                else UE_LOG(LogHumanTouchTable,Warning,TEXT("%s"),*Error);
+                return;
+            }
+            if (Args.Num()==1 && Args[0]==TEXT("start")) HumanTouchXRTable::BeginSurvey();
+            if (Args.Num()==1 && Args[0]==TEXT("hand")) HumanTouchXRTable::BeginSurvey(false);
+            if (Args.Num()==1 && Args[0]==TEXT("check")) HumanTouchXRTable::CheckSurvey();
+            if (Args.Num()==1 && Args[0]==TEXT("capture")) HumanTouchXRTable::CaptureMark();
+            if (Args.Num()==1 && Args[0]==TEXT("cancel")) HumanTouchXRTable::CancelSurvey();
+            UE_LOG(LogHumanTouchTable,Display,TEXT("%s"),*HumanTouchXRTable::Status());
+        }));
     TickHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&Tick), 0.25f);
 }
 void HumanTouchXRTable::Shutdown()
 {
     FTSTicker::GetCoreTicker().RemoveTicker(TickHandle);
     FCoreDelegates::VRHeadsetRecenter.Remove(RecenterHandle);
+    if (SurveyCommand) IConsoleManager::Get().UnregisterConsoleObject(SurveyCommand);
     if (AlignCommand) IConsoleManager::Get().UnregisterConsoleObject(AlignCommand);
     EyeView.Reset();
 }
@@ -324,6 +468,9 @@ bool FHumanTouchXRTableTest::RunTest(const FString&)
     TestEqual(TEXT("First number sticker"), OwnerNumber(TEXT("MakerFleet_T00__NumberText")), 1);
     TestEqual(TEXT("Replica arm"), OwnerNumber(TEXT("MakerFleet_T03__MakerArm_right_link_004")), 4);
     TestEqual(TEXT("Shared avatar"), OwnerNumber(TEXT("XRCreativeAvatar")), INDEX_NONE);
+    TestEqual(TEXT("Interaction bay has its own prefix"), OwnerNumber(TEXT("MakerInteraction_T09__MakerArm_left_base_link")), 10);
+    TestEqual(TEXT("Table 10 physical bay"), StationLabel(10, TEXT("Dreamlabs_YAM_Table")),
+              FString(TEXT("MakerInteraction_T09__Dreamlabs_YAM_Table")));
     TestEqual(TEXT("Printed number maps to replica label"), StationLabel(4, TEXT("Dreamlabs_YAM_Table")),
               FString(TEXT("MakerFleet_T03__Dreamlabs_YAM_Table")));
     const FVector Head(53, -29, 162), Edge(825, 820, 75);
