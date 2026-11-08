@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T16:22:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added a room passthrough toggle to Capture Performers and explicit passthrough/opaque editor launch modes.",
+  "why": "The headset can replace the simulated hall with the physical room while the robots, table, props and performers remain in the shared scene. The eye mask is local to the headset and keeps dark solid objects visible on the OXRSys stream.",
+  "where": [
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Source/HumanTouchXR",
+    "Unreal/TheHumanTouch/Tools/join_human_touch.py",
+    "Capture/README.md"
+  ],
+  "details": "Mac native build, runtime profile tests and launcher argument checks passed. Through-the-lens confirmation with the Quest 2 is pending."
+}
