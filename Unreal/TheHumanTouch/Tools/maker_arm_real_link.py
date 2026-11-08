@@ -8,7 +8,7 @@ through two files in Saved/RealArmLink:
 Modes (decided by the bridge, read here every tick):
 - mirror: the real arms are torque-off; Table 10's arms are posed from the measured joints, so
   moving a real arm by hand moves the virtual one 1:1 (joint level).
-- drive, or no fresh bridge state: drag a Table 10 gripper (MakerArm_<side>_link_007) with the
+- drive, or no fresh bridge state: drag a Table 10 gripper (MakerInteraction_T09__MakerArm_<side>_link_007) with the
   gizmo; damped-least-squares IK poses the whole arm within joint limits valid for both the
   model and the real motors, and ue_state.json publishes the joints for the bridge to follow.
   An arm posed by another tool through forward kinematics (set_pose, playback) is picked up by
@@ -30,7 +30,15 @@ from pathlib import Path
 import unreal
 
 import maker_arm_real_mapping as mapping
+from maker_arm_grid import offset
 from maker_arm_station import BASES, MOUNT_YAW, PREFIX, VISUAL_LINKS
+
+# Table 10 is the separate human-interaction station (grid index 9), not the original T00
+# station that fleet Table 1 uses: its arms are MakerInteraction_T09__MakerArm_<side>_<link>,
+# translated by the grid offset (no rotation or scale).
+TABLE10_INDEX = 9
+ARM_PREFIX = "MakerInteraction_T%02d__%s" % (TABLE10_INDEX, PREFIX)
+TABLE10_BASES = {side: tuple(BASES[side][i] + offset(TABLE10_INDEX)[i] for i in range(3)) for side in BASES}
 
 SIDES = ("left", "right")
 TICK_HZ = 30.0
@@ -100,7 +108,7 @@ class Link:
         for actor in unreal.GameplayStatics.get_all_actors_of_class(world, unreal.StaticMeshActor):
             label = actor.get_actor_label()
             for side in SIDES:
-                prefix = PREFIX + side + "_"
+                prefix = ARM_PREFIX + side + "_"
                 if label.startswith(prefix) and label[len(prefix):] in VISUAL_LINKS:
                     key = (side, label[len(prefix):])
                     if key in found:
@@ -124,7 +132,7 @@ class Link:
         return out
 
     def _apply(self, side, q, gap):
-        poses = mapping.fk_ue(q, gap, MOUNT_YAW[side], BASES[side])
+        poses = mapping.fk_ue(q, gap, MOUNT_YAW[side], TABLE10_BASES[side])
         for link in VISUAL_LINKS:
             p, r = poses[link]
             self.actors[(side, link)].set_actor_location_and_rotation(
@@ -160,7 +168,7 @@ class Link:
         self.source[side] = "real"
 
     def _follow_handle(self, side):
-        yaw, base = MOUNT_YAW[side], BASES[side]
+        yaw, base = MOUNT_YAW[side], TABLE10_BASES[side]
         poses = self._poses(side)
         expected = self.expected.get(side)
         if expected is not None and not any(_moved(poses[l], expected[l]) for l in VISUAL_LINKS):
