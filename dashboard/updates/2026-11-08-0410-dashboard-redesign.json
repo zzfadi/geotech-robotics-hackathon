@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-08T04:10:00-08:00",
+  "workstream": "planning",
+  "status": "done",
+  "what": "Simpler team dashboard: a plain overview with today's schedule and open decisions, a new How it works page with pictures, and every update on its own page",
+  "why": "So everyone, including teammates who don't read code, can see at a glance what we're building, what happens today, who owns what, and what is working, in progress or only planned.",
+  "where": [
+    "dashboard/index.html",
+    "dashboard/design.html",
+    "dashboard/updates.html",
+    "dashboard/data/design.json",
+    "dashboard/data/project.json",
+    "dashboard/data/workstreams.json"
+  ],
+  "details": "Overview: one sentence on the demo, the countdown to 3 PM, the Sunday run of day (every item 'Proposed' except the 3 PM demo), six open decisions for the 9 AM standup, one plain card per track with owner and next step, and the latest updates. How it works (design.html, words in dashboard/data/design.json so anyone can edit them): the demo in five steps with the taped-mark backup and the e-stop operator, the whole system, the machines and their owners, and a glossary; every box says working, in progress or planned. The full feed, charts and filters moved to updates.html. Track changes: arm station owner FADI and Dream AI owner Denys, as docs/plan.md names them; can hand-off milestones replace the Portal-era ones; sdk-pickup is done per the 2026-11-07 18:35 update; no other milestone was marked done. To change the schedule or decisions, edit dashboard/data/project.json; build.py --check validates it."
+}

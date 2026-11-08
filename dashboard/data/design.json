@@ -1,0 +1,290 @@
+{
+  "title": "How it works",
+  "intro": "Three pictures of what we are building, in plain words. Every box says whether it is working, in progress or planned. Anyone can fix the words in dashboard/data/design.json.",
+  "as_of": "2026-11-08T03:55:00-08:00",
+  "legend": {
+    "working": "Built and shown to work. The box says where, for example only in software or only in the simulation.",
+    "in-progress": "Being built, or built but not yet tried for real.",
+    "planned": "Agreed or proposed, not started yet."
+  },
+  "diagrams": [
+    {
+      "id": "demo",
+      "title": "The demo in one picture",
+      "lead": "What the judges see at 3 PM, step by step.",
+      "cols": 5,
+      "gap": 34,
+      "nodes": [
+        {
+          "id": "offer",
+          "col": 0,
+          "row": 0,
+          "icon": "person",
+          "title": "1. A person holds out a can",
+          "text": "An empty or foam can, never glass. First live tries are Sunday morning, with a stand-in until Brian arrives.",
+          "status": "planned"
+        },
+        {
+          "id": "see",
+          "col": 1,
+          "row": 0,
+          "icon": "camera",
+          "title": "2. The camera sees the hand and the can",
+          "text": "A small, fast detector, meant to run next to the arm. Tried on recorded data and still photos; not yet on the live camera.",
+          "status": "in-progress"
+        },
+        {
+          "id": "decide",
+          "col": 2,
+          "row": 0,
+          "icon": "brain",
+          "title": "3. The local brain decides it's safe",
+          "text": "Only a steady, offered can gives the arm its turn. An extra hand, a jerk or a camera fault makes it wait.",
+          "status": "in-progress"
+        },
+        {
+          "id": "take",
+          "col": 3,
+          "row": 0,
+          "icon": "arm",
+          "title": "4. The arm reaches, closes and takes it",
+          "text": "Our guarded routine moves in small steps and checks it is still its turn before each one. Replay only so far.",
+          "status": "in-progress"
+        },
+        {
+          "id": "back",
+          "col": 4,
+          "row": 0,
+          "icon": "retreat",
+          "title": "5. It pulls back, holding the can",
+          "text": "If the person doesn't let go within 10 seconds, it opens and gives the can back.",
+          "status": "in-progress"
+        },
+        {
+          "id": "estop",
+          "col": 0,
+          "row": 1,
+          "span": 3,
+          "icon": "stop",
+          "title": "An operator stays on the e-stop the whole time",
+          "text": "The hardware stop button on the arm. Software pauses are extra, never the safety stop. The person is named at the 9 AM standup.",
+          "status": "in-progress"
+        },
+        {
+          "id": "mark",
+          "col": 3,
+          "row": 1,
+          "icon": "mark",
+          "title": "Plan B: the taped mark",
+          "text": "If the hand-off isn't 8 of 10 by 11:00, the arm picks the can up from a taped spot on the table instead.",
+          "status": "in-progress"
+        }
+      ],
+      "edges": [
+        { "from": "offer", "to": "see" },
+        { "from": "see", "to": "decide" },
+        { "from": "decide", "to": "take" },
+        { "from": "take", "to": "back" },
+        { "from": "take", "to": "mark", "label": "if needed", "status": "planned" }
+      ],
+      "notes": [
+        "Today a local routine on the station laptop drives the real arm. Dream's AI drives the simulated arms, not the real one.",
+        "Only the right arm is used. The left arm missed high on Saturday and has a different claw."
+      ]
+    },
+    {
+      "id": "system",
+      "title": "The whole system",
+      "lead": "The parts behind the demo, and what flows between them.",
+      "cols": 3,
+      "gap": 112,
+      "list_edges": true,
+      "nodes": [
+        {
+          "id": "table",
+          "col": 0,
+          "row": 0,
+          "icon": "arm",
+          "title": "At the table",
+          "text": "The physical station.",
+          "items": [
+            { "label": "Two Maker Arms", "status": "working", "text": "The right arm picked up an object on Saturday with our controller. Only the right arm is used in the demo." },
+            { "label": "Cameras", "status": "working", "text": "Wrist, overhead and webcam pictures." },
+            { "label": "Arm controller on the station laptop", "status": "working", "text": "Guards speed, heat and force, and freezes instead of dropping." },
+            { "label": "Jetson robot server", "status": "in-progress", "text": "Set up overnight; offline arm tests pass. Not on the arms yet, not needed at 3 PM." },
+            { "label": "Operator on the e-stop", "status": "in-progress", "text": "Person to be named at standup." }
+          ]
+        },
+        {
+          "id": "brain",
+          "col": 1,
+          "row": 0,
+          "icon": "brain",
+          "title": "The hybrid brain",
+          "text": "Decides when the arm may move, and who moves it.",
+          "items": [
+            { "label": "Local detector (hand + can)", "status": "in-progress", "text": "Meant to run next to the arm. Tried on recorded data and still photos; not yet on the live camera." },
+            { "label": "Turn gate", "status": "working", "text": "Lets the arm move only on its turn. Passes its tests in software." },
+            { "label": "Can hand-off routine", "status": "in-progress", "text": "Small guarded steps. Replay only so far." },
+            { "label": "Dream AI (cloud)", "status": "working", "text": "Drives the simulated arms. Not used on the real arm today." },
+            { "label": "Local takes over when Dream is slow", "status": "in-progress", "text": "Over 850 ms round trip, move locally. Tested in software." }
+          ]
+        },
+        {
+          "id": "sim",
+          "col": 2,
+          "row": 0,
+          "icon": "grid",
+          "title": "The simulation (Luna2)",
+          "text": "Many robot tables at once, to collect real human interaction.",
+          "items": [
+            { "label": "Nine parallel Unreal tables", "status": "working", "text": "3×3 grid with live camera views; Dream drives each arm." },
+            { "label": "Simulated cup lift", "status": "in-progress", "text": "Last batch: 5 of 9 tables held a cup, with a simplified grip model." },
+            { "label": "Isaac Sim physics for contact", "status": "in-progress", "text": "Matches the Unreal scene and receives captured poses. Hand-to-arm contact test is Sunday." },
+            { "label": "MuJoCo physics", "status": "in-progress", "text": "A light contact check for the webcam person, rehearsed in software." }
+          ]
+        },
+        {
+          "id": "capture",
+          "col": 2,
+          "row": 1,
+          "icon": "headset",
+          "title": "Human capture",
+          "text": "Brings real people into the simulation.",
+          "items": [
+            { "label": "Webcam body tracking", "status": "working", "text": "Streams a person's body into Unreal." },
+            { "label": "Quest headset tracking", "status": "working", "text": "Streams the wearer's body and hands into Unreal." },
+            { "label": "Two people at the real table at once", "status": "in-progress", "text": "Shared table alignment and real reaches still to do." },
+            { "label": "Sim arm drawn over the real arm in the headset", "status": "planned", "text": "A second milestone." }
+          ]
+        },
+        {
+          "id": "show",
+          "col": 0,
+          "row": 1,
+          "icon": "screen",
+          "title": "Seeing what the arm is doing",
+          "text": "So people can follow what it does and why.",
+          "items": [
+            { "label": "Control center", "status": "in-progress", "text": "What the arm is doing, is it healthy, and why it chose each step. Runs on demo and replayed data so far, not the live arm." },
+            { "label": "Emoji \"thinking\" overlay", "status": "planned", "text": "\"Seeing beer\" on screen during the pitch." },
+            { "label": "This dashboard", "status": "working", "text": "Every change, decision and blocker." }
+          ]
+        },
+        {
+          "id": "helpers",
+          "col": 1,
+          "row": 1,
+          "icon": "spark",
+          "title": "Helpers being built",
+          "text": "Nice to have, not needed for the 3 PM demo.",
+          "items": [
+            { "label": "Small edge model", "status": "in-progress", "text": "A tiny AI model for the Jetson: fills in when Dream is slow and helps with the last centimetre. Scaffold only; not trained on the simulation yet." },
+            { "label": "LiveKit voice", "status": "planned", "text": "The robot says \"your turn\" or \"I'll wait\". Account active, no voice agent yet." }
+          ]
+        }
+      ],
+      "edges": [
+        { "from": "table", "to": "brain", "label": "camera pictures", "status": "in-progress" },
+        { "from": "brain", "to": "table", "label": "move or wait", "status": "in-progress" },
+        { "from": "brain", "to": "sim", "label": "Dream drives the sim arms", "status": "working" },
+        { "from": "capture", "to": "sim", "label": "real people's movements", "status": "working" },
+        { "from": "table", "to": "show", "label": "what it did and why", "status": "planned" },
+        { "from": "helpers", "to": "brain", "label": "fill gaps, speak up", "status": "planned" }
+      ]
+    },
+    {
+      "id": "machines",
+      "title": "The machines, and who looks after them",
+      "lead": "Where each piece runs.",
+      "cols": 3,
+      "gap": 112,
+      "list_edges": true,
+      "nodes": [
+        {
+          "id": "mac",
+          "col": 0,
+          "row": 0,
+          "icon": "desktop",
+          "title": "Mac mini",
+          "text": "The development hub: code reviews, merges to main, Jetson setup and dashboard posts.",
+          "owner": "FADI",
+          "status": "working"
+        },
+        {
+          "id": "jetson",
+          "col": 0,
+          "row": 1,
+          "icon": "board",
+          "title": "Jetson Orin Nano",
+          "text": "Robot server being set up: system, remote login and offline arm tests pass. Not on the arms yet; optional today.",
+          "owner": "FADI",
+          "status": "in-progress"
+        },
+        {
+          "id": "arms",
+          "col": 1,
+          "row": 2,
+          "icon": "arm",
+          "title": "Two Maker Arms + cameras",
+          "text": "The real robots at the table, with a hardware e-stop. The right arm does the demo.",
+          "owner": "FADI, Saleh",
+          "status": "working"
+        },
+        {
+          "id": "laptop",
+          "col": 1,
+          "row": 1,
+          "icon": "laptop",
+          "title": "Station laptop",
+          "text": "Runs the arm controller and drives the real arms over USB today.",
+          "owner": "FADI, with Saleh",
+          "status": "working"
+        },
+        {
+          "id": "luna2",
+          "col": 2,
+          "row": 0,
+          "icon": "server",
+          "title": "Luna2",
+          "text": "Remote computer for the Unreal simulation (nine tables), the Dream test panel and Isaac Sim.",
+          "owner": "Denys (Unreal + Dream), Brian (Isaac)",
+          "status": "working"
+        },
+        {
+          "id": "capture",
+          "col": 2,
+          "row": 1,
+          "icon": "headset",
+          "title": "Quest headset + webcam",
+          "text": "Track people's bodies and hands and stream them into the simulation.",
+          "owner": "Brian",
+          "status": "working"
+        }
+      ],
+      "edges": [
+        { "from": "mac", "to": "jetson", "label": "sets it up", "status": "working" },
+        { "from": "laptop", "to": "arms", "label": "USB, today", "status": "working" },
+        { "from": "jetson", "to": "arms", "label": "later, maybe", "status": "planned" },
+        { "from": "capture", "to": "luna2", "label": "body poses", "status": "working" },
+        { "from": "laptop", "to": "luna2", "label": "arm position to the sim", "status": "planned" }
+      ]
+    }
+  ],
+  "glossary": [
+    { "term": "Maker Arm", "plain": "The robot arm, made by MakerMods. We have two; the right one does the demo." },
+    { "term": "Dream API (Dream-1)", "plain": "Dream Labs' robot AI in the cloud. Send it camera pictures, get arm moves back. It drives our simulated arms." },
+    { "term": "Hybrid brain", "plain": "Our split: a fast local check decides when the arm may move; Dream or a local routine decides how." },
+    { "term": "Turn gate", "plain": "The rule that lets the arm move only on its turn. Anything unexpected, like an extra hand or an old camera picture, makes it wait." },
+    { "term": "Hold", "plain": "Pausing the arm where it is. It stays powered and keeps its pose. A software pause, not a safety stop." },
+    { "term": "E-stop", "plain": "The hardware emergency stop button. A person keeps a hand on it whenever the arm can move." },
+    { "term": "Taped mark", "plain": "A spot taped on the table where the can sits. The backup demo picks the can up from there instead of from a hand." },
+    { "term": "Go/no-go call", "plain": "At 11:00 we count the hand trials: 8 of 10 or better, we demo the hand-off; otherwise the taped mark." },
+    { "term": "Unreal", "plain": "Unreal Engine, the 3D engine that draws our simulated tables." },
+    { "term": "Isaac Sim", "plain": "NVIDIA's physics simulator. It works out what touches what, such as a hand bumping the arm." },
+    { "term": "Jetson Orin Nano", "plain": "A small NVIDIA computer meant to become the arm's own robot server." },
+    { "term": "Edge model", "plain": "A small AI model that runs right next to the arm, so it doesn't need the internet. Fills in when Dream is slow." },
+    { "term": "Control center", "plain": "A web page that shows what the arm is doing, whether it's healthy, and why it made each decision." },
+    { "term": "LiveKit", "plain": "A sponsor's real-time audio and video platform. Planned for the robot's voice." }
+  ]
+}

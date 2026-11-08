@@ -1,5 +1,7 @@
 {
   "name": "GeoTech · Physical AI Hacks",
+  "headline": "Hold my beer",
+  "summary": "A person holds out a can and a real robot arm takes it from their hand. Behind the demo, webcam and headset capture bring real people into nine simulated robot tables, because robots that work with people need to learn from real people.",
   "goal": "Hold My Beer: a person hands a MakerMods Maker Arm their drink and it takes it, backed by human interaction captured in Unreal across parallel simulated tables.",
   "track": "Creative track",
   "stack": "Maker Arm SDK, Dream-1 in Unreal simulation, Isaac Sim physics, XR and webcam capture, LiveKit voice agent",
@@ -29,5 +31,91 @@
       "role": "Cameras, LiveKit + UI"
     }
   ],
-  "headline": "Hold my beer"
+  "today_label": "Sunday, Nov 8 · Pacific time",
+  "today_note": "Proposed means drafted on Saturday night and not yet agreed. Confirm at the 9 AM standup.",
+  "today": [
+    {
+      "at": "2026-11-08T08:30:00-08:00",
+      "what": "Arm station opens",
+      "detail": "Hardware and e-stop check. Everyone pulls the latest code.",
+      "state": "proposed"
+    },
+    {
+      "at": "2026-11-08T09:00:00-08:00",
+      "what": "Team standup",
+      "detail": "Settle the decisions below. Name the e-stop person and the submission owner.",
+      "state": "proposed"
+    },
+    {
+      "at": "2026-11-08T09:15:00-08:00",
+      "end": "2026-11-08T11:30:00-08:00",
+      "what": "Build and rehearse",
+      "detail": "Teach the arm its poses, then 10 hand trials and 10 taped-mark trials. Sim polish, voice lines, script and deck in parallel.",
+      "state": "proposed"
+    },
+    {
+      "at": "2026-11-08T11:00:00-08:00",
+      "what": "Go/no-go: hand or taped mark",
+      "detail": "8 of 10 hand trials or better: demo the hand-off. Otherwise demo the pickup from the taped mark.",
+      "state": "proposed"
+    },
+    {
+      "at": "2026-11-08T11:30:00-08:00",
+      "what": "Feature freeze",
+      "detail": "Tag the code and commit the taught arm poses. Nothing new after this.",
+      "state": "proposed"
+    },
+    {
+      "at": "2026-11-08T11:30:00-08:00",
+      "end": "2026-11-08T12:30:00-08:00",
+      "what": "Film the backup video",
+      "detail": "A clean take of the demo in case the live run fails.",
+      "state": "proposed"
+    },
+    {
+      "at": "2026-11-08T12:30:00-08:00",
+      "end": "2026-11-08T14:30:00-08:00",
+      "what": "Submission",
+      "detail": "About 2 hours reserved (agreed). Video uploaded by 1:45, submitted by 2:30 (proposed).",
+      "state": "proposed"
+    },
+    {
+      "at": "2026-11-08T15:00:00-08:00",
+      "what": "Demo on stage",
+      "detail": "Everyone on site. Demos are judged at 3 PM.",
+      "state": "agreed"
+    }
+  ],
+  "decisions": [
+    {
+      "q": "Who stands on the e-stop?",
+      "why": "Nothing runs on the real arm without a named person on the stop button.",
+      "source": "handoff/README.md"
+    },
+    {
+      "q": "Who owns the submission, and when exactly is it due?",
+      "why": "About 2 hours are reserved. The organizers haven't published the cutoff.",
+      "source": "docs/plan.md"
+    },
+    {
+      "q": "Fist bump: in or out, and who owns it?",
+      "why": "FADI owns taking the can. The fist bump after it has no owner.",
+      "source": "docs/plan.md"
+    },
+    {
+      "q": "How do Dream and the coding agent split the real arm?",
+      "why": "Today a local routine drives the real arm and Dream drives the simulated arms.",
+      "source": "docs/plan.md"
+    },
+    {
+      "q": "Is the voice agent still a must-have?",
+      "why": "It was called a must-have on Saturday, then left out of the evening notes. Proposed: scripted lines with recorded backup audio.",
+      "source": "docs/plan.md"
+    },
+    {
+      "q": "Is the automatic pause, when someone gets in the arm's way, a must-have for the demo?",
+      "why": "If yes, it needs an owner and a dry run on the arm controller. It is a software pause; the e-stop stays the safety stop.",
+      "source": "docs/plan.md"
+    }
+  ]
 }
