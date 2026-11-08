@@ -7,6 +7,9 @@ Saved/Table10Dream/request.json {id, prompt, unix, source, table: 10}. This runn
   2. Dream grasp: Dream sets the jaw closing while the arm is held still (labelled),
   3. Dream lift: only Dream's upward motion is applied, the cup is kept level (labelled),
   4. reports progress in Saved/Table10Dream/status.json {id, state, detail, unix}.
+request["side"] ("left" / "right", sent when Denys names an arm) is tried first. A cancel.json {id} matching the
+running request (or written after it started) stops it between motion chunks; the arms hold where they are.
+runner.json lists what this runner supports, for the VR session's tools.
 Observations and motion go through Tools/maker_arm_table10_dream.py in the editor world, the world VR shows.
 The cup is carried kinematically there ("editor-world kinematic carry"). Table 10's arm poses reach the real
 arms only when the real-arm service is in drive.
@@ -31,6 +34,11 @@ DIR = PROJECT / 'Saved/Table10Dream'
 TOOLS = PROJECT / 'Tools'
 JAW = .104825
 REQUEST_FRESH_S = 30.
+CAPABILITIES = ['pickup', 'put_down', 'side', 'cancel']
+
+
+class Cancelled(Exception):
+    pass
 LIFT_TARGET_CM = 10.
 PROMPTS = {
     'grasp': 'Close the {side} gripper around the {noun} and hold it firmly. Keep the {other} arm still.',
@@ -107,6 +115,7 @@ class Runner:
         self.client = client
 
     def observe(self):
+        self.check_cancel()  # before each Dream step as well
         after = time.time()
         (DIR / 'need_observation').touch()
         for _ in range(100):
@@ -116,7 +125,14 @@ class Runner:
                 return packet
         raise TimeoutError('no Table 10 observation from the editor')
 
+    def check_cancel(self):
+        cancel = read(DIR / 'cancel.json') or {}
+        req = self.request or {}
+        if cancel and (cancel.get('id') == req.get('id') or float(cancel.get('unix', 0)) >= getattr(self, 'started', 1e18)):
+            raise Cancelled('stopped (cancel.json); arms hold where they are')
+
     def play(self, action, label):
+        self.check_cancel()  # between chunks: a chunk already playing finishes
         self.seq += 1
         n = max(len(action['q_l_chunk']), len(action['q_r_chunk']))
         for key in ('q_l_chunk', 'q_r_chunk'):
@@ -159,7 +175,7 @@ class Runner:
         return constrain_motion_side(action, packet['state'], side), packet
 
     # ---- the pickup -------------------------------------------------------------------------
-    def pickup(self):
+    def pickup(self, prefer=None):
         from pregrasp import approach_action, vertical_only, tool_height
         cup = read(DIR / 'cup.json') or {}
         if not cup.get('present'):
@@ -170,7 +186,8 @@ class Runner:
         # 1. planned reach to the cup where Denys placed it, with whichever arm can reach it (nearest first)
         packet = self.observe()
         action = side = None
-        for side in sorted(('left', 'right'), key=lambda s: abs(y - (-40 if s == 'left' else 40))):
+        order = sorted(('left', 'right'), key=lambda s: (s != prefer, abs(y - (-40 if s == 'left' else 40))))
+        for side in order:
             for pitch in (45., 55., 60., 50.):
                 variant = {'target': {'label': cup.get('label', 'HandoverCup'), 'location_cm': [x, y, rest_z]}, 'objective': {'side': side},
                            'assist': {'pitch_deg': pitch, 'gap_m': .1}}
@@ -186,7 +203,8 @@ class Runner:
                                '(centre line: x 30-50 cm from the arm bases)' % (noun, x, y))
         other = 'right' if side == 'left' else 'left'
         key, okey = ('q_l_chunk', 'q_r_chunk') if side == 'left' else ('q_r_chunk', 'q_l_chunk')
-        self.status('running', 'reaching for the %s with the %s arm (planned reach)' % (noun, side))
+        note = ' (the %s arm cannot reach it)' % prefer if prefer in ('left', 'right') and side != prefer else ''
+        self.status('running', 'reaching for the %s with the %s arm (planned reach)%s' % (noun, side, note))
         self.play(action, 'planned reach (%s, no Dream call)' % side)
         # 2. Dream grasp, arm held still
         for cycle in range(6):
@@ -245,8 +263,12 @@ class Runner:
         return '%s set down; arms at idle' % (read(DIR / 'cup.json') or {}).get('noun', 'cup')
 
     def run(self):
+        import os
+        write(DIR / 'runner.json', {'capabilities': CAPABILITIES, 'pid': os.getpid(), 'unix': time.time()})
         print('Table 10 Dream runner: watching %s' % (DIR / 'request.json'), flush=True)
-        handled = None
+        # A restart must not run a request the previous runner already finished.
+        last = read(DIR / 'status.json') or {}
+        handled = last.get('id') if last.get('state') in ('done', 'failed', 'cancelled') else None
         while True:
             request = read(DIR / 'request.json')
             if request and request.get('id') != handled:
@@ -254,7 +276,7 @@ class Runner:
                 if time.time() - float(request.get('unix', 0)) > REQUEST_FRESH_S:
                     print('ignoring stale request %s' % handled, flush=True)
                 else:
-                    self.request = request
+                    self.request, self.started = request, time.time()
                     self.status('queued', 'received "%s" from %s' % (request.get('prompt'), request.get('source')))
                     try:
                         self.ensure_editor()
@@ -263,7 +285,10 @@ class Runner:
                             self.status('done', self.put_down())
                         else:
                             self.ensure_client()
-                            self.status('done', self.pickup())
+                            side = request.get('side')
+                            self.status('done', self.pickup(side if side in ('left', 'right') else None))
+                    except Cancelled as error:
+                        self.status('cancelled', str(error))
                     except Exception as error:
                         self.status('failed', str(error)[:300])
             time.sleep(.2)
