@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T14:42:06-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Posted the final submission checklist in Slack with channel and individual team mentions",
+  "why": "The team needs to claim parallel tasks immediately: submission text and deck, organizer logistics and media, repeatable robot rehearsal, and simulation backup evidence.",
+  "where": ["https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794177726558499"],
+  "details": "The post includes suggested roles for all five channel members, time boxes through 3 PM, verified Creative rubric weights, and current video/repository/submission links. It follows the latest standup's camera-recognizer decision. Today's submission route and upload cutoff remain explicitly unconfirmed; organizer confirmation is the first logistics task. Suggested assignments are not yet accepted ownership. The published message and all mentions were verified through channel history."
+}
