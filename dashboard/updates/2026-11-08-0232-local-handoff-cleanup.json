@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T02:32:00-08:00",
+  "workstream": "planning",
+  "status": "done",
+  "what": "Reviewed the local-only handoffs against main, folded their unique content into tracked docs and retired them",
+  "why": "Stale local notes (YAM era, microSD route, pre-hybrid design) would mislead a cold agent on the Mac mini; the few facts found nowhere on main are now in the tracked briefs.",
+  "where": [
+    "docs/handoffs/edge-model.md",
+    "docs/hybrid-model.md"
+  ],
+  "details": "Retired (moved to the Mac mini's Trash, not tracked): LOCAL-HYBRID-HANDOFF.md (written against c4c43aa; its display-only, no-motion framing is superseded by hybrid-model.md, vision/ and handoff/), .git/LOCAL-HANDOFF.md (Nov 7 noon, YAM/token era), arm/local/finalize-jetson-prep.py (one-shot script that would overwrite committed evidence) and the old microSD arm/local/jetson-start-here.txt, now a short pointer to the tracked setup docs. The offline Jetson runtime tarball and caches are kept. Folded into edge-model.md open questions: Dream AUP and TypeSafe distillation terms before training on Dream runs, 'Jeff' is probably Jev by TypeSafe AI, the bridging-scope question with its never-override rules, FADI's out-of-repo physical Dream test, and post-hackathon coordination/model candidates. Folded into hybrid-model.md: a held-out scoring rule for the offer detector and the consent rule for recording people. No code or Jetson files changed."
+}

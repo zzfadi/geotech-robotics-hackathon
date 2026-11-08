@@ -128,7 +128,7 @@ Open for the 9 AM standup:
 
 1. Does the team accept "a steady offered can sends `request_turn`"? It changes the gate's role from "no hand" to "only the offering hand".
 2. Run the detector on the real camera and the real can: is the can detected, and as what?
-3. Tune the zones and thresholds on the table; record a few clips as replay traces.
+3. Tune the zones and thresholds on the table; record a few clips as replay traces. Keep one clip with a different person or can out of tuning and score on it: false starts (`offer_steady` when the can was only carried past, set down or held while talking), missed offers, delay from still to `offer_steady`, and state flicker. A synthetic or sim trace is not a real-camera result. Record people only with their OK; `--record` traces keep labels and boxes, not images, so keep it that way.
 4. Wire `start_handoff` / `abort` / `retreat_with_can` into FADI's arm controller and verify its hold.
 5. Measure detector latency on the Orin once it boots.
 

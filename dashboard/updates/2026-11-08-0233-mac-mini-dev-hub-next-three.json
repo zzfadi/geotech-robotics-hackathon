@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-08T02:33:00-08:00",
+  "workstream": "planning",
+  "status": "decision",
+  "what": "FADI's Mac mini is now the center of development; three next tasks proposed for Sunday",
+  "why": "One hub for reviews, docs, Jetson/KVM setup and dashboard posts keeps work on main in one place; the proposals keep Sunday on the MVP critical path.",
+  "where": [
+    "docs/plan.md",
+    "handoff/README.md",
+    "control_center/server.py",
+    "arm/tools/pickup_server.py",
+    "vision/moments.py"
+  ],
+  "details": "Proposed, not yet agreed: (1) Before the 08:30 station pull, a station-readiness patch from the Mac mini: move control_center off 127.0.0.1:8765, which pickup_server, pickup_client, handoff.run, handoff.teach and arm_link all default to; optionally bind pickup_server's socket before arm.connect()/enable() (today it enables at :216 and binds at :255), with a fake-arm test and FADI's OK; reorder the handoff checklist mark-first; make the hand command host-neutral (it names Orin-only .engine weights); add a hardware-free GO/MARK-ONLY preflight; add a check that a hidden hand or covered lens is not counted as a release (moments.py reads no hands with the can visible as RELEASED). (2) Station 08:30-12:30: name the e-stop person, teach poses, reach 8 of 10 taped-mark trials by the 11:00 call, commit poses before the 11:30 freeze, film the backup take. (3) Draft the submission on main by 08:30 from cited figures only; a named owner submits by 14:30. The Jetson stays off Sunday's arm path: finish first boot, persistent SSH and board facts, then park it with no CAN adapters."
+}
