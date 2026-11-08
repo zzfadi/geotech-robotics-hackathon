@@ -432,7 +432,11 @@ class TableRun:
                                                  max_step_cm=float(assist.get('lift_step_cm', .25)),
                                                  back_per_up=float(assist.get('lift_back_per_up', 0.)),
                                                  up_gain=min(float(assist.get('lift_up_gain_max', 6.)),
-                                                             float(assist.get('lift_up_gain', 1.))*(1+.5*self.lift_stalls)))
+                                                             float(assist.get('lift_up_gain', 1.))*(1+.5*self.lift_stalls)),
+                                                 min_rise_cm=float(assist.get('lift_nudge_cm', 0.)) if self.cup_rise <
+                                                 float(objective.get('height_cm', 10.))+float(assist.get('hold_margin_cm', 1.5)) else 0.)
+                if vertical.get('nudged'):
+                    self.result['lift_nudges'] = self.result.get('lift_nudges', 0)+1
                 self.log('holding: applied only vertical motion (dz %+.1f cm over %d rows)' %
                          ((vertical['dz_cm'] or [0])[-1], vertical['rows']))
             if self.v.get('assist', {}).get('grip_latch') and self.grip_latch is not None and not self.args.dry_run:
@@ -499,6 +503,18 @@ class TableRun:
                         self.grip_latch = max(observed-float(self.v['assist'].get('grip_squeeze_m', .006)), 0.)/JAW_MAX_M
                         self.log('jaws stalled on an object at %.1f cm (commanded %.1f cm); holding %.1f cm' %
                                  (observed*100, commanded*JAW_MAX_M*100, self.grip_latch*JAW_MAX_M*100))
+            if (self.grip_latch is None and self.v.get('assist', {}).get('regrasp') and not reaching
+                    and self.regrasps < int(self.v['assist'].get('regrasp', 0))
+                    and playback.get('gap_'+latch_side+'_m', 1.) < .045):
+                cup = (self.status() or {}).get('props', {}).get(target, {})
+                if 0 <= cup.get('tilt_degrees', 180.) <= 15 and cup.get('table_local_cm') and cup.get('height_above_start_cm', 0.) < 2.:
+                    # Jaws closed on nothing: the cup is not between the pads but still upright.
+                    self.regrasps += 1
+                    self.v = {**self.v, 'target': {**self.v['target'], 'location_cm': list(cup['table_local_cm'][:2])+[81.]}}
+                    self.grasp_cycles = 0
+                    reach_pending = True
+                    self.log('jaws closed on nothing; re-reaching to the cup at %s (regrasp %d)' %
+                             ([round(v, 1) for v in cup['table_local_cm'][:2]], self.regrasps))
             if (self.grip_latch is not None and self.v.get('assist', {}).get('regrasp') and not reaching
                     and self.regrasps < int(self.v['assist'].get('regrasp', 0))):
                 gap_now = playback.get('gap_'+latch_side+'_m', 1.)
@@ -574,6 +590,20 @@ class TableRun:
                 if lift.get('lift_held'):
                     self.result['stopped_reason'] = 'measured held lift (needs video review)'
                     self.log('measured held lift %.2f cm for %.2f s' % (lift['height_cm'], lift['held_slow_above_10cm_s']))
+                    return
+        # Final check: Dream's last command may leave the cup held at or above the target
+        # without a cycle boundary having started the 5 s measurement.
+        required = float(objective.get('height_cm', 10.)) if objective else 10.
+        if objective and required != 10:
+            current = lift_verdict(self.status(), target, hold_seconds, max_tilt)
+            if current.get('height_cm', 0) >= required:
+                held = self.sampled_hold(target, required, hold_seconds, max_tilt)
+                self.result['threshold_hold'] = held
+                self.result['lift'] = {**current, 'lift_held': held['passed'], 'required_height_cm': required,
+                                       'held_above_required_s': held['held_s']}
+                if held['passed']:
+                    self.result['stopped_reason'] = 'measured %.0f cm hold for %.1f s after the last cycle (needs video review)' % (required, held['held_s'])
+                    self.log(self.result['stopped_reason'])
                     return
         self.result['stopped_reason'] = 'cycles exhausted'
 
@@ -1182,7 +1212,7 @@ def serve(args, config):
             status = 'stopped' if stop['flag'] else 'done'
             server.event('fleet.finished', request_id, ('Measured held lift on ' + ', '.join(held) + ' (review videos)') if held
                          else 'No table measured a held 10 cm lift')
-            summary = [{k: r.get(k) for k in ('batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason', 'threshold_hold', 'assist')} for r in results]
+            summary = [{k: r.get(k) for k in ('lift_nudges', 'batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason', 'threshold_hold', 'assist')} for r in results]
         except Exception as error:
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))

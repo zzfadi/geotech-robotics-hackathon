@@ -314,7 +314,8 @@ def tool_height(q):
     return float(fk.pose(np.clip(np.array(q, dtype=float), fk.low+1e-7, fk.high-1e-7))[2, 3])
 
 
-def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25, back_per_up=0., up_gain=1.):
+def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25, back_per_up=0., up_gain=1.,
+                  min_rise_cm=0.):
     """While an object is held: keep the measured tool x/y and orientation, apply only
     Dream's vertical motion, never below floor_z (the height where the jaws closed)
     minus allow_down_cm; without floor_z the current height is the floor."""
@@ -360,6 +361,22 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         rows.append(list(solved)+[row[6]])
         heights.append(round((z-start[2, 3])*100, 2))
         previous = solved
+    nudged = False
+    if min_rise_cm > 0 and (not heights or heights[-1] < min_rise_cm*.3):
+        # Labelled lift nudge: Dream's own step was (near) zero while a held cup is below its
+        # target; add a small straight rise so the lift can finish.
+        last_q = rows[-1][:6] if rows else list(state['q_'+side])
+        base_z = start[2, 3]+(heights[-1]/100 if heights else 0.)
+        grip = (rows[-1][6] if rows else action[key][0][6])
+        steps = max(1, int(np.ceil(min_rise_cm/max_step_cm)))
+        for k in range(1, steps+1):
+            try:
+                last_q = solve_pose(point(base_z+min_rise_cm/100*k/steps), start[:3, :3], last_q, tolerance_m=.003, tolerance_rad=.1)
+            except ValueError:
+                break
+            rows.append(list(last_q)+[grip])
+            heights.append(round((base_z+min_rise_cm/100*k/steps-start[2, 3])*100, 2))
+            nudged = True
     if not rows:
         rows = [list(state['q_'+side])+[action[key][0][6]]]
     rows[0] = list(state['q_'+side])+[rows[0][6]]  # start exactly at the measured pose
@@ -369,7 +386,7 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
     out[other] = [list(r) for r in action[other][:len(rows)]] or [list(action[other][0])]
     while len(out[other]) < len(rows):
         out[other].append(list(out[other][-1]))
-    return out, {'side': side, 'rows': len(rows), 'dz_cm': heights}
+    return out, {'side': side, 'rows': len(rows), 'dz_cm': heights, 'nudged': nudged}
 
 
 START_OPTIONS = ('grasp_offset_cm', 'pitch_deg', 'standoff_cm', 'lift_cm', 'gap_m', 'grasp_depth_cm')

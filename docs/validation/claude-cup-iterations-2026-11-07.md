@@ -229,3 +229,16 @@ subgoal; per-table grasp angle from the lift ceiling (45–80°); re-grasp if a 
   a position left displaced by an earlier run — because the per-run reset restored every cup from the Reset
   layout except the target. Fixed (test added); a fresh Reset relaid all tables.
 - **Batch 33 (`53541a7280804001a56acaba7d0acfb2`): 9/9** in 84 s — 19, 15, 18, 15, 24, 15, 27, 19, 21 cm held 5 s.
+- Batch 34 (`4b3bac1c86d04fc8bc3cbf20f290671b`): 8/9 (incl. 29 cm). Miss reached 29.7 cm for a 28 cm target but
+  hovered just under the +0.5 cm start threshold of the hold count: the count now starts at the target and a
+  final 5 s check runs when cycles end with the cup at or above it.
+- Batch 35 (`6298245e72894a18a02b3f6dab69cf54`): 8/9 (two 29 cm holds). Miss: Dream stopped commanding upward
+  motion at 24 cm. Across 357 lift cycles, "Lift the cup up 5 more centimeters." averaged +4.6 cm (78% rising)
+  and "Lift the cup straight up, higher." +3.0 cm (75%), while the other wordings averaged +0.6 cm — and stalled
+  tables were rotating into those. Lift subgoal now uses only the strong wordings (+ a "10 more" variant).
+- Batch 36 (`c41e675fecb842f0ab8ebcfbca47813e`): 7/9. One steep (65°) reach left the cup outside the jaws (jaws
+  closed to ~1 cm); one held cup was lifted only in 0–1.6 cm steps. Added: re-reach when the jaws close on
+  nothing and the cup stands upright; a labelled **lift nudge** (+1 cm when a held cup is below target and
+  Dream's own step is < 0.3 cm), counted per table as `lift_nudges`.
+- **Batch 37 (`3f89d8a2ec044ece807ef912a6b0f2df`): 9/9** — 22, 22, 22, 16, 20, 16, 21, 26, 26 cm. Seven tables
+  used no nudges; the two 26 cm targets used 4 and 1.

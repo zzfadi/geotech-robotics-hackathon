@@ -15,13 +15,11 @@
    "hold_monotonic": true,
    "phase_prompts": {
     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-    "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
+    "lift": "Lift the cup up 5 more centimeters. Keep the right arm still.",
     "lift_variants": [
-     "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
      "Lift the cup up 5 more centimeters. Keep the right arm still.",
-     "Raise the cup higher above the table. Keep the right arm still.",
-     "Move the cup up about 5 cm, keeping it upright. Keep the right arm still.",
-     "Keep lifting the cup up, slowly and steadily. Keep the right arm still."
+     "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
+     "Lift the cup up 10 more centimeters. Keep the right arm still."
     ],
     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
    },
@@ -32,23 +30,24 @@
    "regrasp": 3,
    "pitch_deg": "auto",
    "hold_margin_cm": 1.5,
-   "hold_start_cm": 0.5,
+   "hold_start_cm": 0.0,
    "lift_up_gain": 2.5,
    "capacity_wait_s": 180,
    "stall_threshold_m": 0.005,
    "grasp_still_cycles": 5,
-   "lift_up_gain_max": 6.0
+   "lift_up_gain_max": 6.0,
+   "lift_nudge_cm": 1.0
   }
  },
  "tables": [
   {
    "index": 0,
-   "name": "T1 19cm Dream + friction grip",
+   "name": "T1 22cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 19,
+    "height_cm": 22,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -137,16 +136,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 19 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 1,
-   "name": "T2 15cm Dream + friction grip",
+   "name": "T2 22cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 15,
+    "height_cm": 22,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -250,16 +249,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 15 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 2,
-   "name": "T3 18cm Dream + friction grip",
+   "name": "T3 22cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 18,
+    "height_cm": 22,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -348,16 +347,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 18 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 3,
-   "name": "T4 15cm Dream + friction grip",
+   "name": "T4 16cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 15,
+    "height_cm": 16,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -461,16 +460,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 15 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 16 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 4,
-   "name": "T5 24cm Dream + friction grip",
+   "name": "T5 20cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 24,
+    "height_cm": 20,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -559,16 +558,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 24 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 20 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 5,
-   "name": "T6 15cm Dream + friction grip",
+   "name": "T6 16cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 15,
+    "height_cm": 16,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -672,16 +671,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 15 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 16 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 6,
-   "name": "T7 27cm Dream + friction grip",
+   "name": "T7 21cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 27,
+    "height_cm": 21,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -770,16 +769,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 27 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 21 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 7,
-   "name": "T8 19cm Dream + friction grip",
+   "name": "T8 26cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 19,
+    "height_cm": 26,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -883,16 +882,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 19 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 26 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 8,
-   "name": "T9 21cm Dream + friction grip",
+   "name": "T9 26cm Dream + friction grip",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 21,
+    "height_cm": 26,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -981,8 +980,8 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 21 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+   "prompt": "Grab the cup and lift it 26 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   }
  ],
- "height_seed": 1794152296
+ "height_seed": 1794153039
 }
