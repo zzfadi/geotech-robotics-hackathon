@@ -4,7 +4,7 @@
 
 **Positioning.** Robot teams use physics-based rehearsal to observe what happens when real people participate in a virtual task. Emmy is the visual protagonist of that idea. Inside each artwork, show Emmy at human scale with her head and torso visible. Use the physical station only in real demonstration footage.
 
-**Mark.** One curved stroke and one chamfered stroke enclose the same gallery entrance. The gap between them echoes the opening fresco. Use the [ink](mark-ink.svg), [ivory](mark-ivory.svg) or [velvet](mark-velvet.svg) master as a single-color mark. Leave at least the width of one upright on every side. Use the symbol alone below 160 px and keep its width at least 24 px. The [horizontal lockup](wordmark.svg) uses Baskerville. Use its PNG if the receiving environment lacks that font.
+**Mark.** Dovetail is the working mark. A rounded piece meets a cut piece along one diagonal joint. The two forms retain their character and together make a compact unit. See the [ten alternatives](../../brand-kit-scratchpad/logo-studies-02/comparison.jpg). The [standalone Imagegen master](generated/logo-master.png) was made first and supplied to the [full Imagegen brand board](generated/brandkit-master.png). Use the ink, ivory or velvet SVG for production. Preserve the diagonal gap, maintain one stroke width of clear space, and place the mark at 32 px or larger.
 
 **Typography.** Use Baskerville Regular in title case. At 1920 × 1080, use 96–140 px for an opening line, 64–96 px for slide titles and Avenir Next Regular at 30–42 px for supporting words. Keep a 96 px live margin. Numbers can stand alone in large Baskerville with their units alongside. Put evidence qualifiers next to the number and narrative detail in presenter notes.
 

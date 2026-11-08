@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T23:55:00-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Added ten abstract logo directions, a separately generated brand board and a rubric-led Keynote judges edition.",
+  "why": "The 2:52 script puts the physical interaction first and distinguishes evidence for all five Creative scoring axes.",
+  "where": [
+    "brand-kit-scratchpad/logo-studies-02/comparison.jpg",
+    "brand-kit-final/identity/generated/brandkit-master.png",
+    "demo/pitch/deck/The Human Touch \u2014 Judges.key",
+    "demo/pitch/deck/creative-rubric.md"
+  ]
+}
