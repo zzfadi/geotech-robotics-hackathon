@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T14:33:00-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Original Creative rubric verified; current submission route and upload cutoff still need organizer confirmation",
+  "why": "The final preparation window should protect the live demo and submission handoff. Public event timing establishes 3 PM demos and judging, while the submission instructions found in Discord belong to the earlier May event.",
+  "where": ["https://discord.com/channels/1486417068084432936/1568686302852022343", "https://luma.com/pah", "demo/pitch/deck/creative-rubric.md", "demo/submission.md"],
+  "details": "Creative rubric v1 specifies a 3-minute robot demo and 2 minutes of questions at the station, with top 5 presenting for 5 minutes. Weights: Originality 25, Technical difficulty 20, Robustness 25, Demo quality 20, Presentation 10. Video-only Demo quality is capped at 3/5. Extra equipment is allowed but can reduce Technical difficulty scoring. Prioritize one repeatable live interaction, an accessible backup recording, a timed explanation including one failure and next step, and confirmed delivery to the organizers. The May 10 form, 4 PM deadline and X/Hugging Face requirements are not established for this November event. The current 2:18 PM channel question about submission remained unanswered when checked."
+}
