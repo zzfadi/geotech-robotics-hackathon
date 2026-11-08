@@ -1,0 +1,20 @@
+{
+  "when": "2026-11-07T17:02:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Prepared ten controlled diverse-object contact fixtures",
+  "why": "Separate approach failures from physical retention and lifting",
+  "where": [
+    "DreamSim/fleet_contact_fixtures.json",
+    "docs/maker-arm-contact-fixtures.md",
+    "Unreal/TheHumanTouch/Tools/maker_arm_grasp_evidence.py",
+    "Unreal/TheHumanTouch/Tools/test_maker_arm_grasp_evidence.py"
+  ],
+  "details": [
+    "Five existing props repeated with left and right arms; independent URDF FK verifies pregrasp centers",
+    "Rod axis rotated across approach direction to fit real jaw opening; cylinder diameter enlarged to 5cm",
+    "Setup placement only; independent gravity-enabled physics during motion required",
+    "Full rotation support added by simulation agent; controlled trials are coordinated separately",
+    "Five tests pass for conservative review-candidate evidence; unknown contacts never become verified grasp"
+  ]
+}

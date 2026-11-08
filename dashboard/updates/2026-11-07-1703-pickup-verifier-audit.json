@@ -1,0 +1,20 @@
+{
+  "when": "2026-11-07T17:03:17-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Audited pickup evidence and randomized target mapping",
+  "why": "Prevent elevated objects, stale snapshots or mismatched targets from being reported as successful grasps",
+  "where": [
+    "DreamSim/pickup_verification.py",
+    "DreamSim/test_pickup_verification.py",
+    "DreamSim/test_fleet_planning.py",
+    "DreamSim/web/index.html"
+  ],
+  "details": [
+    "Seven conservative verification tests and six planner tests pass. The verifier requires the exact target, supported objective, fresh finite measurements, gravity, free-body simulation, returned API action and observed joint movement.",
+    "Measured lift and verified grasp are distinct. Current runtime height evidence alone cannot prove gripper support; independent review remains necessary.",
+    "Web audit fixes preserve completed statuses on unselected tables and keep stale camera ages advancing. Final results show target, rise and hold duration.",
+    "Worker integration and subsequent live pickup verification are pending; no new inference requests were submitted by this audit.",
+    "Configured fixture plans now preserve their structured objective, object layout, target and starting pose unless rearrangement is explicitly requested. This prevents the plan layer from silently discarding test setup."
+  ]
+}

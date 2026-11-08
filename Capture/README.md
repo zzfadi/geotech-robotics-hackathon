@@ -124,6 +124,12 @@ During the session, use **Tools → Capture Performers → Show room behind scen
 
 The headset view hides the simulated hall, including fleet copies, and the editor grid. Tables, robots, props and performers stay visible. Tag other background meshes `PassthroughBackground` to hide them in this view. Room geometry and collision remain available to the simulation and other participants. On the Mac H.265 stream, empty pixels use the headset viewer's black key; dark solid objects receive a minimum brightness so they stay opaque. The depth mask covers opaque and masked geometry; standalone translucent effects without scene depth are omitted. Verify inside the headset by switching between opaque VR and the overlay while looking past a virtual object at a recognizable part of the physical room.
 
+### Align one real table
+
+Add `--passthrough --table 0` to the station launch command for the original table (sticker **1**). Positive numbers match the printed stickers. A direct editor launch accepts `-HumanTouchTable=N`. The XR room starts at the selected tabletop's center projected onto its floor. **Hide other tables in XR** is on initially. Toggle it in **Tools → Capture Performers** to see the rest of the fleet. The filter affects the stereo eye views.
+
+For hands-free alignment, stand at the middle of a long edge of the real table. Lean until the headset is directly above that edge and look level, straight across the table. Have the operator run `HumanTouch.AlignTable` in the Unreal console, or click **Align table in 5 seconds** and take that pose. This maps your position and heading onto the near edge of the selected virtual table and keeps the Quest floor at the virtual floor. Check the near and far edges through passthrough. The captured pose is reused when a Multi-User checkpoint replaces the table or avatar during the same tracking session. Repeat after exiting XR or recentering the headset. This one-pose method assumes the physical table matches the virtual tabletop's dimensions and height (currently 200 × 80 cm and 75 cm high). It provides visual alignment for the XR view.
+
 ## Choose the performers shown in this editor
 
 Open **Tools → Capture Performers** in the shared station map and choose **Mannequins** or **MetaHumans**. The selection applies to this editor and its Play In Editor world. Each editor receives the same three Animation subjects from Hub and can pick its own cast. Switching releases the previous cast, including its hidden animation meshes. The utility also opens from the console with `HumanTouch.Performers`.

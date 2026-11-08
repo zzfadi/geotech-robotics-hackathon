@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T17:02:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Faster Unreal editor during robot runs: kinematics 5.7x faster with bit-identical results, robot cameras only run during tasks, and camera views render one per frame.",
+  "why": "Editor frame time spiked to 80-125 ms whenever cameras captured, and every Dream action validation spent ~150 ms re-parsing the URDF.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_model.py",
+    "Unreal/TheHumanTouch/Tools/yam_kinematics.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_observer.py",
+    "4d27b77"
+  ],
+  "details": "Forward kinematics walks a joint plan parsed once from the cached URDF tree (keeps the mtime/size cache); the 4x4 multiply is unrolled in sum()'s exact order. SHA-256 of FK output over 400 poses matches the original exactly; 1.8 ms -> 0.31 ms per call. Editor camera streams stop 5 s after the last CoPresence task; each Dream command still starts its own stream. Captures export asynchronously and the three views render on consecutive frames: 5 Hz capture went from 4.7 to 0 hitches over 80 ms per second (35 -> 50 FPS) in the live editor."
+}
