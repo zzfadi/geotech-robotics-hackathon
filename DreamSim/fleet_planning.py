@@ -17,10 +17,10 @@ SLOTS = ((48, -42), (65, -20), (48, 2), (65, 24), (48, 46))
 
 
 def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
-    if (not isinstance(indices, list) or not indices or len(indices) > 12
-            or any(type(i) is not int or not 1 <= i <= 12 for i in indices)
+    if (not isinstance(indices, list) or not indices or len(indices) > 9
+            or any(type(i) is not int or not 0 <= i <= 8 for i in indices)
             or len(set(indices)) != len(indices)):
-        raise ValueError('Select distinct test table IDs in 1..12')
+        raise ValueError('Select distinct table IDs in 0..8')
     if mode not in ('same', 'random', 'configured'):
         raise ValueError('Unknown task mode')
     if not isinstance(prompt, str) or len(prompt.strip()) > 1000:
@@ -65,7 +65,7 @@ def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
 
 def apply_plan(config, plan):
     """Copy a reviewed plan into worker variants without modifying the base config."""
-    configured = {t.get('index', i): t for i, t in enumerate(config['tables'], 1)}
+    configured = {t.get('index', i): t for i, t in enumerate(config['tables'])}
     out = {'defaults': copy.deepcopy(config.get('defaults', {})), 'tables': []}
     for task in plan['tables']:
         index = task['index']

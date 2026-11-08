@@ -29,6 +29,19 @@ class PositionIKTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'outside model limits'):
             orientation_reference([.001]*6,bounds)
 
+    def test_real_rot6_response_bypasses_invalid_sdk_joint_reference(self):
+        raw=json.loads((Path(__file__).parent/'fixtures/position_ik_rot6_regression.json').read_text())
+        result,report=adapt(raw['action'],raw['state'])
+        from compiled_fk import ArmFK
+        fk=ArmFK()
+        for side,key in [('left','q_l_chunk'),('right','q_r_chunk')]:
+            self.assertEqual(report[side]['orientation_source'],'policy_eef_rot6')
+            self.assertLess(report[side]['max_position_error_m'],.002)
+            for row in result[key]:
+                self.assertTrue(np.all(np.array(row[:6])>=fk.low))
+                self.assertTrue(np.all(np.array(row[:6])<=fk.high))
+                fk.pose(row[:6])
+
     def test_rejects_nonfinite_targets(self):
         action=copy.deepcopy(self.fixture['action'])
         action['per_key']['action.left_eef_xyz'][2][0]=float('nan')

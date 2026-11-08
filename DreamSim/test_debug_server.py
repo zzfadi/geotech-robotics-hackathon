@@ -21,7 +21,13 @@ class ServerTest(unittest.TestCase):
                 request('/api/worker/next',token=server.store.token)
                 with self.assertRaises(urllib.error.HTTPError) as e:request('/api/command',{'prompt':'move'},origin='https://unrelated.example')
                 self.assertEqual(e.exception.code,403)
-                command=request('/api/command',{'prompt':'Move toward cube'})
+                # Legacy recording/auth endpoints still serve historical main-worker jobs.
+                # New public commands route through the unified fleet (covered separately).
+                command={'id':'a'*32,'prompt':'Move toward cube','status':'queued','stop':False}
+                server.store.command=command
+                server.store.event({'kind':'command.queued','request_id':command['id'],'prompt':command['prompt']})
+                server.store.fleet['worker_at']=time.time()
+                server.store.fleet['tables']=[{'index':0,'ready':True}]
                 with self.assertRaises(urllib.error.HTTPError) as e:request('/api/command',{'prompt':'duplicate'})
                 self.assertEqual(e.exception.code,409)
                 claimed=request('/api/worker/next',token=server.store.token)['command']

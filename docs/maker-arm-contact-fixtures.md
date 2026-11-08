@@ -2,7 +2,7 @@
 
 Prepared 2026-11-07 after batch `20261107-164929-13d280`. This is a proposed test fixture, not a successful pickup result or calibrated hardware contact model.
 
-`DreamSim/fleet_contact_fixtures.json` runs five existing props with the left arm and repeats them with the right arm (ten tables). Use configured mode with randomization disabled. All placement is before simulation. Props must remain independent, gravity-enabled Chaos bodies during motion; no attachment or transform-based lifting is allowed.
+`DreamSim/fleet_contact_fixtures.json` runs five existing props with the left arm and repeats four with the right arm (nine tables, including the original Table 1). Use configured mode with randomization disabled. All placement is before simulation. Props must remain independent, gravity-enabled Chaos bodies during motion; no attachment or transform-based lifting is allowed.
 
 | Target | Physical dimensions (cm) | Center (table local cm) | Rotation (UE pitch,yaw,roll) |
 |---|---|---|---|

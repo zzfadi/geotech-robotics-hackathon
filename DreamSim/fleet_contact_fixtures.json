@@ -10,7 +10,7 @@
   },
   "tables": [
     {
-      "index": 1,
+      "index": 0,
       "name": "red-left-controlled",
       "prompt": "Close the left gripper around the red block between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
       "initial_state": {
@@ -99,7 +99,7 @@
       ]
     },
     {
-      "index": 2,
+      "index": 1,
       "name": "green-left-controlled",
       "prompt": "Close the left gripper around the green cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
       "initial_state": {
@@ -188,7 +188,7 @@
       ]
     },
     {
-      "index": 3,
+      "index": 2,
       "name": "orange-left-controlled",
       "prompt": "Close the left gripper around the orange cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
       "initial_state": {
@@ -277,7 +277,7 @@
       ]
     },
     {
-      "index": 4,
+      "index": 3,
       "name": "orangerodassembly-left-controlled",
       "prompt": "Close the left gripper around the orange block with the yellow rod between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
       "initial_state": {
@@ -366,7 +366,7 @@
       ]
     },
     {
-      "index": 5,
+      "index": 4,
       "name": "orangecylinder-left-controlled",
       "prompt": "Close the left gripper around the orange cylinder between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
       "initial_state": {
@@ -455,7 +455,7 @@
       ]
     },
     {
-      "index": 6,
+      "index": 5,
       "name": "red-right-controlled",
       "prompt": "Close the right gripper around the red block between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
       "initial_state": {
@@ -544,7 +544,7 @@
       ]
     },
     {
-      "index": 7,
+      "index": 6,
       "name": "green-right-controlled",
       "prompt": "Close the right gripper around the green cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
       "initial_state": {
@@ -633,7 +633,7 @@
       ]
     },
     {
-      "index": 8,
+      "index": 7,
       "name": "orange-right-controlled",
       "prompt": "Close the right gripper around the orange cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
       "initial_state": {
@@ -722,7 +722,7 @@
       ]
     },
     {
-      "index": 9,
+      "index": 8,
       "name": "orangerodassembly-right-controlled",
       "prompt": "Close the right gripper around the orange block with the yellow rod between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
       "initial_state": {
@@ -801,95 +801,6 @@
         },
         {
           "label": "MakerStation_Approximate_Block_OrangeCylinder",
-          "location_cm": [
-            30,
-            75,
-            75
-          ],
-          "yaw_deg": 0
-        }
-      ]
-    },
-    {
-      "index": 10,
-      "name": "orangecylinder-right-controlled",
-      "prompt": "Close the right gripper around the orange cylinder between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
-      "initial_state": {
-        "q_left": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "q_right": [
-          0,
-          -2.1640439417523663,
-          0.44995526255155893,
-          1.691617186,
-          0,
-          0
-        ],
-        "gap_left_m": 0.04,
-        "gap_right_m": 0.08
-      },
-      "target": {
-        "label": "MakerStation_Approximate_Block_OrangeCylinder",
-        "location_cm": [
-          60,
-          40,
-          77.5
-        ],
-        "rotation_deg": [
-          90,
-          0,
-          0
-        ],
-        "yaw_deg": 0,
-        "scale": [
-          0.05,
-          0.05,
-          0.16
-        ]
-      },
-      "objective": {
-        "kind": "lift_hold",
-        "target": "MakerStation_Approximate_Block_OrangeCylinder",
-        "side": "right",
-        "height_cm": 10,
-        "hold_seconds": 2
-      },
-      "objects": [
-        {
-          "label": "MakerStation_Approximate_Block_Red",
-          "location_cm": [
-            30,
-            -75,
-            75
-          ],
-          "yaw_deg": 0
-        },
-        {
-          "label": "MakerStation_Approximate_Block_Green",
-          "location_cm": [
-            30,
-            -15,
-            75
-          ],
-          "yaw_deg": 0
-        },
-        {
-          "label": "MakerStation_Approximate_Block_Orange",
-          "location_cm": [
-            30,
-            15,
-            75
-          ],
-          "yaw_deg": 0
-        },
-        {
-          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
           "location_cm": [
             30,
             75,

@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T17:12:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Reduced scene to nine total stations in a 3\u00d73 grid",
+  "why": "User requested original Table1 plus eight replicas",
+  "where": [
+    "docs/validation/nine-room-parity-2026-11-07.json"
+  ],
+  "details": [
+    "Removed156actors only from extra roomsT09/T10; retained726actor transforms unchanged",
+    "Mac and Luna2 match nine floor/table centers, numbers1\u20139,27decalmaterialrefs and remaininglight intensities",
+    "Scoped taskt-0177 ended; parent coordinates guarded checkpoint"
+  ]
+}

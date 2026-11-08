@@ -153,7 +153,8 @@ class TableRun:
         fleet = read_json(self.run/'fleet.json') or {}
         if fleet.get('phase') in ('error', 'stopped'):
             raise RuntimeError('Fleet runtime %s: %s' % (fleet.get('phase'), fleet.get('error')))
-        return fleet.get('tables', {}).get(self.key)
+        table = fleet.get('tables', {}).get(self.key)
+        return {**table, 'sampled_unix': fleet.get('sampled_unix')} if table is not None else None
 
     def fresh(self, after):
         started = time.monotonic()
@@ -292,6 +293,12 @@ class TableRun:
         except Exception as error:
             self.result['error'] = str(error)
             self.log('error: ' + str(error))
+        from pickup_verification import verify_pickup
+        fleet = read_json(self.run/'fleet.json') or {}
+        status = {**fleet.get('tables', {}).get(self.key, {}), 'sampled_unix': fleet.get('sampled_unix')}
+        verification = verify_pickup(self.v.get('objective'), self.v['target']['label'], status,
+                                     requests=self.result['requests'], motion_chunks=self.result['motion_chunks'])
+        self.result['verification'] = verification
         if self.args.dry_run:
             self.result['outcome'] = 'dry_run'
         elif self.stopped():
@@ -301,7 +308,7 @@ class TableRun:
         elif not self.v.get('objective'):
             self.result['outcome'] = 'unverified'
         else:
-            self.result['outcome'] = 'passed' if self.result['lift'].get('lift_held') else 'failed'
+            self.result['outcome'] = verification['outcome']
         self.result['objective'] = self.v.get('objective')
         return self.result
 
@@ -371,7 +378,11 @@ def videos(run, key, fps):
         if not (folder/(pattern % 1)).exists():
             continue
         target = run/key/(role+'.mp4')
-        done = subprocess.run([ffmpeg, '-y', '-loglevel', 'error', '-framerate', str(rate), '-i', str(folder/pattern),
+        from recording_timeline import write_concat
+        timeline = write_concat(folder, fps) if role == 'overhead' else None
+        source = (['-f', 'concat', '-safe', '1', '-i', str(timeline), '-fps_mode', 'vfr'] if timeline else
+                  ['-framerate', str(rate), '-i', str(folder/pattern)])
+        done = subprocess.run([ffmpeg, '-y', '-loglevel', 'error', *source,
                                '-c:v', 'libx264', '-pix_fmt', 'yuv420p', str(target)], capture_output=True, timeout=60)
         if done.returncode == 0:
             out[role] = str(target)
@@ -608,7 +619,7 @@ def serve(args, config):
     print('Fleet worker ready: %d tables%s' % (len(usable), ' (dry run)' if args.dry_run else ''), flush=True)
     while True:
         try:
-            server.api('/api/fleet/worker/hello', {'tables': hello})
+            server.api('/api/fleet/worker/hello', {'tables': hello, 'expected_tables': list(range(9))})
             next_reply = server.api('/api/fleet/worker/next')
             command = next_reply['command']
         except Exception as error:
@@ -628,7 +639,8 @@ def serve(args, config):
         request_id = command['id']
         chosen = [dict(t) for t in config['tables']]
         run_config = {'defaults': config.get('defaults', {}), 'tables': []}
-        for i, table in enumerate(chosen, 1):
+        for position, table in enumerate(chosen):
+            i = table.get('index', position)
             if i in command['tables'] and (args.dry_run or i in clients):
                 table['index'] = i
                 if command.get('prompt'):
@@ -677,7 +689,7 @@ def serve(args, config):
             status = 'stopped' if stop['flag'] else 'done'
             server.event('fleet.finished', request_id, ('Measured held lift on ' + ', '.join(held) + ' (review videos)') if held
                          else 'No table measured a held 10 cm lift')
-            summary = [{k: r[k] for k in ('table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason')} for r in results]
+            summary = [{k: r[k] for k in ('table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason')} for r in results]
         except Exception as error:
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))
@@ -716,7 +728,7 @@ def main():
         return serve(args, config)
     if args.tables:
         keep = [int(x) for x in args.tables.split(',')]
-        config['tables'] = [dict(t, index=i) for i, t in enumerate(config['tables'], 1) if i in keep]
+        config['tables'] = [dict(t, index=t.get('index', i)) for i, t in enumerate(config['tables']) if t.get('index', i) in keep]
     variants = normalize_config(config)
     data = args.data or args.project/'Saved/DreamFleet'
     run = new_run(data, config)

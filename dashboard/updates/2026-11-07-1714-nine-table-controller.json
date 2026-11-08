@@ -1,0 +1,22 @@
+{
+  "when": "2026-11-07T17:14:45-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Unified Table1 and eight replicas with policy-frame IK and continuous hold recording",
+  "why": "Run the requested nine-table square through one fleet and eliminate invalid SDK orientation-reference failures without weakening robot joint limits",
+  "where": [
+    "DreamSim/position_ik.py",
+    "DreamSim/compiled_fk.py",
+    "DreamSim/fleet_worker.py",
+    "DreamSim/debug_server.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py",
+    "docs/maker-arm-fleet.md"
+  ],
+  "details": [
+    "Public table numbers1\u20139 map to internal0\u20138; the original station is reused, not cloned. All-nine routing includes Table1.",
+    "Official URDF remains unchanged; compiled FK matches source frames across100 poses and actual policy rot6 drives the orientation reference.",
+    "Table clearance checks both complete pad bounds before motion, rejecting tabletop intrusion rather than projecting commands.",
+    "Nine independent preview histories and timestamped continuous overhead recording cover motion, inference waits and holds.",
+    "Controlled Flash/full comparison is pending after deployment; nine diverse successful pickups are not yet established."
+  ]
+}

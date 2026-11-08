@@ -1,0 +1,115 @@
+{
+  "request_id": "824ea8168f4e4a4d8c9272cb81b983c1",
+  "run_name": "20261107-170613-2fb9b7",
+  "setup": "Controlled open pregrasp, free Chaos props; no attachment or scripted object lift",
+  "concurrency": {
+    "peak_concurrent_request_tables": 2,
+    "peak_tables": [
+      "T01",
+      "T07"
+    ],
+    "tables_with_calls": [
+      "T01",
+      "T07"
+    ],
+    "tables_with_measured_joint_change": [
+      "T01",
+      "T07"
+    ],
+    "tables_with_motion_rows": [
+      "T01",
+      "T07"
+    ],
+    "note": "Overlap measures outstanding Dream client calls; motion rows are playback evidence, not task success."
+  },
+  "results": [
+    {
+      "table": "T01",
+      "name": "red-left-controlled",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "cycles_run": 3,
+      "calls": 3,
+      "lift": {
+        "measured": true,
+        "height_cm": 15.075874252928273,
+        "max_height_cm": 15.076495395301308,
+        "held_slow_above_10cm_s": 2.6783752500195988,
+        "max_held_slow_above_10cm_s": 2.6783752500195988,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "verification": {
+        "target": "MakerStation_Approximate_Block_Red",
+        "measured_lift_pass": true,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "unverified",
+        "reasons": [
+          "Measured lift held; independent grasp review still required"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 2,
+        "height_cm": 15.075874252928273,
+        "held_seconds": 2.6783752500195988,
+        "speed_cm_s": 0.00013029626911607745,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "outcome": "unverified",
+      "error": null
+    },
+    {
+      "table": "T07",
+      "name": "green-right-controlled",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "cycles_run": 24,
+      "calls": 24,
+      "lift": {
+        "measured": true,
+        "height_cm": 2.3466512857339694e-06,
+        "max_height_cm": 1.6828646832052954,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "verification": {
+        "target": "MakerStation_Approximate_Block_Green",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics or API-driven motion criterion not met"
+        ],
+        "side": "right",
+        "required_height_cm": 10,
+        "required_hold_seconds": 2,
+        "height_cm": 2.3466512857339694e-06,
+        "held_seconds": 0.0,
+        "speed_cm_s": 3.988466608769253e-06,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "outcome": "failed",
+      "error": null
+    }
+  ],
+  "review": {
+    "red": "Overhead and wrist frame show target at the left jaws with measured elevation; independent contact verification remains incomplete.",
+    "green": "Failed; policy proposed movement below tabletop and released the target.",
+    "recording_limitation": "Existing overhead recording captured moving frames only; continuous hold recording with real capture timing implemented for subsequent trials."
+  },
+  "goal_achieved": false
+}

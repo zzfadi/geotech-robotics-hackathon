@@ -5,14 +5,14 @@ from fleet_planning import build_plan, apply_plan
 
 class Planning(unittest.TestCase):
     def test_seed_replays_and_subsets_preserve_experiments(self):
-        full = build_plan(list(range(1, 11)), mode='random', seed=42, randomize=True)
-        self.assertEqual(full, build_plan(list(range(1, 11)), mode='random', seed=42, randomize=True))
-        self.assertEqual(full['tables'][4], build_plan([5], mode='random', seed=42, randomize=True)['tables'][0])
+        full = build_plan(list(range(9)), mode='random', seed=42, randomize=True)
+        self.assertEqual(full, build_plan(list(range(9)), mode='random', seed=42, randomize=True))
+        self.assertEqual(full['tables'][5], build_plan([5], mode='random', seed=42, randomize=True)['tables'][0])
         self.assertGreater(len({t['prompt'] for t in full['tables']}), 1)
 
     def test_objects_have_clearance_and_remain_on_table(self):
         for seed in range(50):
-            for table in build_plan([1, 5, 10], mode='random', seed=seed, randomize=True)['tables']:
+            for table in build_plan([0, 5, 8], mode='random', seed=seed, randomize=True)['tables']:
                 for i, obj in enumerate(table['objects']):
                     x, y, z = obj['location_cm']; r = obj['clearance_radius_cm']
                     self.assertTrue(5+r < x < 85-r)
@@ -24,7 +24,7 @@ class Planning(unittest.TestCase):
 
     def test_shared_prompt_and_independent_config_copy(self):
         config = {'defaults': {'cycles': 12}, 'tables': [{'name': 'a'}, {'name': 'b'}]}
-        plan = build_plan([1, 2], prompt='Pick up red cube', seed=3)
+        plan = build_plan([0, 1], prompt='Pick up red cube', seed=3)
         result = apply_plan(config, plan)
         self.assertEqual([t['prompt'] for t in result['tables']], ['Pick up red cube']*2)
         self.assertNotIn('prompt', config['tables'][0])
@@ -32,9 +32,9 @@ class Planning(unittest.TestCase):
 
     def test_commanded_target_survives_randomized_layout_without_inherited_red_geometry(self):
         config={'defaults':{},'tables':[{'index':i,'target':{'label':'old-red','scale':[1,1,3],'location_cm':[1,2,3]}}
-                                       for i in range(1,11)]}
+                                       for i in range(9)]}
         for seed in range(10):
-            plan=build_plan(list(range(1,11)),mode='random',seed=seed,randomize=True)
+            plan=build_plan(list(range(9)),mode='random',seed=seed,randomize=True)
             applied=apply_plan(config,plan)
             for task,variant in zip(plan['tables'],applied['tables']):
                 self.assertEqual(task['target'],task['objective']['target'])
@@ -62,7 +62,7 @@ class Planning(unittest.TestCase):
         self.assertEqual(config['tables'][0],fixture)
 
     def test_input_validation(self):
-        for indices in ([True], [0], [13], [1, 1], []):
+        for indices in ([True], [-1], [9], [1, 1], []):
             with self.assertRaises(ValueError):
                 build_plan(indices, prompt='lift')
         for seed in (-1, 2**32, True, '3'):

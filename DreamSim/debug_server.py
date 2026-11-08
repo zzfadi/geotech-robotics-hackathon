@@ -15,7 +15,7 @@ class Store:
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
         # Replica-table fleet (DreamSim/fleet_worker.py --serve). Shares the
         # editor with the main worker, so the two command queues exclude each other.
-        self.fleet={'command':None,'worker_at':0,'tables':[],'status':None,'frames':{},'frame_times':{},'recording':None,'expected_tables':list(range(1,11)),'worker_id':None,'preview_enabled':False}
+        self.fleet={'command':None,'worker_at':0,'tables':[],'status':None,'frames':{},'frame_times':{},'recording':None,'expected_tables':list(range(9)),'worker_id':None,'preview_enabled':False}
         if (path/'fleet-recording.json').exists():
             try:
                 recording=json.loads((path/'fleet-recording.json').read_text())
@@ -148,10 +148,10 @@ class Handler(BaseHTTPRequestHandler):
             if self.path=='/api/fleet/worker/hello':
                 if f.get('worker_id') not in (None,worker_id) and (time.time()-f['worker_at']<15 or (command and command['status'] in ('queued','running'))):return self.send(409,{'error':'Another fleet worker owns the lease'})
                 tables=data.get('tables')
-                if (not isinstance(tables,list) or len(tables)>12 or any(not isinstance(t,dict) or type(t.get('index')) is not int or not 1<=t['index']<=12 for t in tables) or len({t['index'] for t in tables})!=len(tables)):
+                if (not isinstance(tables,list) or len(tables)>9 or any(not isinstance(t,dict) or type(t.get('index')) is not int or not 0<=t['index']<=8 for t in tables) or len({t['index'] for t in tables})!=len(tables)):
                     raise ValueError('Expected distinct fleet table IDs')
-                expected=data.get('expected_tables',list(range(1,11)))
-                if not isinstance(expected,list) or not expected or len(set(expected))!=len(expected) or any(type(i) is not int or not 1<=i<=12 for i in expected):raise ValueError('Invalid expected table IDs')
+                expected=data.get('expected_tables',list(range(9)))
+                if not isinstance(expected,list) or any(type(i) is not int for i in expected) or sorted(expected)!=list(range(9)):raise ValueError('Expected all nine table IDs 0..8')
                 f['worker_id']=worker_id;f['worker_at']=time.time()
                 f['expected_tables']=sorted(expected)
                 f['tables']=[dict({k:t.get(k) for k in ('index','name','prompt','checkpoint','position_ik','pad_contacts','action_rows','cycles','error')},ready=t.get('ready',True)) for t in tables]

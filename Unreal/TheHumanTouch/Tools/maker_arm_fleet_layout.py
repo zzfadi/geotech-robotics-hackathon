@@ -25,8 +25,8 @@ REST_STATE = {'q_left': [0.0]*6, 'q_right': [0.0]*6, 'gap_left_m': .04, 'gap_rig
 
 
 def _check_index(index):
-    if not isinstance(index, int) or not 1 <= index <= MAX_TABLES:
-        raise ValueError('Replica table index must be 1..%d' % MAX_TABLES)
+    if not isinstance(index, int) or not 0 <= index <= MAX_TABLES:
+        raise ValueError('Table index must be 0..%d' % MAX_TABLES)
 
 
 def offset(index):
@@ -41,7 +41,7 @@ def is_source_label(name):
 
 def label(index, name):
     _check_index(index)
-    return '%sT%02d__%s' % (FLEET_PREFIX, index, name)
+    return name if index == 0 else '%sT%02d__%s' % (FLEET_PREFIX, index, name)
 
 
 def parse_label(text):
@@ -131,6 +131,7 @@ def normalize_variant(variant, index, defaults=None):
     out['target'] = {'label': str(target.get('label') or TARGET),
                      'location_cm': _vector(target.get('location_cm'), 'target.location_cm'),
                      'offset_cm': _vector(target.get('offset_cm') or [0, 0, 0], 'target.offset_cm'),
+                     'rotation_deg': _vector(target.get('rotation_deg'), 'target.rotation_deg'),
                      'yaw_deg': None if target.get('yaw_deg') is None else float(target['yaw_deg']),
                      'scale': _vector(target.get('scale'), 'target.scale')}
     if not out['target']['label'].startswith(PROP_PREFIX):
@@ -144,7 +145,7 @@ def normalize_config(config):
     tables = config.get('tables') or []
     if not 1 <= len(tables) <= MAX_TABLES:
         raise ValueError('Fleet needs 1..%d tables' % MAX_TABLES)
-    out = [normalize_variant(v, v.get('index', i+1), config.get('defaults')) for i, v in enumerate(tables)]
+    out = [normalize_variant(v, v.get('index', i), config.get('defaults')) for i, v in enumerate(tables)]
     indices = [v['index'] for v in out]
     for index in indices:
         _check_index(index)
