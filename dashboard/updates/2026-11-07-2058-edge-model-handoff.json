@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T20:58:00-08:00",
+  "workstream": "dream1",
+  "status": "note",
+  "what": "Edge model handoff and Dream workshop takeaways written; bench sim and scripted expert scaffolded",
+  "why": "No Dream fine-tune in the Creative track; a small model on the Orin Nano bridges Dream lag and does auto-assist, picked up on the Mac Mini.",
+  "where": ["docs/handoffs/edge-model.md", "docs/handoffs/dream-workshop-takeaways.md", "edge_model/"],
+  "details": "The kinematic bench and expert pass the gate on 108 of 108 episodes (12 seeds x 9 tables). No policy trained on sim data yet; nothing run on the Orin Nano."
+}

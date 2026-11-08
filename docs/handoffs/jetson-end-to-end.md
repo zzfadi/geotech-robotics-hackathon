@@ -10,7 +10,9 @@ End to end means: command in → Jetson controller → arm moves → measured st
 
 ## Why it matters for Sunday
 
-Today the arm runs from a laptop over USB. A Jetson at the station frees the laptop for the pitch, gives the demo one fixed robot host, and is where a small trained model can run next to the arm (see [the training brief](small-model-training.md)). It is **not** required for the "hold my beer" MVP: if it isn't solid by late morning, demo from the laptop setup that already works.
+Today the arm runs from a laptop over USB. A Jetson at the station frees the laptop for the pitch, gives the demo one fixed robot host, and is where a small trained model can run next to the arm (see [the edge model brief](edge-model.md)). It is **not** required for the "hold my beer" MVP: if it isn't solid by late morning, demo from the laptop setup that already works.
+
+Dream's own advice for the loop that runs here (320×176 frames, hybrid async/sync on an 850 ms round-trip median, a 0.85 m/s speed clamp, `dream.check`, the camera checklist, TCP between the fingertips) is in [the workshop takeaways](dream-workshop-takeaways.md).
 
 ## Inputs and where they live
 
