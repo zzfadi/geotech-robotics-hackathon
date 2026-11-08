@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T13:53:03-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Creative rubric read: 45 of 100 points are robustness and demo quality, and a recorded video caps demo quality at 3 of 5",
+  "why": "Build the pitch around one interaction that works live every time, under 3 minutes, with gags layered on top; a two-arm handoff covers the bimanual level of technical difficulty.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "details": "Reading by the team Slack assistant from the rubric PDF Brian shared; the Quest/webcam rig may be noted and discounted, and a top presentation score needs us to say what failed and what's next."
+}

@@ -1,0 +1,19 @@
+{
+  "when": "2026-11-07T19:04:39-08:00",
+  "workstream": "dream1",
+  "status": "decision",
+  "what": "Real arm runs on direct SDK control for now; Dream-1 drives the simulated arms in Unreal",
+  "why": "EOD sync: this supersedes the 4:40 PM plan to make Dream-1 the real-arm brain. Dream may return later as a tool call for specific tasks.",
+  "where": [
+    "docs/slack-log-2026-11-07.md",
+    "DreamSim/"
+  ],
+  "details": "Virtual cameras send frames to the Dream API, which returns positions, and the SDK moves the virtual arms across the parallel tables.",
+  "workstream_update": {
+    "owner": "Denys Dubinin",
+    "status": "in-progress",
+    "milestones_done": [
+      "first-run"
+    ]
+  }
+}

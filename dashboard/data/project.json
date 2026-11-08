@@ -1,8 +1,8 @@
 {
   "name": "GeoTech · Physical AI Hacks",
-  "goal": "Cooperative tabletop turn-taking: a person places a token and pulls their hand back, then a MakerMods arm places the next token, and holds if the person reaches back in.",
+  "goal": "Hold My Beer: a person hands a MakerMods Maker Arm their drink and it takes it, backed by human interaction captured in Unreal across parallel simulated tables.",
   "track": "Creative track",
-  "stack": "Dream-1 (Dream Labs) + LiveKit portal-makermods, hand-in-workspace turn gate, LiveKit voice agent",
+  "stack": "Maker Arm SDK, Dream-1 in Unreal simulation, Isaac Sim physics, XR and webcam capture, LiveKit voice agent",
   "deadline": "2026-11-08T15:00:00-08:00",
   "deadline_label": "Demos due Sunday, Nov 8, 3 PM PT",
   "repo": "https://github.com/zzfadi/geotech-robotics-hackathon",
@@ -14,20 +14,20 @@
     },
     {
       "name": "Brian Frager",
-      "role": "GeoTech, VR/XR + Unreal"
+      "role": "GeoTech, XR + capture, pitch"
     },
     {
       "name": "Denys Dubinin",
-      "role": "GeoTech, VR/XR + Unreal"
+      "role": "GeoTech, Unreal + Dream simulation"
     },
     {
       "name": "Saleh Aldwais",
-      "role": "TBD"
+      "role": "Arm hardware integration"
     },
     {
       "name": "Takeshi Okamura",
-      "role": "TBD"
+      "role": "Cameras, LiveKit + UI"
     }
   ],
-  "headline": "Take turns with a robot arm"
+  "headline": "Hold my beer"
 }

@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T19:04:39-08:00",
+  "workstream": "planning",
+  "status": "note",
+  "what": "Day 1 EOD sync: Hold My Beer gag plus parallel-sim story for a 3-minute pitch, MVP only, 2 hours reserved for submission",
+  "why": "Brian and Denys's wrap-up sets Sunday's priorities and who does what.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "details": "Brian drafts the pitch creative and script and arrives mid-morning; Denys polishes the parallel-table demo and has the Quest 2 overnight; team on site by 3 PM. Confirm the real submission cutoff."
+}

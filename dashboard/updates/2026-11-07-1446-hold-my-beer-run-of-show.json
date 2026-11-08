@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T14:46:16-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Draft 3-minute Hold My Beer run-of-show with proposed success targets per person",
+  "why": "Brian named the demo Hold My Beer and asked for a run-of-show; it is a draft for the team to edit, not agreed targets.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "details": "Cold open gag, the problem, the core handoff, a second run plus a hand-in-zone pause, what failed and what's next, and a bow. Empty or foam can only, e-stop visible."
+}

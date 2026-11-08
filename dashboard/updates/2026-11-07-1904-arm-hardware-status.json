@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T19:04:39-08:00",
+  "workstream": "arm-station",
+  "status": "note",
+  "what": "Hardware integration resolved by a different approach; Takeshi is calibrating cameras and mounting an Ouster camera on the arm",
+  "why": "EOD sync status for the physical station: control goes through the SDK directly rather than Portal or Dream-1.",
+  "where": [
+    "docs/slack-log-2026-11-07.md",
+    "arm/"
+  ]
+}
