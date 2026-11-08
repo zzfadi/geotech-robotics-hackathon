@@ -2,7 +2,7 @@
 
 [Open the native Keynote presentation](deck/The%20Human%20Touch%20%E2%80%94%20Judges.key) · [Slide proof](deck/The%20Human%20Touch%20%E2%80%94%20Judges.pdf) · [Timed outline and notes](deck/judges-script.md)
 
-[Review the asset library](asset-contact-sheet.jpg) · [Play the Higgsfield museum sequence](films/higgsfield/museum-sequence.mp4) · [Opening and ending concepts](keyframes/pairs.jpg) · [Brand guide](https://github.com/zzfadi/geotech-robotics-hackathon/blob/5a20417c10b8d51316eb96e7139d78c7fd5dac5a/brand-kit-final/identity/brand-guide.pdf) · [Emmy turnaround](https://github.com/zzfadi/geotech-robotics-hackathon/blob/5a20417c10b8d51316eb96e7139d78c7fd5dac5a/brand-kit-final/emmy/README.md)
+[Review the asset library](asset-contact-sheet.jpg) · [Play the Higgsfield museum sequence](films/higgsfield/museum-sequence.mp4) · [Opening and ending concepts](keyframes/pairs.jpg) · [Brand guide](https://drive.google.com/file/d/1m1ghiYL3c9VkqjNrb1SQkGHw64CccpX5/view) · [Emmy turnaround](https://github.com/zzfadi/geotech-robotics-hackathon/blob/5a20417c10b8d51316eb96e7139d78c7fd5dac5a/brand-kit-final/emmy/README.md)
 
 ## Media cues
 
@@ -27,6 +27,8 @@ The stage sequence runs 31 seconds. The opening pulls back from the finger gap i
 ## Real footage after feature lock
 
 Capture the hero in horizontal and vertical formats, missed grabs, wrist POV, a clean parallel-sim run and a 3×3 still, matched webcam/avatar views, Quest passthrough, the team photo and full backup performance. Include the fist bump, thinking overlay and voice audio only if the features are in the locked demo. Keep the on-site footage distinct from the educational museum illustrations.
+
+The social renderer reads the approved transparent PNG from `brand-kit-final/logo-final/emmy-nebula.png`. Download the [final logo](https://drive.google.com/file/d/1ImaJFPjERw7ZqHKFz5H1Nrnjk3CypSr6/view) into that path when setting up a new checkout.
 
 To replace the social template interval, select a continuous take at least 12 seconds long. The silent assembly includes a 3 s opener, 12 s captioned real action and 5 s close. For example:
 

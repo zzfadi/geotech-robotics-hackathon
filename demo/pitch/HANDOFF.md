@@ -1,18 +1,14 @@
 # The Human Touch · cloud handoff
 
-The latest [Emmy nebula study](https://drive.google.com/drive/folders/1bc5jN98K6F4x3xEz2fVVPHVdoJs8XVr5) uses the amber glass human hand and Emmy’s ivory finger plates with exposed titanium joints. Use `emmy-nebula.png` for transparent placement. The two JPEG proofs show the glow on oxblood and limestone.
-
-Open the [mirrored-palm galaxy style studies](https://drive.google.com/drive/folders/1YVeyrgsiEpJEnIELAmikmD7CfirYcvar) for the earlier material comparison. Compare cut paper, cloisonné enamel, marble relief, and illuminated glass in `comparison.jpg`. The cut-paper mark also has transparent PNG and single-color SVG files.
-
-Earlier logo studies include [Almost Touch](https://drive.google.com/drive/folders/1IpI_RMz44ndKjYeFpBkBPDIaE0_RLVih) and [Galactic Energy](https://drive.google.com/drive/folders/1umQT9TK7_6UAwohqBk3oTNoSRYdAbe4G). Galactic Energy replaces the Shared Vessel bowl with a spiral of stars suspended above the human palm and reaching Emmy’s fingertip. Its Drive folder includes the transparent emblem, SVG, and title and plaque proofs. The [earlier editable comparison](logo-redesign/almost-touch/README.md) provides the title layout.
+**Approved logo.** Use the [transparent Emmy nebula PNG](https://drive.google.com/file/d/1ImaJFPjERw7ZqHKFz5H1Nrnjk3CypSr6/view). An amber human palm and Emmy’s ivory hand with exposed titanium joints form a single spiral of light. The [final logo folder](https://drive.google.com/drive/folders/1NPCH0J0-Dt8_Gi0fY6nmV2qLo2Bs7NCM) and [brand guide](https://drive.google.com/file/d/1m1ghiYL3c9VkqjNrb1SQkGHw64CccpX5/view) are the production references.
 
 | Continue here | What to open |
 | --- | --- |
-| Logo and title | [Editable comparison in PowerPoint](logo-redesign/almost-touch/Engraving%20comparison.pptx) or [native Keynote](logo-redesign/almost-touch/Engraving%20comparison.key). Use slides 3–4 for editing. The mark masters, transparent PNGs, prompts and the side-by-side proof are linked from the board. |
+| Logo and title | Use the [approved title card](assets/title.jpg) or edit the logo image object on slide 3 of the Judges Keynote. The [investor presentation](https://drive.google.com/drive/folders/19Xg-LfEIQDUtcARbcSWRaoSPh-OMqOks) also uses this identity. |
 | Pitch and delivery | [Judges Keynote](deck/The%20Human%20Touch%20%E2%80%94%20Judges.key), [Stage Keynote](deck/The%20Human%20Touch%20%E2%80%94%20Stage.key), [Judges script](deck/judges-script.md), [run card](deck/judges-run-card.md), and [deck exports](deck/). Use the native decks for the latest saved Keynote state. |
 | Character and identity | Use the [Drive brand-kit folders](#optional-brand-kit-files) for Emmy’s turnaround, face and spine details, identity materials, and earlier studies. Keep Emmy photoreal inside paintings. |
 | Exhibit art and motion | [Exhibit assets](assets/), [start/end concepts](keyframes/), [finished footage](films/), [motion direction](motion-brief.md). Humans initiate; Emmy responds subtly. Review both frames before spending any Higgsfield generations. |
-| Previous logo explorations | [Dovetail / Interval applications](logo-review/README.md). Historical explorations; keep the current engravings in velvet maroon, limestone, ink, and brass. |
+| Previous logo explorations | [Mirrored palms](https://drive.google.com/drive/folders/1YVeyrgsiEpJEnIELAmikmD7CfirYcvar), [Almost Touch and Shared Vessel](logo-redesign/almost-touch/README.md), and [Dovetail and Interval](logo-review/README.md) are archived studies. |
 
 Use the existing media for brand iteration. Product capture is a separate post-feature-lock task.
 
