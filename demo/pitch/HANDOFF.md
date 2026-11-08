@@ -1,6 +1,6 @@
 # The Human Touch · cloud handoff
 
-Start with the [latest Almost Touch and Shared Vessel engravings on Drive](https://drive.google.com/drive/folders/1IpI_RMz44ndKjYeFpBkBPDIaE0_RLVih). Open `before-and-after.jpg` for the drawings and `title-and-plaque.jpg` for the application proofs. The [earlier editable comparison](logo-redesign/almost-touch/README.md) provides the title layout for trying either revised mark. Both directions are in review.
+The current logo studies are [Almost Touch](https://drive.google.com/drive/folders/1IpI_RMz44ndKjYeFpBkBPDIaE0_RLVih) and [Galactic Energy](https://drive.google.com/drive/folders/1umQT9TK7_6UAwohqBk3oTNoSRYdAbe4G). Galactic Energy replaces the Shared Vessel bowl with a spiral of stars suspended above the human palm and reaching Emmy’s fingertip. Its Drive folder includes the transparent emblem, SVG, and title and plaque proofs. The [earlier editable comparison](logo-redesign/almost-touch/README.md) provides the title layout.
 
 | Continue here | What to open |
 | --- | --- |
