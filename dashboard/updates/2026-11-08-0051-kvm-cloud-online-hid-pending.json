@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T00:51:55-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "KVM local admin, shared internet and GLKVM cloud binding are complete; keyboard delivery remains unverified.",
+  "why": "Establish a working console path to select the inserted Jetson installer USB and observe firmware/OS setup.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "Wi-Fi-to-Ethernet sharing is active, local admin initialized, and the bound KVM is green online with no paid plan. The password is retained in Mac login Keychain, not Git. The user confirmed USB insertion into the Jetson. HDMI remains absent; C270 still shows Shell>. Two virtual V attempts produced no visible input and the UI said Keyboard captured, inactive. Actual remote control, HID delivery, installer boot and SSD installation remain unverified; no arm milestone is marked complete. Client code associates the inactive tooltip with HID offline/busy. A keyboard/mouse USB cable reseat to another Jetson USB-A port has been requested; preserve KVM power and the installer USB. Completion is pending. A read-only KVM terminal check then returned USB gadget state not attached and speed UNKNOWN, confirming the missing USB host connection."
+}

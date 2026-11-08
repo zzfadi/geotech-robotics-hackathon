@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Installer USB prepared and verified on Mac; Jetson OS installation and SSH pending",
+  "scope": "Installer USB prepared and verified on Mac; insertion into Jetson user-confirmed; KVM admin, network and cloud binding verified; HID, Jetson installation and SSH pending",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -29,7 +29,9 @@
     "validation_scope": "Etcher validation completed; no separate raw-device SHA-256 readback was obtained",
     "safely_ejected": true,
     "eject_result": "Disk /dev/disk6 ejected",
-    "device_number_scope": "At this write only; re-identify before any future operation"
+    "device_number_scope": "At this write only; re-identify before any future operation",
+    "inserted_into_jetson": true,
+    "insertion_evidence": "User confirmed insertion; installer boot remains unverified"
   },
   "project_bundle": {
     "file": "geotech-robotics-hackathon-119d38b.bundle",
@@ -48,21 +50,65 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "UEFI Interactive Shell with idle Shell prompt",
+    "observation": "UEFI Interactive Shell with idle Shell> prompt; two virtual V key attempts produced no visible character",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
     "hid_delivery_verified": false,
-    "factory_reset": "User requested physical reset; device returned with new link-local address, fresh admin setup not yet verified",
-    "internet_sharing": "Wi-Fi to built-in Ethernet selected; enabling awaits local macOS authentication",
-    "cloud": "Free Standard route selected; registration, binding and remote-control verification pending"
+    "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
+    "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
+    "cloud": "Approved Google sign-in and Bind completed; GL-RM1-569 green online; actual remote-control session unverified",
+    "updated_at": "2026-11-08T00:51:55-08:00",
+    "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
+    "local_admin_initialized": true,
+    "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
+    "network": {
+      "sharing_active": true,
+      "upstream": "Wi-Fi",
+      "downstream": "Ethernet",
+      "mac_bridge": "bridge100",
+      "mac_bridge_ipv4": "192.168.2.1",
+      "kvm_ipv4": "192.168.2.2",
+      "kvm_address_source": "DHCP",
+      "jetson_network_path_verified": false
+    },
+    "cloud_binding": {
+      "sign_in_completed": true,
+      "provider": "Google",
+      "bind_completed": true,
+      "device_name": "GL-RM1-569",
+      "online": true,
+      "paid_plan_activated": false,
+      "remote_control_session_verified": false
+    },
+    "hid_check": {
+      "keyboard_enabled_in_settings": true,
+      "virtual_key": "V",
+      "click_attempts": 2,
+      "focus_attempted": true,
+      "visible_character_observed": false,
+      "tooltip": "Keyboard captured, inactive",
+      "status": "physical USB/HID connection check pending",
+      "tooltip_source": "Public KVM client JavaScript inspection",
+      "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
+      "next_check": "User asked to reseat only the KVM keyboard/mouse USB cable into another Jetson USB-A port, preserving KVM power and SanDisk installer",
+      "physical_cable_check_completed": false,
+      "usb_gadget_diagnostic": {
+        "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
+        "state": "not attached",
+        "current_speed": "UNKNOWN",
+        "scope": "Read-only through authenticated KVM built-in terminal; no USB host connection observed"
+      }
+    }
   },
   "pending": [
-    "Move verified USB to Jetson and select it in UEFI Boot Manager",
+    "Complete requested physical KVM USB/HID cable check, then verify keyboard delivery visibly through the C270",
+    "Select the inserted, verified USB in UEFI Boot Manager and verify installer boot",
     "Complete documented QSPI update with Y within 30-second prompt and allow both capsule passes",
     "Identify intended NVMe and obtain its erase confirmation before installing",
     "Complete Jetson initial setup/network/SSH and verify installed versions/root device",
-    "Finish KVM internet, local admin and cloud setup; verify HID with webcam observation",
+    "Verify an actual GLKVM remote-control session; cloud online status alone is insufficient",
     "Run cached arm environment and offline checks on actual Jetson"
-  ]
+  ],
+  "updated_at": "2026-11-08T00:51:55-08:00"
 }

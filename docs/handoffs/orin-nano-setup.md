@@ -8,7 +8,7 @@ No microSD is available. The earlier JetPack 6 microSD plan is retained below on
 
 - User-provided photos show UEFI firmware **`36.4.2-gcid-38685322`**, dated **2024-12-12**. This satisfies NVIDIA's firmware prerequisite for the USB route; it does not establish an installed OS. [NVIDIA firmware check](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html#firmware-gate).
 - The photographed **`Start HTTP Boot over IPv4`** screen is a network-boot attempt, not proof of Ubuntu or SSH. A direct **DisplayPort monitor is now available** for the local boot menu and installer.
-- The **JetPack 7.2.1 USB is ready**: the 5,035,601,920-byte ISO was downloaded from NVIDIA, its local SHA-256 recorded, and balenaEtcher 2.1.9 completed flashing and validation with one successful target. The SanDisk was then safely ejected. See [USB preparation evidence](../validation/jetson-usb-prep-2026-11-08.json). Booting this installer on the Jetson remains pending. The older 6.2.1 SD ZIP is not this USB installer.
+- The **JetPack 7.2.1 USB is ready**: the 5,035,601,920-byte ISO was downloaded from NVIDIA, its local SHA-256 recorded, and balenaEtcher 2.1.9 completed flashing and validation with one successful target. The SanDisk was then safely ejected, and the user has since confirmed inserting it into the Jetson. See [USB preparation evidence](../validation/jetson-usb-prep-2026-11-08.json). Booting this installer on the Jetson remains pending. The older 6.2.1 SD ZIP is not this USB installer.
 - The SSD's contents, partitions, model/serial and bootability remain unconfirmed. Its reported 1 TB capacity alone does not identify a safe erase target.
 - JetPack 7.2.1 uses **Ubuntu 24.04**, while the archived JetPack 6 route uses Ubuntu 22.04. Do not apply the old `r36.5` repository edits or 6.x APT-upgrade commands on the new 7.x system. [NVIDIA release information](https://developer.nvidia.com/embedded/jetpack/downloads).
 
@@ -22,11 +22,15 @@ Re-identify the **SanDisk Cruzer Blade, 16 GB**, previously mounted as `UBUNTU 1
 
 Use the direct DisplayPort monitor for this installation. Keep the included 19 V power supply connected and provide a verified keyboard path. Keep robot CAN adapters disconnected during OS setup; check the heatsink and fan before workloads.
 
-Current user-reported wiring: Mac Ethernet → GL-RM1; Mac USB-C → KVM power; KVM USB-C device/HID → Jetson USB-A. The KVM's HDMI input and USB-A host port are empty; the latter is not needed for keyboard control. The Mac can reach the KVM's local GLKVM login page over its direct Ethernet link. Login and actual HID delivery remain unverified. This Ethernet cable no longer provides a Jetson network path; arrange the Jetson's networking during first boot.
+Current user-reported wiring: Mac Ethernet → GL-RM1; Mac USB-C → KVM power; KVM USB-C device/HID → Jetson USB-A. The KVM's HDMI input and USB-A host port are empty; the latter is not needed for keyboard control. This Ethernet cable serves the KVM, not the Jetson; arrange the Jetson's networking during first boot.
 
-The user requested a factory reset and fresh GLKVM remote-service account setup. The device returned on a new link-local address after reboot; fresh administrator setup still needs verification. The Mac Internet Sharing dialog is set to **Wi-Fi → Ethernet only**, but enabling it is waiting for the user's local macOS authentication; internet delivery to the KVM is not yet established. The free Standard cloud route is selected; account creation, binding and remote control are not yet complete. Keep passwords, tokens and verification codes out of Git.
+**KVM setup verified on November 8:** Mac Internet Sharing **Wi-Fi → Ethernet** is active on `bridge100` at `192.168.2.1`; the KVM received DHCP address **`192.168.2.2`**. Fresh local administrator setup completed after the requested reset. The local UI reports firmware **V1.9.2 release1 (RM1)**. Its generated administrator password is stored in the Mac login Keychain; no credential value is recorded here.
 
-The user-authorized **Logitech C270** on the Mac can observe the DisplayPort monitor. A 1280×720 capture from AVFoundation video device 1 showed an idle **UEFI Interactive Shell `Shell>` prompt**. The view is angled but usable for boot-state inspection; confirm small installer labels before acting. Camera device indices can change, so re-identify the C270 before future captures.
+The user-approved Google sign-in and GLKVM **Bind** completed. Device **`GL-RM1-569`** is green/online in the cloud at `192.168.2.2`, with no paid plan activated. This verifies account binding and online status; an actual remote-control session remains unverified. Keep passwords, tokens, account identifiers and verification codes out of Git.
+
+**Keyboard delivery remains unresolved.** Keyboard input is enabled in KVM settings. Two virtual **V** clicks, including a focus attempt, produced no visible character at the webcam-observed `Shell>` prompt. The UI tooltip read **“Keyboard captured, inactive.”** Inspection of the public KVM client code maps that state to capture being enabled while the HID keyboard is offline or busy; HDMI presence is not that tooltip's condition. The user has been asked to reseat only the KVM keyboard/mouse USB cable into another Jetson USB-A port, preserving KVM power and the SanDisk installer. A read-only check in the KVM built-in terminal returned **`not attached`** for `/sys/class/udc/*/state` and **`UNKNOWN`** for current speed, confirming no USB host connection at that check. This physical USB/HID check is pending; use a known data-capable cable if reseating does not restore it. Verify input visibly before using it for Boot Manager or the time-limited installer firmware prompt.
+
+The user-authorized **Logitech C270** on the Mac can observe the DisplayPort monitor. 1280×720 captures showed an idle **UEFI Interactive Shell `Shell>` prompt**. The view is angled but usable for boot-state inspection; confirm small installer labels before acting. Its AVFoundation index changed from 1 to 0 during setup, so re-identify the C270 before future captures.
 
 The **GL.iNet Comet GL-RM1** remains an optional console: **Jetson DisplayPort → DP-to-HDMI adapter/cable → Comet HD IN**; separately connect **Jetson USB host → Comet USB-Device**, plus Comet power/network. The available DisplayPort/USB-C cable is not a video connection to this KVM. [GL.iNet connection guide](https://docs.gl-inet.com/kvm/en/user_guide/gl-rm1/quick_setup_guide/). Jetson USB-C does not output video; NVIDIA supports passive or active DP-to-HDMI adapters. [NVIDIA hardware layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html).
 
@@ -34,7 +38,7 @@ The **GL.iNet Comet GL-RM1** remains an optional console: **Jetson DisplayPort �
 
 Follow [NVIDIA's Orin Nano quick start](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) at the local console:
 
-1. Connect the validated installer USB. At the NVIDIA splash press **Esc → Boot Manager**, then select the USB device explicitly, rather than the HTTP/network entry.
+1. The user has inserted the validated USB. Once keyboard control is verified, type **`exit`** at the current UEFI `Shell>` prompt and press Enter, inspect the returned firmware menu, then choose **Boot Manager → SanDisk USB**. From the NVIDIA splash, **Esc → Boot Manager** is the alternative route. Do not select the HTTP/network entry.
 2. Watch for the QSPI firmware confirmation. With existing 36.x firmware, press **Y within 30 seconds** when proceeding with the firmware update. A missed prompt requires restarting the installer.
 3. Allow **both capsule-update passes** and their expected reboots to finish. Never interrupt power. Record the resulting firmware version.
 4. Choose **Install Jetson ISO r39.2.1**, then inspect storage selection. **Stop before confirming installation:** show the proposed NVMe's device identity, capacity and any displayed partitions to the user. Obtain confirmation to erase that intended 1 TB SSD; do not substitute another disk or the USB installer.
@@ -70,8 +74,10 @@ The separate `vision/run.py` preview uses OpenCV camera capture, but `vision/REA
 | Firmware after installer | Not yet verified |
 | Current boot observation | Initial photos show HTTP boot; later Logitech webcam capture shows UEFI `Shell>`; installed OS not established |
 | Target JetPack / L4T / Ubuntu | Prepared route: 7.2.1 / 39.2.1 / 24.04; installation pending |
-| Console | Direct DisplayPort monitor visible through Logitech C270 webcam; GL-RM1 login reachable, HID not yet verified, HDMI empty |
-| Installer media | 16 GB SanDisk Cruzer Blade flashed and validated by Etcher 2.1.9; safely ejected for transfer to Jetson |
+| Console | Direct DisplayPort monitor visible through Logitech C270; UEFI `Shell>` remains visible, keyboard delivery unresolved, KVM HDMI empty |
+| KVM local / cloud | Admin initialized; V1.9.2 release1 (RM1); GL-RM1-569 bound and online at 192.168.2.2; actual remote-control session unverified |
+| KVM network | Mac Wi-Fi → Ethernet Internet Sharing active; bridge100 192.168.2.1, KVM DHCP 192.168.2.2 |
+| Installer media | 16 GB SanDisk Cruzer Blade flashed and validated by Etcher 2.1.9; user confirmed insertion into Jetson, installer boot pending |
 | OS target | Attached 1 TB NVMe proposed; identity/content confirmation and erase authorization pending |
 | System Python / arm environment Python | Device results pending; isolated arm Python 3.12 planned |
 | Hostname / username / LAN or Tailscale address | Not yet verified |
