@@ -2,24 +2,27 @@
 
 This is the working plan for Sunday, rebuilt from Brian's **Day 1 EOD sync** (Brian and Denys, posted in #geotech-robotics at 7:04 PM) and the repo as it stood at 8:10 PM. The history of how we got here, including every Saturday decision, is in [the Saturday Slack log](slack-log-2026-11-07.md). Where tonight's notes change an earlier decision, it is marked **Supersedes**.
 
-Credentials stay out of this file. The Dream key is the `DREAM_API_KEY` environment variable from the team password manager.
+All hackathon work, plans and handoffs live in this repo only; the product-factory repo is not used for it (FADI, 8:28 PM). Credentials stay out of this file. The Dream key is the `DREAM_API_KEY` environment variable from the team password manager.
 
 ## Needs a decision
 
 Nobody owns these yet, and nothing below assigns them. Settle them first thing Sunday at the latest.
 
-**No owner yet**
+**Top two**
 
-- The beer handoff on the real arm: take a can from a person's hand, then the fist bump.
+1. Who owns the beer handoff on the real arm: take a can from a person's hand, then the fist bump.
+2. How Dream-1 and Codex split the real arm: which moves Dream-1 drives and which Codex scripts directly.
+
+**Also no owner yet**
+
 - The hold interlock: Isaac → LiveKit "hold" message into our arm controller, dry-run tested.
 - The Isaac → Unreal stream over LiveKit.
 - The LiveKit voice agent.
 - Submission: block about 2 hours and run it.
 - The Luna2 simulated hand-to-arm contact trial.
 
-**Open questions**
+**Other open questions**
 
-- How Dream-1 and Codex share the physical arm: which moves Dream-1 drives and which Codex scripts directly.
 - Is the voice agent still a must-have? The EOD notes don't mention it.
 - Is the hold interlock (and the turn gate) in the MVP?
 - When exactly is submission due, given "on site by 3 PM" and polishing time after the deadline? Who owns it?
@@ -90,12 +93,12 @@ Idea flagged, not committed: **assisted intent**, where the arm infers what the 
 | 8 | LiveKit voice agent (Brian called it a must-have on Saturday) | **No owner named** (earlier: Takeshi) | Unclear if still in |
 | 9 | Run the Luna2 simulated hand-to-arm contact trial | **No owner named** | Sunday |
 | 10 | Reserve 2 hours for submission and run it | **No owner named** | Before the cutoff |
-| 11 | Jetson robot server, end to end ([brief](handoffs/jetson-end-to-end.md)) | FADI, working on the Mac from this repo | Tonight; not required for the MVP |
-| 12 | Train and score a small model from our simulation ([brief](handoffs/small-model-training.md)) | FADI, working on the Mac from this repo | Tonight, time-boxed; not required for the MVP |
+| 11 | Jetson robot server, end to end ([brief](handoffs/jetson-end-to-end.md)) | FADI, working on the Mac Mini from this repo | Tonight; not required for the MVP |
+| 12 | Train and score a small model from our simulation ([brief](handoffs/small-model-training.md)) | FADI, working on the Mac Mini from this repo | Tonight, time-boxed; not required for the MVP |
 
 ## Handoffs for the Mac Mini
 
-Two workstreams need the Mac or hardware. FADI owns both and works them on the Mac from this repo, with whichever agents run there; the briefs are written so a fresh agent can start cold:
+Two workstreams need the Mac or hardware. FADI owns both and works them on the Mac Mini from this repo, with whichever agents run there; the briefs are written so a fresh agent can start cold:
 
 - [Jetson robot server, end to end](handoffs/jetson-end-to-end.md)
 - [Train a small model from our simulation](handoffs/small-model-training.md)

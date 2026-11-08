@@ -1,6 +1,6 @@
 # Handoff: train a small model from our simulation
 
-**Owner: FADI, working on the Mac from this repo** (with whichever agents run there). Written Saturday night, Nov 7, from [the team plan](../plan.md), [Dream fine-tuning readiness](../dream-finetuning.md), [the demonstration recorder](../dream-demonstration-recorder.md), [parallel Maker Arm trials](../maker-arm-fleet.md) and the EOD sync. No training has been run.
+**Owner: FADI, working on the Mac Mini from this repo** (with whichever agents run there). Written Saturday night, Nov 7, from [the team plan](../plan.md), [Dream fine-tuning readiness](../dream-finetuning.md), [the demonstration recorder](../dream-demonstration-recorder.md), [parallel Maker Arm trials](../maker-arm-fleet.md) and the EOD sync. No training has been run.
 
 ## Goal
 
