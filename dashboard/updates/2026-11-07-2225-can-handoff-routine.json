@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T22:25:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Can handoff routine built for the real right arm, with the taped-mark fallback; replay only, not yet on the arm",
+  "why": "Taking the can from a person's hand is the demo's biggest open gap. FADI owns it; the fallback is the pickup from a taped mark unless the hand works 8 of 10 times by 11:00.",
+  "where": ["handoff/", "handoff/README.md"],
+  "details": "Moves go only through arm/tools/pickup_server.py. Reads vision.run moments, checks the existing turn gate before every short move segment, waits still for the can between the jaws, judges the grasp by jaw angle, waits for the hand to let go, retreats and re-checks the hold. 17 replay scenarios and 21 tests pass on a fake arm. Poses are untaught placeholders and the live runner refuses to move until they are taught; the morning checklist with owners is in handoff/README.md. The e-stop person is still unnamed.",
+  "workstream_update": {"owner": "FADI"}
+}

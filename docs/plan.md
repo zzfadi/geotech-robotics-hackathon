@@ -10,7 +10,7 @@ Nobody owns these yet, and nothing below assigns them. Settle them first thing S
 
 **Top two**
 
-1. Who owns the beer handoff on the real arm: take a can from a person's hand, then the fist bump.
+1. Who owns the beer handoff on the real arm: take a can from a person's hand, then the fist bump. **Answered:** FADI owns the handoff (voice call, about 10 PM Saturday). The routine and the morning checklist are in [handoff/](../handoff/README.md); the fist bump is still unowned.
 2. How Dream-1 and Codex split the real arm: which moves Dream-1 drives and which Codex scripts directly.
 
 **Also no owner yet**
@@ -87,7 +87,7 @@ Idea flagged, not committed: **assisted intent**, where the arm infers what the 
 | 2 | Smooth parallel-simulation demo, the visual proof of parallel human-robot training | Denys | Sunday morning |
 | 3 | Quest 2 in debug mode, XR work overnight | Denys | Tonight |
 | 4 | Emoji "thinking" overlay | Denys | Sunday |
-| 5 | Physical arm takes a handed-over can from a person, then fist bump | **No owner named** (FADI built the current pickup) | Before rehearsal |
+| 5 | Physical arm takes a handed-over can from a person, then fist bump | FADI for the handoff ([routine and checklist](../handoff/README.md), replay only so far); fist bump **no owner named** | Handoff 8 of 10 by 11:00, else the taped mark |
 | 6 | Hold interlock: Isaac → LiveKit hold message into our SDK controller, dry-run tested | **No owner named** (earlier: Saleh and FADI) | Only if kept in the MVP |
 | 7 | Isaac → Unreal stream over LiveKit | **No owner named** | Unclear if needed for the MVP |
 | 8 | LiveKit voice agent (Brian called it a must-have on Saturday) | **No owner named** (earlier: Takeshi) | Unclear if still in |
