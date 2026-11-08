@@ -94,12 +94,13 @@ Idea flagged, not committed: **assisted intent**, where the arm infers what the 
 | 9 | Run the Luna2 simulated hand-to-arm contact trial | **No owner named** | Sunday |
 | 10 | Reserve 2 hours for submission and run it | **No owner named** | Before the cutoff |
 | 11 | Jetson robot server, end to end ([brief](handoffs/jetson-end-to-end.md)) | FADI, working on the Mac Mini from this repo | Tonight; not required for the MVP |
-| 12 | Train and score a small model from our simulation ([brief](handoffs/small-model-training.md)) | FADI, working on the Mac Mini from this repo | Tonight, time-boxed; not required for the MVP |
+| 12 | Train and score a small edge model for the Orin Nano: Dream lag bridging and auto-assist, no Dream fine-tune ([brief](handoffs/edge-model.md)) | FADI, working on the Mac Mini from this repo | Tonight, time-boxed; not required for the MVP |
 
 ## Handoffs for the Mac Mini
 
 Two workstreams need the Mac or hardware. FADI owns both and works them on the Mac Mini from this repo, with whichever agents run there; the briefs are written so a fresh agent can start cold:
 
 - [Jetson robot server, end to end](handoffs/jetson-end-to-end.md)
-- [Train a small model from our simulation](handoffs/small-model-training.md)
+- [Train a small model from our simulation](handoffs/small-model-training.md), now aimed at [the edge model](handoffs/edge-model.md)
+- [Dream workshop takeaways](handoffs/dream-workshop-takeaways.md)
 

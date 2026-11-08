@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T20:55:00-08:00",
+  "workstream": "arm-station",
+  "status": "note",
+  "what": "Setup steps for the Jetson Orin Nano: firmware check, JetPack 7.2.1 from USB onto the NVMe SSD, SSH and Tailscale",
+  "why": "The board is confirmed as an Orin Nano dev kit and gets flashed tonight so the Mac agent can take over the arm-server brief over SSH.",
+  "where": ["docs/handoffs/orin-nano-setup.md", "docs/handoffs/jetson-end-to-end.md"],
+  "details": "Not yet run on the board. Kits on 35.x firmware need NVIDIA's JetPack 6.x update path and a microSD first."
+}

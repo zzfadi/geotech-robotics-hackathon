@@ -2,6 +2,8 @@
 
 **Owner: FADI, working on the Mac Mini from this repo** (with whichever agents run there). Written Saturday night, Nov 7, from [the team plan](../plan.md), [Dream fine-tuning readiness](../dream-finetuning.md), [the demonstration recorder](../dream-demonstration-recorder.md), [parallel Maker Arm trials](../maker-arm-fleet.md) and the EOD sync. No training has been run.
 
+> **Update, Nov 7, 8:45 PM (FADI):** no Dream fine-tuning; we're in the Creative track. The small model is now an **edge model on the Jetson Orin Nano** that bridges Dream API lag and does auto-assist. Its brief and the first scaffold are in [edge-model.md](edge-model.md); Dream's own advice is in [the workshop takeaways](dream-workshop-takeaways.md). Step 6 below (Dream fine-tuning) is dropped. The rest of this brief still describes the data and the gate.
+
 ## Goal
 
 Train a small arm-control model of our own on data from the simulation Brian and Denys built (nine parallel Unreal tables, Isaac physics), and score it with a repeatable eval harness. It should be small enough to run next to the arm (the Mac, or later the Jetson; see [the Jetson brief](jetson-end-to-end.md)).

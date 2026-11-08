@@ -4,13 +4,15 @@
 
 ## Goal
 
-An NVIDIA Jetson (Orin preferred; a Jetson Nano was the board named on Nov 7) becomes the station's robot server. It owns both Maker Arms' CAN adapters, runs the SDK and our holding controller, reads the robot cameras, and reports measured arm state to the rest of the stack. Codex drives the arm through it, the way it drove the right arm from a laptop on Saturday, and the Dream API stays in use alongside it. The Jetson only owns the hardware and the guards; whichever brain sends a move goes through the same controller and the same hold.
+An NVIDIA **Jetson Orin Nano Developer Kit** (FADI confirmed the board on Nov 8; it boots from a 1 TB NVMe SSD) becomes the station's robot server. It owns both Maker Arms' CAN adapters, runs the SDK and our holding controller, reads the robot cameras, and reports measured arm state to the rest of the stack. Codex drives the arm through it, the way it drove the right arm from a laptop on Saturday, and the Dream API stays in use alongside it. The Jetson only owns the hardware and the guards; whichever brain sends a move goes through the same controller and the same hold.
 
 End to end means: command in → Jetson controller → arm moves → measured state out to Luna2/Unreal, with a working hold (pause) and a verified return to rest.
 
 ## Why it matters for Sunday
 
-Today the arm runs from a laptop over USB. A Jetson at the station frees the laptop for the pitch, gives the demo one fixed robot host, and is where a small trained model can run next to the arm (see [the training brief](small-model-training.md)). It is **not** required for the "hold my beer" MVP: if it isn't solid by late morning, demo from the laptop setup that already works.
+Today the arm runs from a laptop over USB. A Jetson at the station frees the laptop for the pitch, gives the demo one fixed robot host, and is where a small trained model can run next to the arm (see [the edge model brief](edge-model.md)). It is **not** required for the "hold my beer" MVP: if it isn't solid by late morning, demo from the laptop setup that already works.
+
+Dream's own advice for the loop that runs here (320×176 frames, hybrid async/sync on an 850 ms round-trip median, a 0.85 m/s speed clamp, `dream.check`, the camera checklist, TCP between the fingertips) is in [the workshop takeaways](dream-workshop-takeaways.md).
 
 ## Inputs and where they live
 
@@ -29,6 +31,7 @@ Credentials: relay bearer tokens live in ignored files on Luna2 (`Saved/DreamDeb
 
 ## Steps
 
+0. **Flash and open SSH.** Follow [orin-nano-setup.md](orin-nano-setup.md) to put current JetPack on the SSD and reach the board from the Mac over SSH.
 1. **Identify the board.** Record the exact Jetson model, JetPack/L4T version, Ubuntu version, Python version (SDK needs 3.10+), free disk and its Tailscale hostname. Write them into this file.
 2. **Base environment.** Install `libusb-1.0` and `uv` with the normal package manager; create `arm/.venv` with Python 3.12 if available (3.10+ otherwise) and install `arm/requirements.txt`. Note that `arm/requirements-vision.txt` pins `opencv-python-headless`, which may have no aarch64 wheel; use JetPack's OpenCV if so and record the change.
 3. **USB access.** Add a udev rule for the gs_usb VID/PID so the adapters open without running the tools as root. Do not use `sudo` to paper over a USB error.
@@ -53,7 +56,7 @@ Powered steps (5, 7, 9, 10) only with the station attended and the operator on t
 
 ## Open questions
 
-- Which board is it: Orin (Nano/NX/AGX) or the older Nano? The older Nano ships Python 3.6 on JetPack 4, which the SDK does not support; that changes step 2.
+- ~~Which board is it?~~ Settled Nov 8: Jetson Orin Nano Developer Kit, so the old Nano's Python 3.6 limit doesn't apply.
 - Does the Jetson stay at the station all day Sunday, and who powers the arms for the first read-only test?
 - Should the left arm be in scope? Its Saturday attempt missed high with different claw offsets.
 - Does the hold interlock stay in the MVP? See the plan's open questions.
@@ -61,5 +64,5 @@ Powered steps (5, 7, 9, 10) only with the station attended and the operator on t
 ## What needs the Mac or hardware
 
 - The Jetson itself, both arms, both CAN adapters, the USB hub and cameras, and the station operator.
-- The Mac Mini to flash or image the board if needed (an Orin Nano dev kit can be imaged from an SD card; NVIDIA SDK Manager needs an Ubuntu x86 host, not macOS), to SSH in, and to run Codex.
+- The Mac to write the JetPack installer to a USB stick (see [orin-nano-setup.md](orin-nano-setup.md); NVIDIA no longer ships an SD card image for this kit, and SDK Manager needs an Ubuntu x86 host, not macOS), to SSH in, and to run Codex.
 - Tailscale access to Luna2 for telemetry.
