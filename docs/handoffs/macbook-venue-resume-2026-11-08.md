@@ -2,6 +2,8 @@
 
 Prepared November 8, 2026, about 14:43 Pacific. Source checkout: **`a0f4353` on `main`**, fetched and fast-forwarded from the Mac Mini's overnight `ea6d632` (47 later commits). Fetch again before working: the team is still pushing.
 
+**Follow-up through `c02aff4`:** [Brian's 14:42 final checklist](https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794177726558499) was read directly after its publication record reached main. **LiveKit was dropped from the demo; the camera recognizer is the selected path.** Suggested split: FADI + Saleh finish the GPU/human-detection integration check and rehearse one repeatable robot beat; Brian finishes submission text/deck; Takeshi confirms organizer delivery requirements and media; Denys prepares simulation/VR proof and backup. These are proposed assignments, not accepted ownership. The checklist targets rehearsal/freeze at 14:45–14:50, delivery at 14:50–14:55, then station readiness by 15:00. Confirm what has actually happened when resuming. [The current uploaded take](https://youtu.be/GK2B8TnZ3BI) is a reported fallback; its playback/judge access were not tested in this review. The parallel [short station pass-down](macbook-venue-passdown.md) is now also on main.
+
 **New user report:** the Jetson/KVM/router kit is physically connected at the hackathon, but the **Beryl travel router was reset because its administrator login failed**. This report supersedes the home-network addresses and settings in the earlier handoffs. No venue network, KVM video, arm motion or MacBook authentication was verified in preparing this document. The source/evidence review happened on the Mac Mini.
 
 ## Start here
@@ -105,7 +107,7 @@ The [05:36 summary](../../dashboard/updates/2026-11-08-0536-overnight-hub-build-
 - **Control center:** 17 tests, session schema validation and HTTP APIs passed from the Jetson through an SSH tunnel. It is a **read-only dashboard**, default Jetson localhost port **8780**. It does not command arms. Port **8765** belongs to the pickup controller.
 - **Portability fixes (`0306c8a`):** tracked `PROVENANCE.json` filename case fixed for Linux; host-dependent preflight tests isolated; JetPack 7 CUDA package documentation corrected. Later evidence reports DreamSim 141 tests OK with three optional QuickJS tests skipped.
 - **Edge model:** 19,335 parameters, trained on the scripted expert, not Dream outputs. Jetson CPU inference around **0.038 ms**; expert and model each passed 9/9 tables in one MuJoCo benchmark seed. This is simulation, not a real-arm policy acceptance result. [Evidence](../validation/edge-model-jetson-2026-11-08.json).
-- **Voice:** 31 scripted lines, 30 tests, optional LiveKit publishing bridge; local dev-server replay passed. Stage-speaker playback and LiveKit Cloud were not established. Read [voice setup](../../voice_agent/README.md) and [LiveKit fit](../livekit-fit.md). The bridge cannot command an arm.
+- **Voice:** 31 scripted lines, 30 tests, optional LiveKit publishing bridge; local dev-server replay passed. Stage-speaker playback and LiveKit Cloud were not established. **The latest standup dropped LiveKit from this demo**, so do not spend the remaining demo window configuring Cloud. The code remains available for later work. Read [voice setup](../../voice_agent/README.md) and [LiveKit fit](../livekit-fit.md). The bridge cannot command an arm.
 - **Runtime artifacts:** [the archived recovery recipe](../validation/jetson-runtime-recovery-2026-11-08/README.md) preserves exact source, dependency closure and result. It is a historical, hash-pinned recovery procedure, **not a general installer for today's main**.
 
 ## Later main changes that alter the plan
@@ -200,7 +202,9 @@ Repository: https://github.com/zzfadi/geotech-robotics-hackathon
 Find/reuse my checkout, inspect local changes, read AGENTS.md, and synchronize
 main safely. Start with docs/handoffs/macbook-venue-resume-2026-11-08.md.
 It records the Mac Mini overnight work and a review through a0f4353; fetch
-newer main updates too. Work and push directly on main, with dashboard entries.
+newer main updates too. Read its follow-up on Brian's final checklist: LiveKit
+was dropped; the camera recognizer is selected. Work and push directly on
+main, with dashboard entries.
 
 I am at the venue with the Jetson Orin Nano, GL-RM1 KVM, C270 webcam and
 GL-MT3000 Beryl AX physically connected. I reset Beryl after its admin

@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T14:45:00-08:00",
+  "workstream": "planning",
+  "status": "note",
+  "what": "MacBook handoffs aligned with the final team checklist and verified recovery steps",
+  "why": "The new session needs the selected camera-recognizer demo path and current priorities, without assuming the venue network or display has been tested.",
+  "where": [
+    "docs/handoffs/macbook-venue-resume-2026-11-08.md",
+    "docs/handoffs/macbook-venue-passdown.md",
+    "https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794177726558499"
+  ],
+  "details": "Read the final checklist directly: LiveKit dropped from the demo; GPU/human-detection integration and a timed repeatable robot beat proposed for FADI and Saleh. Assignments and submission delivery remain unconfirmed. Corrected stale KVM-video assumptions, WAN-to-LAN documentation link, MacBook key assumptions and the claim that web OFF always works. No venue device was operated."
+}
