@@ -108,3 +108,35 @@ physical deadman and cannot enable motors. The future UE consumer must stop
 updating and visibly mark telemetry stale when this conversion rejects a sample.
 The transport and UE application of these measured poses remain to be connected
 on the SDK PC tomorrow; no current pose is presented as hardware telemetry.
+
+## SDK-host telemetry publisher
+
+`Interaction.telemetry.TelemetryPublisher` is ready to embed in the existing SDK
+owner process once its host is selected. It samples an already-connected arm;
+there is no second CAN client and no enable, target, release or disconnect call.
+Use the controller credential through a private environment injection, never a
+command-line token. HTTPS certificate verification remains enabled and redirects
+are rejected so credentials cannot follow another destination.
+
+```python
+import os
+from Interaction.telemetry import TelemetryPublisher
+publisher = TelemetryPublisher(
+    'https://luna2.tail6864ac.ts.net', os.environ['TABLE10_CONTROLLER_TOKEN'],
+    host=verified_host_name, side=verified_side, serial=verified_adapter_serial,
+    calibration_id=validated_calibration_id_or_none)
+publisher.register()  # Explicit registration, never an automatic reconnect loop.
+result = publisher.publish_once(already_connected_arm)
+```
+
+Call `publish_once` periodically outside the motor-control loop, only while the
+existing SDK owner is providing fresh feedback. Network operations have a 200 ms
+timeout and are not retried; stale samples are rejected. A failed delivery does
+not change hardware state. The relay expires feedback without further updates.
+The return value reports the relay stop latch; it cannot clear it. This read-only
+publisher reports `monitor` and no local deadman, so it must not be repurposed as
+an output-enable signal. Physical lifecycle remains with the SDK owner.
+
+Three offline publisher tests exercise the request authentication and actual
+sampler-to-relay schema, stop retention, stale rejection, no retry, HTTPS-only
+origins and redirect refusal. No SDK host has run this publisher yet.

@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T18:07:50-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Prepared read-only SDK-host telemetry publisher for Table 10.",
+  "why": "Send measured joints from the existing SDK owner without opening another CAN connection or issuing hardware commands.",
+  "where": [
+    "Interaction/telemetry.py",
+    "Interaction/test_telemetry.py"
+  ],
+  "details": [
+    "Three offline publisher tests pass; physical SDK host remains unselected.",
+    "HTTPS-only transport rejects redirects, stale samples and automatic retries."
+  ]
+}
