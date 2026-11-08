@@ -472,8 +472,9 @@ class Session:
                                          'attached_to': parent.get_actor_label() if parent else None})
 
     def _export(self, item, path):
+        from maker_arm_wrist_framing import capture_rotation
         item['actor'].set_actor_location_and_rotation(item['source'].get_actor_location(),
-                                                      item['source'].get_actor_rotation(), False, True)
+                                                      capture_rotation(item['source']), False, True)
         item['capture'].capture_scene()
         path.unlink(missing_ok=True)
         options = unreal.ImageWriteOptions()

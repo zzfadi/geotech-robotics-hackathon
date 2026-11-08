@@ -37,8 +37,9 @@ class ExpertCapture:
         import unreal
         if self.session.editor.get_game_world()!=self.session.world:
             raise RuntimeError('Expert authority world changed')
+        from maker_arm_wrist_framing import capture_rotation
         for item in self.table.captures.values():
-            item['actor'].set_actor_location_and_rotation(item['source'].get_actor_location(),item['source'].get_actor_rotation(),False,True)
+            item['actor'].set_actor_location_and_rotation(item['source'].get_actor_location(),capture_rotation(item['source']),False,True)
         self.recorder.tick()
 
     def after_control(self, applied_state):

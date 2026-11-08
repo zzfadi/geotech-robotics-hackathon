@@ -1,9 +1,7 @@
-"""Uncalibrated simulation-only wrist optics, independent of physical meshes.
+"""Virtual wrist sensors follow wrist positions with world-down optical axes.
 
-A diagonal 25.7 cm virtual stand-off and 110-degree horizontal FOV keep the cup
-and gripper visible at the tested idle and near-grasp poses. Fixed flange-local
-rotation avoids world-up look-at changing sensor roll when setup pose changes.
-This is a visual policy experiment, not a one-to-one physical sensor model.
+Both images have world +X at the top and +Y at the right, with no side mirror.
+The virtual stand-off/FOV remain uncalibrated, not a physical sensor match.
 """
 LOCATION_CM=(14.,20.,8.)
 TARGET_CM=(10.,0.,-25.)
@@ -22,7 +20,7 @@ def apply(indices=range(9),location_cm=None,target_cm=None):
         raise ValueError('Expected finite flange-local camera coordinates')
     forward=unreal.Vector(*(target_cm[i]-location_cm[i] for i in range(3)))
     if forward.length()<.001:raise ValueError('Camera aim must differ from location')
-    local_rotation=unreal.MathLibrary.make_rot_from_xy(forward,unreal.Vector(0,1,0)).quaternion()
+    rotation=world_down_rotation()
     cameras=[]
     for index in indices:
         if type(index) is not int or not 0<=index<=8:raise ValueError('Expected Dream table0..8')
@@ -35,13 +33,13 @@ def apply(indices=range(9),location_cm=None,target_cm=None):
     for camera in cameras:
         transform=camera.get_attach_parent_actor().get_actor_transform()
         location=transform.transform_location(unreal.Vector(*location_cm))
-        rotation=unreal.MathLibrary.multiply_quat_quat(transform.rotation,local_rotation).rotator()
         camera.modify();camera.root_component.modify()
+        camera.root_component.set_absolute(False,True,False)
         camera.set_actor_location_and_rotation(location,rotation,False,True)
         component=camera.get_component_by_class(unreal.CameraComponent)
         component.modify();component.set_field_of_view(FOV_DEGREES)
     return {'cameras':[a.get_actor_label() for a in cameras],'local_location_cm':location_cm,
-            'local_aim_cm':target_cm,'hfov_degrees':FOV_DEGREES,'scope':'Uncalibrated virtual optics only'}
+            'local_aim_cm':target_cm,'hfov_degrees':FOV_DEGREES,'scope':'Uncalibrated virtual optics; world-down, image up +X, image right +Y'}
 
 
 def audit_world_tcp(index,state,world=None):
@@ -71,3 +69,20 @@ def audit_world_tcp(index,state,world=None):
                       'observed_dream_base_tcp_m':observed,'reported_joint_fk_tcp_m':expected,
                       'position_error_m':sum((a-b)**2 for a,b in zip(observed,expected))**.5}
     return result
+
+
+def is_wrist_camera(source):
+    label=source.get_actor_label()
+    return (label in ('MakerCamera_LeftWrist','MakerCamera_RightWrist') or
+            label.startswith('MakerFleet_') and label.endswith(('MakerCamera_LeftWrist','MakerCamera_RightWrist')))
+
+
+def world_down_rotation():
+    import unreal
+    # UE camera +X is optical forward, +Y image right, +Z image up.
+    return unreal.MathLibrary.make_rot_from_xy(unreal.Vector(0,0,-1),unreal.Vector(0,1,0))
+
+
+def capture_rotation(source):
+    """Enforce actual policy/export optics even if an old actor loses its flag."""
+    return world_down_rotation() if is_wrist_camera(source) else source.get_actor_rotation()

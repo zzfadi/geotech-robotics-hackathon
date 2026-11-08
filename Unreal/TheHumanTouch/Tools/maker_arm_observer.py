@@ -121,8 +121,9 @@ class Observer:
         return now-self.idle_since>=IDLE_STOP_SECONDS
 
     def _capture_next(self):
+        from maker_arm_wrist_framing import capture_rotation
         role=self.queue.pop(0);item=self.cameras[role];source=item['source']
-        item['actor'].set_actor_location_and_rotation(source.get_actor_location(),source.get_actor_rotation(),False,True)
+        item['actor'].set_actor_location_and_rotation(source.get_actor_location(),capture_rotation(source),False,True)
         item['capture'].capture_scene()
         path=self.directory/('pending_'+role+'.jpg');path.unlink(missing_ok=True)
         options=unreal.ImageWriteOptions()

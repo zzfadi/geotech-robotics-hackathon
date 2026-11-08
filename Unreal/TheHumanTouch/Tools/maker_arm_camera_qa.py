@@ -26,11 +26,12 @@ def capture(path,label='MakerCamera_LeftWrist'):
     _require_idle()
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     camera=next(a for a in unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors() if a.get_actor_label()==label)
+    from maker_arm_wrist_framing import capture_rotation
     def create():
         target=unreal.new_object(unreal.TextureRenderTarget2D)
         target.set_editor_property('render_target_format',unreal.TextureRenderTargetFormat.RTF_RGBA8);target.set_editor_property('target_gamma',2.2)
         unreal.RenderingLibrary.resize_render_target2d(target,320,176)
-        actor,component=call_camera.spawn_capture_camera(target,camera.get_actor_location(),camera.get_actor_rotation(),camera.get_component_by_class(unreal.CameraComponent).field_of_view)
+        actor,component=call_camera.spawn_capture_camera(target,camera.get_actor_location(),capture_rotation(camera),camera.get_component_by_class(unreal.CameraComponent).field_of_view)
         component.set_editor_property('override_custom_near_clipping_plane',True);component.set_editor_property('custom_near_clipping_plane',1.)
         for p in actor.get_components_by_class(unreal.PrimitiveComponent):p.set_visibility(False,False);p.set_hidden_in_game(True,False)
         def export():
