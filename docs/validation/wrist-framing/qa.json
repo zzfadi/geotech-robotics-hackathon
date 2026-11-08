@@ -1,0 +1,33 @@
+{
+  "selected": "E110",
+  "task": "t-0284",
+  "local_location_cm": [
+    14,
+    20,
+    8
+  ],
+  "local_aim_cm": [
+    10,
+    0,
+    -25
+  ],
+  "horizontal_fov_degrees": 110,
+  "scope": "uncalibrated virtual optics; no physical sensor fidelity claim",
+  "idle_state_source": "20261107-185817-e98465/config.json initial_state",
+  "near_q_left": [
+    0.22591922080861346,
+    -2.5290293926766845,
+    2.728268456248289,
+    -1.0189955410419105,
+    -0.045261060886812955,
+    0.20438882687821064
+  ],
+  "near_gap_m": 0.1,
+  "original_arm_translation_error_cm": 0,
+  "original_arm_quaternions_restored": true,
+  "props_changed": false,
+  "physics_used": false,
+  "policy_calls": 0,
+  "numeric_actual_world_tcp_audit": "helper prepared; live result pending",
+  "numeric_world_tcp_audit": "world-tcp-audit.json"
+}

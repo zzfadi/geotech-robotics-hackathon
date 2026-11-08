@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T19:19:18-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Corrected virtual wrist camera framing and verified actual TCP coordinate conversion.",
+  "why": "Previous wrist images looked back at the arm base instead of the cup workspace.",
+  "where": [
+    "docs/wrist-framing-qa.md",
+    "docs/validation/wrist-framing/qa.json"
+  ],
+  "details": "Bounded idle/near render QA selected fixed flange-relative E110 optics. All arm transforms restored exactly. Both live TCP conversions match reported FK within 5e-10 m at the tested pose. Virtual 25.7 cm sensor stand-off is uncalibrated; visibility and frame agreement do not prove Dream pickup."
+}

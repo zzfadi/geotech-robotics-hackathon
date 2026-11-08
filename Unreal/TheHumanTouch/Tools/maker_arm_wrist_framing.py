@@ -1,19 +1,28 @@
-"""Simulation-only wrist framing; not calibrated physical camera extrinsics.
+"""Uncalibrated simulation-only wrist optics, independent of physical meshes.
 
-The prior7cm stand-off cannot frame a12cm cup at the grasp center with90deg
-horizontal FOV. This extends the virtual sensor stand-off while aiming at the
-same official grasp center. Physical camera meshes and robot geometry stay put.
+A diagonal 25.7 cm virtual stand-off and 110-degree horizontal FOV keep the cup
+and gripper visible at the tested idle and near-grasp poses. Fixed flange-local
+rotation avoids world-up look-at changing sensor roll when setup pose changes.
+This is a visual policy experiment, not a one-to-one physical sensor model.
 """
-LOCATION_CM=(20.,0.,-12.)
-TARGET_CM=(0.,0.,-16.9638704618)
-FOV_DEGREES=90.
+LOCATION_CM=(14.,20.,8.)
+TARGET_CM=(10.,0.,-25.)
+FOV_DEGREES=110.
 
 
-def apply(indices=range(9)):
+def apply(indices=range(9),location_cm=None,target_cm=None):
     import unreal
     if unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_game_world() is not None:
         raise RuntimeError('Apply virtual camera framing only while idle')
     aa={a.get_actor_label():a for a in unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()}
+    location_cm=LOCATION_CM if location_cm is None else tuple(location_cm)
+    target_cm=TARGET_CM if target_cm is None else tuple(target_cm)
+    import math
+    if len(location_cm)!=3 or len(target_cm)!=3 or not all(math.isfinite(v) for v in (*location_cm,*target_cm)):
+        raise ValueError('Expected finite flange-local camera coordinates')
+    forward=unreal.Vector(*(target_cm[i]-location_cm[i] for i in range(3)))
+    if forward.length()<.001:raise ValueError('Camera aim must differ from location')
+    local_rotation=unreal.MathLibrary.make_rot_from_xy(forward,unreal.Vector(0,1,0)).quaternion()
     cameras=[]
     for index in indices:
         if type(index) is not int or not 0<=index<=8:raise ValueError('Expected Dream table0..8')
@@ -25,11 +34,40 @@ def apply(indices=range(9)):
             cameras.append(camera)
     for camera in cameras:
         transform=camera.get_attach_parent_actor().get_actor_transform()
-        location=transform.transform_location(unreal.Vector(*LOCATION_CM))
-        target=transform.transform_location(unreal.Vector(*TARGET_CM))
+        location=transform.transform_location(unreal.Vector(*location_cm))
+        rotation=unreal.MathLibrary.multiply_quat_quat(transform.rotation,local_rotation).rotator()
         camera.modify();camera.root_component.modify()
-        camera.set_actor_location_and_rotation(location,unreal.MathLibrary.find_look_at_rotation(location,target),False,True)
+        camera.set_actor_location_and_rotation(location,rotation,False,True)
         component=camera.get_component_by_class(unreal.CameraComponent)
         component.modify();component.set_field_of_view(FOV_DEGREES)
-    return {'cameras':[a.get_actor_label() for a in cameras],'local_location_cm':LOCATION_CM,
-            'local_aim_cm':TARGET_CM,'hfov_degrees':FOV_DEGREES,'scope':'Uncalibrated virtual optics only'}
+    return {'cameras':[a.get_actor_label() for a in cameras],'local_location_cm':location_cm,
+            'local_aim_cm':target_cm,'hfov_degrees':FOV_DEGREES,'scope':'Uncalibrated virtual optics only'}
+
+
+def audit_world_tcp(index,state,world=None):
+    """Read actual flange transforms and compare TCP in Dream's RH base frame.
+
+    Supply the authoritative game world during SIE. No scene writes are made.
+    The archived fleet run used tcp_back=0, matching the official grasp_center.
+    """
+    import unreal
+    from maker_arm_model import model,mounted_frames,numbers
+    from maker_arm_station import BASES,MOUNT_YAW
+    from maker_arm_fleet_layout import label,replica_base
+    if world is None:world=unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    if world is None:raise RuntimeError('Supply the actual world during SIE')
+    actors={a.get_actor_label():a for a in unreal.GameplayStatics.get_all_actors_of_class(world,unreal.StaticMeshActor)}
+    xyz=numbers(model().find("joint[@name='grasp_center_joint']/origin").get('xyz'))
+    local_tcp=unreal.Vector(100*xyz[0],-100*xyz[1],100*xyz[2])
+    result={}
+    for side in ('left','right'):
+        actor=actors[label(index,'MakerArm_'+side+'_link_007')]
+        p=actor.get_actor_transform().transform_location(local_tcp)
+        base=replica_base(index,BASES[side])
+        observed=[(p.x-base[0])/100,-(p.y-base[1])/100,(p.z-base[2])/100]
+        frame=mounted_frames(state['q_'+side],state['gap_'+side+'_m'],yaw=MOUNT_YAW[side])['grasp_center']
+        expected=[frame[i][3] for i in range(3)]
+        result[side]={'actual_world_tcp_cm':[p.x,p.y,p.z],'world_base_cm':list(base),
+                      'observed_dream_base_tcp_m':observed,'reported_joint_fk_tcp_m':expected,
+                      'position_error_m':sum((a-b)**2 for a,b in zip(observed,expected))**.5}
+    return result
