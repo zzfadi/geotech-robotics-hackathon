@@ -1,0 +1,54 @@
+{
+  "arm": "right",
+  "poses": {
+    "ready": {
+      "q": [-16.5, -55.6, 20.9, 44.1, 10.25, 1.46],
+      "speed": 12,
+      "taught": false,
+      "note": "Saturday cylinder run, waypoint 1 (arm/evidence/2026-11-07-cylinder-pickup.json). Re-teach at the station."
+    },
+    "offer": {
+      "q": [-18.8, -80.9, 37.5, 39.4, 10.21, 1.44],
+      "speed": 10,
+      "taught": false,
+      "note": "PLACEHOLDER: Saturday waypoint 2. Teach with the jaws open, level, at the height Brian holds the can, about a forearm in front of the arm."
+    },
+    "carry": {
+      "q": [-16.5, -55.6, 20.9, 44.1, 10.25, 1.46],
+      "speed": 8,
+      "taught": false,
+      "note": "PLACEHOLDER: same as ready. Teach a pose that holds the can up and back from the person, low torque on joints 2 and 3."
+    },
+    "above_mark": {
+      "q": [-18.8, -80.9, 37.5, 39.4, 10.21, 1.44],
+      "speed": 12,
+      "taught": false,
+      "note": "Saturday waypoint 2, above where the yellow cylinder stood. Put the tape mark there and re-teach."
+    },
+    "at_mark": {
+      "q": [-19.68, -94.14, 53.16, 35.73, 10.21, 1.4],
+      "speed": 8,
+      "taught": false,
+      "note": "Saturday waypoint 3, the grasp pose on the cylinder. A can is wider and taller: re-teach with the jaws at mid-can."
+    }
+  },
+  "hand_approach": ["ready", "offer"],
+  "hand_retreat": ["carry"],
+  "mark_approach": ["ready", "above_mark"],
+  "mark_descend": ["at_mark"],
+  "mark_lift": ["above_mark"],
+  "mark_retreat": ["carry"],
+  "gripper": {
+    "open_deg": -90.0,
+    "close_deg": -2.5,
+    "contact_min_deg": -60.0,
+    "contact_max_deg": -12.0,
+    "empty_deg": -8.0,
+    "slip_deg": 6.0,
+    "contact_calibrated": false
+  },
+  "max_grasp_attempts": 2,
+  "temp_abort_c": 49.0,
+  "resume_needs_operator": true,
+  "mark_check_can_before_close": true
+}

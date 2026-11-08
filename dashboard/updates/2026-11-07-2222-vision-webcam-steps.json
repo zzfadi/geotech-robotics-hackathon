@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T22:22:00-08:00",
+  "workstream": "turn-gate",
+  "status": "in-progress",
+  "what": "Handoff detector ready to try on the Orin Nano with a webcam, no arm needed",
+  "why": "Tonight only the Jetson and a webcam are available, so the detector has to be testable with them before it meets the real arms on Sunday.",
+  "where": ["vision/README.md", "vision/run.py"],
+  "details": "Live mode adds a preview window, a session summary (latency p50/p95, detections per label, moments, actions) and recording to replay traces. Step-by-step Orin setup: offline tests, Ultralytics on JetPack 6, TensorRT export, act out the handoff. 28 offline tests pass; still untested on a real camera or real models."
+}

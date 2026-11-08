@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T22:12:00-08:00",
+  "workstream": "turn-gate",
+  "status": "in-progress",
+  "what": "Hybrid model design and a first local moment detector that drives the turn gate",
+  "why": "For the beer handoff the arm has to move while a hand is in view, so a local detector decides which hand presence is acceptable and when to request a turn, and a router sends the move to Dream or the local controller.",
+  "where": ["docs/hybrid-model.md", "docs/plan.md", "vision/"],
+  "details": "A steady offered can (0.4 s) requests the turn; an extra hand, a jerked can or a detector failure revokes it through the unchanged turn gate. Dream does the full move when the median of the last 5 round trips is at most 850 ms; local otherwise and on the real arm; the last centimetre is always local. Recommended detector: YOLO26n plus YOLO26n-pose as TensorRT FP16 engines on the Orin Nano. 27 offline tests and a synthetic replay pass. Not yet run on a real camera, real Ultralytics models, the Orin or an arm; thresholds untuned. Proposal for the team: a steady offered can sends request_turn."
+}

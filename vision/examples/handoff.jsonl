@@ -1,0 +1,102 @@
+{"at": 0.0, "action": "dream_round_trip", "seconds": 0.71}
+{"at": 0.0, "action": "dream_round_trip", "seconds": 0.74}
+{"at": 0.02, "captured_at": 0.0, "detections": []}
+{"at": 0.0533, "captured_at": 0.0333, "detections": []}
+{"at": 0.0867, "captured_at": 0.0667, "detections": []}
+{"at": 0.12, "captured_at": 0.1, "detections": []}
+{"at": 0.1533, "captured_at": 0.1333, "detections": []}
+{"at": 0.1867, "captured_at": 0.1667, "detections": []}
+{"at": 0.22, "captured_at": 0.2, "detections": []}
+{"at": 0.2533, "captured_at": 0.2333, "detections": []}
+{"at": 0.2867, "captured_at": 0.2667, "detections": []}
+{"at": 0.32, "captured_at": 0.3, "detections": [{"label": "hand", "conf": 0.8, "box": [0.85, 0.45, 0.95, 0.55]}]}
+{"at": 0.3533, "captured_at": 0.3333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.8167, 0.45, 0.9167, 0.55]}]}
+{"at": 0.3867, "captured_at": 0.3667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.7833, 0.45, 0.8833, 0.55]}]}
+{"at": 0.42, "captured_at": 0.4, "detections": [{"label": "hand", "conf": 0.8, "box": [0.75, 0.45, 0.85, 0.55]}]}
+{"at": 0.4533, "captured_at": 0.4333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.7167, 0.45, 0.8167, 0.55]}]}
+{"at": 0.4867, "captured_at": 0.4667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.6833, 0.45, 0.7833, 0.55]}]}
+{"at": 0.52, "captured_at": 0.5, "detections": [{"label": "hand", "conf": 0.8, "box": [0.65, 0.45, 0.75, 0.55]}]}
+{"at": 0.5533, "captured_at": 0.5333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.6167, 0.45, 0.7167, 0.55]}]}
+{"at": 0.5867, "captured_at": 0.5667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.5833, 0.45, 0.6833, 0.55]}]}
+{"at": 0.62, "captured_at": 0.6, "detections": [{"label": "hand", "conf": 0.8, "box": [0.69, 0.45, 0.79, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.67, 0.42, 0.73, 0.54]}]}
+{"at": 0.6533, "captured_at": 0.6333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.6733, 0.45, 0.7733, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.6533, 0.42, 0.7133, 0.54]}]}
+{"at": 0.6867, "captured_at": 0.6667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.6566, 0.45, 0.7567, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.6366, 0.42, 0.6966, 0.54]}]}
+{"at": 0.72, "captured_at": 0.7, "detections": [{"label": "hand", "conf": 0.8, "box": [0.64, 0.45, 0.74, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.62, 0.42, 0.68, 0.54]}]}
+{"at": 0.7533, "captured_at": 0.7333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.6233, 0.45, 0.7234, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.6033, 0.42, 0.6633, 0.54]}]}
+{"at": 0.7867, "captured_at": 0.7667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.6066, 0.45, 0.7067, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.5866, 0.42, 0.6466, 0.54]}]}
+{"at": 0.82, "captured_at": 0.8, "detections": [{"label": "hand", "conf": 0.8, "box": [0.59, 0.45, 0.69, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.57, 0.42, 0.63, 0.54]}]}
+{"at": 0.8533, "captured_at": 0.8333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.5733, 0.45, 0.6734, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.5533, 0.42, 0.6133, 0.54]}]}
+{"at": 0.8867, "captured_at": 0.8667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.5566, 0.45, 0.6566, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.5366, 0.42, 0.5966, 0.54]}]}
+{"at": 0.92, "captured_at": 0.9, "detections": [{"label": "hand", "conf": 0.8, "box": [0.54, 0.45, 0.64, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.52, 0.42, 0.58, 0.54]}]}
+{"at": 0.9533, "captured_at": 0.9333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.5233, 0.45, 0.6234, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.5033, 0.42, 0.5634, 0.54]}]}
+{"at": 0.9867, "captured_at": 0.9667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.5066, 0.45, 0.6067, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.4866, 0.42, 0.5466, 0.54]}]}
+{"at": 1.02, "captured_at": 1.0, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.0533, "captured_at": 1.0333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.0867, "captured_at": 1.0667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.12, "captured_at": 1.1, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.1533, "captured_at": 1.1333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.1867, "captured_at": 1.1667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.22, "captured_at": 1.2, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.2533, "captured_at": 1.2333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.2867, "captured_at": 1.2667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.32, "captured_at": 1.3, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.3533, "captured_at": 1.3333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.3867, "captured_at": 1.3667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.42, "captured_at": 1.4, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.4533, "captured_at": 1.4333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.4867, "captured_at": 1.4667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.52, "captured_at": 1.5, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.5533, "captured_at": 1.5333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.5867, "captured_at": 1.5667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.62, "captured_at": 1.6, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.6533, "captured_at": 1.6333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.6867, "captured_at": 1.6667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.72, "captured_at": 1.7, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.7533, "captured_at": 1.7333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.7867, "captured_at": 1.7667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.82, "captured_at": 1.8, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.8533, "captured_at": 1.8333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.8867, "captured_at": 1.8667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.92, "captured_at": 1.9, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.9533, "captured_at": 1.9333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 1.9867, "captured_at": 1.9667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 2.02, "captured_at": 2.0, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 2.0533, "captured_at": 2.0333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 2.0867, "captured_at": 2.0667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 2.12, "captured_at": 2.1, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 2.1533, "captured_at": 2.1333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 2.1867, "captured_at": 2.1667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.49, 0.45, 0.59, 0.55]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.42, 0.53, 0.54]}]}
+{"at": 2.22, "captured_at": 2.2, "detections": [{"label": "hand", "conf": 0.8, "box": [0.59, 0.5, 0.69, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.2533, "captured_at": 2.2333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.6, 0.5, 0.7, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.2867, "captured_at": 2.2667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.61, 0.5, 0.71, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.32, "captured_at": 2.3, "detections": [{"label": "hand", "conf": 0.8, "box": [0.62, 0.5, 0.72, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.3533, "captured_at": 2.3333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.63, 0.5, 0.73, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.3867, "captured_at": 2.3667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.64, 0.5, 0.74, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.42, "captured_at": 2.4, "detections": [{"label": "hand", "conf": 0.8, "box": [0.65, 0.5, 0.75, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.4533, "captured_at": 2.4333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.66, 0.5, 0.76, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.4867, "captured_at": 2.4667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.67, 0.5, 0.77, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.52, "captured_at": 2.5, "detections": [{"label": "hand", "conf": 0.8, "box": [0.68, 0.5, 0.78, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.5533, "captured_at": 2.5333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.69, 0.5, 0.79, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.5867, "captured_at": 2.5667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.7, 0.5, 0.8, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.62, "captured_at": 2.6, "detections": [{"label": "hand", "conf": 0.8, "box": [0.71, 0.5, 0.81, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.6533, "captured_at": 2.6333, "detections": [{"label": "hand", "conf": 0.8, "box": [0.72, 0.5, 0.82, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.6867, "captured_at": 2.6667, "detections": [{"label": "hand", "conf": 0.8, "box": [0.73, 0.5, 0.83, 0.6]}, {"label": "bottle", "conf": 0.6, "box": [0.47, 0.41, 0.53, 0.53]}]}
+{"at": 2.72, "captured_at": 2.7, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.47, 0.39, 0.53, 0.51]}]}
+{"at": 2.7533, "captured_at": 2.7333, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4667, 0.39, 0.5267, 0.51]}]}
+{"at": 2.7867, "captured_at": 2.7667, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4633, 0.39, 0.5233, 0.51]}]}
+{"at": 2.82, "captured_at": 2.8, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.46, 0.39, 0.52, 0.51]}]}
+{"at": 2.8533, "captured_at": 2.8333, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4567, 0.39, 0.5167, 0.51]}]}
+{"at": 2.8867, "captured_at": 2.8667, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4533, 0.39, 0.5133, 0.51]}]}
+{"at": 2.92, "captured_at": 2.9, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.45, 0.39, 0.51, 0.51]}]}
+{"at": 2.9533, "captured_at": 2.9333, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4467, 0.39, 0.5067, 0.51]}]}
+{"at": 2.9867, "captured_at": 2.9667, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4433, 0.39, 0.5033, 0.51]}]}
+{"at": 3.02, "captured_at": 3.0, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.44, 0.39, 0.5, 0.51]}]}
+{"at": 3.0533, "captured_at": 3.0333, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4367, 0.39, 0.4967, 0.51]}]}
+{"at": 3.0867, "captured_at": 3.0667, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4333, 0.39, 0.4933, 0.51]}]}
+{"at": 3.12, "captured_at": 3.1, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.43, 0.39, 0.49, 0.51]}]}
+{"at": 3.1533, "captured_at": 3.1333, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4267, 0.39, 0.4867, 0.51]}]}
+{"at": 3.1867, "captured_at": 3.1667, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4233, 0.39, 0.4833, 0.51]}]}
+{"at": 3.22, "captured_at": 3.2, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.42, 0.39, 0.48, 0.51]}]}
+{"at": 3.2533, "captured_at": 3.2333, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4167, 0.39, 0.4767, 0.51]}]}
+{"at": 3.2867, "captured_at": 3.2667, "detections": [{"label": "bottle", "conf": 0.6, "box": [0.4133, 0.39, 0.4733, 0.51]}]}
+{"at": 3.35, "action": "robot_done"}
