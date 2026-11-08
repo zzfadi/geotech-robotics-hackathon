@@ -1,0 +1,18 @@
+{
+  "when": "2026-11-07T18:10:34-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Added a conservative runtime-only measured-pose receiver for Table10",
+  "why": "Visualize calibrated measured feedback without moving unrelated arms or inventing jaw state",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_measured_pose.py",
+    "Unreal/TheHumanTouch/Tools/test_maker_arm_measured_pose.py",
+    "docs/table10-interaction-bay.md"
+  ],
+  "details": [
+    "Exact Table10namespace and registeredserial/calibration identity; fresh\u2264250ms; bounded10Hz",
+    "Unknownjaw preserves verified virtualgap and is explicitly unmeasured",
+    "No editortransactions, transport, physicalcommands or liveanimation started",
+    "Seven isolated tests pass; live calibrated hardware feedback still required for end-to-end validation"
+  ]
+}
