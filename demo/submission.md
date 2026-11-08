@@ -1,6 +1,6 @@
 # The Human Touch: Hold My Beer
 
-Ready-to-paste submission copy, updated November 8, 2026 at 14:50 PST. Copy the fields below through Links. The editorial evidence notes at the end are for the team.
+Ready-to-paste submission copy, revised November 8, 2026. Copy the fields below through Links. The editorial evidence notes at the end are for the team.
 
 ## Project title
 
@@ -14,25 +14,31 @@ FADI, Brian Frager, Denys Dubinin, Saleh Aldwais and Takeshi Okamura.
 
 ## One-line pitch
 
-A playful robot handover and a human-in-the-loop simulation platform for rehearsing how robots work with people.
+Teaching robots when and how to lend a hand
 
-## Project description
+## What did you build?
 
-“Hold my beer” makes a difficult robotics problem instantly understandable: grasp an everyday object, bring it to a person and let go at the right moment. The Human Touch uses that interaction to explore a bigger idea: robots that work with people need ways to practise with people, including inside parallel virtual environments.
+When someone starts pouring from a heavy pitcher, a helpful partner steadies the bowl. That choice is the problem we want robots to learn. As robots enter homes, workplaces and care settings, whose idea of help will they follow? How close to stand, when to reach and whether to wait can vary across cultures, across abilities and even for the same person from one moment to the next.
 
-We built a MakerMods Maker Arm control stack, an interactive Unreal environment using the official arm model, webcam and Quest motion capture, and parallel virtual-arm experiments driven by Dream Labs. Our prototype connects physical robot control, human motion and simulated rehearsal; each component’s demonstrated results are described separately below.
+We built The Human Touch, a virtual rehearsal space where people can help teach robots how to work alongside them. A headset or webcam streams a person’s movement into Unreal Engine. Nine virtual tables let us rehearse variations in parallel using models of the MakerMods arms. A shared virtual lab makes it possible for people around the world to contribute without owning a robot or traveling to a station.
 
-**What worked on the physical robot:** Our recorded demo shows a real Maker Arm grasping and raising a water bottle. A person takes the bottle, and the gripper opens to complete the handover. This is one supervised demonstration. Separately, the Unreal-to-hardware bridge demonstrated real arms following virtual-arm motion, including lift, return-to-idle and release. The team also demonstrated VR control of the arm. These results establish physical manipulation and interactive control; autonomous hand detection, grip-triggered release and repeated end-to-end reliability are still unverified.
+Our goal is a dataset people shape themselves. With their consent, we want to record what the person did, how the robot responded and what they would have preferred. A hesitation, a change of hands or a request to stop gives developers a case they can replay. Those examples could train robot policies through reinforcement learning and let us test whether people with different expectations actually find the learned behavior helpful.
 
-**What we demonstrated in simulation:** Dream Labs drove virtual-arm grasp-and-lift experiments in Unreal, including a cup/can pickup and put-down sequence. The editor-world interaction uses a planned reach, Dream grasp/lift calls and kinematic object carry. Parallel cup experiments also used scripted assistance and approximate grip/contact models. The final standup reported a simulated bottle-handover sequence, with human-detection integration still pending. These are simulation results; they do not establish autonomous transfer of a learned skill to the physical arm. Webcam and Quest capture also brought real human motion into Unreal in separate tests.
+## Progress during the hackathon
 
-**What we learned and what comes next:** Grasp physics and last-step perception integration were harder than the animation of the interaction. We replaced the attempted LiveKit vision approach with an existing camera-based recognizer, but the full perception-to-physical-handover loop remains unfinished. A separate two-arm hardware-control fault was resolved by running one USB-CAN adapter per service process. Next we will validate the integrated handover over repeated physical trials, measure handover timing and failures, and test whether rehearsal with live human motion improves the real interaction.
+We started with a water bottle because anyone can judge the moment a handover works. In our filmed hardware trial, a MakerMods arm grasped the bottle, lifted it to a person and opened its gripper as they took it. In a separate test, the physical arms followed movements from Unreal through the MakerMods SDK. We also demonstrated VR control.
+
+In Unreal we used the official MakerMods URDF to model the arms. We streamed a performer’s body pose from a webcam and head and hand motion from a Quest headset in real time. Across the virtual tables, Dream-1 drove grasp and lift actions with a scripted reach and grip assistance. We could repeat the task and inspect where a grasp failed. We also ran camera-based person, hand and bottle detection on a Jetson Orin Nano.
+
+Our next experiment keeps the bottle and varies the person’s response. Participants can accept it, switch hands or pull away. We’ll record which robot response each participant preferred, then test with new participants whether a policy trained on those examples offers, waits or withdraws at the right moment.
 
 ## Sponsor and technology usage
 
 MakerMods supplied the Maker Arm hardware, SDK and robot description. Dream Labs supplied the API used for simulated arm experiments. Unreal Engine, Quest headsets, webcam capture and Live Link Hub support the interactive environment and human capture. A Jetson Orin Nano ran live person, hand-pose and bottle detection on a real webcam at about 30–37 ms per frame (TensorRT FP16), alongside local simulation tests; it is a watch-only view and does not drive the arms. LiveKit was explored for voice/events and vision; it is not part of the final demonstrated handover. No Dream-controlled physical grasp or Jetson-hosted physical handover is claimed here.
 
 ## Links
+
+Team image: https://zzfadi.github.io/geotech-robotics-hackathon/assets/the-human-touch-team-logo.png
 
 Physical bottle-handover video: https://youtu.be/GK2B8TnZ3BI
 

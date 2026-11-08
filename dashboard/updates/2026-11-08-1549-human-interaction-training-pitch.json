@@ -1,0 +1,8 @@
+{
+  "when": "2026-11-08T15:49:00-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Revised the submission pitch around learning from people and added the approved team logo to the dashboard assets.",
+  "why": "The bottle handover is the first test of a larger idea. Parallel simulations could let participants contribute examples of how they want robots to respond, including when help is unwanted.",
+  "where": ["demo/submission.md", "dashboard/assets/the-human-touch-team-logo.png"]
+}
