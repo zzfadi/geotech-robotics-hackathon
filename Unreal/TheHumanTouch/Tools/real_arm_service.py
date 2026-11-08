@@ -73,6 +73,7 @@ class Service:
         self.lock = threading.RLock()
         self.stop_requested = False
         self.engage_pose = {}
+        self.offline = []
         self.all_sides = list(self.bridge.sides)
         self.last_bus_log = 0.
         self.exited = False
@@ -166,13 +167,51 @@ class Service:
                 side.arm.disconnect()
             except Exception:
                 pass
-        # Fresh Arm objects: a closed or faulted backend cannot simply reconnect.
-        self.bridge.sides = [rb.Side(n, s) for n, s in (('left', self.args.left), ('right', self.args.right)) if s]
-        self.all_sides = list(self.bridge.sides)
-        for side in self.bridge.sides:
-            side.arm.connect()
+        # Fresh Arm objects (a closed or faulted backend cannot simply reconnect); each arm on its
+        # own, so one powered arm works while the other is off.
+        connected, errors = [], []
+        for name, serial in (('left', self.args.left), ('right', self.args.right)):
+            if not serial:
+                continue
+            side = rb.Side(name, serial)
+            try:
+                side.arm.connect()
+                connected.append(side)
+            except Exception as error:
+                errors.append(f"{name}: {str(error).splitlines()[0][:110]}")
+                try:
+                    side.arm.disconnect()
+                except Exception:
+                    pass
+        self.offline = errors
+        if not connected:
+            raise RuntimeError('; '.join(errors))
+        self.bridge.sides = connected
+        self.all_sides = list(connected)
         self.bridge.mode = 'mirror'
         self.holding = []
+
+    def reconnect_offline(self):
+        """Pick up an arm that was not answering, without touching the connected one."""
+        serials = {'left': self.args.left, 'right': self.args.right}
+        still = []
+        for entry in self.offline:
+            name = entry.split(':', 1)[0]
+            side = rb.Side(name, serials[name])
+            try:
+                side.arm.connect()
+            except Exception as error:
+                still.append(f"{name}: {str(error).splitlines()[0][:110]}")
+                try:
+                    side.arm.disconnect()
+                except Exception:
+                    pass
+                continue
+            self.all_sides = sorted(self.all_sides + [side], key=lambda s: s.name != 'left')
+            self.bridge.sides = list(self.all_sides)
+            print(f'[{name}] arm answering again: connected (torque off)', flush=True)
+        self.offline = still
+        self.set('mirror', 'arms connected (torque off)' + ('; not answering: ' + '; '.join(still) if still else ''))
 
     def power_lost(self, why):
         self.bridge.sides = list(self.all_sides)
@@ -252,9 +291,13 @@ class Service:
         if self.mode == 'off':
             try:
                 self.connect()
-                self.set('mirror', 'arms connected (torque off)')
+                self.set('mirror', 'arms connected (torque off)' + ('; not answering: ' + '; '.join(self.offline) if self.offline else ''))
             except Exception as error:
-                self.set('off', 'arms not answering (power off, E-stop or cable?): torque is off; reconnecting')
+                detail = str(error).splitlines()[0][:160]
+                if detail != getattr(self, 'last_connect_error', None):
+                    self.last_connect_error = detail
+                    print(f'connect failed: {detail}', flush=True)
+                self.set('off', 'arms not answering (power off, E-stop or cable?): torque is off; reconnecting. ' + detail)
                 time.sleep(RECONNECT_S)
             return 0.
         if self.mode == 'mirror':
@@ -281,6 +324,9 @@ class Service:
                     else:
                         self.bridge.sides = list(self.all_sides)
                         self.set('mirror', 'drive refused: Unreal does not match the real arms within 5 deg yet')
+            if self.offline and now - getattr(self, 'offline_retry', 0.) > 10 and self.engage_since is None:
+                self.offline_retry = now
+                self.reconnect_offline()
             arms = self.bridge.mirror_step()
             if not arms and not any(self.side_answering(s) for s in self.bridge.sides):
                 self.power_lost('arms stopped answering')
@@ -324,7 +370,12 @@ class Service:
             while True:
                 started = time.monotonic()
                 with self.lock:
-                    period = self.step(started)
+                    try:
+                        period = self.step(started)
+                    except Exception as error:  # e.g. a bus closed under us after a power loss
+                        print(f'step failed: {error!r}', flush=True)
+                        self.power_lost('arm communication failed')
+                        period = RECONNECT_S
                 if self.stop_requested and self.mode in ('mirror', 'off'):
                     break  # never exit with an arm holding: wait for Release now
                 self.bridge.status()
