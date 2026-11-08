@@ -15,6 +15,10 @@ class Store:
         self.interaction=InteractionStore(path)
         self.interaction_preview=None
         self.table10=Table10Tests()
+        # Public (Tailscale Funnel) visitors are view-only unless they present this code.
+        code=path/'operator-code'
+        if not code.exists():code.write_text(secrets.token_urlsafe(9));code.chmod(0o600)
+        self.operator_code=code.read_text().strip()
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
@@ -67,8 +71,19 @@ class Store:
             with log.open('a') as f:f.write(json.dumps(event,allow_nan=False)+'\n')
         return event
 
+# POST paths that authenticate themselves with worker/controller bearer tokens.
+SELF_AUTHENTICATED=('/api/worker/','/api/fleet/worker/','/api/interaction/worker/','/api/interaction/controller/','/api/interaction/contact','/api/table10/agent','/api/events')
+PUBLIC_POSTS=('/api/route',)  # parses a prompt; no action
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args):pass
+    def public(self):
+        """Request from the public internet through Tailscale Funnel (not a tailnet user)."""
+        if self.headers.get('Tailscale-Funnel-Request') is not None:return True
+        # Serve/Funnel reach only the loopback listener; tailnet users there carry identity headers.
+        return self.server.server_address[0]=='127.0.0.1' and not self.headers.get('Tailscale-User-Login')
+    def operator(self):
+        return not self.public() or secrets.compare_digest(self.headers.get('X-Operator-Code',''),self.server.store.operator_code)
     def send(self,status,data,mime='application/json'):
         body=json.dumps(data,allow_nan=False).encode() if mime=='application/json' else data
         self.send_response(status);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(body)))
@@ -290,6 +305,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         s=self.server.store
         if self.path=='/':return self.send(200,(Path(__file__).parent/'web/index.html').read_bytes(),'text/html; charset=utf-8')
+        if self.path=='/api/access':return self.send(200,{'public':self.public(),'operator':self.operator()})
         if self.path.startswith('/api/interaction/'):return self.interaction_get(urlsplit(self.path))
         if self.path=='/api/table10/test':
             with s.lock:return self.send(200,s.table10.public())
@@ -330,6 +346,8 @@ class Handler(BaseHTTPRequestHandler):
             origin=self.headers.get('Origin')
             if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):return self.send(403,{'error':'Cross-origin request refused'})
             data=json.loads(self.rfile.read(length))
+            if not self.path.startswith(SELF_AUTHENTICATED+PUBLIC_POSTS) and not self.operator():
+                return self.send(403,{'error':'View-only public link: enter the operator code to use controls','code':'operator_required'})
             if self.path.startswith('/api/interaction/'):return self.interaction_post(data)
             if self.path=='/api/table10/test':
                 with s.lock:

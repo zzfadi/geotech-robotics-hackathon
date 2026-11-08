@@ -16,7 +16,9 @@ Modes (decided by the bridge, read here every tick):
 
 Test motions (web buttons via DreamSim/table10_agent.py -> command.json): 'move_up' and 'idle'
 (maker_arm_real_tests) play on Table 10 and are published like any other pose, so in drive
-mode the real arms follow under the bridge's guards. Refused in mirror mode (torque off).
+mode the real arms follow under the bridge's guards. In mirror mode (torque off) they run as a
+virtual preview: Table 10 moves, the real arms stay still, then Table 10 eases back to the
+measured real pose and mirroring resumes.
 
 Transforms are set without transactions or Modify(): no Multi-User history and nothing saved.
 Runs in the active Simulate/PIE world when there is one, otherwise in the editor world.
@@ -57,6 +59,8 @@ IK_ITERATIONS = 10
 MAX_TEST_STEP_S = 0.1
 LAG_ABORT_DEG = 12.0   # real arm this far behind the virtual target ...
 LAG_ABORT_S = 1.0      # ... for this long: the bridge is holding; abort and say how to resync
+PREVIEW_HOLD_S = 1.5   # virtual preview: pause at the end before easing back to the real pose
+RETURN_SPEED_RAD_S = 0.6
 
 _link = None
 
@@ -210,9 +214,7 @@ class Link:
             return
         if time.time() - float(command.get("unix", 0)) > 15:
             return self._report(command, "rejected", "command too old")
-        if real and real.get("mode") == "mirror":
-            return self._report(command, "rejected", "bridge is in mirror mode (torque off): press d in the "
-                                                     "bridge terminal so the real arms follow, then press again")
+        preview = bool(real and real.get("mode") == "mirror")
         if any(self.q[s] is None for s in SIDES):
             return self._report(command, "rejected", "Table 10 arm pose not known yet")
         try:
@@ -223,17 +225,30 @@ class Link:
         motion["last"] = time.monotonic()
         motion["lag_since"] = None
         motion["command"] = command
-        motion["real"] = bool(real)
+        motion["real"] = bool(real) and not preview
+        motion["preview"] = preview
+        motion["phase"] = "move"
         self.motion = motion
-        self._report(command, "running", "real arms follow" if real else "virtual only (no bridge)",
-                     duration_s=round(motion["duration_s"], 2), progress=0.0)
+        self._report(command, "running", self._who(motion), duration_s=round(motion["duration_s"], 2), progress=0.0)
+
+    def _who(self, motion):
+        if motion["preview"]:
+            return ("virtual preview: the real arms are in mirror (torque off) and stay still; "
+                    "press d in the bridge terminal to make them follow")
+        return "real arms follow" if motion["real"] else "virtual only (no bridge)"
 
     def _step_test(self, real):
         motion = self.motion
         command = motion["command"]
-        if real and real.get("mode") == "mirror":
+        mode = (real or {}).get("mode")
+        if motion["preview"] and mode == "drive":
+            self.motion = None  # bridge left mirror mid-preview: stop; drive engages only on a match
+            return self._report(command, "aborted", "bridge left mirror mode during the virtual preview")
+        if not motion["preview"] and mode == "mirror":
             self.motion = None
             return self._report(command, "aborted", "bridge switched to mirror (torque off)")
+        if motion["phase"] != "move":
+            return self._preview_tail(motion, real)
         now = time.monotonic()
         motion["t"] += min(now - motion["last"], MAX_TEST_STEP_S)
         motion["last"] = now
@@ -252,12 +267,36 @@ class Link:
             self._apply(side, q, self.gap[side])
             self.source[side] = "test"
         done = t >= motion["duration_s"]
-        self._report(command, "done" if done else "running",
-                     "real arms follow" if motion["real"] else "virtual only (no bridge)",
+        self._report(command, "done" if done and not motion["preview"] else "running", self._who(motion),
                      duration_s=round(motion["duration_s"], 2), progress=round(min(1.0, t / motion["duration_s"]), 3),
                      lag_deg=None if lag is None else round(lag, 1))
-        if done:
+        if done and motion["preview"]:
+            motion["phase"], motion["hold_until"] = "hold", time.monotonic() + PREVIEW_HOLD_S
+        elif done:
             self.motion = None
+
+    def _preview_tail(self, motion, real):
+        """After a virtual preview: hold the end pose, then ease back to the measured real pose."""
+        command = motion["command"]
+        now = time.monotonic()
+        if motion["phase"] == "hold":
+            if now < motion["hold_until"]:
+                return
+            measured = {s: ((real or {}).get("arms") or {}).get(s, {}).get("q") for s in SIDES}
+            paths = {s: [list(self.q[s]), mapping.clamp(measured[s], mapping.URDF_LIMITS)]
+                     for s in SIDES if measured[s] and self.q[s] is not None}
+            travel = max([max(abs(a - b) for a, b in zip(*p)) for p in paths.values()] or [0.0])
+            motion.update(phase="return", back={"paths": paths, "duration_s": max(1.0, math.pi / 2 * travel / RETURN_SPEED_RAD_S)},
+                          t=0.0, last=now)
+            return self._report(command, "running", "virtual preview finished; easing back to the real arm pose", progress=1.0)
+        motion["t"] += min(now - motion["last"], MAX_TEST_STEP_S)
+        motion["last"] = now
+        for side, q in tests.sample(motion["back"], motion["t"]).items():
+            self._apply(side, q, self.gap[side])
+            self.source[side] = "test"
+        if motion["t"] >= motion["back"]["duration_s"]:
+            self.motion = None  # mirroring resumes from the real arms
+            self._report(command, "done", "virtual preview done (real arms did not move); back in mirror", progress=1.0)
 
     def _lag_deg(self, real):
         """Worst joint gap between the measured real arms (drive) and the last published target."""
