@@ -1,5 +1,17 @@
 # Maker Arm room environment
 
+## Current grid lighting
+
+The live grid uses `maker_arm_grid_scene.py`: eleven stations in three columns at 820 cm spacing, 8 m walls and open tops. Each station keeps its original table-local equipment and cameras. Flat tabletop labels show 1–11.
+
+A shared 6500 lux directional daylight source, ambient cubemap intensity 2 and two 1800 lumen ceiling RectLights per room replace the earlier dense light rig. Screen-space global illumination is selected (method 2), not Lumen; mesh distance fields are not enabled. Fixed exposure uses −0.5 EV compensation to retain pale-table and bright-prop highlights.
+
+Each room also has one movable, unshadowed 700 lumen / 5000 K point fill, centered 230 cm above the floor. Its 500 cm attenuation radius limits overlap. The light stops drawing beyond 1800 cm with a 300 cm fade, avoiding eleven additional shadow maps. Reapplying global illumination preserves this point-fill culling. These lights approximate room bounce; they are not a calibrated physical-lighting reconstruction.
+
+An eight-second idle Mac sample with the point fills enabled measured 45.35 FPS (median 21.58 ms, p90 25.29 ms, 0.39 frames over 80 ms per second). The earlier sample was 36.04 FPS, but the camera moved between samples, so these are observations rather than a controlled estimate of point-light cost.
+
+## Earlier single-room setup
+
 `Unreal/TheHumanTouch/Tools/maker_arm_environment.py` adds an empty, reference-inspired industrial hall around the existing station. It uses the user's November 7 hall photo: pale walls, gray-beige floor, cool side daylight and neutral overhead strips. The foreground table remains the existing station; no people, extra tables, chairs or signage are added.
 
 The helper is idempotent and must run within a scoped CoPresence task. It owns `MakerEnvironment_*` actors and raises `MakerLighting_Ambient` intensity to 1.1. It compares numeric station, robot, task-object and camera transforms before and after; arm geometry, poses, tabletop equipment, task-object colors and virtual-camera transforms are preserved.

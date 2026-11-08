@@ -113,8 +113,10 @@ def enable_global_illumination():
             actor.modify()
             component.modify()
             component.set_mobility(unreal.ComponentMobility.MOVABLE)
-            component.set_editor_property('max_draw_distance', 0.0)
-            component.set_editor_property('max_distance_fade_range', 0.0)
+            # Keep inexpensive point fills local when the global rig is reapplied.
+            is_point_fill = name.split('__', 1)[-1] == 'MakerLighting_LocalPointFill'
+            component.set_editor_property('max_draw_distance', 1800.0 if is_point_fill else 0.0)
+            component.set_editor_property('max_distance_fade_range', 300.0 if is_point_fill else 0.0)
             changed += 1
         if isinstance(actor, unreal.PostProcessVolume):
             actor.modify()
@@ -147,10 +149,55 @@ def simplify_daylight():
             actor.modify()
             settings = actor.settings
             settings.set_editor_property('override_auto_exposure_bias', True)
-            settings.set_editor_property('auto_exposure_bias', .5)
+            settings.set_editor_property('auto_exposure_bias', -.5)
             actor.set_editor_property('settings', settings)
-    result.update({'removed_fill_lights': len(removed), 'exposure_bias_ev': .5})
+    result.update({'removed_fill_lights': len(removed), 'exposure_bias_ev': -.5})
     return result
+
+
+def set_exposure(bias=-.5):
+    """Set the shared fixed-exposure compensation without touching light power."""
+    fleet._check_idle()
+    actor = fleet._actors().get('MakerLighting_Exposure')
+    if not isinstance(actor, unreal.PostProcessVolume):
+        raise RuntimeError('Missing shared exposure volume')
+    actor.modify()
+    settings = actor.settings
+    settings.set_editor_property('override_auto_exposure_bias', True)
+    settings.set_editor_property('auto_exposure_bias', float(bias))
+    actor.set_editor_property('settings', settings)
+    return {'exposure_bias_ev': float(bias)}
+
+
+def add_room_fill(index):
+    """One inexpensive, range-limited point fill per room; global sun remains key."""
+    fleet._check_idle()
+    d = grid.offset(index)
+    prefix = '' if index == 0 else fleet.label(index, '')
+    name = prefix+'MakerLighting_LocalPointFill'
+    actors = fleet._actors()
+    light = actors.get(name)
+    if light is None:
+        light = fleet._subsystem().spawn_actor_from_class(unreal.PointLight, unreal.Vector(45+d[0], d[1], 230))
+        light.set_actor_label(name)
+        light.set_folder_path('MakerFleet/T%02d' % index if index else 'MakerStation/Environment')
+        if index:
+            light.set_editor_property('tags', [unreal.Name(fleet.FLEET_TAG), unreal.Name(fleet.table_tag(index))])
+    light.modify()
+    c = light.light_component
+    c.modify()
+    c.set_mobility(unreal.ComponentMobility.MOVABLE)
+    c.set_editor_property('intensity_units', unreal.LightUnits.LUMENS)
+    c.set_intensity(700.0)
+    c.set_cast_shadows(False)
+    c.set_editor_property('attenuation_radius', 500.0)
+    c.set_editor_property('source_radius', 30.0)
+    c.set_editor_property('max_draw_distance', 1800.0)
+    c.set_editor_property('max_distance_fade_range', 300.0)
+    c.set_editor_property('use_temperature', True)
+    c.set_temperature(5000.0)
+    return {'table': index, 'point_fill_lumens': c.intensity, 'casts_shadows': False,
+            'range_cm': 500, 'draw_distance_cm': 1800}
 
 
 def migrate_table(index):
