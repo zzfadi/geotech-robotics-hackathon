@@ -1,4 +1,5 @@
 #include "HumanTouchXRTable.h"
+#include "HumanTouchRelock.h"
 #include "HumanTouchCornerCapture.h"
 
 #include "Components/PrimitiveComponent.h"
@@ -42,9 +43,18 @@ double NextGeometryCheck = 0;
 IConsoleObject* SurveyCommand = nullptr;
 FString Message;
 int32 LastMissing = INDEX_NONE;
+FHumanTouchRelock Optical;
+FTSTicker::FDelegateHandle OpticalTicker;
+IConsoleObject* OpticalCommand=nullptr;
+IConsoleObject* DockCommand=nullptr;
+int32 DockNumber=INDEX_NONE;
+EHMDTrackingOrigin::Type DockOrigin=EHMDTrackingOrigin::LocalFloor;
+bool bLiveOptical=false;
+double NextLivePoll=0;
 
 void ForgetRoom()
 {
+    Optical.Invalidate(); Optical.CancelDock();
     if (Survey.IsRunning() || VerifiedRoom.IsSet())
         Survey.Cancel(TEXT("Tracking origin changed. Repeat the corner survey."));
     VerifiedRoom.Reset();
@@ -187,6 +197,101 @@ private:
 };
 TSharedPtr<FStationEyeView, ESPMode::ThreadSafe> EyeView;
 
+bool SameFixedGeometry(const TArray<FVector> &Current)
+{
+    if (Current.Num() != VerifiedModel.Num())
+        return false;
+    for (int32 I = 0; I < Current.Num(); ++I)
+    {
+        // The two tool-center witnesses move when the arms articulate.
+        if (I != 7 && I != 11 && !Current[I].Equals(VerifiedModel[I], .1))
+            return false;
+    }
+    return true;
+}
+
+bool OpticalTick(float)
+{
+    if (!Optical.Enabled() && !Optical.DockPending())
+        return true;
+    if (!GEngine || !GEditor || !GEngine->XRSystem || !PlacedAvatar.IsValid() || Survey.IsRunning() || CaptureAt >= 0)
+        return true;
+    auto &XR = *GEngine->XRSystem;
+    const double Now = FDateTime::UtcNow().ToUnixTimestampDecimal();
+    const int32 Number = HumanTouchXRTable::Number();
+    if (Now >= NextLivePoll)
+    {
+        bLiveOptical = HasLiveViewer();
+        NextLivePoll = Now + .2;
+    }
+    if (Optical.DockPending() && (DockNumber != Number || DockOrigin != XR.GetTrackingOrigin()))
+        Optical.CancelDock();
+    if (!bLiveOptical || !XR.HasValidTrackingPosition() ||
+        !PlacedAvatar->GetActorScale3D().Equals(FVector::OneVector, .001))
+        return true;
+    FQuat Q;
+    FVector P;
+    if (!XR.GetCurrentPose(IXRTrackingSystem::HMDDeviceId, Q, P) || Q.ContainsNaN() || P.ContainsNaN())
+        return true;
+    Optical.Sample(Now, FTransform(Q, P));
+    FTransform Applied;
+    FString Note;
+    if (Optical.DockPending())
+    {
+        // Geometry is checked once per capture interval; no shared actors are modified.
+        static double NextDockCheck = 0;
+        if (Now < NextDockCheck)
+            return true;
+        NextDockCheck = Now + .20;
+        TArray<FVector> Marks;
+        UWorld *World = PlacedAvatar->GetWorld();
+        if (!FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World, Number), Marks, Note))
+            Optical.CancelDock();
+        else
+        {
+            const bool bCanTeach = VerifiedRoom.IsSet() && !Optical.DockSeed() && VerifiedNumber == Number &&
+                                   MeasuredOrigin == XR.GetTrackingOrigin() && SameFixedGeometry(Marks) &&
+                                   PlacedAvatar->GetActorTransform().Equals(VerifiedRoom.GetValue(), .02);
+            if (Optical.DockTick(Now, Number, Marks, bCanTeach ? &VerifiedRoom.GetValue() : nullptr, Applied, Note))
+            {
+                VerifiedRoom = Applied;
+                VerifiedNumber = Number;
+                VerifiedModel = MoveTemp(Marks);
+                MeasuredOrigin = XR.GetTrackingOrigin();
+                MeasuredEdgePose.Reset();
+                Optical.Seed(true);
+                PlacedAvatar.Reset();
+            }
+        }
+    }
+    else if (VerifiedRoom.IsSet() && VerifiedNumber == Number && MeasuredOrigin == XR.GetTrackingOrigin() &&
+             PlacedAvatar->GetActorTransform().Equals(VerifiedRoom.GetValue(), .02) &&
+             Optical.Exchange(Now, Number, VerifiedModel, VerifiedRoom.GetValue(), Applied, Note))
+    {
+        TArray<FVector> Current;
+        FString GeoError;
+        const bool bRead = FHumanTouchCornerCapture::Geometry(
+            PlacedAvatar->GetWorld(), ScenePrefix(PlacedAvatar->GetWorld(), Number), Current, GeoError);
+        if (!bRead || !SameFixedGeometry(Current))
+        {
+            Optical.Invalidate();
+            VerifiedRoom.Reset();
+            Survey.Cancel(TEXT("Station changed. Holding the last alignment."));
+            return true;
+        }
+        VerifiedRoom = Applied;
+        PlacedAvatar->SetActorLocationAndRotation(Applied.GetLocation(), Applied.GetRotation(), false, nullptr,
+                                                  ETeleportType::TeleportPhysics);
+    }
+    if (!Note.IsEmpty())
+    {
+        Survey.ClearNotice();
+        Message = Note;
+        UE_LOG(LogHumanTouchTable, Display, TEXT("%s"), *Note);
+    }
+    return true;
+}
+
 // Only the local XR Creative avatar owns the room transform. Its editor mode
 // copies that transform to the stereo viewport every frame.
 bool Tick(float)
@@ -222,6 +327,7 @@ bool Tick(float)
         if (Survey.Tick(World, Number, bSameAvatar && XR.HasValidTrackingPosition() && HasLiveViewer(), Solved))
         {
             VerifiedRoom = Solved;
+            Optical.Seed(false);
             VerifiedNumber = Number;
             VerifiedModel = Survey.Targets();
             MeasuredEdgePose.Reset();
@@ -231,6 +337,7 @@ bool Tick(float)
     if (Survey.CheckFailed)
     {
         VerifiedRoom.Reset();
+        Optical.Invalidate();
         Survey.CheckFailed = false;
     }
     if (VerifiedRoom.IsSet() && (Number != VerifiedNumber || FPlatformTime::Seconds() >= NextGeometryCheck))
@@ -238,16 +345,13 @@ bool Tick(float)
         NextGeometryCheck = FPlatformTime::Seconds() + 1;
         TArray<FVector> Current;
         FString Error;
-        bool bMatches = Number == VerifiedNumber && XR.HasValidTrackingPosition() && HasLiveViewer() &&
-            FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World,Number), Current, Error);
-        // Moving links are expected after registration. Fixed mounting holes and
-        // tabletop corners must still be in the same place after a Concert reload.
-        for (int32 I=0; bMatches && I<Current.Num(); ++I)
-            if (I != 7 && I != 11) bMatches = Current[I].Equals(VerifiedModel[I],0.1);
+        const bool bMatches = Number == VerifiedNumber && XR.HasValidTrackingPosition() && HasLiveViewer() &&
+            FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World,Number), Current, Error) && SameFixedGeometry(Current);
         if (!bMatches)
         {
             VerifiedRoom.Reset();
-            PlacedAvatar.Reset();
+            Optical.Invalidate();
+            if (Number != VerifiedNumber) PlacedAvatar.Reset();
             Survey.Cancel(TEXT("Survey expired after a station or viewer change. Repeat the corner survey."));
         }
     }
@@ -329,6 +433,7 @@ bool Tick(float)
             return true;
         }
         VerifiedRoom.Reset();
+        Optical.Invalidate();
         Survey.ClearNotice();
         MeasuredEdgePose.Emplace(HeadRotation, Head);
         MeasuredOrigin = XR.GetTrackingOrigin();
@@ -339,7 +444,7 @@ bool Tick(float)
     {
         Room = VerifiedRoom->GetTranslation();
         Yaw = VerifiedRoom->Rotator().Yaw;
-        Message = FString::Printf(TEXT("Table %d corner registration applied at unit scale."), Number);
+        Message = FString::Printf(TEXT("Table %d %s registration at unit scale."), Number, Optical.DockSeed()?TEXT("midpoint dock"):TEXT("factory-hole"));
     }
     else if (MeasuredEdgePose.IsSet())
     {
@@ -370,7 +475,7 @@ bool HumanTouchXRTable::IsHidingOthers() { return HideOtherTables.GetValueOnGame
 void HumanTouchXRTable::HideOthers(bool bHide) { HideOtherTables->Set(bHide ? 1 : 0, ECVF_SetByConsole); }
 FString HumanTouchXRTable::Status() { return Survey.Status().IsEmpty() ? Message : Survey.Status(); }
 bool HumanTouchXRTable::SurveyRunning() { return Survey.IsRunning(); }
-bool HumanTouchXRTable::CanCheckSurvey() { return VerifiedRoom.IsSet() && !Survey.IsRunning(); }
+bool HumanTouchXRTable::CanCheckSurvey() { return VerifiedRoom.IsSet() && !Optical.DockSeed() && !Survey.IsRunning(); }
 void HumanTouchXRTable::CheckSurvey()
 {
     if (CanCheckSurvey() && GEditor)
@@ -447,10 +552,44 @@ void HumanTouchXRTable::Startup()
             if (Args.Num()==1 && Args[0]==TEXT("cancel")) HumanTouchXRTable::CancelSurvey();
             UE_LOG(LogHumanTouchTable,Display,TEXT("%s"),*HumanTouchXRTable::Status());
         }));
+    OpticalCommand = IConsoleManager::Get().RegisterConsoleCommand(
+        TEXT("HumanTouch.Relock"), TEXT("HumanTouch.Relock on|off"),
+        FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString> &Args) {
+            if (Args.Num() == 1 && (Args[0] == TEXT("on") || Args[0] == TEXT("off")))
+                Optical.Enable(Args[0] == TEXT("on"));
+            UE_LOG(LogHumanTouchTable, Display, TEXT("Look-to-relock %s"),
+                   Optical.Enabled() ? TEXT("enabled") : TEXT("off"));
+        }));
+    DockCommand = IConsoleManager::Get().RegisterConsoleCommand(
+        TEXT("HumanTouch.Dock"),
+        TEXT("HumanTouch.Dock learn NAME | snap NAME | offset forward_cm right_cm up_cm yaw_deg | cancel"),
+        FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString> &Args) {
+            if (!GEngine || !GEngine->XRSystem || !PlacedAvatar.IsValid() || !HasLiveViewer() || Survey.IsRunning())
+            {
+                UE_LOG(LogHumanTouchTable, Warning, TEXT("Dock needs the live XR station with no active probe survey"));
+                return;
+            }
+            DockNumber = HumanTouchXRTable::Number();
+            DockOrigin = GEngine->XRSystem->GetTrackingOrigin();
+            if (DockOrigin != EHMDTrackingOrigin::LocalFloor && DockOrigin != EHMDTrackingOrigin::Stage)
+            {
+                UE_LOG(LogHumanTouchTable, Warning, TEXT("Select a floor-level tracking origin before docking."));
+                return;
+            }
+            Survey.ClearNotice();
+            CaptureAt = -1;
+            Optical.DockRequest(Args, Message);
+            UE_LOG(LogHumanTouchTable, Display, TEXT("%s"), *Message);
+        }));
+    OpticalTicker = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&OpticalTick));
     TickHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&Tick), 0.25f);
 }
 void HumanTouchXRTable::Shutdown()
 {
+    Optical.Enable(false);
+    FTSTicker::GetCoreTicker().RemoveTicker(OpticalTicker);
+    if(OpticalCommand) IConsoleManager::Get().UnregisterConsoleObject(OpticalCommand);
+    if(DockCommand) IConsoleManager::Get().UnregisterConsoleObject(DockCommand);
     FTSTicker::GetCoreTicker().RemoveTicker(TickHandle);
     FCoreDelegates::VRHeadsetRecenter.Remove(RecenterHandle);
     if (SurveyCommand) IConsoleManager::Get().UnregisterConsoleObject(SurveyCommand);

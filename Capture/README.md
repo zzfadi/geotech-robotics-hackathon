@@ -2,6 +2,8 @@
 
 The external producers send each frame to two loopback UDP sockets. Live Link Hub reads port **17860** and the external robot process reads **17861**. Both receive the same skeleton, source identity and monotonic station timestamp. The capture tools run locally. Dream-1 can supply actions to the external robot application. Its hardware integration is described in the [robot stack contract](../docs/robot-stack-contract.md).
 
+For Quest 3 station alignment, use the [look-to-relock and static tabletop dock guide](../docs/quest-look-to-relock.md). It includes the camera contrast check, enrollment and drift-correction commands.
+
 ## Mac editor and Hub
 
 1. Build [HumanTouchPose](../Unreal/TheHumanTouch/Plugins/HumanTouchPose) with the project's UE 5.8.3 installation. Build the local editor target and copy the generated module manifest and libraries into the plugin's ignored `Binaries/Mac/` folder. From the repository root, one way to build on Apple Silicon is:
