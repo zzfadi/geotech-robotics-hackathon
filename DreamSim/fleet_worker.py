@@ -351,13 +351,14 @@ class TableRun:
                 f = fk.pose(np.clip(q, fk.low+1e-7, fk.high-1e-7))
                 if self.grip_latch is None:
                     g0 = packet['state']['gap_'+side+'_m']/JAW_MAX_M
-                    rows = [q+[g0+(.525-g0)*k/64] for k in range(65)]  # verified 65-row close to 5.5 cm
+                    close = float(self.v['assist'].get('probe_close_grip', .525))
+                    rows = [q+[g0+(close-g0)*k/64] for k in range(65)]  # verified 65-row close (default 5.5 cm)
                     self.probe_close = True
                 else:
                     rows, prev = [], q
                     for k in range(12):
                         prev = solve_pose(f[:3, 3]+np.array([0, 0, .02*(k+1)/12]), f[:3, :3], prev, .003, .05)
-                        rows.append(list(prev)+[.525])
+                        rows.append(list(prev)+[self.grip_latch])
                 other = 'q_r_chunk' if side == 'left' else 'q_l_chunk'
                 hold = list(packet['state']['q_'+('right' if side == 'left' else 'left')])+[1.]
                 action = {'q_l_chunk' if side == 'left' else 'q_r_chunk': rows, other: [hold for _ in rows]}
@@ -465,7 +466,10 @@ class TableRun:
                 time.sleep(.1)
             if getattr(self, 'probe_close', False) and self.grip_latch is None:
                 from pregrasp import tool_height
-                self.grip_latch = .525
+                observed = playback.get('gap_'+latch_side+'_m', .1)
+                squeeze = self.v['assist'].get('probe_latch_squeeze_m')
+                self.grip_latch = (max(observed-float(squeeze), 0.)/JAW_MAX_M if squeeze is not None
+                                   else float(self.v['assist'].get('probe_close_grip', .525)))
                 self.latch_z = tool_height(playback.get('q_'+latch_side, packet['state']['q_'+latch_side]))
                 self.log('probe: closed to the verified 5.5 cm command (gap %.1f cm)' % (playback.get('gap_'+latch_side+'_m', 0)*100))
             if self.v.get('assist', {}).get('grip_latch') and not self.args.dry_run:

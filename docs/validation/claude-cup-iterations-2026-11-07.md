@@ -149,3 +149,25 @@ Conclusion: the kinematic pads teleport into the cup and rely on penetration con
 Further gains need a physics-side change (simulated finger drives, or a grasp constraint while both pads hold
 the cup, which the current "no attachment" rule forbids) — a team decision. Also: holding the 45° grasp
 orientation caps the lift at ~18–22 cm; 60° allows ~28 cm.
+
+## Cup physics investigation (user request) — zero-API probes, same reach/close/lift
+
+| Probe | Change | Carried |
+|---|---|---|
+| 2 | Codex's verified mechanical sequence, baseline physics | 2/9 |
+| 3 | keep cups awake while jaws move | 0/9 (7 ejected) |
+| 4 | pad friction 1.5 with Max combine, cup 1.0 | 0/9 |
+| 5 | hold 1 mm per pad inside contact | 1/9 |
+| 6 | limiter compliance 10 mm (no effect: hollow mode caps squeeze at one 2 mm wall) | 0/9 |
+| 7 | solid one-hull cup collider in the simulation (`SM_DrinkingCup_SolidCollision`) + 2 mm per pad | 1/9 |
+
+Findings: with the original settings the jaws stop where the pads just touch the real cup surface (7.4 cm), and
+the hollow limiter caps total squeeze at one 2 mm wall; the cup's collision is 20 thin wall hulls. Neither
+material, mass, waking nor a solid collider changed the carry rate, which points at the actuation model: the
+finger pads are kinematic boxes repositioned every tick, which transfer little friction in Chaos. A reliable
+grasp needs physically driven fingers or a grasp constraint while both pads hold the cup; the current team
+rule forbids attachment, so that is a decision for the team. All new physics options remain in the runtime as
+named constants, switched off (baseline restored); `SM_DrinkingCup_SolidCollision` exists in
+`/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups` but is unused while `SOLID_CUP_COLLISION = False`.
+Separately, `Mirror sample requires no enclosing transaction` and `SIE exit timed out` appeared once (batch 19)
+while another editor operation was active.

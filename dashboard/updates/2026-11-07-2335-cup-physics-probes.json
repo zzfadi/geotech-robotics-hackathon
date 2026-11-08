@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T23:35:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Measured the simulated cup grip with zero-API probes; first nine-table Dream success recorded.",
+  "why": "User asked to check and improve cup physics; Dream runs were limited by cups slipping out of the jaws.",
+  "where": ["Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py", "Unreal/TheHumanTouch/Tools/maker_arm_contact_stop.py", "DreamSim/fleet_worker.py", "docs/validation/claude-cup-iterations-2026-11-07.md"],
+  "details": ["Batch 14: Table 3 held its cup 18.3 cm up for 5 s (target 18 cm), upright, gravity on, no attachment; video reviewed.", "Exact replica of the verified mechanical grasp carries 2/9 cups; awake cups, pad friction, tighter squeeze, wider compliance and a solid one-hull collider did not improve it (0-1/9).", "Likely cause: kinematic finger pads repositioned each tick transfer little friction. Options added as constants, all off; baseline restored. Reliable grasp needs driven fingers or a grasp constraint (team decision)."]
+}

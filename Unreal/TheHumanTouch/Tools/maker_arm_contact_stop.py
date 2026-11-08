@@ -46,7 +46,7 @@ def inner_pad_offset(z):
     return .00237+(z+.14)/.01*(.005-.00237)
 
 
-def contact_gap(requested, previous, boxes, compliance=.005, flat=False):
+def contact_gap(requested, previous, boxes, compliance=.005, flat=False, solid=False):
     """Stop inward jaw travel at a prop intersecting both finger pads.
 
     boxes contain oriented corners or a faced cup envelope in flange coordinates. Require
@@ -58,7 +58,7 @@ def contact_gap(requested, previous, boxes, compliance=.005, flat=False):
     result=requested; contacts=[]
     for label, points in boxes:
         if isinstance(points,dict) and points.get('material_cells'):
-            stop=_hollow_stop(requested,previous,points,compliance,flat)
+            stop=_hollow_stop(requested,previous,points,compliance,flat,solid)
             if stop is not None and stop>requested:
                 result=max(result,min(previous,stop));contacts.append(label)
             continue
@@ -94,7 +94,7 @@ def local_bounds_points(lo, hi, tapered_cup=False):
     return result
 
 
-def _hollow_stop(requested, previous, shape, compliance, flat):
+def _hollow_stop(requested, previous, shape, compliance, flat, solid=False):
     """Closing-only material sweeps, preserving the hollow cavity.
 
     Each convex shell cell is clipped to the finite X/Z pad volume. The
@@ -107,7 +107,8 @@ def _hollow_stop(requested, previous, shape, compliance, flat):
     # Total two-jaw penetration cannot exceed one wall thickness; each jaw
     # remains within material after first contact rather than crossing the shell.
     thicknesses=[math.dist(shape['points'][a],shape['points'][b]) for a,b in shape['wall_pairs']]
-    compliance=min(compliance,min(thicknesses))
+    if not solid:  # a solid outer-hull simulation collider has no wall to cross
+        compliance=min(compliance,min(thicknesses))
     half=previous/2;target=requested/2
     thickness=.01 if flat else .02  # Legacy CAD contact envelope is approximate.
     for cell in shape['material_cells']:

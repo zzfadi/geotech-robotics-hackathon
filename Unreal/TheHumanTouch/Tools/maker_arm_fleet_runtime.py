@@ -38,6 +38,14 @@ from maker_arm_model import mounted_frames, ue_pose
 from maker_arm_station import BASES, MOUNT_YAW, VISUAL_LINKS
 
 ROLES = maker_arm_fleet.CAMERA_ROLES
+# Jaw stop = outer cup surface width minus this (hollow mode caps it at one 2 mm wall).
+CONTACT_COMPLIANCE_M = .005  # Codex baseline; with the solid collider ~2 mm (.004) was tested: 1/9 carried
+# Simulate cups with one solid convex outer hull (same visual mesh). The 20 thin wall
+# hulls let 1 mm pad contacts flip between inner and outer faces, so grips rarely held.
+SOLID_CUP_COLLISION = False  # tested opt-in: no carry improvement (1/9)
+SOLID_CUP_MESH = '/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/SM_DrinkingCup_SolidCollision'
+CUP_FRICTION = .8  # baseline; 1.0 cup / 1.5 Max pads tested: 0/9
+PAD_FRICTION = .8
 WAKE_PROPS_DURING_MOTION = False  # tested: awake cups were ejected by the kinematic pads (0/9 carried)
 WAKE_AFTER_MOTION_S = 3.
 CUP_MASS_KG = .05  # uncalibrated; 15 g (empty paper cup) tipped far more often in batch 17
@@ -228,9 +236,18 @@ class Session:
                     raise RuntimeError('Duplicate runtime replica actor ' + name)
                 found[name] = actor
         material = unreal.new_object(unreal.PhysicalMaterial)
-        material.set_editor_property('friction', .8)
+        material.set_editor_property('friction', CUP_FRICTION)
         material.set_editor_property('restitution', 0.)
         self.material = material
+        # Rubber finger pads on a paper cup: high friction, and the contact uses the pad's
+        # value (Max) rather than averaging it down with the cup's.
+        pad_material = unreal.new_object(unreal.PhysicalMaterial)
+        pad_material.set_editor_property('friction', PAD_FRICTION)
+        pad_material.set_editor_property('static_friction', PAD_FRICTION)
+        pad_material.set_editor_property('restitution', 0.)
+        pad_material.set_editor_property('override_friction_combine_mode', True)
+        pad_material.set_editor_property('friction_combine_mode', unreal.FrictionCombineMode.MAX)
+        self.pad_material = pad_material
         for table in self.tables:
             # SIE can restore the saved BlockAll profile despite an editor-only
             # enabled-flag override. Printed tabletop labels are not obstacles.
@@ -258,7 +275,7 @@ class Session:
                         pc.set_mobility(unreal.ComponentMobility.MOVABLE)
                         pc.set_collision_profile_name('BlockAllDynamic')
                         pc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
-                        pc.set_phys_material_override(material)
+                        pc.set_phys_material_override(pad_material)
                         c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
                         table.proxies[name] = proxy
             self.initialize_contacts(table)
@@ -268,6 +285,11 @@ class Session:
                     continue
                 c = actor.static_mesh_component
                 c.set_mobility(unreal.ComponentMobility.MOVABLE)
+                if SOLID_CUP_COLLISION and 'Prop_Cup' in name:
+                    solid = unreal.load_asset(SOLID_CUP_MESH)
+                    if solid is None:
+                        raise RuntimeError('Missing ' + SOLID_CUP_MESH)
+                    c.set_static_mesh(solid)  # simulation world only; editor cups unchanged
                 c.set_collision_profile_name('PhysicsActor')
                 c.set_phys_material_override(material)
                 # Empty paper drinking cup: ~10-15 g (was an uncalibrated 50 g assumption).
@@ -407,9 +429,10 @@ class Session:
             # returns early otherwise); skip the per-prop bound transforms.
             boxes = actor_boxes(table.props, frames['link_007'], base)
             if _FLAT:
-                gap, contacts = contact_gap(requested, previous, boxes, flat=table.v['pad_contacts'])
+                gap, contacts = contact_gap(requested, previous, boxes, compliance=CONTACT_COMPLIANCE_M, flat=table.v['pad_contacts'],
+                                            **({'solid': True} if SOLID_CUP_COLLISION else {}))
             else:
-                gap, contacts = contact_gap(requested, previous, boxes)
+                gap, contacts = contact_gap(requested, previous, boxes, compliance=CONTACT_COMPLIANCE_M)
         else:
             gap, contacts = requested, []
         if jaws_only and abs(gap-previous) < 1e-8:
