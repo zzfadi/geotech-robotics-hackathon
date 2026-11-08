@@ -1,4 +1,5 @@
 #include "HumanTouchPassthrough.h"
+#include "HumanTouchXRTable.h"
 
 #include "Components/PrimitiveComponent.h"
 #include "Containers/Ticker.h"
@@ -196,6 +197,7 @@ public:
         AddShaderSourceDirectoryMapping(TEXT("/HumanTouchXR"), ShaderDir);
         if (IsRunningCommandlet())
             return;
+        HumanTouchXRTable::Startup();
         bRequested = FParse::Param(FCommandLine::Get(), TEXT("HumanTouchPassthrough"));
         bKeyVideo = FParse::Param(FCommandLine::Get(), TEXT("HumanTouchVideoKey")) ||
                     !FPlatformMisc::GetEnvironmentVariable(TEXT("OXRSYS_TRANSPORT")).IsEmpty();
@@ -215,6 +217,7 @@ public:
     }
     void ShutdownModule() override
     {
+        if (!IsRunningCommandlet()) HumanTouchXRTable::Shutdown();
         FTSTicker::GetCoreTicker().RemoveTicker(Tick);
         if (Command) IConsoleManager::Get().UnregisterConsoleObject(Command);
         RoomView.Reset();

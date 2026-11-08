@@ -8,7 +8,7 @@ public class HumanTouchXR : ModuleRules
         PublicDependencyModuleNames.Add("Core");
         PrivateDependencyModuleNames.AddRange(new[] {
             "CoreUObject", "Engine", "UnrealEd", "Projects", "OpenXRHMD", "OpenXR",
-            "HeadMountedDisplay", "Renderer", "RenderCore", "RHI"
+            "HeadMountedDisplay", "Renderer", "RenderCore", "RHI", "Json"
         });
     }
 }

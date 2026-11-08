@@ -1,5 +1,7 @@
 #include "HumanTouchPerformerWidget.h"
 #include "HumanTouchPassthrough.h"
+#include "HumanTouchXRTable.h"
+#include "Widgets/Input/SButton.h"
 #include "HumanTouchPerformerMode.h"
 #include "Styling/AppStyle.h"
 #include "Widgets/Input/SCheckBox.h"
@@ -45,5 +47,18 @@ TSharedRef<SWidget> UHumanTouchPerformerWidget::RebuildWidget()
                 return NSLOCTEXT("HumanTouch", "WaitingForAlpha", "Waiting for an XR runtime with alpha-blend support. On the Quest Mac, launch with --passthrough.");
             return FText::GetEmpty();
         })];
+    Box->AddSlot().AutoHeight().Padding(10, 4)
+        [SNew(SCheckBox)
+            .IsChecked_Lambda([] { return HumanTouchXRTable::IsHidingOthers() ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
+            .OnCheckStateChanged_Lambda([](ECheckBoxState State) { HumanTouchXRTable::HideOthers(State == ECheckBoxState::Checked); })
+            [SNew(STextBlock).Text(NSLOCTEXT("HumanTouch", "HideOtherTables", "Hide other tables in XR"))]];
+    Box->AddSlot().AutoHeight().Padding(10, 4)
+        [SNew(STextBlock).AutoWrapText(true).Text(NSLOCTEXT("HumanTouch", "TablePose", "Place your headset above the middle of the near long edge and look straight across."))];
+    Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 4)
+        [SNew(SButton)
+            .Text_Lambda([] { return FText::Format(NSLOCTEXT("HumanTouch", "AlignXRTable", "Align table {0} in 5 seconds"), HumanTouchXRTable::Number()); })
+            .OnClicked_Lambda([] { HumanTouchXRTable::AlignAfter(5); return FReply::Handled(); })];
+    Box->AddSlot().AutoHeight().Padding(10, 4)
+        [SNew(STextBlock).AutoWrapText(true).Text_Lambda([] { return FText::FromString(HumanTouchXRTable::Status()); })];
     return Box;
 }

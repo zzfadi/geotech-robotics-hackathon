@@ -48,7 +48,11 @@ def main():
                         help='Override the station editor cast for this launch (default: mannequins)')
     parser.add_argument('--passthrough', action=argparse.BooleanOptionalAction, default=None,
                         help='Start the headset with the room or opaque VR background; enables the Capture Performers widget')
+    parser.add_argument('--table', type=int, metavar='NUMBER',
+                        help='Use the printed table number as the XR room origin (default: 1; 0 also selects the original table)')
     args = parser.parse_args()
+    if args.table is not None and args.table < 0:
+        parser.error('--table must be a printed table number, or 0 for the original station')
     if args.capture_hub:
         host, sep, port = args.capture_hub.rpartition(':')
         try:
@@ -66,6 +70,8 @@ def main():
     if (build['MajorVersion'],build['MinorVersion'],build['PatchVersion'],build['Changelist'])!=(5,8,3,58210709):
         raise SystemExit('Requires UE 5.8.3 CL 58210709')
     command=arguments(args.engine,args.local_address,args.name)
+    if args.table is not None:
+        command.append(f'-HumanTouchTable={args.table}')
     if args.capture_hub:
         command = [arg + ',' + args.capture_hub if arg.startswith('-UDPMESSAGING_TRANSPORT_STATIC=') else arg for arg in command]
     if args.performers:

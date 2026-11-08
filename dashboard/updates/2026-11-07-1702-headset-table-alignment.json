@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T17:02:02-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added local XR alignment from one headset pose at the midpoint of a table edge and a switch to show only the selected station.",
+  "why": "An operator can register a numbered station to a standard-height physical table while other participants continue working in the full fleet.",
+  "where": [
+    "Capture/README.md",
+    "Unreal/TheHumanTouch/Tools/join_human_touch.py",
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Source/HumanTouchXR/Private/HumanTouchXRTable.cpp"
+  ],
+  "details": "The Mac rejoined TheHumanTouch with --passthrough --table 0, selecting the original station (sticker 1). The local floor offset was corrected from +69.3 cm to zero. The eye-view filter excluded 850 primitives belonging to other stations and all 11 tabletop actors remained in the shared world. Physical edge alignment still needs a live headset pose and wearer check."
+}
