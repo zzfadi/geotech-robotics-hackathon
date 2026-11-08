@@ -216,6 +216,14 @@ The later supervised wrist and elbow-lift work is recorded in the exploration li
 The Dream application's hardware/stop contract still requires verification before
 policy-driven physical control.
 
+## Latest physical calibration handoff
+
+Read [the November 7 Opus handoff](docs/opus-handoff-2026-11-07.md) for the
+latest hardware state, camera IDs, local recordings, experimental calibration
+tools and exact remaining work. Camera-to-arm alignment and gripper calibration
+are incomplete; no yellow-cylinder pickup was attempted. Optional vision
+dependencies are pinned separately in `requirements-vision.txt`.
+
 ## Offline handoff verification
 
 The portable setup installed all 15 pinned packages in a fresh Python 3.12.15

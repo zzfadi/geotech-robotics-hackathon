@@ -1,5 +1,10 @@
 # Physical control and camera exploration — November 7, 2026
 
+For the latest 17:41 Pacific wrap-up, see
+[the Opus handoff](opus-handoff-2026-11-07.md) and
+`arm/evidence/2026-11-07-camera-arm-calibration.json`. This document retains
+the earlier chronological trials; their state readings are historical.
+
 This is the physical bench record for the supervised exploration starting around
 16:15 Pacific. It supplements the earlier gripper-only handoff. The operator
 confirmed secured arms, a clear workspace and readiness at the physical cutoff,

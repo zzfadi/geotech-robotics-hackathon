@@ -30,8 +30,11 @@ final class FrameSink: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                       "receipt_uptime_s": received,
                       "timing_note": "AVFoundation sample PTS; sensor exposure timing unvalidated"]
             saved.append(result)
-            if saved.count == 1, let metadata = try? JSONSerialization.data(withJSONObject: result) {
-                try? metadata.write(to: output.deletingLastPathComponent().appendingPathComponent("capture-ready.txt"), options: .atomic)
+            if let metadata = try? JSONSerialization.data(withJSONObject: result) {
+                try? metadata.write(to: output.deletingLastPathComponent().appendingPathComponent("capture-latest.json"), options: .atomic)
+                if saved.count == 1 {
+                    try? metadata.write(to: output.deletingLastPathComponent().appendingPathComponent("capture-ready.txt"), options: .atomic)
+                }
             }
             lastSaved = received
             if saved.count == frameLimit { done.signal() }
@@ -43,8 +46,11 @@ let app = NSApplication.shared
 app.setActivationPolicy(.accessory)
 let args = CommandLine.arguments
 let frameLimit = args.count > 2 ? Int(args[2]) ?? 0 : 1
-guard (1...300).contains(frameLimit) else { exit(2) }
+guard (1...900).contains(frameLimit) else { exit(2) }
 let selection = args.count > 3 ? args[3] : "all"
+let requestedSize = args.count > 4 ? args[4] : "640x480"
+guard ["640x480", "1920x1080"].contains(requestedSize) else { exit(2) }
+let dimensions = requestedSize.split(separator: "x").map { Int32($0)! }
 let base = URL(fileURLWithPath: args.count > 1 ? args[1] : NSTemporaryDirectory() + "maker-camera")
 try FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
 guard !FileManager.default.fileExists(atPath: base.appendingPathComponent("camera-report.json").path),
@@ -58,6 +64,7 @@ let devices = available.filter { selection == "all" || $0.uniqueID == selection 
 var report: [String: Any] = ["when": ISO8601DateFormatter().string(from: Date()),
                            "authorization_before": AVCaptureDevice.authorizationStatus(for: .video).rawValue,
                            "requested_frames": frameLimit, "selection": selection,
+                           "requested_size": requestedSize,
                            "usb_camera_count": available.filter { $0.localizedName == "KD-USB Cameras" }.count,
                            "available_devices": available.map { ["name": $0.localizedName, "unique_id": $0.uniqueID] }]
 if devices.isEmpty { report["error"] = "No matching camera connected" }
@@ -91,14 +98,14 @@ for device in devices {
         let queue = DispatchQueue(label: "maker.camera.frames")
         do {
             session.beginConfiguration()
-            session.sessionPreset = .vga640x480
+            session.sessionPreset = requestedSize == "640x480" ? .vga640x480 : .high
             let input = try AVCaptureDeviceInput(device: device)
             guard session.canAddInput(input) else { throw NSError(domain: "Camera", code: 1,
                 userInfo: [NSLocalizedDescriptionKey: "Cannot add camera input"]) }
             session.addInput(input)
             let format = device.formats.first(where: {
                 let size = CMVideoFormatDescriptionGetDimensions($0.formatDescription)
-                return size.width == 640 && size.height == 480 &&
+                return size.width == dimensions[0] && size.height == dimensions[1] &&
                     CMFormatDescriptionGetMediaSubType($0.formatDescription) == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange &&
                     $0.videoSupportedFrameRateRanges.contains { $0.minFrameRate <= 5 && $0.maxFrameRate >= 5 }
             })
@@ -108,9 +115,9 @@ for device in devices {
                 device.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 5)
                 device.activeVideoMaxFrameDuration = CMTime(value: 1, timescale: 5)
                 device.unlockForConfiguration()
-            } else if device.localizedName == "KD-USB Cameras" {
+            } else if device.localizedName == "KD-USB Cameras" || requestedSize != "640x480" {
                 throw NSError(domain: "Camera", code: 2,
-                    userInfo: [NSLocalizedDescriptionKey: "No 640x480 NV12 5fps format"])
+                    userInfo: [NSLocalizedDescriptionKey: "No \(requestedSize) NV12 5fps format"])
             }
             let output = AVCaptureVideoDataOutput()
             output.alwaysDiscardsLateVideoFrames = true
@@ -124,6 +131,12 @@ for device in devices {
             session.stopRunning()
             queue.sync {
                 entry["capture"] = completed ? sink.result : ["error": "Capture deadline exceeded", "frames_received": sink.count]
+                if completed, let width = sink.result["width"] as? Int,
+                   let height = sink.result["height"] as? Int,
+                   (width != Int(dimensions[0]) || height != Int(dimensions[1])) {
+                    entry["capture"] = ["error": "Captured dimensions differ from requested format",
+                                        "actual_width": width, "actual_height": height]
+                }
                 entry["saved_frames"] = sink.saved
             }
         } catch {

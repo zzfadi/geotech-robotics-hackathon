@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T17:42:58.365252-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Saved Opus handoff and incomplete camera-to-arm calibration evidence; last powered trial returned and acknowledged release.",
+  "why": "Resume physical alignment and gripper calibration from measured state without mistaking partial tracking for a pickup-ready transform.",
+  "where": [
+    "arm/docs/opus-handoff-2026-11-07.md",
+    "arm/evidence/2026-11-07-camera-arm-calibration.json",
+    "arm/tools/calibration_sweep.py",
+    "arm/tools/fit_camera_arm.py"
+  ],
+  "details": "HD overview and timestamped frame tracking added. Two powered collections ended on visual tracking loss and returned; two later trials rejected before enable. Final proposed run did not execute because user requested wrap-up. All 14 motors replied fresh and fault-free; nominal-limit discrepancies remain. 140 base and 4 calibration tests pass. No grasp attempted; solver remains experimental."
+}

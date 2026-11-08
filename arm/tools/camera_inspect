@@ -2,17 +2,19 @@
 # Build a local macOS camera-permission app and save timestamped snapshots.
 set -euo pipefail
 if [[ "${1:---help}" == --help || "${1:---help}" == -h ]]; then
-  echo 'Usage: bash arm/tools/camera_inspect NEW_OUTPUT_DIRECTORY [FRAMES_1_TO_300] [CAMERA_ID_OR_all]'
+  echo 'Usage: bash arm/tools/camera_inspect NEW_OUTPUT_DIRECTORY [FRAMES_1_TO_900] [CAMERA_ID_OR_all] [640x480|1920x1080]'
   echo 'Captures three KD-USB cameras and the MacBook camera locally; no network or arm access.'
   exit 0
 fi
-if [[ $# -lt 1 || $# -gt 3 || "$(uname -s)" != Darwin ]]; then
+if [[ $# -lt 1 || $# -gt 4 || "$(uname -s)" != Darwin ]]; then
   echo 'Requires macOS and a new output directory.' >&2
   exit 2
 fi
+size="${4:-640x480}"
+case "$size" in 640x480|1920x1080) ;; *) echo 'Unsupported capture size.' >&2; exit 2 ;; esac
 frames="${2:-1}"
-if [[ ! "$frames" =~ ^[1-9][0-9]{0,2}$ ]] || (( frames > 300 )); then
-  echo 'Frame count must be between 1 and 300.' >&2
+if [[ ! "$frames" =~ ^[1-9][0-9]{0,2}$ ]] || (( frames > 900 )); then
+  echo 'Frame count must be between 1 and 900.' >&2
   exit 2
 fi
 tool_dir="$(cd "$(dirname "$0")" && pwd)"
@@ -40,7 +42,7 @@ if [[ ! -x "$app_dir/Contents/MacOS/MakerArmCamera" || "$tool_dir/camera_inspect
   xcrun swiftc "$tool_dir/camera_inspect.swift" -o "$app_dir/Contents/MacOS/MakerArmCamera"
 fi
 codesign --force --sign - "$app_dir"
-open -W -n "$app_dir" --args "$output_dir" "$frames" "${3:-all}"
+open -W -n "$app_dir" --args "$output_dir" "$frames" "${3:-all}" "$size"
 if [[ ! -f "$output_dir/camera-report.json" ]]; then
   echo 'No camera report produced; inspect camera permission or app startup.' >&2
   exit 1

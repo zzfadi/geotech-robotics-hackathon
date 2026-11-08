@@ -3,7 +3,7 @@ set -euo pipefail
 tool_dir="$(cd "$(dirname "$0")" && pwd)"
 
 usage() {
-  echo "Usage: bash arm/tools/arm {scan|watch|diagnose|claw_probe|wrist_probe|lift_probe|test} [arguments]"
+  echo "Usage: bash arm/tools/arm {scan|watch|diagnose|claw_probe|wrist_probe|lift_probe|calibration_sweep|test} [arguments]"
   echo "No command runs by default. --help and test do not access hardware."
 }
 
@@ -15,6 +15,7 @@ case "${1:---help}" in
   claw_probe) script=claw_probe.py ;;
   wrist_probe) script=wrist_probe.py ;;
   lift_probe) script=lift_probe.py ;;
+  calibration_sweep) script=calibration_sweep.py ;;
   test) script= ;;
   *) usage >&2; exit 2 ;;
 esac
