@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T16:20:27-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Moved T00 and ten test rooms to a three-column open-top grid; added global daylight and ambient fill.",
+  "why": "User requested compact cubic test rooms with open ceilings and brighter scene lighting. Robot/table-local transforms remain unchanged.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_grid.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_grid_scene.py"
+  ],
+  "details": "Mac guarded scene edits completed. Luna2 independently reported every grid floor position and ambient intensity 2/daylight 2500 lux. Fifteen grid/layout tests pass. Fleet web batching and random task/layout controls remain in progress; map checkpoint tracked separately."
+}
