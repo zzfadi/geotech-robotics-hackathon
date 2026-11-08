@@ -1,0 +1,444 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/zzfadi/geotech-robotics-hackathon/control_center/telemetry.schema.json",
+  "title": "GeoTech robot telemetry event (geotech.telemetry/1)",
+  "type": "object",
+  "required": [
+    "schema",
+    "kind",
+    "ts",
+    "seq",
+    "session",
+    "source"
+  ],
+  "properties": {
+    "schema": {
+      "const": "geotech.telemetry/1"
+    },
+    "kind": {
+      "enum": [
+        "session",
+        "task",
+        "network",
+        "mode",
+        "chunk",
+        "command",
+        "decision",
+        "camera",
+        "frame",
+        "contact",
+        "state"
+      ]
+    },
+    "ts": {
+      "type": "number"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "session": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "component",
+        "host"
+      ],
+      "properties": {
+        "component": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "title": "session",
+      "properties": {
+        "kind": {
+          "const": "session"
+        },
+        "phase": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "start",
+            "end"
+          ]
+        },
+        "robot": {
+          "type": [
+            "string"
+          ]
+        },
+        "purpose": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "live",
+            "sim",
+            "demo",
+            "replay"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "phase",
+        "robot",
+        "purpose"
+      ]
+    },
+    {
+      "title": "task",
+      "properties": {
+        "kind": {
+          "const": "task"
+        },
+        "phase": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "start",
+            "step",
+            "end"
+          ]
+        },
+        "name": {
+          "type": [
+            "string"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "success",
+            "failed",
+            "stopped"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "phase",
+        "name"
+      ]
+    },
+    {
+      "title": "network",
+      "properties": {
+        "kind": {
+          "const": "network"
+        },
+        "phase": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "sent",
+            "received",
+            "late",
+            "failed"
+          ]
+        },
+        "request_id": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "phase",
+        "request_id"
+      ]
+    },
+    {
+      "title": "mode",
+      "properties": {
+        "kind": {
+          "const": "mode"
+        },
+        "mode": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "async",
+            "sync"
+          ]
+        },
+        "median_ms": {
+          "type": [
+            "integer",
+            "number"
+          ]
+        },
+        "threshold_ms": {
+          "type": [
+            "integer",
+            "number"
+          ]
+        },
+        "previous": {
+          "enum": [
+            "async",
+            "sync"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "mode",
+        "median_ms",
+        "threshold_ms"
+      ]
+    },
+    {
+      "title": "chunk",
+      "properties": {
+        "kind": {
+          "const": "chunk"
+        },
+        "request_id": {
+          "type": [
+            "string"
+          ]
+        },
+        "actions": {
+          "type": [
+            "integer"
+          ]
+        },
+        "arrived_at_action": {
+          "type": [
+            "integer"
+          ]
+        },
+        "blended": {
+          "type": [
+            "integer"
+          ]
+        },
+        "skipped": {
+          "type": [
+            "integer"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "request_id",
+        "actions",
+        "arrived_at_action",
+        "blended",
+        "skipped"
+      ]
+    },
+    {
+      "title": "command",
+      "properties": {
+        "kind": {
+          "const": "command"
+        },
+        "requested_m_s": {
+          "type": [
+            "integer",
+            "number"
+          ]
+        },
+        "applied_m_s": {
+          "type": [
+            "integer",
+            "number"
+          ]
+        },
+        "limit_m_s": {
+          "type": [
+            "integer",
+            "number"
+          ]
+        },
+        "clamped": {
+          "type": [
+            "boolean"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "requested_m_s",
+        "applied_m_s",
+        "limit_m_s",
+        "clamped"
+      ]
+    },
+    {
+      "title": "decision",
+      "properties": {
+        "kind": {
+          "const": "decision"
+        },
+        "by": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "dream",
+            "edge",
+            "operator",
+            "assist",
+            "loop",
+            "safety",
+            "controller"
+          ]
+        },
+        "what": {
+          "type": [
+            "string"
+          ]
+        },
+        "why": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "by",
+        "what",
+        "why"
+      ]
+    },
+    {
+      "title": "camera",
+      "properties": {
+        "kind": {
+          "const": "camera"
+        },
+        "role": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "head",
+            "wrist_l",
+            "wrist_r"
+          ]
+        },
+        "ok": {
+          "type": [
+            "boolean"
+          ]
+        },
+        "checks": {
+          "type": [
+            "object"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "role",
+        "ok",
+        "checks"
+      ]
+    },
+    {
+      "title": "frame",
+      "properties": {
+        "kind": {
+          "const": "frame"
+        },
+        "role": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "head",
+            "wrist_l",
+            "wrist_r"
+          ]
+        },
+        "path": {
+          "type": [
+            "string"
+          ]
+        },
+        "width": {
+          "type": [
+            "integer"
+          ]
+        },
+        "height": {
+          "type": [
+            "integer"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "role",
+        "path",
+        "width",
+        "height"
+      ]
+    },
+    {
+      "title": "contact",
+      "properties": {
+        "kind": {
+          "const": "contact"
+        },
+        "what": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "grasp",
+            "release",
+            "drop",
+            "collision"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "what"
+      ]
+    },
+    {
+      "title": "state",
+      "properties": {
+        "kind": {
+          "const": "state"
+        },
+        "q": {
+          "type": [
+            "array"
+          ]
+        },
+        "grip": {
+          "type": [
+            "integer",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "q",
+        "grip"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T21:10:00-08:00",
+  "workstream": "dream1",
+  "status": "in-progress",
+  "what": "Control center: one read-only page for the arm, live and history, from one telemetry schema",
+  "why": "Shows what the arm is doing, whether it is healthy and why it decided each thing: round trip against 850 ms, async or sync mode, speed against the 0.85 m/s clamp, the 320x176 frame the model saw, camera checks and every decision.",
+  "where": ["control_center/"],
+  "details": "Runs with python3 -m control_center serve --demo. Tested against a simulated stream only; no writer in the sim loop or arm server yet."
+}
