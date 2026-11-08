@@ -363,7 +363,10 @@ class TableRun:
             if self.v.get('assist', {}).get('hold_vertical') and self.grip_latch is not None and not self.args.dry_run:
                 from pregrasp import vertical_only
                 floor = self.hold_peak_z if self.v['assist'].get('hold_monotonic') else self.latch_z
-                action, vertical = vertical_only(action, packet['state'], latch_side, floor_z=floor)
+                assist = self.v['assist']
+                action, vertical = vertical_only(action, packet['state'], latch_side, floor_z=floor,
+                                                 max_step_cm=float(assist.get('lift_step_cm', .25)),
+                                                 back_per_up=float(assist.get('lift_back_per_up', 0.)))
                 self.log('holding: applied only vertical motion (dz %+.1f cm over %d rows)' %
                          ((vertical['dz_cm'] or [0])[-1], vertical['rows']))
             if self.v.get('assist', {}).get('grip_latch') and self.grip_latch is not None and not self.args.dry_run:
@@ -376,9 +379,14 @@ class TableRun:
             if execution.get('truncated'):
                 self.log('Executing feasible policy prefix %s/%s rows; replan from fresh feedback' %
                          (execution.get('executed_rows'), execution.get('requested_rows')))
+            rows_to_play = None if self.args.dry_run else execution.get('executed_rows', self.v['action_rows'])
+            if (reaching or vertical) and not self.args.dry_run:
+                # The planned reach and split held lifts are complete trajectories; the
+                # policy horizon (action_rows) must not truncate them.
+                rows_to_play = len(action[latch_key])
             report = self.dir/('action-%02d.json' % (cycle+1))
             write_json(report, {'state': packet['state'], 'action': action, 'raw_action': raw if ik else None,
-                                'ik_report': ik, 'table_guard': guard, 'vertical_hold': vertical, 'grip_latch': self.grip_latch, 'motion_side': active_side, 'execution_rows': None if self.args.dry_run else execution.get('executed_rows', self.v['action_rows']),
+                                'ik_report': ik, 'table_guard': guard, 'vertical_hold': vertical, 'grip_latch': self.grip_latch, 'motion_side': active_side, 'execution_rows': rows_to_play,
                                 'checkpoint': None if self.args.dry_run else self.v['checkpoint'],
                                 'reach': reach,
                                 'controller_source': 'dry-run hold' if self.args.dry_run else
@@ -411,7 +419,7 @@ class TableRun:
                         # Command 1.9 cm inside the measured contact width, as in the verified
                         # zero-API mechanical cup hold (5.5 cm on a 7.4 cm cup); the runtime contact
                         # limiter keeps the pads at the surface. Deeper commands cut the thin wall.
-                        self.grip_latch = max(observed-.019, 0.)/JAW_MAX_M
+                        self.grip_latch = max(observed-float(self.v['assist'].get('grip_squeeze_m', .019)), 0.)/JAW_MAX_M
                         self.log('jaws stalled on an object at %.1f cm (commanded %.1f cm); holding %.1f cm' %
                                  (observed*100, commanded*JAW_MAX_M*100, self.grip_latch*JAW_MAX_M*100))
             if self.latch_z is not None and playback.get('q_'+latch_side):

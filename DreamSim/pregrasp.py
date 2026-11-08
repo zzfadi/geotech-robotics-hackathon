@@ -216,7 +216,8 @@ def apply_live_layout(config, world_cups):
 
 
 def table_clearance(q, gap_m, side):
-    frames = mounted_frames(list(q), gap_m, yaw=MOUNT_YAW)
+    # Dream may request slightly more than fully open; the runtime clamps it, so do the same.
+    frames = mounted_frames(list(q), min(max(float(gap_m), 0.), JAW_MAX_M), yaw=MOUNT_YAW)
     return check_gripper_table(frames, BASES[side], (0, 0, 0), flat=True, tolerance_cm=1e9)
 
 
@@ -231,7 +232,7 @@ def guard_table(action, state, side='left', margin_cm=.4, max_raise_cm=6.):
         q = np.clip(np.array(row[:6], dtype=float), fk.low+1e-7, fk.high-1e-7)
         gap = float(row[6])*JAW_MAX_M
         clearance = table_clearance(q, gap, side)
-        if clearance >= margin_cm:
+        if i == 0 or clearance >= margin_cm:  # row 0 is the measured pose; never move it
             previous = q.tolist()
             continue
         f = fk.pose(q)
@@ -258,7 +259,7 @@ def tool_height(q):
     return float(fk.pose(np.clip(np.array(q, dtype=float), fk.low+1e-7, fk.high-1e-7))[2, 3])
 
 
-def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25):
+def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25, back_per_up=0.):
     """While an object is held: keep the measured tool x/y and orientation, apply only
     Dream's vertical motion, never below floor_z (the height where the jaws closed)
     minus allow_down_cm; without floor_z the current height is the floor."""
@@ -266,12 +267,20 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
     fk = _fk()
     start = fk.pose(np.clip(np.array(state['q_'+side], dtype=float), fk.low+1e-7, fk.high-1e-7))
     floor = (float(start[2, 3]) if floor_z is None else floor_z)-allow_down_cm/100
+    # back_per_up > 0 retreats along the tool's horizontal approach direction while rising,
+    # like the verified mechanical lift (12 cm up, 8 cm back at a 45-degree tool).
+    approach = start[:3, :3]@np.array([0, 0, -1.])
+    horizontal = np.array([approach[0], approach[1], 0.])
+    horizontal = horizontal/np.linalg.norm(horizontal) if np.linalg.norm(horizontal) > 1e-6 else horizontal
+
+    def point(z):
+        return np.array([start[0, 3], start[1, 3], z])-horizontal*back_per_up*max(z-start[2, 3], 0.)
     previous = list(state['q_'+side])
     rows, heights = [], []
     for row in action[key]:
         q = np.clip(np.array(row[:6], dtype=float), fk.low+1e-7, fk.high-1e-7)
         z = max(float(fk.pose(q)[2, 3]), floor)
-        target = np.array([start[0, 3], start[1, 3], z])
+        target = point(z)
         try:
             solved = solve_pose(target, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
         except ValueError:
@@ -281,7 +290,7 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         last_z = start[2, 3] if not heights else start[2, 3]+heights[-1]/100
         steps = max(1, int(np.ceil(abs(z-last_z)*100/max_step_cm)))
         for k in range(1, steps):
-            mid = np.array([start[0, 3], start[1, 3], last_z+(z-last_z)*k/steps])
+            mid = point(last_z+(z-last_z)*k/steps)
             try:
                 previous = solve_pose(mid, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
             except ValueError:

@@ -39,6 +39,12 @@ class Pregrasp(unittest.TestCase):
         self.assertEqual([r['row'] for r in report['raised_rows']], [1])
         self.assertGreaterEqual(pg.table_clearance(out['q_l_chunk'][1][:6], .1, 'left'), .3)
 
+    def test_guard_accepts_dream_grip_slightly_past_fully_open(self):
+        state = {**pg.pregrasp_state(table()), 'q_right': [0]*6, 'gap_right_m': .1}
+        q = state['q_left']
+        out, report = pg.guard_table({'q_l_chunk': [q+[1.0035]], 'q_r_chunk': [[0]*6+[1.0035]]}, state, 'left')
+        self.assertEqual(report['raised_rows'], [])
+
     def test_vertical_only_keeps_xy_and_orientation(self):
         state = {**pg.pregrasp_state(table()), 'q_right': [0]*6, 'gap_right_m': .1}
         q = state['q_left']

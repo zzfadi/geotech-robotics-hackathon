@@ -54,3 +54,31 @@ the cup back down. Fixed to a fixed floor; batch 4 adds an opt-in monotonic hold
 Reset now places every table's 4–5 cups at random positions between the two arms (x 48–62 cm,
 y ±33.5 cm, ≥13 cm apart; `Cup` is always the one nearest the left arm). The default seed still reproduces
 Codex's arranged centred layout (`cup_scene_layout.json`). Verified live after reset `1369b4f5cb684a3b8678211c10f3f169`.
+
+## Batch 4 — monotonic hold, random central layout (`20261107-212025-557bbc`)
+
+0/9. Most tables ended on `SVD did not converge`, raised inside the Dream client's own local IK during
+`get_action` (now retried). Gap history showed the latch letting the jaws keep closing toward Dream's 3.5 cm
+command after stalling at 7.3 cm: they cut through the thin cup wall (gap 7.3 → 4.3 → 1.2 cm).
+
+## Batch 5 — Dream language subgoals, random 15–30 cm heights
+
+0/9 (max 1.7 cm). With an explicit "lift the cup straight up" subgoal Dream lifted the hand +3 to +5.6 cm per
+cycle, but the cup stayed down: a 2 mm squeeze carries nothing. Codex's verified mechanical hold commands
+1.9 cm inside the contact width (5.5 cm on a 7.4 cm cup) and lifts at about 3 cm/s; both adopted.
+
+## Batches 6–8 — every run from idle, cups reset, planned reach
+
+- Batch 6: the reach from idle ran on all nine tables, then each stopped on a guard bug (Dream asked for a jaw
+  opening of 1.003 × max; the guard passed it to the model unclamped). Fixed and tested.
+- Batch 7 (stopped): the runtime played only the first 12 rows (the policy horizon) of the 55-row reach, so
+  the hand stopped 11 cm short of the cup. The same cap truncated split held lifts. Fixed: the reach and held
+  lifts report their full row count.
+- Batch 8 (`2f57dfe817d2492580d81d5e9b253ebd`): reach reaches the cup; jaws stall at 7.4 cm and hold the
+  verified 5.5 cm command. Dream lifts the hand up to 15 cm (T7: z 7.5 → 22.5 cm), the cup rises ~2 cm with it
+  and then slides out of the pads between 10 and 12 cm hand height and lands upright. Best rise 2.1 cm.
+
+## Batch 9 — grip strategy experiment (3 tables each)
+
+Codex's mechanical lift path (back 0.67 cm per cm up along the tool), slower straight lift (≈1.5 cm/s), and a
+firmer 3 cm squeeze. Heights random 15–30 cm.
