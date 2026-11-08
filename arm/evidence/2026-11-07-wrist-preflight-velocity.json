@@ -1,0 +1,334 @@
+{
+  "when": "2026-11-07T16:48:03.226662-08:00",
+  "outcome": "8-degree sweep rejected before enable",
+  "motor_enabled": false,
+  "operator_clearance": "confirmed in chat; fresh overview and wrist images inspected",
+  "motion_attempt": {
+    "when": "2026-11-08T00:45:36.387660+00:00",
+    "arm": "right",
+    "serial": "0027002E4146570520313238",
+    "motion_requested": true,
+    "motion_completed": false,
+    "motor_ids": [
+      6
+    ],
+    "stage": "preflight",
+    "samples": [],
+    "preflight_samples": [
+      {
+        "position_deg": 1.307770593866714,
+        "velocity_deg_s": -4.15551807457539,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -3.232069613558682,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 3.232069613558682,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 4.15551807457539,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.307770593866714,
+        "velocity_deg_s": -2.3086211525419738,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 2.3086211525419738,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 0.46172423050855765,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.307770593866714,
+        "velocity_deg_s": -1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "position_deg": 1.307770593866714,
+        "velocity_deg_s": -5.078966535592098,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      }
+    ],
+    "operator_cutoff": true,
+    "watchdog_verified": false,
+    "kp": 30,
+    "kd": 2.0,
+    "following_error_cap_deg": 0.5,
+    "command_speed_deg_s": 3.0000000000000004,
+    "step_deg": 8.0,
+    "effort_guard_nm": 0.4,
+    "measured_speed_guard_deg_s": 15.0,
+    "error": "RuntimeError: Measured speed -5.079 exceeded 5 deg/s"
+  },
+  "encoder_window_diagnostic": {
+    "when": "2026-11-08T00:47:07.939531+00:00",
+    "arm": "right",
+    "serial": "0027002E4146570520313238",
+    "motion_requested": false,
+    "motion_completed": false,
+    "motor_ids": [
+      6
+    ],
+    "stage": "preflight",
+    "samples": [],
+    "preflight_samples": [
+      {
+        "monotonic_s": 1038138.583593375,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 2.3086211525419738,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038138.638117208,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038138.692904958,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -0.46172423050855765,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038138.749900875,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -4.15551807457539,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038138.802420208,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -2.3086211525419738,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038138.857041875,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 2.3086211525419738,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038138.912158916,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -3.232069613558682,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 34.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038138.968407875,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -4.15551807457539,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.023328166,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -0.46172423050855765,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.076761333,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.133316958,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 0.46172423050855765,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.187750833,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.246137,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 0.46172423050855765,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.299207083,
+        "position_deg": 1.307770593866714,
+        "velocity_deg_s": -5.078966535592098,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.356272791,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -3.232069613558682,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.411090666,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.463661208,
+        "position_deg": 1.307770593866714,
+        "velocity_deg_s": -1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.51788,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 1.3851726915252658,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.573373375,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -0.46172423050855765,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.630605666,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": -2.3086211525419738,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      },
+      {
+        "monotonic_s": 1038139.682724833,
+        "position_deg": 1.3297499315787347,
+        "velocity_deg_s": 2.3086211525419738,
+        "torque_nm": -0.0034188034188034067,
+        "temperature_c": 33.0,
+        "mode": 0
+      }
+    ],
+    "operator_cutoff": false,
+    "watchdog_verified": false,
+    "kp": 30,
+    "kd": 2.0,
+    "following_error_cap_deg": 0.5,
+    "command_speed_deg_s": 3.0000000000000004,
+    "step_deg": 8.0,
+    "effort_guard_nm": 0.4,
+    "measured_speed_guard_deg_s": 15.0,
+    "stationary_check": "encoder_window",
+    "error": "RuntimeError: Velocity envelope or median incompatible with stationary window"
+  },
+  "stationary_inspection": [
+    {
+      "arm": "right",
+      "samples": 50,
+      "position_span_deg": 0.021979337712020763,
+      "net_position_deg": 0.0,
+      "reported_velocity_min_deg_s": -5.078966535592098,
+      "reported_velocity_max_deg_s": 5.078966535592098,
+      "reported_velocity_median_deg_s": 0.0,
+      "all_fresh": true,
+      "all_fault_words_zero": true
+    },
+    {
+      "arm": "left",
+      "samples": 50,
+      "position_span_deg": 0.02197933771191929,
+      "net_position_deg": 0.02197933771191929,
+      "reported_velocity_min_deg_s": -4.15551807457539,
+      "reported_velocity_max_deg_s": 5.078966535592098,
+      "reported_velocity_median_deg_s": -0.46172423050855765,
+      "all_fresh": true,
+      "all_fault_words_zero": true
+    }
+  ],
+  "source_hashes": {
+    "arm/local/clearance-2026-11-07/right-8deg.json": "b04de3078d6323d8af3add8ea73984253ece98f8c2892436e2cbea01f6af97a5",
+    "arm/local/clearance-2026-11-07/velocity-inspection.json": "c69a4f0db4e629d6d52cadb9ab3940bbde7ddc55172030cffe2db2b235bf0f5f",
+    "arm/local/clearance-2026-11-07/encoder-window-preflight.json": "fcd56ba272910c9a10a311dc3e7e0c444c6b0f63a9bfdb3d3f6aa690dd8df9b4",
+    "arm/local/clearance-2026-11-07/right-sweep-recording/camera-report.json": "2555e725069f8c5791a37ec0f5f6ee2d325214c4e76f77301e2982faabfb22cb"
+  },
+  "sdk_quantization": {
+    "position_increment_deg": 0.021979337712045313,
+    "velocity_increment_deg_s": 0.9234484610167115,
+    "interpretation": "Quantization is derived from pinned RS00 protocol ranges. It does not explain the full reported velocity variation or establish its cause."
+  },
+  "decision": "Keep motion guards unchanged. Experimental encoder-window mode is read-only and cannot be combined with --move.",
+  "recording": {
+    "saved_frames": 100,
+    "camera_id": "0x31130002c7f4a60",
+    "scope": "Local overview frames during a preflight-rejected attempt, not evidence of powered motion"
+  }
+}

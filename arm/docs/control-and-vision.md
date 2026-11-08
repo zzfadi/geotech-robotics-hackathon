@@ -6,6 +6,47 @@ confirmed secured arms, a clear workspace and readiness at the physical cutoff,
 then authorized further staged control. No Dream requests or Unreal changes were
 made in this exploration.
 
+### Reconnection verification — 16:42 Pacific
+
+Both original adapter serials returned after the operator reconnected the USB
+cables. Five sampled rounds from each arm yielded fresh feedback on all 14 motors
+and zero reported fault words. The same nominal joint-limit discrepancies remain.
+All three robot UVC cameras and the laptop camera returned fresh 640×480 images
+through the packaged native helper. Robot camera IDs reverted to `0x311…` after
+the USB topology change. A fresh overview confirmed the tabletop layout; the
+right wrist view showed a cable crossing immediately in front of the jaws, so
+clearance was requested before the larger sweep. No motor was enabled during
+this reconnect inspection. See `arm/evidence/2026-11-07-usb-reconnection.json`.
+
+### Cleared workspace, velocity-preflight rejection — 16:45–16:48 Pacific
+
+The operator cleared the cable; new wrist and overview images were inspected.
+The planned 8° right-wrist sweep at 3°/s was then rejected before enable: the tenth
+preflight sample reported −5.079°/s, above the unchanged 5°/s stationary limit.
+Encoder positions spanned only 0.02198° during that preflight. No motor was enabled.
+The overview helper retained 100 frames locally; these are not a motion-success
+recording. USB devices and camera capture remained available.
+
+A subsequent read-only sample of each wrist collected 50 fresh readings over
+about 5.66 seconds. Each encoder spanned one 0.02198° position increment. Right
+reported velocity ranged ±5.079°/s; left ranged −4.156 to +5.079°/s. Fault words
+remained zero. The pinned SDK decodes RS00 position at approximately 0.02198° per
+count and velocity at approximately 0.92345°/s per count. Quantization alone does
+not establish the cause of the full observed velocity variation.
+
+An experimental `--encoder-stationary` diagnostic checks a continuous second of
+fresh samples, ≤0.1° encoder span, ≤0.05°/s net encoder drift, reported velocity
+within ±15°/s and median within ±1°/s. Its live read-only trial also rejected:
+over 1.10 seconds, encoder net movement was zero but reported velocity median
+was −1.385°/s. These experimental criteria are not calibrated motion permissions.
+The diagnostic is **enforced read-only** and cannot be combined with `--move`;
+the powered test's existing preflight and motion guards remain unchanged. No
+zero, limit, gain or firmware change was used to force an accepted test.
+
+See `arm/evidence/2026-11-07-wrist-preflight-velocity.json` for the samples and
+source hashes. The next dependency is resolving feedback consistency and the
+motor-reference questions, not another automatic powered retry.
+
 ## Verified hardware and software
 
 - Both Maker Arm adapters are accessible by exact serial: left `2077378045465008`,
@@ -195,6 +236,7 @@ contract. Physical Dream integration needs all of the following demonstrated:
 - A hardware execution boundary that enforces turn grants, rejects stale queued
   actions and records actual outcomes.
 
-Next motion work is staged wrist verification with the cameras restored, then
+The cameras have been restored and cable clearance confirmed. Next motion work
+depends on resolving the wrist feedback discrepancy before staged verification, then
 operator/manufacturer-guided reference validation before any lifting-joint or
 whole-arm trajectory. No Dream API calls are needed to resolve these dependencies.

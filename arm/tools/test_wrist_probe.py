@@ -131,3 +131,44 @@ def test_existing_evidence_refuses_before_usb(tmp_path,monkeypatch):
     with pytest.raises(SystemExit) as e: w.main()
     assert e.value.code == 2
     assert p.read_text() == 'previous run'
+
+
+def stationary_samples():
+    return [{'monotonic_s':i*.051,'position_deg':1.3+(i%2)*.02198,
+             'velocity_deg_s':(-1 if i%2 else 1)*5.079} for i in range(21)]
+
+
+def test_encoder_window_accepts_quantized_stationary_evidence():
+    rows=stationary_samples()
+    rows[-1]['velocity_deg_s']=0.
+    evidence=w.check_stationary_window(rows)
+    assert evidence['duration_s'] >= 1.
+    assert evidence['position_span_deg'] < .1
+
+
+@pytest.mark.parametrize('case',['short','gap','reverse','motion','drift','bias','fast','nonfinite'])
+def test_encoder_window_rejects_untrusted_or_moving_samples(case):
+    rows=stationary_samples();rows[-1]['velocity_deg_s']=0.
+    if case=='short': rows=rows[:10]
+    elif case=='gap': rows[-1]['monotonic_s']+=.5
+    elif case=='reverse': rows[5]['monotonic_s']=rows[4]['monotonic_s']
+    elif case=='motion': rows[10]['position_deg']+=.2
+    elif case=='drift': rows[-1]['position_deg']+=.09
+    elif case=='bias':
+        for row in rows: row['velocity_deg_s']=4.
+    elif case=='fast': rows[10]['velocity_deg_s']=16.
+    elif case=='nonfinite': rows[10]['position_deg']=None
+    with pytest.raises(RuntimeError): w.check_stationary_window(rows)
+
+
+def test_encoder_mode_does_not_relax_motion_velocity_guard():
+    a=arm();a.state=ArmState.ENABLED
+    a.motors[0].feedback.velocity=math.radians(16)
+    with pytest.raises(RuntimeError): w.validate(a,0.,True,encoder_stationary=True)
+
+
+def test_experimental_encoder_window_cannot_enable():
+    a=arm()
+    with pytest.raises(ValueError,match='read-only'):
+        w.run(a,{},move=True,operator_cutoff=True,encoder_stationary=True)
+    assert a.calls == []

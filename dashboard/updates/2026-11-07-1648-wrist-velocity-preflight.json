@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T16:48:03.227744-08:00",
+  "workstream": "arm-station",
+  "status": "blocked",
+  "what": "After operator cable clearance, the planned 8-degree wrist sweep was rejected before enable by inconsistent velocity feedback.",
+  "why": "Retain truthful hardware evidence and avoid treating near-constant encoder readings as proof that a conflicting velocity signal is harmless.",
+  "where": [
+    "arm/evidence/2026-11-07-wrist-preflight-velocity.json",
+    "arm/tools/wrist_probe.py"
+  ],
+  "details": "At 16:45 Pacific, one preflight sample reported -5.079 deg/s while position spanned one 0.02198-degree count. Subsequent 50-sample inspection on each arm found near-constant encoder positions and varying reported velocity. A 1.10-second experimental encoder-window diagnostic also failed velocity consistency. No motor enabled. New diagnostic is enforced read-only; powered-test guards unchanged. 100 overview frames retained locally."
+}

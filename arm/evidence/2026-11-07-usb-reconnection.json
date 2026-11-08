@@ -1,0 +1,422 @@
+{
+  "when": "2026-11-07T16:43:24.000231-08:00",
+  "motion_requested": false,
+  "missing_expected_adapters": [],
+  "arms": [
+    {
+      "name": "right",
+      "serial": "0027002E4146570520313238",
+      "all_samples_fresh": true,
+      "all_fault_words_zero": true,
+      "last_sample": {
+        "received_at": "2026-11-08T00:42:39.511212+00:00",
+        "joints": [
+          {
+            "motor_id": 1,
+            "joint": "shoulder_pan",
+            "fresh": true,
+            "feedback_age_s": 0.011778709013015032,
+            "sequence": 6,
+            "raw_motor_deg": 5.615720785427576,
+            "sdk_joint_deg": 5.615720785427576,
+            "limits_deg": [
+              -158.2,
+              156.1
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": 0.46172423050855765,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 2,
+            "joint": "shoulder_lift",
+            "fresh": true,
+            "feedback_age_s": 0.010166957974433899,
+            "sequence": 6,
+            "raw_motor_deg": 0.010989668856061292,
+            "sdk_joint_deg": 0.010989668856061292,
+            "limits_deg": [
+              -175.3,
+              -3.2
+            ],
+            "within_nominal_limits": false,
+            "velocity_deg_s": -6.771955380789193,
+            "torque_nm": -0.004151404151404137,
+            "temperature_c": 32.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 3,
+            "joint": "elbow_flex",
+            "fresh": true,
+            "feedback_age_s": 0.006952499970793724,
+            "sequence": 6,
+            "raw_motor_deg": 10.802844485470288,
+            "sdk_joint_deg": 10.802844485470288,
+            "limits_deg": [
+              2.8,
+              236.10000000000002
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": -5.540690766100249,
+            "torque_nm": -0.004151404151404137,
+            "temperature_c": 30.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 4,
+            "joint": "wrist_flex",
+            "fresh": true,
+            "feedback_age_s": 0.005384500022046268,
+            "sequence": 6,
+            "raw_motor_deg": -0.9780805281860964,
+            "sdk_joint_deg": -0.9780805281860964,
+            "limits_deg": [
+              -65.2,
+              104.0
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": 2.3086211525419738,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 5,
+            "joint": "wrist_yaw",
+            "fresh": true,
+            "feedback_age_s": 0.0036144169280305505,
+            "sequence": 6,
+            "raw_motor_deg": 10.209402367245014,
+            "sdk_joint_deg": 10.209402367245014,
+            "limits_deg": [
+              -97.6,
+              78.0
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": 2.3086211525419738,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 6,
+            "joint": "wrist_roll",
+            "fresh": true,
+            "feedback_age_s": 0.0019295000238344073,
+            "sequence": 6,
+            "raw_motor_deg": 1.3297499315787347,
+            "sdk_joint_deg": 1.3297499315787347,
+            "limits_deg": [
+              -153.2,
+              152.0
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": -0.46172423050855765,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 7,
+            "joint": "gripper",
+            "fresh": true,
+            "feedback_age_s": 0.00034991593565791845,
+            "sequence": 6,
+            "raw_motor_deg": 256.2241293781683,
+            "sdk_joint_deg": -103.77587062183169,
+            "limits_deg": [
+              -96.00000000000001,
+              -2.5
+            ],
+            "within_nominal_limits": false,
+            "velocity_deg_s": -1.3851726915252658,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 32.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "left",
+      "serial": "2077378045465008",
+      "all_samples_fresh": true,
+      "all_fault_words_zero": true,
+      "last_sample": {
+        "received_at": "2026-11-08T00:42:41.785776+00:00",
+        "joints": [
+          {
+            "motor_id": 1,
+            "joint": "shoulder_pan",
+            "fresh": true,
+            "feedback_age_s": 0.009097833069972694,
+            "sequence": 6,
+            "raw_motor_deg": -2.077047413788358,
+            "sdk_joint_deg": -2.077047413788358,
+            "limits_deg": [
+              -158.2,
+              156.1
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": 2.3086211525419738,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 2,
+            "joint": "shoulder_lift",
+            "fresh": true,
+            "feedback_age_s": 0.007737708976492286,
+            "sequence": 6,
+            "raw_motor_deg": 0.16484503284030874,
+            "sdk_joint_deg": 0.16484503284030874,
+            "limits_deg": [
+              -175.3,
+              -3.2
+            ],
+            "within_nominal_limits": false,
+            "velocity_deg_s": -6.771955380789193,
+            "torque_nm": -0.004151404151404137,
+            "temperature_c": 32.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 3,
+            "joint": "elbow_flex",
+            "fresh": true,
+            "feedback_age_s": 0.00618075008969754,
+            "sequence": 6,
+            "raw_motor_deg": -0.38463840996082216,
+            "sdk_joint_deg": -0.38463840996082216,
+            "limits_deg": [
+              2.8,
+              236.10000000000002
+            ],
+            "within_nominal_limits": false,
+            "velocity_deg_s": -4.309426151411305,
+            "torque_nm": -0.004151404151404137,
+            "temperature_c": 32.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 4,
+            "joint": "wrist_flex",
+            "fresh": true,
+            "feedback_age_s": 0.004739666008390486,
+            "sequence": 6,
+            "raw_motor_deg": 0.4725557608089054,
+            "sdk_joint_deg": 0.4725557608089054,
+            "limits_deg": [
+              -65.2,
+              104.0
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": 1.3851726915252658,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 5,
+            "joint": "wrist_yaw",
+            "fresh": true,
+            "feedback_age_s": 0.0032747919904068112,
+            "sequence": 6,
+            "raw_motor_deg": 1.8792333743798655,
+            "sdk_joint_deg": 1.8792333743798655,
+            "limits_deg": [
+              -97.6,
+              78.0
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": 0.46172423050855765,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 6,
+            "joint": "wrist_roll",
+            "fresh": true,
+            "feedback_age_s": 0.001756959012709558,
+            "sequence": 6,
+            "raw_motor_deg": 357.1312688141683,
+            "sdk_joint_deg": -2.8687311858316877,
+            "limits_deg": [
+              -153.2,
+              152.0
+            ],
+            "within_nominal_limits": true,
+            "velocity_deg_s": 0.46172423050855765,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 33.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          },
+          {
+            "motor_id": 7,
+            "joint": "gripper",
+            "fresh": true,
+            "feedback_age_s": 0.0002802090020850301,
+            "sequence": 6,
+            "raw_motor_deg": 259.65290606124745,
+            "sdk_joint_deg": -100.34709393875256,
+            "limits_deg": [
+              -96.00000000000001,
+              -2.5
+            ],
+            "within_nominal_limits": false,
+            "velocity_deg_s": -4.15551807457539,
+            "torque_nm": -0.0034188034188034067,
+            "temperature_c": 32.0,
+            "fault_word": 0,
+            "fault_latched": null,
+            "warning_flag": false,
+            "fault_flag": false,
+            "reported_mode": 0,
+            "typed_parameters_supported": false,
+            "mode_telemetry_supported": false,
+            "watchdog_verified": false
+          }
+        ]
+      }
+    }
+  ],
+  "cameras": [
+    {
+      "name": "MacBook Pro Camera",
+      "unique_id": "6C707041-05AC-0011-0002-000000000001",
+      "width": 640,
+      "height": 480,
+      "sample_pts_s": 1037879.74404,
+      "receipt_uptime_s": 1037879.7981682917,
+      "image_sha256": "9a3448f0a8e5c137218b1bea00461d32911866e2bc3e354db7e3ba2b04185a4e"
+    },
+    {
+      "name": "KD-USB Cameras",
+      "unique_id": "0x31130002c7f4a60",
+      "width": 640,
+      "height": 480,
+      "sample_pts_s": 1037880.4293,
+      "receipt_uptime_s": 1037880.4677416667,
+      "image_sha256": "b5e6f6895df12457062485a86d9561524aeb0cc0595a8643b31233728d46b0da"
+    },
+    {
+      "name": "KD-USB Cameras",
+      "unique_id": "0x31140002c7f4a60",
+      "width": 640,
+      "height": 480,
+      "sample_pts_s": 1037881.1531666666,
+      "receipt_uptime_s": 1037881.2194492917,
+      "image_sha256": "bbae3b375e2a9879a628eaadce8729f6e0b15aa5456f6734f7727ddf1529f144"
+    },
+    {
+      "name": "KD-USB Cameras",
+      "unique_id": "0x31110002c7f4a60",
+      "width": 640,
+      "height": 480,
+      "sample_pts_s": 1037881.9150333334,
+      "receipt_uptime_s": 1037881.9496595834,
+      "image_sha256": "017c254def777a1d48e328cd0198d2a94edf5446ee72885d13a99ee1ea05697c"
+    }
+  ],
+  "remaining": [
+    "Nominal joint-limit discrepancies unchanged",
+    "Motor watchdog and independent disabled-mode telemetry unverified",
+    "Cable visible immediately in front of right jaws; clearance requested before sweep"
+  ]
+}
