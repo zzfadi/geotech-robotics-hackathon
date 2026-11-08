@@ -30,7 +30,7 @@ State contains `q_left`, `q_right` (six radians each), `gap_left_m`, `gap_right_
 - `Tools/maker_arm_actions.py`: rejects malformed, nonfinite, mismatched or out-of-limit chunks. Playback uniformly retimes valid paths to the configured joint and jaw speed limits, with a 15-second duration cap. Only numerical limit overshoot up to 0.0001 rad is clamped; the actual first reply needed corrections below 0.000043 rad.
 - `Tools/maker_arm_playback.py`: bounded editor kinematic preview, one transaction for the entire chunk. Validates the observed pose against actual actors before starting. Start after the enclosing CoPresence transaction ends, within an active task. `stop()` ends at the current pose. This is not a runtime controller; it does not simulate object contacts or establish physical safety. Retiming includes the observed starting grip, preventing an unbounded first commanded gap change. A map reload invalidates cached actor references and terminates playback.
 
-Checks: `python3 -m unittest discover -s DreamSim -p 'test_*.py'` plus the Unreal Tools tests `test_maker_arm_actions.py` and `test_maker_arm_model.py`.
+Checks: `uv run --python 3.11 --with numpy --with scipy python -m unittest discover -s DreamSim -p 'test_*.py'` plus the Unreal Tools tests `test_maker_arm_actions.py` and `test_maker_arm_model.py`.
 
 Official API source: https://github.com/dreamlabs-co/dreamlabs and https://platform.dreamlabs.ai/docs/control-loop/ .
 
@@ -61,7 +61,7 @@ The November 7 browser test submitted “Move the left gripper toward the red cu
 
 A command currently runs a bounded series of three feedback cycles (the verification run used two). Stop interrupts active playback and discards a response still in flight. Each movement chunk is one shared editor transaction. The loop holds position during inference and is not yet a continuous physics controller. `Record voice` captures up to 29 seconds through the browser microphone on the HTTPS page. `Audio file` accepts an existing recording. Both use local `faster-whisper==1.2.1` with the `base.en` model in the Mac worker; `av==17.0.0` is pinned because version 19 removed a decoder argument used by faster-whisper. Audio stays inside the tailnet and worker, and is removed from the server queue after transcription. The transcript fills the prompt for review before Run in Unreal. The user completed a live microphone test; the server recorded “Pick up red box.” Object-contact physics still requires verification.
 
-Recording source frames and the playable clip are retained locally; no API keys, worker tokens, images or request logs are committed. Run `python3 -m unittest discover -s DreamSim -p 'test_*.py'` for model/frame and debugger authentication, queue, duplicate-command and cross-origin checks.
+Recording source frames and the playable clip are retained locally; no API keys, worker tokens, images or request logs are committed. Run `uv run --python 3.11 --with numpy --with scipy python -m unittest discover -s DreamSim -p 'test_*.py'` for model/frame and debugger authentication, queue, duplicate-command and cross-origin checks.
 
 ### HTTPS
 

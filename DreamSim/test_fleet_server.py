@@ -12,7 +12,7 @@ from debug_server import Handler, Store
 
 JPEG = base64.b64encode(b'\xff\xd8thumb\xff\xd9').decode()
 TABLES = [{'index': i, 'name': 'variant-%d' % i, 'prompt': 'p', 'checkpoint': 'dreamlabs/dream-1-beta-flash',
-           'position_ik': True, 'pad_contacts': True, 'action_rows': 12, 'cycles': 10, 'secret': 'dropped'} for i in range(1, 11)]
+           'position_ik': True, 'pad_contacts': True, 'action_rows': 12, 'cycles': 10, 'secret': 'dropped'} for i in range(9)]
 
 
 class FleetServer(unittest.TestCase):
@@ -58,10 +58,10 @@ class FleetServer(unittest.TestCase):
         self.server.store.fleet['worker_at'] = 0
         self.assertEqual(self.status('/api/fleet/command', {'tables': [1]}), 503)
 
-    def test_all_means_ten_and_unavailable_tables_are_visible(self):
+    def test_all_means_nine_and_unavailable_tables_are_visible(self):
         self.request('/api/fleet/worker/hello', {'tables': TABLES[:3]}, self.token)
         fleet = self.request('/api/fleet')
-        self.assertEqual(len(fleet['tables']), 10)
+        self.assertEqual(len(fleet['tables']), 9)
         self.assertFalse(fleet['tables'][-1]['ready'])
         self.assertEqual(self.status('/api/fleet/command', {'tables': 'all'}), 503)
         self.assertIsNone(self.server.store.fleet['command'])
@@ -71,7 +71,7 @@ class FleetServer(unittest.TestCase):
     def test_review_plan_is_reproducible_without_starting(self):
         payload = {'tables': 'all', 'mode': 'random', 'seed': 42, 'randomize': True}
         plan = self.request('/api/fleet/plan', payload)
-        self.assertEqual(len(plan['tables']), 10)
+        self.assertEqual(len(plan['tables']), 9)
         self.assertIsNone(self.server.store.fleet['command'])
         self.request('/api/fleet/worker/hello', {'tables': TABLES}, self.token)
         command = self.request('/api/fleet/command', payload)
@@ -84,7 +84,7 @@ class FleetServer(unittest.TestCase):
         self.request('/api/fleet/worker/done', {'request_id': command['id'], 'status': 'done', 'results': []}, self.token)
         recording = self.request('/api/fleet')['recording']
         self.assertEqual(recording['recorded_tables'], [])
-        self.assertEqual(len(recording['results']), 10)
+        self.assertEqual(len(recording['results']), 9)
         self.assertTrue(all(r['outcome'] == 'error' for r in recording['results']))
 
     def test_main_prompt_routes_explicit_targets_without_wrong_queue(self):
@@ -96,6 +96,20 @@ class FleetServer(unittest.TestCase):
         self.assertEqual(command['prompt'],'pick up the red cube')
         self.assertIsNone(self.server.store.command)
         self.assertEqual(self.status('/api/command',{'prompt':'Table 12: move'}),400)
+
+    def test_original_table_zero_and_all_nine_share_fleet_queue(self):
+        self.request('/api/fleet/worker/hello', {'tables': TABLES}, self.token)
+        self.assertEqual(self.request('/api/route', {'prompt':'pick up red'})['tables'], [0])
+        command=self.request('/api/command', {'prompt':'Table 1: pick up red'})
+        self.assertEqual(command['tables'], [0])
+        self.assertIsNone(self.server.store.command)
+        self.server.store.fleet['command']=None
+        command=self.request('/api/command', {'prompt':'All tables: pick up red'})
+        self.assertEqual(command['tables'], list(range(9)))
+        self.assertEqual([t['display_number'] for t in command['plan']['tables']], list(range(1,10)))
+        for n in (10,11):
+            self.assertEqual(self.status('/api/command', {'prompt':'Table %d: lift'%n}),400)
+        self.assertEqual(self.status('/api/fleet/worker/hello', {'tables':TABLES,'expected_tables':list(range(1,9))}, self.token),400)
 
     def test_idle_preview_requires_lease_and_actual_capture_time(self):
         import time
@@ -128,7 +142,7 @@ class FleetServer(unittest.TestCase):
         public = self.request('/api/fleet')
         self.assertTrue(public['online'])
         self.assertNotIn('secret', public['tables'][0])
-        self.assertEqual(self.status('/api/fleet/command', {'tables': [0]}), 400)
+        self.assertEqual(self.status('/api/fleet/command', {'tables': [9]}), 400)
         self.assertEqual(self.status('/api/fleet/command', {'tables': [1, 1]}), 400)
         self.assertEqual(self.status('/api/fleet/command', {'tables': []}), 400)
         command = self.request('/api/fleet/command', {'tables': [3, 1], 'prompt': 'Pick up the red cube.'})

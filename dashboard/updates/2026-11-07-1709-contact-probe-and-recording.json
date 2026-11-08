@@ -1,0 +1,18 @@
+{
+  "when": "2026-11-07T17:09:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Tested two different targets and repaired hold recording coverage",
+  "why": "Verify real pickup behavior and preserve motion, inference waits and held poses in web recordings",
+  "where": [
+    "docs/validation/fleet-contact-probe-2026-11-07.json",
+    "DreamSim/recording_timeline.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py"
+  ],
+  "details": [
+    "Red block measured15.08cm lift held2.68seconds after3Flashcalls; conservative outcome remains unverified pending grasp review. Green cube failed after24calls.",
+    "Both recordings played in web; all10live camera previews restored afterward.",
+    "New budgeted overhead capture continues through holds and inference waits. Timestamped ffconcat encoding preserves elapsed intervals; offline encode/decode verified5.56second clip for5.5seconds of capture spacing.",
+    "Ten successful diverse pickups remain incomplete; no goal completion claimed."
+  ]
+}

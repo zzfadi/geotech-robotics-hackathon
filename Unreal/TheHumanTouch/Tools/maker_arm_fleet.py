@@ -10,7 +10,7 @@ Shared mode (default) creates normal, replicated, persisted actors through the
 caller's CoPresence run_python transaction: call build_table() once per table
 (one bounded transaction each), then reset() before every fleet run.
 local=True instead makes editor-only scratch copies in a cancelled transaction.
-The original station (table 0) is only ever read.
+Table 0 reuses the original station without cloning or tagging it.
 """
 import json
 from pathlib import Path
@@ -55,6 +55,8 @@ def sources():
 
 
 def fleet_actors(index=None):
+    if index == 0:
+        return list(sources().values())
     tag = FLEET_TAG if index is None else table_tag(index)
     return [a for a in _subsystem().get_all_level_actors() if tag in _tags(a)]
 
@@ -146,6 +148,9 @@ def _place_target(index, variant, existing):
     loc = [loc[i] + spec['offset_cm'][i] for i in range(3)]
     rot = actor.get_actor_rotation()
     rotation = unreal.Rotator(pitch=rot.pitch, yaw=spec['yaw_deg'], roll=rot.roll) if spec.get('yaw_deg') is not None else rot
+    if spec.get('rotation_deg') is not None:
+        pitch, yaw, roll = spec['rotation_deg']
+        rotation = unreal.Rotator(pitch=pitch, yaw=yaw, roll=roll)
     scale = actor.get_actor_scale3d()
     want_scale = spec.get('scale') or [scale.x, scale.y, scale.z]
     unchanged = (_close(loc, (here.x, here.y, here.z)) and _close(want_scale, (scale.x, scale.y, scale.z), 1e-6)
@@ -158,6 +163,8 @@ def _place_target(index, variant, existing):
 
 
 def _duplicate_table(index, source, local):
+    if index == 0:
+        raise ValueError('Original table must never be duplicated')
     subsystem = _subsystem()
     keep = unreal.AttachmentRule.KEEP_WORLD
     detach = unreal.DetachmentRule.KEEP_WORLD
@@ -195,6 +202,8 @@ def tune_lights(index, existing):
     Every booth camera is within ~4 m of its own booth's lights, so policy images
     are unchanged; the editor stops paying for ~70 shadowed lights it cannot see
     through the booth walls. The original T00 lights are never changed."""
+    if index == 0:
+        return 0
     changed = 0
     prefix = label(index, '')
     for name, actor in existing.items():
@@ -273,6 +282,8 @@ def build_table(config_path, index, force=False):
     variants = {v['index']: v for v in normalize_config(json.loads(Path(config_path).read_text()))}
     variant = variants[index]
     source = _source_or_fail()
+    if index == 0:
+        return {'index': 0, 'built': False, 'actors': len(source), 'reason': 'original station reused'}
     existing = fleet_actors(index)
     if existing and not force:
         names = {a.get_actor_label() for a in existing}
@@ -298,6 +309,8 @@ def setup_local(config_path):
     _check_idle()
     variants = normalize_config(json.loads(Path(config_path).read_text()))
     source = _source_or_fail()
+    if any(v['index'] == 0 for v in variants):
+        raise ValueError('Local scratch setup cannot include the shared original table')
 
     def build():
         return [_apply_variant(v, _duplicate_table(v['index'], source, local=True), local=True) for v in variants]

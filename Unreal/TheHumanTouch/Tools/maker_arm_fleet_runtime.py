@@ -31,6 +31,7 @@ from maker_arm_fleet_layout import label, replica_base, normalize_config, PROP_P
 from maker_arm_actions import retime
 from maker_arm_trajectory import sample
 from maker_arm_contact_stop import contact_gap, actor_boxes
+from maker_arm_table_clearance import check_gripper_table
 from maker_arm_lift_evidence import update as update_lift_evidence
 from maker_arm_model import mounted_frames, ue_pose
 from maker_arm_station import BASES, MOUNT_YAW, VISUAL_LINKS
@@ -136,7 +137,7 @@ class Session:
         self.root.mkdir(parents=True, exist_ok=True)
         (self.root / 'stop').unlink(missing_ok=True)
         self.tables = [Table(v, self.root) for v in normalize_config(json.loads(Path(config_path).read_text()))]
-        self.interval = 1. / fps  # overhead review frames per moving table
+        self.interval = 1. / fps  # overhead review frames per live table
         self.max_seconds = min(max_seconds, 170)
         self.captures_per_tick = captures_per_tick
         self.phase = 'starting'
@@ -211,7 +212,7 @@ class Session:
         found = {}
         for actor in unreal.GameplayStatics.get_all_actors_of_class(world, unreal.Actor):
             name = actor.get_actor_label()
-            if name.startswith('MakerFleet_'):
+            if name.startswith(('MakerFleet_', 'MakerArm_', 'MakerStation_', 'MakerCamera_', 'FleetProxy_', 'FleetCapture_')):
                 if name in found:
                     raise RuntimeError('Duplicate runtime replica actor ' + name)
                 found[name] = actor
@@ -256,7 +257,7 @@ class Session:
                 c.set_simulate_physics(True)
                 if not c.is_simulating_physics():
                     raise RuntimeError('Prop did not enter Chaos simulation: ' + name)
-                short = name.split('__', 1)[1]
+                short = name if table.index == 0 else name.split('__', 1)[1]
                 table.props[short] = actor
                 table.timers[short] = {}
                 z = actor.get_actor_location().z
@@ -373,6 +374,14 @@ class Session:
                 gap, contacts = requested, []
             if gap != requested:
                 frames = mounted_frames(row[:6], gap, yaw=MOUNT_YAW[side])
+            bounds = {}
+            if not table.v['pad_contacts']:
+                for jaw in GRIPPERS:
+                    proxy = table.proxies[table.name('MakerArm_'+side+'_'+jaw)]
+                    low, high = proxy.static_mesh_component.get_local_bounds()
+                    bounds[jaw] = ([low.x, low.y, low.z], [high.x, high.y, high.z])
+            check_gripper_table(frames, base, maker_arm_fleet.offset(table.index),
+                                flat=table.v['pad_contacts'], collision_bounds_cm=bounds)
             table.state['q_'+side] = row[:6]
             table.state['gap_'+side+'_m'] = gap
             table.state['contact_stop_'+side] = contacts
@@ -447,9 +456,14 @@ class Session:
         table.pending['paths'][role] = path
 
     def record(self, table, now):
-        """Overhead-only review frame while a table moves (one scene capture)."""
+        """Budgeted overhead frame during motion, inference waits and held poses."""
         table.rec += 1
-        self._export(table.captures['overhead'], table.dir/'recording'/('overhead_rec_%06d.jpg' % table.rec))
+        name = 'overhead_rec_%06d.jpg' % table.rec
+        self._export(table.captures['overhead'], table.dir/'recording'/name)
+        with (table.dir/'recording'/'overhead_timeline.jsonl').open('a') as stream:
+            stream.write(json.dumps({'file': name, 'capture_requested_unix': time.time(),
+                                     'monotonic': now, 'moving': table.motion is not None,
+                                     'command_seq': table.command_seq}) + '\n')
 
     def publish(self, table, now):
         """Write the observation once every JPEG of the pending capture is complete."""
@@ -564,7 +578,7 @@ class Session:
             # Camera budget: at most captures_per_tick scene captures per editor frame.
             # 1) finish 3-view packets already started, 2) start packets for tables
             # that need their next policy observation, 3) spare budget records
-            # overhead review frames of moving tables at `fps`.
+            # overhead review frames of all live tables at `fps`, including holds.
             t4 = time.perf_counter()
             for table in self.tables:
                 if table.pending and not table.queue and not table.error:
@@ -588,7 +602,7 @@ class Session:
                 except Exception as error:
                     table.error = 'capture: ' + str(error)
                 budget -= 1
-            due = sorted((t for t in live if t.motion and now >= t.next_capture), key=lambda t: t.next_capture)
+            due = sorted((t for t in live if not t.pending and now >= t.next_capture), key=lambda t: t.next_capture)
             for table in due[:max(0, budget)]:
                 try:
                     self.record(table, now)

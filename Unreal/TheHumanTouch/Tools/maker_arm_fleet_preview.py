@@ -1,4 +1,4 @@
-"""Bounded, local idle previews: ten overhead cameras, one staggered capture per tick.
+"""Bounded, local idle previews: nine overhead cameras, one staggered capture per tick.
 
 No policy calls, robot motion, or viewport changes. Start outside a transaction.
 The worker stops this observer before SIE and can restart it after teardown.
@@ -23,7 +23,7 @@ class Preview:
         self.cameras = {}
         self.handle = None
         self.frames, self.frame_times = {}, {}
-        self.index, self.last = 1, 0
+        self.index, self.last = 0, 0
         self.sequence = 0
         if call_camera._locally(self._create) is None:
             raise RuntimeError('Start fleet preview after the current transaction ends')
@@ -36,11 +36,11 @@ class Preview:
 
     def _create(self):
         sources = self._sources()
-        names = ['MakerFleet_T%02d__MakerCamera_Overview' % i for i in range(1, 11)]
+        names = ['MakerCamera_Overview'] + ['MakerFleet_T%02d__MakerCamera_Overview' % i for i in range(1, 9)]
         missing = [name for name in names if name not in sources]
         if missing:
             raise RuntimeError('Missing overhead cameras: ' + ', '.join(missing))
-        for index, name in enumerate(names, 1):
+        for index, name in enumerate(names):
             target = unreal.new_object(unreal.TextureRenderTarget2D)
             target.set_editor_property('render_target_format', unreal.TextureRenderTargetFormat.RTF_RGBA8)
             target.set_editor_property('target_gamma', 2.2)
@@ -82,7 +82,8 @@ class Preview:
             if not call_camera._is_alive(actor):
                 raise RuntimeError('Idle capture unloaded; restart preview')
             key = 'T%02d' % self.index
-            source = self._sources().get('MakerFleet_'+key+'__MakerCamera_Overview')
+            name = 'MakerCamera_Overview' if self.index == 0 else 'MakerFleet_'+key+'__MakerCamera_Overview'
+            source = self._sources().get(name)
             if source is None:
                 raise RuntimeError('Missing camera for '+key)
             actor.set_actor_location_and_rotation(source.get_actor_location(), source.get_actor_rotation(), False, True)
@@ -101,7 +102,7 @@ class Preview:
             self.frame_times[key] = time.time()
             self.sequence += 1
             self._write(True)
-            self.index = self.index % 10 + 1
+            self.index = (self.index + 1) % 9
         except Exception as error:
             self.stop(str(error))
             unreal.log_error('Fleet preview: '+str(error))

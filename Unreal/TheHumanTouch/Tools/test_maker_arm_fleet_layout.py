@@ -10,6 +10,13 @@ VARIANTS = HERE.parents[2] / 'DreamSim/fleet_variants.json'
 
 
 class Layout(unittest.TestCase):
+    def test_target_rotation_preserves_angles_and_rejects_nonfinite(self):
+        variant = {'prompt': 'pickup', 'target': {'rotation_deg': [90, -12.5, 4]}}
+        self.assertEqual(layout.normalize_variant(variant, 1)['target']['rotation_deg'], [90., -12.5, 4.])
+        for angles in ([0, float('nan'), 0], [0, 0, float('inf')], [0, 0]):
+            with self.assertRaises(ValueError):
+                layout.normalize_variant({'prompt': 'pickup', 'target': {'rotation_deg': angles}}, 1)
+
     def test_labels_round_trip(self):
         name = layout.label(3, 'MakerArm_left_link_007')
         self.assertEqual(name, 'MakerFleet_T03__MakerArm_left_link_007')
@@ -23,8 +30,8 @@ class Layout(unittest.TestCase):
             self.assertFalse(layout.label(1, prefix + 'x').startswith(prefix))
 
     def test_table_zero_is_reserved_for_original(self):
-        with self.assertRaises(ValueError):
-            layout.offset(0)
+        self.assertEqual(layout.offset(0), (0, 0, 0))
+        self.assertEqual(layout.label(0, 'MakerArm_left_link_007'), 'MakerArm_left_link_007')
         with self.assertRaises(ValueError):
             layout.offset(layout.MAX_TABLES + 1)
 
@@ -63,14 +70,13 @@ class Layout(unittest.TestCase):
 class Variants(unittest.TestCase):
     def test_shipped_matrix_is_valid(self):
         tables = layout.normalize_config(json.loads(VARIANTS.read_text()))
-        self.assertEqual(len(tables), 10)
-        self.assertEqual([t['index'] for t in tables], list(range(1, 11)))
-        self.assertEqual(len({t['name'] for t in tables}), 10)
+        self.assertEqual(len(tables), 9)
+        self.assertEqual([t['index'] for t in tables], list(range(9)))
+        self.assertEqual(len({t['name'] for t in tables}), 9)
         for t in tables:
             self.assertEqual(t['target']['label'], layout.TARGET)
             self.assertEqual(t['target']['location_cm'], [60.0, -40.0, 78.5])
         self.assertFalse(tables[1]['position_ik'])
-        self.assertEqual(tables[9]['target']['scale'], [.07, .07, .07])
         self.assertEqual(tables[5]['initial_state']['q_left'], [0.0]*6)
 
     def test_rejects_bad_fields(self):
