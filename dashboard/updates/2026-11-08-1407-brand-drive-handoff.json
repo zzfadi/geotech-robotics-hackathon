@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-08T14:07:05-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Linked both Google Drive brand-kit folders from the pitch handoff.",
+  "why": "Future iterations have a shared scratchpad and a permanent home for presentation-ready assets.",
+  "where": [
+    "demo/pitch/HANDOFF.md"
+  ]
+}
