@@ -1,0 +1,41 @@
+{
+  "request_id": "649754384a7a441f8a6b4dbb52896a94",
+  "scope": "Standard Dream after circular cup contact and wrist optics corrections; no successful pickup",
+  "recorded_tables": [
+    0
+  ],
+  "results": [
+    {
+      "table": "T00",
+      "calls": 10,
+      "cycles_run": 10,
+      "outcome": "failed",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 85.25149033587469,
+        "required_max_tilt_deg": 15,
+        "height_cm": -77.4583784846692,
+        "held_seconds": 0.0,
+        "speed_cm_s": 46.73851707703129,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": null,
+      "stopped_reason": "target cup fell more than 20 cm below its starting height"
+    }
+  ],
+  "lesson": "Mechanical scripted retention succeeded independently, but standard policy ejected the cup. Fallen-cup guard stopped further requests. Keep failure out of positive training demonstrations."
+}
