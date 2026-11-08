@@ -172,3 +172,31 @@ def test_experimental_encoder_window_cannot_enable():
     with pytest.raises(ValueError,match='read-only'):
         w.run(a,{},move=True,operator_cutoff=True,encoder_stationary=True)
     assert a.calls == []
+
+
+def test_position_window_uses_encoder_stationarity_but_retains_speed_envelope():
+    rows=stationary_samples()
+    for row in rows: row['velocity_deg_s']=6.
+    assert w.check_stationary_window(rows,False)['position_span_deg'] < .1
+    rows[10]['velocity_deg_s']=16.
+    with pytest.raises(RuntimeError): w.check_stationary_window(rows,False)
+    rows[10]['velocity_deg_s']=6.
+    rows[10]['position_deg']+=.2
+    with pytest.raises(RuntimeError): w.check_stationary_window(rows,False)
+
+
+def test_supervised_position_window_runs_out_and_return_with_release(monkeypatch):
+    import itertools
+    clock=itertools.count(0.,.06)
+    monkeypatch.setattr(w.time,'monotonic',lambda:next(clock))
+    monkeypatch.setattr(w.time,'sleep',lambda _:None)
+    a=arm();a.motors[0].feedback.velocity=math.radians(6.)
+    targets=[]
+    def segment(a,target,start,report):
+        targets.append(target);return math.degrees(target)
+    monkeypatch.setattr(w,'segment',segment)
+    report={};w.run(a,report,True,True,8.,position_preflight=True)
+    assert targets == [math.radians(8.),0.]
+    assert a.calls == ['connect','enable','disable','disconnect']
+    assert report['stationary_check']=='position_window'
+    assert report['release_command_acknowledged']

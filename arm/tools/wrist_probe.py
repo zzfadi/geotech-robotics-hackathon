@@ -67,7 +67,7 @@ def validate(arm, start, enabled, step=STEP, encoder_stationary=False):
     return p
 
 
-def check_stationary_window(samples):
+def check_stationary_window(samples, require_velocity_agreement=True):
     """Opt-in diagnostic for noisy instantaneous velocity; does not change motion guards."""
     if len(samples) < 21:
         raise RuntimeError('Stationary window needs at least 21 fresh samples')
@@ -83,7 +83,7 @@ def check_stationary_window(samples):
         raise RuntimeError('Encoder moved more than 0.1 degree in stationary window')
     if abs(q[-1]-q[0])/(t[-1]-t[0]) > .05:
         raise RuntimeError('Encoder drift exceeds 0.05 deg/s before enable')
-    if max(abs(x) for x in v) > 15 or abs(statistics.median(v)) > 1:
+    if max(abs(x) for x in v) > 15 or (require_velocity_agreement and abs(statistics.median(v)) > 1):
         raise RuntimeError('Velocity envelope or median incompatible with stationary window')
     return {'duration_s':t[-1]-t[0], 'position_span_deg':max(q)-min(q),
             'net_encoder_speed_deg_s':(q[-1]-q[0])/(t[-1]-t[0]),
@@ -120,7 +120,10 @@ def segment(arm, target, start, report):
     raise RuntimeError(f'Target not settled within {duration:.1f} seconds; no automatic retry')
 
 
-def run(arm, report, move=False, operator_cutoff=False, step_deg=2., encoder_stationary=False):
+def run(arm, report, move=False, operator_cutoff=False, step_deg=2., encoder_stationary=False,
+        position_preflight=False):
+    if encoder_stationary and position_preflight:
+        raise ValueError('Choose one stationary check')
     if move and encoder_stationary:
         raise ValueError('Encoder-window diagnostic is read-only until independently validated')
     if not math.isfinite(step_deg) or not 0 < step_deg <= 10:
@@ -132,11 +135,13 @@ def run(arm, report, move=False, operator_cutoff=False, step_deg=2., encoder_sta
                   watchdog_verified=False, kp=arm.config.joints[0].kp,
                   kd=arm.config.joints[0].kd, following_error_cap_deg=.5, command_speed_deg_s=math.degrees(arm.config.max_velocity),
                   step_deg=step_deg, effort_guard_nm=.4, measured_speed_guard_deg_s=15.)
-    report['stationary_check'] = 'encoder_window' if encoder_stationary else 'instantaneous_velocity'
+    report['stationary_check'] = ('position_window' if position_preflight else
+                                 'encoder_window' if encoder_stationary else 'instantaneous_velocity')
+    window = encoder_stationary or position_preflight
     try:
         arm.connect()
         positions = []
-        for _ in range(21 if encoder_stationary else 10):
+        for _ in range(21 if window else 10):
             if arm.refresh() != [True]:
                 raise RuntimeError('Unreliable feedback before enable')
             fb = arm.motors[0].feedback
@@ -147,12 +152,13 @@ def run(arm, report, move=False, operator_cutoff=False, step_deg=2., encoder_sta
                 'temperature_c': fb.temperature, 'mode': fb.mode}
             report['preflight_samples'].append({
                 key: value if math.isfinite(value) else None for key, value in sample.items()})
-            positions.append(validate(arm, None, False, encoder_stationary=encoder_stationary))
+            positions.append(validate(arm, None, False, encoder_stationary=window))
             time.sleep(.05)
         if max(positions)-min(positions) > math.radians(.5):
             raise RuntimeError('Wrist moved during preflight')
-        if encoder_stationary:
-            report['stationary_evidence'] = check_stationary_window(report['preflight_samples'])
+        if window:
+            report['stationary_evidence'] = check_stationary_window(
+                report['preflight_samples'], require_velocity_agreement=not position_preflight)
         start = positions[-1]
         j = arm.config.joints[0]
         if not j.lo + math.radians(5) < start < j.hi - step - math.radians(1):
@@ -195,8 +201,11 @@ def main():
     parser.add_argument('arm', help='Exact serial or saved rig label')
     parser.add_argument('--move', action='store_true')
     parser.add_argument('--operator-cutoff', action='store_true')
-    parser.add_argument('--encoder-stationary', action='store_true',
+    stationary = parser.add_mutually_exclusive_group()
+    stationary.add_argument('--encoder-stationary', action='store_true',
                         help='Read-only experimental 1-second encoder/velocity consistency check; cannot be combined with --move')
+    stationary.add_argument('--position-preflight', action='store_true',
+                        help='Supervised wrist test: use a fresh 1-second encoder window for stationarity; retain 15 deg/s raw speed and all motion guards')
     parser.add_argument('--vendor-gains', action='store_true',
                         help='Use pinned SDK wrist gains (30/2), with unchanged speed/effort guards')
     parser.add_argument('--step-deg', type=float, default=2., help='Maximum 10 degrees; staged verification required')
@@ -215,7 +224,8 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     arm = Arm(config, GsUsbBackend(serial))
     try:
-        run(arm, report, args.move, args.operator_cutoff, args.step_deg, args.encoder_stationary)
+        run(arm, report, args.move, args.operator_cutoff, args.step_deg, args.encoder_stationary,
+            args.position_preflight)
     finally:
         args.output.write_text(json.dumps(report, indent=2, allow_nan=False)+'\n')
         print(json.dumps({k:v for k,v in report.items() if k not in ('samples','preflight_samples')}), flush=True)

@@ -1,0 +1,150 @@
+{
+  "when": "2026-11-07T16:59:18.617294-08:00",
+  "scope": "Supervised motor-6 wrist routines; no lifting joints or gripper enabled",
+  "preflight_mode": "position_window: 21 fresh samples over >=1 second, <=0.1 degree span, <=0.05 deg/s net drift, raw speed <=15 deg/s; median velocity logged but not a motion-admission threshold",
+  "runs": [
+    {
+      "when": "2026-11-08T00:52:28.347838+00:00",
+      "arm": "right",
+      "serial": "0027002E4146570520313238",
+      "motion_requested": true,
+      "motion_completed": true,
+      "motor_ids": [
+        6
+      ],
+      "stage": "completed",
+      "operator_cutoff": true,
+      "watchdog_verified": false,
+      "kp": 30,
+      "kd": 2.0,
+      "following_error_cap_deg": 0.5,
+      "command_speed_deg_s": 3.0000000000000004,
+      "step_deg": 8.0,
+      "effort_guard_nm": 0.4,
+      "measured_speed_guard_deg_s": 15.0,
+      "stationary_check": "position_window",
+      "stationary_evidence": {
+        "duration_s": 1.0981418340234086,
+        "position_span_deg": 0.021979337712020763,
+        "net_encoder_speed_deg_s": 0.0,
+        "median_reported_velocity_deg_s": -0.46172423050855765
+      },
+      "start_deg": 1.3297499315787347,
+      "target_deg": 9.329749931578736,
+      "typed_parameters_supported": false,
+      "outbound_measured_deg": 9.02251813079467,
+      "return_measured_deg": 1.4176672824269196,
+      "release_command_acknowledged": true,
+      "release_mode_verified": false,
+      "last_measured_deg": 1.4176672824269196,
+      "duration_s": 11.508430624962784,
+      "peak_abs_torque_nm": 0.2700854700854709,
+      "peak_abs_reported_velocity_deg_s": 7.849311918642223,
+      "raw_report_sha256": "27eb345e2e20be421b5edad44b203ab1958e96b3c48f63d11b9fb9e07bd43b83",
+      "source_file": "arm/local/routine-2026-11-07/right-8deg.json"
+    },
+    {
+      "when": "2026-11-08T00:52:49.979757+00:00",
+      "arm": "left",
+      "serial": "2077378045465008",
+      "motion_requested": true,
+      "motion_completed": false,
+      "motor_ids": [
+        6
+      ],
+      "stage": "return",
+      "operator_cutoff": true,
+      "watchdog_verified": false,
+      "kp": 30,
+      "kd": 2.0,
+      "following_error_cap_deg": 0.5,
+      "command_speed_deg_s": 1.0,
+      "step_deg": 2.0,
+      "effort_guard_nm": 0.4,
+      "measured_speed_guard_deg_s": 15.0,
+      "stationary_check": "position_window",
+      "stationary_evidence": {
+        "duration_s": 1.0984426659997553,
+        "position_span_deg": 0.02197933771191929,
+        "net_encoder_speed_deg_s": 0.0,
+        "median_reported_velocity_deg_s": -0.46172423050855765
+      },
+      "start_deg": -2.8687311858316877,
+      "target_deg": -0.8687311858316877,
+      "typed_parameters_supported": false,
+      "outbound_measured_deg": -1.1763221820041518,
+      "error": "RuntimeError: Target not settled within 8.0 seconds; no automatic retry",
+      "release_command_acknowledged": true,
+      "release_mode_verified": false,
+      "last_measured_deg": -1.8576816510777128,
+      "duration_s": 15.26439629192464,
+      "peak_abs_torque_nm": 0.3179487179487186,
+      "peak_abs_reported_velocity_deg_s": 7.849311918642223,
+      "raw_report_sha256": "a03f117815cacb21cfeeb2069b99313a0b8f55ddffd3705f096951a117f56b31",
+      "source_file": "arm/local/routine-2026-11-07/left-2deg.json"
+    },
+    {
+      "when": "2026-11-08T00:55:16.012060+00:00",
+      "arm": "right",
+      "serial": "0027002E4146570520313238",
+      "motion_requested": true,
+      "motion_completed": true,
+      "motor_ids": [
+        6
+      ],
+      "stage": "completed",
+      "operator_cutoff": true,
+      "watchdog_verified": false,
+      "kp": 30,
+      "kd": 2.0,
+      "following_error_cap_deg": 0.5,
+      "command_speed_deg_s": 3.0000000000000004,
+      "step_deg": 8.0,
+      "effort_guard_nm": 0.4,
+      "measured_speed_guard_deg_s": 15.0,
+      "stationary_check": "position_window",
+      "stationary_evidence": {
+        "duration_s": 1.1166323339566588,
+        "position_span_deg": 0.021979337712020985,
+        "net_encoder_speed_deg_s": 0.0,
+        "median_reported_velocity_deg_s": -0.46172423050855765
+      },
+      "start_deg": 1.4396466201389404,
+      "target_deg": 9.43964662013894,
+      "typed_parameters_supported": false,
+      "outbound_measured_deg": 9.066476806218711,
+      "return_measured_deg": 1.4836052955630838,
+      "release_command_acknowledged": true,
+      "release_mode_verified": false,
+      "last_measured_deg": 1.4836052955630838,
+      "duration_s": 13.550365540897474,
+      "peak_abs_torque_nm": 0.29059829059829134,
+      "peak_abs_reported_velocity_deg_s": 6.925863457625515,
+      "raw_report_sha256": "372fa413949e9ad49330fdf1e34e9f5289aaad10c4f2feece205ddeedb01fbed",
+      "source_file": "arm/local/routine-2026-11-07/right-repeat-8deg.json"
+    }
+  ],
+  "local_media": "arm/local/routine-2026-11-07/right-wrist-routine.mp4",
+  "post_test": [
+    {
+      "name": "right",
+      "all_fresh": true,
+      "all_fault_words_zero": true,
+      "wrist_deg": 1.4836052955630838
+    },
+    {
+      "name": "left",
+      "all_fresh": true,
+      "all_fault_words_zero": true,
+      "wrist_deg": -1.8137229756536712
+    }
+  ],
+  "recording_review": {
+    "frames": 100,
+    "duration_s": 19.6690383333,
+    "fully_decoded": true,
+    "first_clip": "partial; did not include the full return",
+    "repeat_clip": "covers full second routine based on capture and preflight/elapsed timestamps",
+    "visual_review": "Initial, middle and final frames of first clip inspected; second clip decoded"
+  }
+}
