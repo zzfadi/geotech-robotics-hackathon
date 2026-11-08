@@ -1,0 +1,367 @@
+diff --git a/maker_arm/cli/common.py b/maker_arm/cli/common.py
+index 11d4ef0..478d1c8 100644
+--- a/maker_arm/cli/common.py
++++ b/maker_arm/cli/common.py
+@@ -22,10 +22,13 @@ def slcan_candidates() -> list[str]:
+ 
+ 
+ def add_backend_args(ap: argparse.ArgumentParser) -> None:
+-    ap.add_argument("--backend", choices=["socketcan", "slcan"], default=default_backend(),
+-                    help="CAN backend (default: socketcan on Linux, slcan on macOS)")
++    ap.add_argument("--backend", choices=["socketcan", "slcan", "gs_usb"], default=default_backend(),
++                    help="CAN backend (default: socketcan on Linux, slcan on macOS; "
++                         "gs_usb drives candleLight adapters through libusb)")
+     ap.add_argument("--channel", default="can0", help="SocketCAN interface (default: can0)")
+     ap.add_argument("--port", help="SLCAN serial device (default: the only USB CAN adapter found)")
++    ap.add_argument("--adapter-serial",
++                    help="gs_usb adapter USB serial number (required when several are plugged in)")
+     ap.add_argument("--serial-baudrate", type=int, default=115200,
+                     help="SLCAN serial baud rate (default: 115200; ignored by USB CDC adapters)")
+     ap.add_argument("--slcan-startup-delay", type=float, default=2.5,
+@@ -69,6 +72,8 @@ def resolve_port(a) -> str:
+ def backend_kwargs(a) -> dict:
+     if a.backend == "socketcan":
+         return {"channel": a.channel}
++    if a.backend == "gs_usb":
++        return {"serial": a.adapter_serial}
+     return {"port": resolve_port(a), "baudrate": a.serial_baudrate, "rtscts": False,
+             "startup_delay": a.slcan_startup_delay}
+ 
+diff --git a/maker_arm/cli/doctor.py b/maker_arm/cli/doctor.py
+index 097ed10..faf16f4 100644
+--- a/maker_arm/cli/doctor.py
++++ b/maker_arm/cli/doctor.py
+@@ -49,6 +49,16 @@ def main() -> None:
+         holders = port_holders(port)
+         if holders:
+             print(f"  {port} is open in: {', '.join(holders)} -- close it before using the SDK")
++    try:
++        from maker_arm.transport.gs_usb import list_adapters
++        gs = list_adapters()
++    except Exception as e:  # missing pyusb/gs_usb/libusb must not break doctor
++        print(f"gs_usb (candleLight) adapters: unavailable ({e})")
++    else:
++        print("gs_usb (candleLight) adapters:", "none" if not gs else "")
++        for d in gs:
++            print(f"  serial {d.serial}  bus {d.bus} addr {d.address}  {d.product}"
++                  f"  -> maker-arm scan --backend gs_usb --adapter-serial {d.serial}")
+     if system == "Linux":
+         print("ip command:", shutil.which("ip") or "missing")
+         print("slcand:    ", shutil.which("slcand") or "missing (only needed for serial SLCAN)")
+diff --git a/maker_arm/transport/base.py b/maker_arm/transport/base.py
+index 9b4d53d..f8cbdad 100644
+--- a/maker_arm/transport/base.py
++++ b/maker_arm/transport/base.py
+@@ -38,7 +38,10 @@ def create_backend(name: str, **kwargs) -> CanBackend:
+     if name == "slcan":
+         from .slcan_serial import SlcanSerialBackend
+         return SlcanSerialBackend(**kwargs)
++    if name == "gs_usb":
++        from .gs_usb import GsUsbBackend
++        return GsUsbBackend(**kwargs)
+     if name == "mock":
+         from .mock import MockBackend
+         return MockBackend(**kwargs)
+-    raise ValueError(f"unknown backend: {name!r} (choices: socketcan/slcan/mock)")
++    raise ValueError(f"unknown backend: {name!r} (choices: socketcan/slcan/gs_usb/mock)")
+diff --git a/maker_arm/transport/gs_usb.py b/maker_arm/transport/gs_usb.py
+new file mode 100644
+index 0000000..5ea04cc
+--- /dev/null
++++ b/maker_arm/transport/gs_usb.py
+@@ -0,0 +1,251 @@
++"""candleLight / gs_usb USB CAN backend through libusb (userspace; no kernel driver).
++
++Local GeoTech addition, not upstream MakerMods code. Upstream supports only serial SLCAN
++on macOS; MakerModsLab ships candleLight (gs_usb) adapters, which enumerate as a vendor
++USB device (1d50:606f) rather than a serial port. This backend drives them directly with
++the ``gs_usb`` library on top of pyusb, using the libusb build bundled by
++``libusb-package`` when no system libusb is installed (macOS without Homebrew).
++
++It only moves frames; every safety behaviour stays in :mod:`maker_arm.arm`.
++
++Two adapter details matter for the SDK:
++
++- candleLight echoes each transmitted frame back on the IN endpoint (``echo_id`` other
++  than ``0xFFFFFFFF``). Those echoes are dropped so the arm never parses its own
++  commands as motor feedback.
++- One-shot mode (no automatic retransmission) is requested when the adapter supports it,
++  matching the SLCAN backend's ``A0`` setting: an unacknowledged command is dropped instead
++  of being replayed later as a stale setpoint.
++"""
++
++from __future__ import annotations
++
++import logging
++import platform
++import threading
++from dataclasses import dataclass
++from typing import Callable, Optional
++
++from .base import CanBackend, CanId
++
++log = logging.getLogger("maker_arm.transport")
++
++CAN_EFF_FLAG = 0x80000000
++CAN_RTR_FLAG = 0x40000000
++CAN_ERR_FLAG = 0x20000000
++CAN_EFF_MASK = 0x1FFFFFFF
++NONE_ECHO_ID = 0xFFFFFFFF
++
++
++def encode_can_id(can_id: int, extended: bool) -> int:
++    if extended:
++        if not 0 <= can_id <= CAN_EFF_MASK:
++            raise ValueError(f"extended CAN ID out of range: {can_id:#x}")
++        return can_id | CAN_EFF_FLAG
++    if not 0 <= can_id <= 0x7FF:
++        raise ValueError(f"standard CAN ID out of range: {can_id:#x}")
++    return can_id
++
++
++def decode_rx(echo_id: int, raw_id: int, dlc: int, data) -> Optional[tuple[CanId, bytes]]:
++    """Return ``(CanId, payload)`` for a received data frame, or None for echo/error/RTR frames."""
++    if echo_id != NONE_ECHO_ID:
++        return None  # our own transmitted frame coming back
++    if raw_id & (CAN_ERR_FLAG | CAN_RTR_FLAG):
++        return None
++    if dlc > 8:
++        return None
++    extended = bool(raw_id & CAN_EFF_FLAG)
++    rid = raw_id & CAN_EFF_MASK if extended else raw_id & 0x7FF
++    return CanId(rid, extended), bytes(data[:dlc])
++
++
++def _prime_libusb() -> None:
++    """Make pyusb's cached libusb1 backend use a loadable libusb (bundled if needed)."""
++    from usb.backend import libusb1
++
++    if libusb1.get_backend() is not None:
++        return
++    try:
++        import libusb_package
++    except ImportError as e:
++        raise RuntimeError("libusb not found: pip install libusb-package (or install libusb)") from e
++    path = str(libusb_package.get_library_path())
++    if libusb1.get_backend(find_library=lambda _name: path) is None:
++        raise RuntimeError(f"could not load libusb from {path}")
++
++
++@dataclass(frozen=True)
++class AdapterInfo:
++    serial: str
++    bus: int
++    address: int
++    product: str
++
++
++def list_adapters() -> list[AdapterInfo]:
++    _prime_libusb()
++    from gs_usb.gs_usb import GsUsb
++
++    out = []
++    for dev in GsUsb.scan():
++        try:
++            serial = dev.serial_number or ""
++            product = dev.gs_usb.product or ""
++        except Exception:
++            serial, product = "", ""
++        out.append(AdapterInfo(serial, dev.bus, dev.address, product))
++    return out
++
++
++class GsUsbBackend(CanBackend):
++    """A candleLight / gs_usb adapter opened through libusb."""
++
++    def __init__(self, serial: Optional[str] = None, bitrate: int = 1_000_000,
++                 one_shot: bool = True, read_timeout_ms: int = 20,
++                 feedback_paced_control: bool = False):
++        self._serial = serial
++        self._bitrate = bitrate
++        self._one_shot = one_shot
++        self._read_timeout_ms = read_timeout_ms
++        # Buffered USB adapter: no SLCAN-style per-reply pacing needed (Linux runs the same
++        # hardware unpaced through the kernel gs_usb driver). Kept switchable for diagnosis.
++        self.feedback_paced_control = feedback_paced_control
++        self.feedback_wait_timeout = 0.015
++        self._dev = None
++        self._cb: Optional[Callable[[int, bytes], None]] = None
++        self._tx_lock = threading.Lock()
++        self._running = False
++        self._rx_thread: Optional[threading.Thread] = None
++        self.error_frames = 0
++        self.echo_frames = 0
++        self.serial_number: Optional[str] = None
++
++    def _select(self):
++        from gs_usb.gs_usb import GsUsb
++
++        devs = GsUsb.scan()
++        if not devs:
++            raise RuntimeError("no candleLight/gs_usb CAN adapter found")
++        def serial_of(dev):
++            # A half-enumerated adapter cannot return string descriptors ("no langid"); skip it
++            # instead of failing the lookup for every other adapter.
++            try:
++                return dev.serial_number or ""
++            except Exception:
++                return None
++        if self._serial:
++            for dev in devs:
++                if serial_of(dev) == self._serial:
++                    return dev
++            found = ", ".join(serial_of(d) or "?" for d in devs)
++            raise RuntimeError(f"no gs_usb adapter with serial {self._serial!r} (found: {found}; "
++                               "an unreadable adapter needs a USB replug)")
++        if len(devs) > 1:
++            found = ", ".join(serial_of(d) or "?" for d in devs)
++            raise RuntimeError(f"several gs_usb adapters found ({found}); pass --adapter-serial")
++        return devs[0]
++
++    @staticmethod
++    def _start(dev, flags: int, bitrate: int) -> None:
++        """Replacement for ``GsUsb.start``: reset, bit timing, then channel start.
++
++        The library's start() calls detach_kernel_driver whenever libusb reports a driver.
++        On macOS that report flickers right after the USB reset, and detaching needs root or
++        an entitlement, so it fails nondeterministically with "Access denied". No macOS
++        kernel driver claims a gs_usb device, so detaching is attempted only on Linux.
++        Bit timing is set after the reset so it cannot be lost to it.
++        """
++        from gs_usb.constants import (GS_CAN_MODE_HW_TIMESTAMP, GS_CAN_MODE_LISTEN_ONLY,
++                                      GS_CAN_MODE_LOOP_BACK, GS_CAN_MODE_ONE_SHOT)
++        from gs_usb.gs_usb import GS_CAN_MODE_START, _GS_USB_BREQ_MODE
++        from gs_usb.gs_usb_structures import DeviceMode
++
++        dev.gs_usb.reset()
++        if platform.system() == "Linux" and dev.gs_usb.is_kernel_driver_active(0):
++            dev.gs_usb.detach_kernel_driver(0)
++        if not dev.set_bitrate(bitrate):
++            raise RuntimeError(f"adapter cannot be set to {bitrate} bit/s "
++                               f"(clock {dev.device_capability.fclk_can} Hz)")
++        flags &= dev.device_capability.feature
++        flags &= (GS_CAN_MODE_LISTEN_ONLY | GS_CAN_MODE_LOOP_BACK | GS_CAN_MODE_ONE_SHOT
++                  | GS_CAN_MODE_HW_TIMESTAMP)
++        dev.device_flags = flags
++        dev.gs_usb.ctrl_transfer(0x41, _GS_USB_BREQ_MODE, 0, 0,
++                                 DeviceMode(GS_CAN_MODE_START, flags).pack())
++
++    def open(self) -> None:
++        _prime_libusb()
++        from gs_usb.constants import GS_CAN_MODE_HW_TIMESTAMP, GS_CAN_MODE_NORMAL, GS_CAN_MODE_ONE_SHOT
++
++        dev = self._select()
++        self.serial_number = dev.serial_number
++        flags = GS_CAN_MODE_NORMAL | GS_CAN_MODE_HW_TIMESTAMP
++        if self._one_shot:
++            flags |= GS_CAN_MODE_ONE_SHOT
++        self._start(dev, flags, self._bitrate)
++        if self._one_shot and not dev.device_flags & GS_CAN_MODE_ONE_SHOT:
++            log.warning("gs_usb adapter %s does not support one-shot mode; "
++                        "unacknowledged frames will be retransmitted", self.serial_number)
++        self._dev = dev
++        self._running = True
++        self._rx_thread = threading.Thread(target=self._rx_loop, daemon=True,
++                                           name=f"gs_usb-rx-{self.serial_number}")
++        self._rx_thread.start()
++
++    def close(self) -> None:
++        self._running = False
++        if self._rx_thread:
++            self._rx_thread.join(timeout=1.0)
++            self._rx_thread = None
++        if self._dev is not None:
++            try:
++                self._dev.stop()
++            except Exception:
++                log.debug("could not stop gs_usb channel cleanly", exc_info=True)
++            try:
++                import usb.util
++                usb.util.dispose_resources(self._dev.gs_usb)
++            except Exception:
++                log.debug("could not release gs_usb device", exc_info=True)
++            self._dev = None
++
++    def send(self, can_id: int, data: bytes, extended: bool = True) -> None:
++        from gs_usb.gs_usb_frame import GsUsbFrame
++
++        if len(data) > 8:
++            raise ValueError(f"classic CAN payload is limited to 8 bytes, got {len(data)}")
++        frame = GsUsbFrame(can_id=encode_can_id(can_id, extended), data=bytes(data))
++        with self._tx_lock:
++            if self._dev is None:
++                raise RuntimeError("gs_usb backend is not open")
++            self._dev.send(frame)
++
++    def set_recv_callback(self, cb) -> None:
++        self._cb = cb
++
++    def _rx_loop(self) -> None:
++        from gs_usb.gs_usb_frame import GsUsbFrame
++
++        while self._running:
++            frame = GsUsbFrame()
++            try:
++                if not self._dev.read(frame, self._read_timeout_ms):
++                    continue  # timeout
++            except Exception:
++                if self._running:
++                    log.exception("gs_usb read failed")
++                break
++            try:
++                if frame.echo_id != NONE_ECHO_ID:
++                    self.echo_frames += 1
++                    continue
++                if frame.can_id & CAN_ERR_FLAG:
++                    self.error_frames += 1
++                    continue
++                decoded = decode_rx(frame.echo_id, frame.can_id, frame.can_dlc, frame.data)
++                cb = self._cb
++                if decoded and cb:
++                    cb(*decoded)
++            except Exception:
++                log.exception("gs_usb RX frame-processing exception (continuing to receive frames)")
+diff --git a/tests/unit/test_gs_usb_codec.py b/tests/unit/test_gs_usb_codec.py
+new file mode 100644
+index 0000000..df231e4
+--- /dev/null
++++ b/tests/unit/test_gs_usb_codec.py
+@@ -0,0 +1,38 @@
++import pytest
++
++from maker_arm.transport.base import create_backend
++from maker_arm.transport.gs_usb import (CAN_EFF_FLAG, CAN_ERR_FLAG, CAN_RTR_FLAG, NONE_ECHO_ID,
++                                        GsUsbBackend, decode_rx, encode_can_id)
++
++
++def test_encode_standard_and_extended_ids():
++    assert encode_can_id(0x07, extended=False) == 0x07
++    assert encode_can_id(0x1234, extended=True) == 0x1234 | CAN_EFF_FLAG
++    with pytest.raises(ValueError):
++        encode_can_id(0x800, extended=False)
++    with pytest.raises(ValueError):
++        encode_can_id(0x2000_0000, extended=True)
++
++
++def test_decode_received_standard_frame():
++    can_id, data = decode_rx(NONE_ECHO_ID, 0x01, 3, [1, 2, 3, 0, 0, 0, 0, 0])
++    assert can_id == 0x01 and can_id.extended is False
++    assert data == b"\x01\x02\x03"
++
++
++def test_decode_received_extended_frame():
++    can_id, _ = decode_rx(NONE_ECHO_ID, 0x0200FD01 | CAN_EFF_FLAG, 8, [0] * 8)
++    assert can_id == 0x0200FD01 and can_id.extended is True
++
++
++def test_decode_drops_echo_error_and_rtr_frames():
++    assert decode_rx(0, 0x01, 8, [0] * 8) is None  # echo of our own TX
++    assert decode_rx(NONE_ECHO_ID, 0x01 | CAN_ERR_FLAG, 8, [0] * 8) is None
++    assert decode_rx(NONE_ECHO_ID, 0x01 | CAN_RTR_FLAG, 0, [0] * 8) is None
++    assert decode_rx(NONE_ECHO_ID, 0x01, 9, [0] * 8) is None
++
++
++def test_factory_builds_gs_usb_backend_without_touching_usb():
++    be = create_backend("gs_usb", serial="ABC")
++    assert isinstance(be, GsUsbBackend)
++    assert be.feedback_paced_control is False
