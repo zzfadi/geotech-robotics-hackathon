@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-08T12:12:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Real Maker Arms are driven from Unreal Table 10, the web page and VR; the bridge starts automatically with the editor through a login agent.",
+  "why": "User request: no separate app, bridge starts with UE, control the real arms from the web UI or by driving the arms in VR. User confirmed it works on the real arms and in VR.",
+  "where": ["docs/table10-real-arms.md", "DreamSim/table10_agent.py", "DreamSim/install_table10_agent.sh", "DreamSim/launchd/one.geotech.table10-agent.plist", "Unreal/TheHumanTouch/Tools/real_arm_service.py"],
+  "details": ["First hardware drive: Move up raised the real arms with Unreal (worst lag 3.5 deg); Go to idle returned them within 1-3 deg.", "Login agent one.geotech.table10-agent keeps the link, live camera and headless real-arm service running while the editor is up.", "Dead-man heartbeat, 15 min drive expiry, tailnet-only drive enable; the hardware E-stop stays the emergency stop."],
+  "workstream_update": {"status": "in-progress"}
+}

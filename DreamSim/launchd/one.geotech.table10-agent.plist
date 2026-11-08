@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Table 10 agent at login: keeps the real-arm link, the live Table 10 camera and the headless
+     real-arm service running whenever the Unreal editor is up (DreamSim/table10_agent.py).
+     Installed by DreamSim/install_table10_agent.sh. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>one.geotech.table10-agent</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/geo_dennis/.local/bin/uv</string>
+    <string>run</string><string>--quiet</string><string>--no-project</string>
+    <string>python</string><string>-u</string>
+    <string>/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/claude-fleet-main/DreamSim/table10_agent.py</string>
+  </array>
+  <key>WorkingDirectory</key><string>/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/claude-fleet-main</string>
+  <key>EnvironmentVariables</key>
+  <dict><key>PATH</key><string>/Users/geo_dennis/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>10</integer>
+  <key>StandardOutPath</key><string>/Users/geo_dennis/Library/Logs/CoPresence/one.geotech.table10-agent.log</string>
+  <key>StandardErrorPath</key><string>/Users/geo_dennis/Library/Logs/CoPresence/one.geotech.table10-agent.log</string>
+</dict>
+</plist>
