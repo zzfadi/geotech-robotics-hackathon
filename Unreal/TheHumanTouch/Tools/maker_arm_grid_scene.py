@@ -32,27 +32,31 @@ def number_sticker(index):
         name = prefix + suffix
         a = actors.get(name)
         if a is None:
-            a = subsystem.spawn_actor_from_class(kind, unreal.Vector(85+d[0], 75+d[1], height))
+            a = subsystem.spawn_actor_from_class(kind, unreal.Vector(70+d[0], -70+d[1], height))
             a.set_actor_label(name)
             a.set_folder_path('MakerFleet/T%02d' % index)
             a.set_editor_property('tags', tags)
         a.modify()
-        a.set_actor_location(unreal.Vector(85+d[0], 75+d[1], height), False, True)
+        a.set_actor_location(unreal.Vector(70+d[0], -70+d[1], height), False, True)
         if suffix == 'NumberSticker':
             c = a.static_mesh_component
             c.set_static_mesh(unreal.load_asset('/Engine/BasicShapes/Cube.Cube'))
+            c.set_material(0, unreal.load_asset('/Engine/BasicShapes/BasicShapeMaterial'))
             c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
             c.set_cast_shadow(False)
-            a.set_actor_scale3d(unreal.Vector(.12, .12, .001))
+            a.set_actor_scale3d(unreal.Vector(.20, .20, .001))
         else:
-            a.set_actor_rotation(unreal.Rotator(90, 0, 0), False)
+            a.set_actor_rotation(unreal.Rotator(pitch=90, yaw=0, roll=0), False)
             c = a.text_render
             c.set_text(str(index+1))
-            c.set_world_size(8)
+            c.set_font(unreal.load_asset('/Engine/EngineFonts/RobotoDistanceField'))
+            c.set_world_size(13)
             c.set_horizontal_alignment(unreal.HorizTextAligment.EHTA_CENTER)
             c.set_vertical_alignment(unreal.VerticalTextAligment.EVRTA_TEXT_CENTER)
             c.set_text_render_color(unreal.Color(0, 0, 0, 255))
             c.set_cast_shadow(False)
+            for icon in a.get_components_by_class(unreal.BillboardComponent):
+                icon.set_visibility(False)
     return {'table_id': index, 'sticker': str(index+1)}
 
 
@@ -77,7 +81,7 @@ def brighten_global():
         sun.set_actor_label('MakerLighting_GlobalDaylight')
         sun.set_folder_path('MakerStation/Environment')
     sun.modify()
-    sun.set_actor_rotation(unreal.Rotator(-45, -35, 0), False)
+    sun.set_actor_rotation(unreal.Rotator(pitch=-45, yaw=-35, roll=0), False)
     light = sun.light_component
     light.modify()
     light.set_intensity(2500.0)
