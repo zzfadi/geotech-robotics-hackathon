@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T15:02:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Table 10 real arms can be driven from the web page without Unreal, with click-by-click confirmation from the arm SDK, and the debugger has a public link.",
+  "why": "Drive stopped working after auto-start: macOS throttled the login agent, so the SDK's motor loop stalled. The user also asked for web-only testing, visible feedback for each click, and a public page.",
+  "where": ["DreamSim/launchd/one.geotech.table10-agent.plist", "Unreal/TheHumanTouch/Tools/real_arm_service.py", "DreamSim/table10_agent.py", "DreamSim/web/index.html", "Unreal/TheHumanTouch/Tools/maker_arm_real_link.py", "docs/table10-real-arms.md"],
+  "details": ["Under launchd a 5 ms sleep ran about 35 ms late; ProcessType Interactive brings the timer lag down to 1.1 ms. The service now refuses torque on when its timer lags.", "Arm services run with or without the editor. Torque on holds the arms where they are, and Move up / Go to idle run in the arm service, with Unreal mirroring them and taking over once it matches.", "Each click shows Server, Mac agent, SDK and physical-arm steps. An arm view is drawn from the joint angles.", "Public view-only link via a Cloudflare quick tunnel on Luna2, while Tailscale Funnel awaits admin approval.", "Tested with simulated motors; hardware retest pending while the arms are unplugged."]
+}

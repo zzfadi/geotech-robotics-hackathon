@@ -2,12 +2,15 @@
 
 The SDK bridge (Tools/real_arm_bridge.py, run with the maker-arm-sdk venv) and this module talk
 through two files in Saved/RealArmLink:
-  real_state.json  bridge -> Unreal: mode ('mirror' | 'drive') and measured joints per side
+  real_state.json  bridge -> Unreal: mode ('mirror' | 'web' | 'drive' | 'hold') and measured joints per side
   ue_state.json    Unreal -> bridge: Table 10 joints per side (URDF radians, jaw gap metres)
 
 Modes (decided by the bridge, read here every tick):
 - mirror: the real arms are torque-off; Table 10's arms are posed from the measured joints, so
   moving a real arm by hand moves the virtual one 1:1 (joint level).
+- web: an arm is torque-on and driven by the real-arm service itself (web tests, or holding with no
+  Unreal); Table 10 mirrors it like in mirror mode. Once Table 10 matches it, the service hands the
+  arm to drive.
 - drive, or no fresh bridge state: drag a Table 10 gripper (MakerInteraction_T09__MakerArm_<side>_link_007) with the
   gizmo; damped-least-squares IK poses the whole arm within joint limits valid for both the
   model and the real motors, and ue_state.json publishes the joints for the bridge to follow.
@@ -15,9 +18,9 @@ Modes (decided by the bridge, read here every tick):
   exact joint recovery instead.
 
 Test motions (web buttons via DreamSim/table10_agent.py -> command.json): 'move_up' and 'idle'
-(maker_arm_real_tests) play on Table 10 and are published like any other pose, so in drive
-mode the real arms follow under the bridge's guards. In mirror mode (torque off) they run as a
-virtual preview: Table 10 moves, the real arms stay still, then Table 10 eases back to the
+(maker_arm_real_tests) run here only while both arms are torque-off (mirror): a virtual
+preview. With an arm on, the agent sends the tests to the real-arm service instead (web mode).
+In mirror mode they run as a virtual preview: Table 10 moves, the real arms stay still, then Table 10 eases back to the
 measured real pose and mirroring resumes.
 
 Transforms are set without transactions or Modify(): no Multi-User history and nothing saved.
@@ -193,7 +196,9 @@ class Link:
             self.real = None
             return None
         modes = set(merged["modes"].values())
-        merged["mode"] = "drive" if "drive" in modes else "hold" if "hold" in modes else "mirror"
+        # 'web': torque on, driven by the real-arm service (web tests, or holding without Unreal); Table 10 mirrors it.
+        merged["mode"] = ("drive" if "drive" in modes else "hold" if "hold" in modes else
+                          "web" if "web" in modes else "mirror")
         self.real = merged
         return merged
 
@@ -233,6 +238,8 @@ class Link:
             return self._report(command, "rejected", "command too old")
         if real and real.get("mode") == "hold":
             return self._report(command, "rejected", "an arm is holding after a fault: press Release now (or use the E-stop) first")
+        if real and "web" in (real.get("modes") or {}).values():
+            return self._report(command, "rejected", "the real-arm service runs tests while the arms are on")
         preview = bool(real and real.get("mode") == "mirror")
         if any(self.q[s] is None for s in SIDES):
             return self._report(command, "rejected", "Table 10 arm pose not known yet")
@@ -387,7 +394,7 @@ class Link:
                 self.mode = real.get("mode")
                 for side in SIDES:
                     arm = real["arms"].get(side)
-                    if real["modes"].get(side) in ("mirror", "hold") and arm and arm.get("q"):
+                    if real["modes"].get(side) in ("mirror", "hold", "web") and arm and arm.get("q"):
                         self._mirror(side, arm)
                     else:
                         self._follow_handle(side)

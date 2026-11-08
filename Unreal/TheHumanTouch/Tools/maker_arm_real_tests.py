@@ -35,12 +35,13 @@ def _travel(path):
     return sum(max(abs(b - a) for a, b in zip(p, n)) for p, n in zip(path, path[1:]))
 
 
-def plan(action, q_now, gaps, yaws, bases, limits):
-    """Waypoint paths per side and one shared duration. Raises ValueError when unsafe."""
+def plan(action, q_now, gaps, yaws, bases, limits, sides=SIDES):
+    """Waypoint paths per side and one shared duration. Raises ValueError when unsafe.
+    sides: the arms to plan (a per-arm real-arm service plans only its own arm)."""
     if action not in ACTIONS:
         raise ValueError("unknown test action %r" % action)
     paths = {}
-    for side in SIDES:
+    for side in sides:
         q0 = list(q_now[side])
         if action == "idle":
             target = mapping.clamp([math.radians(v) for v in IDLE_DEG], limits)

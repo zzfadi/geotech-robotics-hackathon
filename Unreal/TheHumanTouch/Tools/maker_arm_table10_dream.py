@@ -82,8 +82,17 @@ class Runtime:
             raise RuntimeError('Start the Table 10 Dream runtime outside a transaction')
         self.callback = unreal.register_slate_post_tick_callback(self._tick)
 
+    @staticmethod
+    def _alive(actor):
+        # A deleted actor's Python wrapper makes is_valid itself raise ("ObjectInstance is null"); treat it as gone
+        # instead of failing every tick (seen 2026-11-08 after the VR session replaced the can).
+        try:
+            return actor is not None and unreal.SystemLibrary.is_valid(actor)
+        except Exception:
+            return False
+
     def _find_object(self, found=None):
-        if self.cup is not None and unreal.SystemLibrary.is_valid(self.cup):
+        if self._alive(self.cup):
             return
         if found is None:
             found = {a.get_actor_label(): a for a in unreal.GameplayStatics.get_all_actors_of_class(self.world, unreal.StaticMeshActor)

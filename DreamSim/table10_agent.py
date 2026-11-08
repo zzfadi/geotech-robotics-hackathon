@@ -6,9 +6,14 @@
 - Uploads every new Table 10 frame (up to 10 fps) to the web page.
 - Relays the web page's test buttons (move_up / idle / stop) to the link via
   Saved/RealArmLink/command.json and reports link, bridge and sync status back.
-- Starts and supervises the headless real-arm service (Tools/real_arm_service.py, maker-arm-sdk
-  venv) while the editor runs, and turns the web page's drive request into the service's
-  heartbeat (control.json). No heartbeat -> the service returns the arms and releases torque.
+- Starts and supervises the headless real-arm services (Tools/real_arm_service.py, one per arm,
+  maker-arm-sdk venv) at all times, with or without the editor, and turns the web page's drive
+  request into the services' heartbeat (control.json). No heartbeat -> the service returns the arms
+  and releases torque.
+- Web control works without Unreal: while an arm is torque-on, the test buttons go to the services
+  (control.json "test"), which run them on the real arms; the editor link, if running, mirrors them.
+  With both arms off, the buttons play a virtual preview in the editor.
+- Sends an Unreal-independent arm view (forward kinematics of the real and the Table 10 joints).
 
     python3 DreamSim/table10_agent.py [--server http://100.84.28.59:8786]
 """
@@ -17,6 +22,7 @@ import base64
 import json
 import math
 import subprocess
+import threading
 import sys
 import time
 import urllib.error
@@ -81,6 +87,29 @@ def editor(snippet, timeout=60):
     raise RuntimeError((result.stdout+result.stderr)[-600:])
 
 
+class EditorCalls:
+    """Editor snippets on worker threads. A busy or hung editor (a crash stalls exec-python for its full 60 s
+    timeout) must never stall the heartbeat: it is the drive dead-man and what keeps the web controls online."""
+
+    def __init__(self):
+        self.busy = set()
+
+    def start(self, name, snippet, report):
+        if name in self.busy:
+            return False
+        self.busy.add(name)
+
+        def run():
+            try:
+                print('starting Table 10 %s: %s' % (name, report(editor(snippet))), flush=True)
+            except Exception as error:
+                print('%s start failed: %s' % (name, str(error)[-200:]), flush=True)
+            finally:
+                self.busy.discard(name)
+        threading.Thread(target=run, daemon=True, name='editor-' + name).start()
+        return True
+
+
 def editor_running():
     return subprocess.run(['pgrep', '-f', 'UnrealEditor.app/Contents/MacOS/UnrealEditor'], capture_output=True).returncode == 0
 
@@ -99,6 +128,46 @@ def stop_legacy_dual_service():
 
 
 MODE_ORDER = ('drive', 'returning', 'hold', 'mirror', 'off')
+FINAL = ('done', 'rejected', 'aborted', 'stopped', 'error')
+sys.path.insert(0, str(TOOLS))
+try:
+    import maker_arm_real_mapping as mapping  # pure Python URDF kinematics (no Unreal)
+except Exception as error:  # the arm view is optional
+    mapping = None
+    print('arm view disabled: %s' % error, flush=True)
+VIEW_BASES = {'left': (20., -40., 76.), 'right': (20., 40., 76.)}  # station-local cm (maker_arm_station.BASES)
+
+
+def arm_points(arms):
+    """Joint-frame positions per side for the web arm view, as 'x,y,z x,y,z ...' (cm, station-local).
+    A string, because the server clips telemetry nested deeper than four levels."""
+    out = {}
+    if mapping is None:
+        return out
+    for side, arm in (arms or {}).items():
+        q = arm.get('q')
+        if side not in VIEW_BASES or not q or len(q) != 6:
+            continue
+        try:
+            fk = mapping.fk_ue(q, arm.get('gap_m', .04), math.pi, VIEW_BASES[side])
+            out[side] = ' '.join(','.join('%.1f' % v for v in fk[name][0]) for name in mapping.CHAIN)
+        except Exception:
+            pass
+    return out
+
+
+def merged_test(services, test_id):
+    """The per-arm services' results for one web test, as one test record for the server."""
+    parts = [st.get('test') for st in (s.status() for s in services)]
+    parts = [t for t in parts if t and t.get('id') == test_id]
+    if not parts:
+        return None
+    states = [t.get('state') for t in parts]
+    state = ('running' if 'running' in states else next((x for x in ('error', 'aborted', 'rejected', 'stopped') if x in states), 'done'))
+    return {'id': test_id, 'action': parts[0].get('action'), 'state': state,
+            'detail': '; '.join('%s: %s' % (t.get('side'), t.get('detail')) for t in parts)[:300],
+            'progress': min(t.get('progress') or 0 for t in parts), 'lag_deg': max(t.get('lag_deg') or 0 for t in parts),
+            'source': 'real-arm service'}
 
 
 def merged_status(services):
@@ -112,6 +181,9 @@ def merged_status(services):
     mode = next((m for m in MODE_ORDER if m in modes), 'off')
     message = '; '.join('%s: %s' % (side, st.get('message')) for side, st in sorted(live.items()) if st.get('message'))
     out = {'running': True, 'mode': mode, 'message': message[:400], 'modes': {side: st.get('mode') for side, st in live.items()},
+           'sources': {side: st.get('source') for side, st in live.items() if st.get('source')},
+           'messages': {side: (st.get('message') or '')[:200] for side, st in live.items()},
+           'acks': {side: st.get('ack') for side, st in live.items() if st.get('ack')},
            'answering': {}, 'bus': {}, 'holding': [], 'driving': []}
     for st in live.values():
         out['answering'].update(st.get('answering') or {})
@@ -130,7 +202,10 @@ def merged_real():
             out['arms'].update(d.get('arms') or {})
             out['unix'] = max(out['unix'], d.get('unix', 0))
             out['mode'] = 'drive' if d.get('mode') == 'drive' or out['mode'] == 'drive' else (out['mode'] or d.get('mode'))
-    return out if out['arms'] else (read_json(LINK_DIR/'real_state.json') or {})
+    if out['arms']:
+        return out
+    legacy = read_json(LINK_DIR/'real_state.json') or {}  # the old two-arm service; only if it is live
+    return legacy if time.time()-legacy.get('unix', 0) < 1 else {}
 
 
 class RealArmService:
@@ -162,8 +237,8 @@ class RealArmService:
         return ['%s: %s' % (self.side, l) for l in lines if l and not l.startswith(('[mirror] left', '[mirror] right', '[drive] left', '[drive] right', 'gs_usb adapter'))][-n:]
 
     def supervise(self, now):
-        if editor_running():
-            self.editor_gone = None
+        # Always on, editor or not: the web page controls the arms without Unreal.
+        if True:
             if (not self.running() and now-self.started > RESTART_EVERY_S and SDK_PYTHON.exists()
                     and not interactive_bridge_running()):
                 self.started = now
@@ -173,10 +248,6 @@ class RealArmService:
                      '--state-dir', str(self.dir), '--ue-state', str(LINK_DIR/'ue_state.json'), '--control', str(LINK_DIR/'control.json')],
                     cwd=TOOLS, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
                 print('started %s real-arm service (pid %d)' % (self.side, self.process.pid), flush=True)
-        else:
-            self.editor_gone = self.editor_gone or now
-            if self.running() and now-self.editor_gone > 30:
-                self.stop('editor closed')
 
     def stop(self, why):
         if self.running():
@@ -221,6 +292,7 @@ def main():
     CAMERA_DIR.mkdir(parents=True, exist_ok=True)
     restarted = {'link': 0., 'camera': 0.}
     services = [RealArmService('left'), RealArmService('right')]
+    calls = EditorCalls()
     stop_legacy_dual_service()
     drive = {'on': False, 'seq': 0}
     release_seq = 0
@@ -228,6 +300,10 @@ def main():
     last_frame_seq = None
     camera_advance = time.monotonic()
     claimed = None
+    web_test = None      # the latest test handed to the real-arm services (control.json "test")
+    local_test = None    # a test the agent itself had to refuse
+    routed = {}          # test id -> 'service' | 'editor'
+    control_sent = {}
     next_beat = 0.
     print('Table 10 agent: server %s' % args.server, flush=True)
     while True:
@@ -255,8 +331,16 @@ def main():
             real, ue = merged_real(), read_json(LINK_DIR/'ue_state.json')
             real_age = time.time()-(real or {}).get('unix', 0)
             ue_age = time.time()-(ue or {}).get('unix', 0)
+            status = merged_status(services)
+            test = (ue or {}).get('test')
+            if claimed and routed.get(claimed) == 'service':
+                test = merged_test(services, claimed) or {'id': claimed, 'state': 'sent', 'detail': 'sent to the real-arm services'}
+            elif local_test and local_test.get('id') == claimed:
+                test = local_test
+            elif claimed and routed.get(claimed) == 'editor' and test and test.get('id') == claimed:
+                test = {**test, 'source': 'unreal preview'}
             report = {
-                'link': {'mode': (ue or {}).get('mode'), 'age_s': round(ue_age, 2), 'test': (ue or {}).get('test'),
+                'link': {'mode': (ue or {}).get('mode'), 'age_s': round(ue_age, 2), 'test': test,
                          'world': (ue or {}).get('world'),
                          'q_deg': {s: [round(math.degrees(v), 1) for v in a.get('q', [])] for s, a in ((ue or {}).get('arms') or {}).items()}},
                 'bridge': {'mode': (real or {}).get('mode'), 'age_s': round(real_age, 2),
@@ -264,9 +348,11 @@ def main():
                 'sync_deg': sync_deg(real, ue) if real_age < 1 and ue_age < 1 else {},
                 'camera': {'running': bool(info.get('running')), 'sequence': seq, 'error': info.get('error'),
                            'age_s': round(time.time()-info.get('captured_unix', 0), 2) if info else None},
-                'claimed': claimed}
-            status = merged_status(services)
-            report['service'] = {**status, 'interactive_bridge': interactive_bridge_running() if not status.get('running') else False}
+                'claimed': claimed,
+                'view': {'real': arm_points((real or {}).get('arms')),
+                         'virtual': arm_points((ue or {}).get('arms')) if ue_age < 1 else {}}}
+            report['service'] = {**status, 'interactive_bridge': interactive_bridge_running() if not status.get('running') else False,
+                                 'control': control_sent}
             report['log'] = sum((s.log_tail() for s in services), [])[-12:]
             try:
                 reply = server.post('/api/table10/agent', report)
@@ -275,19 +361,32 @@ def main():
                 release_seq = reply.get('release_seq', release_seq)
                 command = reply.get('command')
                 if command and command.get('id') != claimed:
-                    write_json(LINK_DIR/'command.json', {'id': command['id'], 'action': command['action'], 'unix': time.time()})
                     claimed = command['id']
-                    print('test command: %s (%s)' % (command['action'], command['id'][:8]), flush=True)
+                    item = {'id': command['id'], 'action': command['action'], 'unix': time.time()}
+                    torque_on = any(m == 'drive' for m in (status.get('modes') or {}).values())
+                    if torque_on:  # the real-arm services run it (no Unreal needed); the editor mirrors
+                        web_test, routed[claimed] = item, 'service'
+                        where = 'real-arm services'
+                    elif ue_age < 3:  # arms off: virtual preview in the editor
+                        write_json(LINK_DIR/'command.json', item)
+                        routed[claimed], where = 'editor', 'editor (virtual preview)'
+                    else:
+                        local_test = {**item, 'state': 'rejected',
+                                      'detail': 'Unreal is not running and the arms are off: turn the arms ON to test the real arms'}
+                        routed[claimed], where = 'agent', 'nobody (refused)'
+                    print('test command: %s (%s) -> %s' % (command['action'], command['id'][:8], where), flush=True)
             except (OSError, ValueError) as error:
                 print('heartbeat: %s' % error, flush=True)
             # Drive heartbeat for the real-arm service: only while the server answers.
-            write_json(LINK_DIR/'control.json', {'unix': time.time(), 'source': 'web',
-                                                  'drive': bool(drive.get('on')) and now-server_ok < SERVER_LOST_S,
-                                                  'drive_seq': drive.get('seq'), 'release_seq': release_seq,
-                                                  'sides': drive.get('sides') or ['left', 'right']})
+            control = {'unix': time.time(), 'source': 'web', 'drive': bool(drive.get('on')) and now-server_ok < SERVER_LOST_S,
+                       'drive_seq': drive.get('seq'), 'release_seq': release_seq,
+                       'sides': drive.get('sides') or ['left', 'right'], 'test': web_test}
+            write_json(LINK_DIR/'control.json', control)
+            control_sent = {'drive': control['drive'], 'drive_seq': control['drive_seq'], 'release_seq': release_seq,
+                            'test': (web_test or {}).get('id')}  # reported next beat: what the services were told
             # A drive request the service could not engage within its window: clear it so the
             # page shows the refusal and Enable drive can be pressed again.
-            if drive.get('on') and status.get('mode') == 'mirror' and drive.get('since') and time.time()-drive['since'] > 13:
+            if drive.get('on') and status.get('mode') in ('mirror', 'off') and drive.get('since') and time.time()-drive['since'] > 13:
                 try:
                     server.post('/api/table10/test', {'action': 'drive_off', 'source': 'engage failed'})
                     print('drive request cleared: not engaged (%s)' % status.get('message'), flush=True)
@@ -297,19 +396,14 @@ def main():
             for service in services:
                 service.supervise(now)
             # Restart the link or camera when they stop advancing (e.g. after an editor restart).
-            if ue_age > 3 and now-restarted['link'] > RESTART_EVERY_S:
-                restarted['link'] = now
-                try:
-                    print('starting Table 10 link: %s' % editor(START_LINK).get('link', {}).get('running'), flush=True)
-                except Exception as error:
-                    print('link start failed: %s' % str(error)[-200:], flush=True)
-            if now-camera_advance > 5 and now-restarted['camera'] > RESTART_EVERY_S and (ue or {}).get('world') != 'simulate':
-                restarted['camera'] = now
-                try:
-                    print('starting Table 10 camera: %s' % editor(START_CAMERA).get('camera'), flush=True)
-                    camera_advance = now
-                except Exception as error:
-                    print('camera start failed: %s' % str(error)[-200:], flush=True)
+            stale_link = ue_age > 3 and now-restarted['link'] > RESTART_EVERY_S
+            stale_camera = (now-camera_advance > 5 and now-restarted['camera'] > RESTART_EVERY_S
+                            and (ue or {}).get('world') != 'simulate')
+            if (stale_link or stale_camera) and editor_running():
+                if stale_link and calls.start('link', START_LINK, lambda out: out.get('link', {}).get('running')):
+                    restarted['link'] = now
+                if stale_camera and calls.start('camera', START_CAMERA, lambda out: out.get('camera')):
+                    restarted['camera'] = camera_advance = now
         time.sleep(.02)
 
 

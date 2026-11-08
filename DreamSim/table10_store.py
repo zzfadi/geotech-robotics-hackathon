@@ -82,16 +82,18 @@ class Table10Tests:
 
     def agent_update(self, data):
         data = data or {}
-        self.agent = _clip({k: data.get(k) for k in ('link', 'bridge', 'sync_deg', 'camera', 'service', 'log')})
+        self.agent = _clip({k: data.get(k) for k in ('link', 'bridge', 'sync_deg', 'camera', 'service', 'log', 'view')})
         self.agent_at = self.clock()
         command = self.command
         if command:
             test = (data.get('link') or {}).get('test') or {}
             if test.get('id') == command['id'] and test.get('state'):
                 command.update(status=str(test['state'])[:20], detail=str(test.get('detail') or '')[:300],
-                               progress=test.get('progress') if isinstance(test.get('progress'), (int, float)) else command['progress'])
+                               progress=test.get('progress') if isinstance(test.get('progress'), (int, float)) else command['progress'],
+                               lag_deg=test.get('lag_deg') if isinstance(test.get('lag_deg'), (int, float)) else None,
+                               source=str(test.get('source') or '')[:40] or None, updated_at=self.clock())
             elif data.get('claimed') == command['id'] and command['status'] == 'queued':
-                command['status'] = 'sent'
+                command.update(status='sent', updated_at=self.clock())
             elif command['status'] in ACTIVE and self.clock()-command['created_at'] > 60:
                 command.update(status='error', detail='no result from the editor link within 60 s')
         pending = command if command and command['status'] == 'queued' else None

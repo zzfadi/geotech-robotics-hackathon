@@ -16,6 +16,9 @@
   <key>WorkingDirectory</key><string>/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/claude-fleet-main</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/Users/geo_dennis/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string></dict>
+  <!-- Without Interactive, launchd applies background resource limits: a 5 ms sleep overran by ~35 ms and the
+       SDK's 200 Hz motor loop stalled past its 0.25 s feedback watchdog right after torque on. -->
+  <key>ProcessType</key><string>Interactive</string>
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><true/>
   <key>ThrottleInterval</key><integer>10</integer>

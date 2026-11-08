@@ -173,3 +173,46 @@ The link merges the per-arm states, with a mode per side. The SDK's control loop
 The page also shows a live real-arm log (also in `GET /api/table10/test` → `agent.log`).
 
 The earlier "power connection" theory was wrong. The motors were fine; the two-adapter process was not.
+
+## macOS throttled the login agent (2026-11-08, 14:3x)
+
+After the agent was installed as a login agent, both arms again lost motor feedback within 0.3 s of torque on,
+each in its own process.
+- **Cause.** launchd applies background resource limits to jobs without a `ProcessType`. Measured median overshoot
+  of a 5 ms sleep:
+  - under launchd: about 35 ms;
+  - from a terminal: about 7 ms.
+  The SDK's 200 Hz motor loop stalled past its 0.25 s feedback watchdog. Raising the thread QoS from inside the
+  process did not help.
+- **Fix.** The plist sets `ProcessType` to `Interactive`, which brings the service's timer lag down to 1.1 ms. The
+  service measures its timer lag before every torque on (`timer_ms` in `service.json`) and refuses drive above
+  15 ms, with the reason shown on the page.
+- **Agent stalls.** Editor calls (link and camera restarts) used to run on the heartbeat loop. When the editor
+  crashed, a 60 s exec-python timeout froze the heartbeat and took the web controls offline. They now run on
+  worker threads.
+
+## Web control without Unreal (2026-11-08, 15:0x)
+
+The arm services run all the time, editor or not, so the page controls the real arms on its own.
+- **Turn arms ON** enables the motors where they are; Unreal is not needed, and there is no 5° match check.
+- **Move up and Go to idle** with an arm on go to that arm's service (`control.json` `test`), which plans them
+  with `maker_arm_real_tests` and runs them on the real arm:
+  - capped at 0.35 rad/s;
+  - a hitch pauses the motion rather than letting it jump;
+  - it aborts and holds if the arm lags 12° for 1 s.
+- **With Unreal running,** an arm driven from the web publishes mode `web` and the link mirrors it. Once Table 10
+  matches the arm within 3° for 0.5 s, the service hands it to Unreal, so wrist handles and grippers dragged in
+  Unreal or VR move it. If Unreal disappears, the arm holds and web control continues instead of releasing.
+- **With both arms off,** the buttons are a virtual preview in Unreal, labelled as such on the page.
+
+The page also has:
+- an arm view drawn from the joint angles: real arms solid, Unreal Table 10 dashed;
+- a status line per arm;
+- step-by-step feedback for every click (Server → Mac agent → SDK → physical arm), from acknowledgements written
+  by each arm service.
+
+**Public link.** Tailscale Funnel still awaits tailnet admin approval. A Cloudflare quick tunnel runs on Luna2 as
+the scheduled task `TheHumanTouch-PublicTunnel` (`cloudflared` 2026.10.7 in `%LOCALAPPDATA%\cloudflared`). It
+points at the Tailscale-serve listener, so public visitors get the same view-only access, with the operator code
+for controls. The `trycloudflare.com` URL changes whenever the task restarts; find the current one in
+`%LOCALAPPDATA%\cloudflared\public-tunnel.log`.
