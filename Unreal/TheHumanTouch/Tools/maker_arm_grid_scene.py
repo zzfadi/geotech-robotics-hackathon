@@ -13,6 +13,49 @@ def _xyz(v):
     return (v.x, v.y, v.z)
 
 
+def number_sticker(index):
+    """A flush tabletop number; stable internal T00..T10 become visible 1..11."""
+    fleet._check_idle()
+    d = grid.offset(index)
+    actors = fleet._actors()
+    subsystem = fleet._subsystem()
+    prefix = 'MakerFleet_T%02d__' % index
+    for suffix in ('Label_Front', 'Label_Back'):
+        old = actors.get(prefix + suffix)
+        if old is not None:
+            subsystem.destroy_actor(old)
+    tags = [unreal.Name(fleet.FLEET_TAG), unreal.Name('MakerTableNumber')]
+    if index:
+        tags.append(unreal.Name(fleet.table_tag(index)))
+    for suffix, kind, height in (('NumberSticker', unreal.StaticMeshActor, 75.06),
+                                 ('NumberText', unreal.TextRenderActor, 75.13)):
+        name = prefix + suffix
+        a = actors.get(name)
+        if a is None:
+            a = subsystem.spawn_actor_from_class(kind, unreal.Vector(85+d[0], 75+d[1], height))
+            a.set_actor_label(name)
+            a.set_folder_path('MakerFleet/T%02d' % index)
+            a.set_editor_property('tags', tags)
+        a.modify()
+        a.set_actor_location(unreal.Vector(85+d[0], 75+d[1], height), False, True)
+        if suffix == 'NumberSticker':
+            c = a.static_mesh_component
+            c.set_static_mesh(unreal.load_asset('/Engine/BasicShapes/Cube.Cube'))
+            c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+            c.set_cast_shadow(False)
+            a.set_actor_scale3d(unreal.Vector(.12, .12, .001))
+        else:
+            a.set_actor_rotation(unreal.Rotator(90, 0, 0), False)
+            c = a.text_render
+            c.set_text(str(index+1))
+            c.set_world_size(8)
+            c.set_horizontal_alignment(unreal.HorizTextAligment.EHTA_CENTER)
+            c.set_vertical_alignment(unreal.VerticalTextAligment.EVRTA_TEXT_CENTER)
+            c.set_text_render_color(unreal.Color(0, 0, 0, 255))
+            c.set_cast_shadow(False)
+    return {'table_id': index, 'sticker': str(index+1)}
+
+
 def brighten_global():
     """Shared ambient fill plus daylight, with existing table lights preserved."""
     fleet._check_idle()
