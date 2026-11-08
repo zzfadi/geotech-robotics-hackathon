@@ -1,0 +1,23 @@
+{
+  "scope": "Preparation only; no V4 execution or demonstration data collected",
+  "plan_path": "/tmp/cup-mechanical-v4-plan.json",
+  "nominal_tcp_lift_cm": 14,
+  "ik_max_position_error_m": 1.664007221991519e-08,
+  "ik_max_orientation_error_rad": 6.51714718350886e-07,
+  "minimum_pad_table_clearance_cm": 6.706685554850964,
+  "body_query": {
+    "positive_control_overlap": true,
+    "overlaps": [],
+    "scope": "Convexcup versusactualcomplexbody; plannedbody-relativequery only, noactorsmoved. Liftassumesuprightretainedcup forcollisionplanning only."
+  },
+  "clearance_observer": {
+    "source": "Actual static mesh render LOD0 vertices from GeometryScript, component world transform",
+    "verified_idle_cup_vertex_count": 256,
+    "verified_idle_tabletop_z_cm": 75,
+    "verified_idle_lowest_point_clearance_cm": 0,
+    "eligibility": "Lowest vertex >=10cm above horizontal tabletop; tilt<=15degrees; speed<=10cm/s; gravity and simulation on; no attachment; both flat pad overlaps and no other supports",
+    "continuous_hold": "Resets on failed criterion or observation gap>300ms",
+    "contact_limit": "Geometric overlap snapshot, not native solver impulse ledger; grasp_verified remains false pending review"
+  },
+  "tests_passed": 3
+}

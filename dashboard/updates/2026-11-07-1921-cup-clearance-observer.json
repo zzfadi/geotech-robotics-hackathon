@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T19:21:46-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Prepared higher-clearance expert trajectory and actual mesh-vertex evidence observer.",
+  "why": "Center rise alone cannot establish the lowest point of a tilted cup stays10cm above the table.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_cup_clearance.py",
+    "docs/validation/mechanical-cup-v4-preparation-2026-11-07.json"
+  ],
+  "details": "14cm nominal trajectory passes officialIK and sampled collision checks. Three tests pass; idle scene read-only mesh extraction verified. No V4 execution or training demonstration claimed."
+}
