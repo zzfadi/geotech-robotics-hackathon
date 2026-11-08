@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-08T04:25:00-08:00",
+  "workstream": "planning",
+  "status": "decision",
+  "what": "The team plan has a proposed Sunday morning section for the 9 AM standup. None of it is agreed yet.",
+  "why": "So the standup can settle the morning in one pass: who is on the e-stop, who submits, mark first with the 11:00 hand-mode call, and what stays out of the MVP. It also shows, with sources, what the Mac mini built overnight and what has not been tried on real hardware.",
+  "where": [
+    "docs/plan.md"
+  ],
+  "details": "docs/plan.md. Every item is labelled PROPOSED:\n- e-stop person named at the 8:30 hardware check, with nothing powered before\n- submission owner, by default whoever is not at the station\n- taped mark first; the 11:00 call is hand mode at 8 of 10, otherwise the mark\n- fist bump as one fixed closed pose, cut at 11:00 if not locked\n- hold interlock and the Isaac to Unreal stream out of the MVP\n- scripted local voice lines, with LiveKit only if Takeshi's 10-minute setup works\n- Dream off the real arm (code default dream_on_real=False); the Dream/Codex split is still open in Needs a decision item 2\n- Jetson not the arm host unless the mark is locked and a read-only scan/watch passes on it\nThe proposed run of day follows Oracle's 8:50 PM draft, except the mark trials end at the 11:00 call. The overnight list is software, simulation and Jetson setup only: nothing moved the real arm, ran the hand-off from a person's hand, used LiveKit Cloud, measured Dream latency or ran the arm from the Jetson. Edge model numbers are simulation (docs/validation/edge-model-bench-2026-11-08.json). No owner changed. The dashboard's Today schedule now matches this proposal (mark first, 09:15-11:00); change dashboard/data/project.json if the standup moves times."
+}

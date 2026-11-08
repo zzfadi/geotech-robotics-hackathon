@@ -139,7 +139,7 @@
           "text": "Many robot tables at once, to collect real human interaction.",
           "items": [
             { "label": "Nine parallel Unreal tables", "status": "working", "text": "3×3 grid with live camera views; Dream drives each arm." },
-            { "label": "Simulated cup lift", "status": "in-progress", "text": "Last batch: 5 of 9 tables held a cup, with a simplified grip model." },
+            { "label": "Simulated cup lift", "status": "in-progress", "text": "Latest batch: 8 of 9 tables held a cup for 5 s, with help: a simplified grip model, a per-table grasp angle, and Dream's lift steps scaled up." },
             { "label": "Isaac Sim physics for contact", "status": "in-progress", "text": "Matches the Unreal scene and receives captured poses. Hand-to-arm contact test is Sunday." },
             { "label": "MuJoCo physics", "status": "in-progress", "text": "A light contact check for the webcam person, rehearsed in software." }
           ]

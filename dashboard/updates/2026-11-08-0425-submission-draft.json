@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-08T04:25:00-08:00",
+  "workstream": "demo",
+  "status": "in-progress",
+  "what": "Submission draft written and fact-checked: demo/submission.md. The owner fills in the footage, the 11:00 mode and the organizers' form fields.",
+  "why": "About 2 hours are reserved for submission. With a ready draft whose every number has a source, the owner only fills in placeholders, and the form can't overclaim.",
+  "where": [
+    "demo/submission.md"
+  ],
+  "details": "Each claim in the results table cites a commit or file and is typed physical, simulation, replay or mock. The fact-check made these fixes: the ten-table batch ran its physics on the Mac, not Luna2; the 8 of 9 cup batch is labelled assisted simulation, with every assist listed; and the Quest overlay and Isaac test no longer imply alignment. Still open: the 16 s cylinder time. The evidence file times 16 s from enable to lifted, but the commit message and the deck say 16 s for the whole run, so the draft says 'lifted within 16 s' until FADI confirms. The How it works page now shows the assisted 8 of 9 batch. Nothing in the draft claims the hand-off from a person's hand, LiveKit Cloud, a Jetson-hosted arm, a calibrated twin or a measured Dream latency."
+}

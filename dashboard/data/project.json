@@ -37,7 +37,7 @@
     {
       "at": "2026-11-08T08:30:00-08:00",
       "what": "Arm station opens",
-      "detail": "Hardware and e-stop check. Everyone pulls the latest code.",
+      "detail": "Hardware and e-stop check: name the e-stop person before anything is powered. Pull the latest code and run python3 -m handoff.preflight.",
       "state": "proposed"
     },
     {
@@ -48,15 +48,15 @@
     },
     {
       "at": "2026-11-08T09:15:00-08:00",
-      "end": "2026-11-08T11:30:00-08:00",
-      "what": "Build and rehearse",
-      "detail": "Teach the arm its poses, then 10 hand trials and 10 taped-mark trials. Sim polish, voice lines, script and deck in parallel.",
+      "end": "2026-11-08T11:00:00-08:00",
+      "what": "Teach and run the taped mark first",
+      "detail": "Teach the arm its poses, calibrate the grip on the demo can, then 10 taped-mark trials (aim to lock by about 10:15). Hand trials only if the preflight says GO. Sim polish, voice lines, script and deck in parallel.",
       "state": "proposed"
     },
     {
       "at": "2026-11-08T11:00:00-08:00",
       "what": "Go/no-go: hand or taped mark",
-      "detail": "8 of 10 hand trials or better: demo the hand-off. Otherwise demo the pickup from the taped mark.",
+      "detail": "The taped mark is the live beat unless hand mode reached 8 of 10 trials. Post the call on the dashboard.",
       "state": "proposed"
     },
     {
