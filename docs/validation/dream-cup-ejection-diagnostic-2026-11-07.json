@@ -1,0 +1,46 @@
+{
+  "scope": "Offline ejection diagnosis and unexecuted zero-API replay preparation",
+  "source_run": "/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/geotech-robotics-hackathon/Unreal/TheHumanTouch/Saved/DreamFleet/20261107-193913-f7d043",
+  "events": {
+    "T04": {
+      "last_ground_frame": 87,
+      "first_airborne_frame": 88,
+      "time_window_seconds": [
+        42.7489850521,
+        43.236
+      ],
+      "command_seq": 15,
+      "peak_center_rise_cm": 57.84
+    },
+    "T08": {
+      "last_ground_frame": 50,
+      "first_airborne_frame": 51,
+      "time_window_seconds": [
+        24.504,
+        24.9
+      ],
+      "command_seq": 8,
+      "peak_center_rise_cm": 58.71
+    }
+  },
+  "findings": [
+    "No saved native contact ledger exists for this source run; the first struck collider cannot be identified from videos alone.",
+    "Official FK reconstructed around launches leaves TCP at least25.1cm(T04)/21.5cm(T08) from nominal targetcentre; visually distant arms make hidden-collider or physics-state audit necessary.",
+    "Idle UE has no leaked FleetProxy actors; virtual camera primitive components NoCollision; printed stickers NoCollision.",
+    "Runtime source applies tableoffset once and flatpadcube scale0.03,0.01,0.02 correctly; no evident100xscale bug.",
+    "measure_props currently wakes every cup eachframe; potential stability contributor, not established rootcause and unchanged."
+  ],
+  "replay": {
+    "runner": "/tmp/run_t04_ejection_replay.py",
+    "schedule": "/tmp/t04-ejection-replay-schedule.json",
+    "duration_limit_seconds": 70,
+    "cycles": 15,
+    "physics_parameters_changed": false,
+    "dream_calls": 0,
+    "initial_scene": "Must match saved full config exactly or abort",
+    "telemetry": "Actual component transforms/scales/profiles/meshbounds, cups/robot/proxies, geometric overlap components, optional already-enabled native hit impulse events, runtimeworld and callback timing",
+    "positive_control": "Query-only cupshape at tabletopcentre must overlap table; actorpose never changed",
+    "timing_uncertainty": "Original exact actuator onset unavailable; API-return lower bound retained, actual replays measured",
+    "worker_gate": "All9 ready:false and reset_supported:false"
+  }
+}

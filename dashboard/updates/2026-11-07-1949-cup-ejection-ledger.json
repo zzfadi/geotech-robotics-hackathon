@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T19:49:58-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Prepared read-only per-frame collision ledger for bounded saved-action replay.",
+  "why": "Two cups ejected despite visually distant arms; original recordings cannot identify the first contact.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_collision_audit.py",
+    "docs/validation/dream-cup-ejection-diagnostic-2026-11-07.json"
+  ],
+  "details": "No replay or physics changes yet. Three timing tests pass. Query positive control, native-event availability and telemetry overhead are recorded explicitly."
+}
