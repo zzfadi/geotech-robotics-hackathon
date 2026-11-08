@@ -192,7 +192,7 @@ class Handler(BaseHTTPRequestHandler):
                 if f['command'] and f['command']['status'] in ('queued','running'):return self.send(409,{'error':'A replica-table run is already active'})
                 if s.command and s.command['status'] in ('queued','running'):return self.send(409,{'error':'The main table (T00) is running; wait for it to finish'})
                 f['command']={'id':uuid.uuid4().hex,'tables':sorted(tables),'prompt':prompt,'plan':plan,'status':'queued','stop':False,'created_at':time.time()}
-                f['status']=None;f['frames']={};f['frame_times']={}
+                f['status']=None  # Preserve last real images and their age through SIE startup.
                 s.event({'kind':'fleet.queued','request_id':f['command']['id'],'prompt':prompt or 'each table uses its configured prompt',
                          'message':'Replica tables '+', '.join('T%02d'%t for t in f['command']['tables'])+' queued to run in parallel'})
                 return self.send(202,f['command'])
@@ -249,7 +249,7 @@ class Handler(BaseHTTPRequestHandler):
                 frames={}
                 for key,value in (data.get('frames') or {}).items():
                     raw=base64.b64decode(value,validate=True)
-                    if key not in ['T%02d'%i for i in command['tables']] or not raw.startswith(b'\xff\xd8') or not raw.endswith(b'\xff\xd9') or len(raw)>200_000:raise ValueError('Expected table JPEG frames')
+                    if key not in ['T%02d'%i for i in f['expected_tables']] or not raw.startswith(b'\xff\xd8') or not raw.endswith(b'\xff\xd9') or len(raw)>200_000:raise ValueError('Expected table JPEG frames')
                     frames[key]=value
                 capture_times=data.get('frame_times') or {}
                 for key,value in frames.items():

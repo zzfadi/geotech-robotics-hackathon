@@ -456,10 +456,10 @@ def new_run(data, config):
     return run
 
 
-def run_trials(args, editor, variants, clients, run, progress=None, should_stop=None, title=None):
+def run_trials(args, editor, variants, clients, run, progress=None, should_stop=None, title=None, after_cleanup=None):
     """Hold the editor task, reset start poses, run every table in one SIE session.
 
-    progress(fleet_json, runs) is called about once a second; should_stop() is
+    progress(fleet_json, runs) is called about four times a second; should_stop() is
     polled and stops the whole fleet. Returns the per-table results (best first)."""
     config_path = run/'config.json'
     # No table inference is active here. Release prior episodes without rebuilding CAD IK.
@@ -473,7 +473,7 @@ def run_trials(args, editor, variants, clients, run, progress=None, should_stop=
     done = threading.Event()
 
     def monitor():
-        while not done.wait(1.):
+        while not done.wait(.25):
             try:
                 if should_stop and should_stop():
                     (run/'stop').touch()
@@ -514,6 +514,10 @@ def run_trials(args, editor, variants, clients, run, progress=None, should_stop=
                                      'keep_view': True})
         except Exception as error:
             print('end_task failed: %s' % error, flush=True)
+        else:
+            if after_cleanup:
+                try: after_cleanup()
+                except Exception as error: print('Preview handoff failed: '+str(error), flush=True)
     final_fleet = read_json(run/'fleet.json') or {}
     for result in results:
         final_table = final_fleet.get('tables', {}).get(result['table'], {})
@@ -586,6 +590,23 @@ class Server:
             self.api('/api/events', {'kind': kind, 'request_id': request_id, 'message': message, **extra})
         except Exception as error:
             print('event delivery failed: %s' % error, flush=True)
+
+
+def passive_preview_frames(run, now=None):
+    """Read only complete camera files; never add passive tables to run results."""
+    import base64
+    now = time.time() if now is None else now
+    packet = read_json(Path(run)/'passive-preview/frames.json') or {}
+    frames, stamps = {}, {}
+    for key, path in packet.get('frames', {}).items():
+        stamp = packet.get('frame_times', {}).get(key)
+        if key not in ['T%02d' % i for i in range(9)] or type(stamp) not in (int,float) or not 0 <= now-stamp <= 5:
+            continue
+        try: data = Path(path).read_bytes()
+        except OSError: continue
+        if len(data) <= 200_000 and data.startswith(b'\xff\xd8') and data.endswith(b'\xff\xd9'):
+            frames[key], stamps[key] = base64.b64encode(data).decode(), stamp
+    return frames, stamps
 
 
 def table_progress(fleet, runs):
@@ -711,16 +732,19 @@ def serve(args, config):
             error = None
             heartbeat_stop = threading.Event()
             def reset_heartbeat():
-                while not heartbeat_stop.wait(3):
+                while not heartbeat_stop.wait(.25):
                     try:
                         server.api('/api/fleet/worker/reset-progress', {'request_id': reset['id']})
+                        if preview.running:
+                            preview.publish()
                     except Exception as exc:
                         print('Reset heartbeat failed: '+str(exc), flush=True)
             heartbeat = threading.Thread(target=reset_heartbeat, daemon=True)
             heartbeat.start()
             try:
                 from fleet_reset import reset_config, apply_idle_reset
-                preview.set_enabled(False)
+                # Editor-only reset: keep the local capture callback alive. The
+                # heartbeat publishes completed frames without any MCP calls.
                 reset_scene = reset_config(config, reset['seed'])
                 reset_dir = data/('reset-'+reset['id'])
                 reset_dir.mkdir(parents=True, exist_ok=True)
@@ -728,7 +752,6 @@ def serve(args, config):
                 apply_idle_reset(editor, reset_dir/'config.json')
                 config = reset_scene
                 write_json(data/'last-reset.json', {'seed': reset['seed'], 'request_id': reset['id']})
-                preview.sent.clear()
             except Exception as exc:
                 error = str(exc)
                 print('Reset failed: '+error, flush=True)
@@ -744,7 +767,7 @@ def serve(args, config):
                     preview.publish()
             except Exception as error:
                 print('idle preview unavailable: %s' % error, flush=True)
-            time.sleep(1)
+            time.sleep(.25)
             continue
         seen.add(command['id'])
         request_id = command['id']
@@ -761,6 +784,20 @@ def serve(args, config):
             run_config = apply_plan(config, command['plan'])
         status = 'failed'
         stop = {'flag': False}
+        publication_stop = threading.Event()
+        publication_thread = None
+        def restore_preview_after_cleanup():
+            nonlocal publication_thread
+            enabled = server.api('/api/fleet').get('preview_enabled', True)
+            preview.set_enabled(enabled)
+            def publish_during_encoding():
+                while not publication_stop.wait(.25):
+                    try:
+                        if preview.running: preview.publish()
+                    except Exception as error:
+                        print('Post-run preview: '+str(error), flush=True)
+            publication_thread = threading.Thread(target=publish_during_encoding, daemon=True)
+            publication_thread.start()
         try:
             preview.set_enabled(False)
             missing = [i for i in command['tables'] if not args.dry_run and i not in clients]
@@ -776,7 +813,7 @@ def serve(args, config):
             server.event('fleet.started', request_id, 'Running ' + ' '.join('T%02d' % v['index'] for v in run_variants) + ' in parallel')
 
             def progress(fleet, runs):
-                frames, frame_times = {}, {}
+                frames, frame_times = passive_preview_frames(run)
                 for v in run_variants:
                     data, captured_at = latest_overhead(run, 'T%02d' % v['index'])
                     if data:
@@ -786,7 +823,7 @@ def serve(args, config):
                                                                 'tables': table_progress(fleet, runs), 'frames': frames, 'frame_times': frame_times})
                 stop['flag'] = stop['flag'] or bool(reply.get('stop'))
             results = run_trials(args, editor, run_variants, clients, run, progress, lambda: stop['flag'],
-                                 title='Fleet (web): %d replica tables' % len(run_variants))
+                                 title='Fleet (web): %d replica tables' % len(run_variants), after_cleanup=restore_preview_after_cleanup)
             print_table(results)
             for r in results:
                 path = r.get('videos', {}).get('overhead')
@@ -805,6 +842,9 @@ def serve(args, config):
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))
             summary = []
+        finally:
+            publication_stop.set()
+            if publication_thread is not None: publication_thread.join(timeout=11)
         try:
             server.api('/api/fleet/worker/done', {'request_id': request_id, 'status': status, 'results': summary})
         except Exception as error:

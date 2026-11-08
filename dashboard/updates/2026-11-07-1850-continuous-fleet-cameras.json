@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T18:50:23-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Keep all nine camera views updating during selected-table runs and recording uploads.",
+  "why": "Unselected cameras froze during simulation and post-run encoding delayed preview recovery.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_passive_preview.py",
+    "DreamSim/fleet_worker.py",
+    "DreamSim/web/index.html"
+  ],
+  "details": "One-table zero-inference live test updatedall9feeds within2.4seconds duringSIE; measuredpost-run gap10.4seconds promptedearlycapturehandoffbeforeencoding. Newcadence10idlecaptures/s,passive1Hz,worker4Hz,web2Hz;20focusedtests pass. Finalall-nine realDreamrun andend-to-endlatencyvalidation pending."
+}

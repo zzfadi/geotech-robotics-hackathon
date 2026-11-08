@@ -76,6 +76,19 @@ class FleetServer(unittest.TestCase):
         self.request('/api/fleet/preview',{'enabled':True})
         self.assertTrue(Store(Path(self.dir.name)).fleet['preview_enabled'])
 
+    def test_single_run_accepts_passive_images_without_extra_results(self):
+        self.request('/api/fleet/worker/hello',{'tables':TABLES},self.token)
+        command=self.request('/api/fleet/command',{'tables':[0]})
+        self.request('/api/fleet/worker/next',token=self.token)
+        self.request('/api/fleet/worker/status',{'request_id':command['id'],'phase':'ready',
+                     'tables':{'T00':{'calls':1}},'frames':{'T00':JPEG,'T08':JPEG}},self.token)
+        status=self.request('/api/fleet')
+        self.assertEqual(status['command']['tables'],[0])
+        self.assertEqual(set(status['status']['tables']),{'T00'})
+        self.assertEqual(set(self.request('/api/fleet/frames')['frames']),{'T00','T08'})
+        self.assertEqual(self.status('/api/fleet/worker/status',{'request_id':command['id'],
+                         'frames':{'T09':JPEG}},self.token),400)
+
     def test_legacy_worker_cannot_accept_reset(self):
         self.request('/api/fleet/worker/hello', {'tables': TABLES}, self.token)
         self.assertEqual(self.status('/api/fleet/reset',{}),503)

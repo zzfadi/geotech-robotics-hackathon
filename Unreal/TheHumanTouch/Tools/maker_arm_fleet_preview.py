@@ -72,7 +72,7 @@ class Preview:
         if now >= self.deadline:
             self.stop()
             return
-        if now-self.last < .2:
+        if now-self.last < .1:
             return
         self.last = now
         editor = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)

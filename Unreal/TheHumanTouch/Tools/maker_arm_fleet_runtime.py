@@ -140,6 +140,8 @@ class Session:
         self.root.mkdir(parents=True, exist_ok=True)
         (self.root / 'stop').unlink(missing_ok=True)
         self.tables = [Table(v, self.root) for v in normalize_config(json.loads(Path(config_path).read_text()))]
+        from maker_arm_passive_preview import PassivePreview
+        self.passive_preview = PassivePreview([t.index for t in self.tables], self.root)
         self.interval = 1. / fps  # overhead review frames per live table
         self.max_seconds = min(max_seconds, 170)
         self.captures_per_tick = captures_per_tick
@@ -204,6 +206,7 @@ class Session:
                     for primitive in capture.get_components_by_class(unreal.PrimitiveComponent):
                         primitive.set_visibility(False, False)
                         primitive.set_hidden_in_game(True, False)
+            self.passive_preview.spawn(editor_actors, subsystem, tags, self.local)
             return True
         if call_camera._locally(make) is None:
             call_camera._remove(self.local)
@@ -295,6 +298,7 @@ class Session:
                 capture.set_editor_property('custom_near_clipping_plane', 1.0)
                 table.captures[role] = {'source': camera, 'actor': capture_actor, 'capture': capture, 'target': target}
             maker_arm_fleet.verify(table.index, table.state, table.actors)
+        self.passive_preview.bind(found)
         from maker_arm_runtime_mirror import RuntimeMirror
         mirror_labels = [name for table in self.tables for name in table.actors]
         mirror_labels += [table.name(name) for table in self.tables for name in table.props]
@@ -651,6 +655,14 @@ class Session:
                 except Exception as error:
                     table.error = 'capture: ' + str(error)
                 table.next_capture = max(table.next_capture + self.interval, now)
+                budget -= 1
+            # Unselected rooms get camera-only SIE images from remaining budget.
+            if self.passive_preview is not None:
+                try:
+                    self.passive_preview.tick(now, budget, self._export)
+                except Exception as error:
+                    unreal.log_warning('Passive camera preview disabled: '+str(error))
+                    self.passive_preview = None  # Never abort a task for a review-only feed failure.
             t5 = time.perf_counter()
             self.report()
             self.sections['cameras'] += t5-t4
