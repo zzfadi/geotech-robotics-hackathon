@@ -17,8 +17,12 @@ unattended-ready controller or Dream/Portal adapter.
 
 ## New laptop: offline setup first
 
-From the repository root, with Python 3.12 and [uv](https://docs.astral.sh/uv/)
-already installed:
+Run from the repository root, with Python 3.12 and [uv](https://docs.astral.sh/uv/)
+already installed.
+
+Python 3.12 is the minimum for the pinned NumPy 2.5.4 and SciPy 1.18.1
+packages. SciPy is part of the base environment because `pickup_client.py`
+imports its inverse-kinematics solver at startup, including for `--help`.
 
 ```sh
 # Tested on Apple Silicon macOS; install the USB library, not a serial driver.

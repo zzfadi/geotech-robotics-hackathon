@@ -4,13 +4,13 @@
 
 ## Goal
 
-An NVIDIA **Jetson Orin Nano Developer Kit** (FADI confirmed the board on Nov 8; it boots from a 1 TB NVMe SSD) becomes the station's robot server. It owns both Maker Arms' CAN adapters, runs the SDK and our holding controller, reads the robot cameras, and reports measured arm state to the rest of the stack. Codex drives the arm through it, the way it drove the right arm from a laptop on Saturday, and the Dream API stays in use alongside it. The Jetson only owns the hardware and the guards; whichever brain sends a move goes through the same controller and the same hold.
+An NVIDIA **Jetson Orin Nano** (user reported; exact module/RAM still to verify) becomes the station's robot server. FADI selected a fresh **microSD** OS installation. A 1 TB NVMe SSD is attached; its contents, format and bootability are unknown, and this setup does not erase it. The Jetson owns both Maker Arms' CAN adapters, runs the SDK and holding controller, reads the robot cameras, and reports measured arm state. Codex and the Dream API send moves through the same controller and guards.
 
 End to end means: command in → Jetson controller → arm moves → measured state out to Luna2/Unreal, with a working hold (pause) and a verified return to rest.
 
 ## Why it matters for Sunday
 
-Today the arm runs from a laptop over USB. A Jetson at the station frees the laptop for the pitch, gives the demo one fixed robot host, and is where a small trained model can run next to the arm (see [the edge model brief](edge-model.md)). It is **not** required for the "hold my beer" MVP: if it isn't solid by late morning, demo from the laptop setup that already works.
+Today the arm runs from a laptop over USB. A Jetson at the station frees the laptop for the pitch and gives the demo one fixed robot host. Local model training/inference is optional later work ([edge model brief](edge-model.md)); it is not a dependency of controller setup. The Jetson itself is **not** required for the "hold my beer" MVP: if it isn't solid by late morning, demo from the laptop setup that already works.
 
 Dream's own advice for the loop that runs here (320×176 frames, hybrid async/sync on an 850 ms round-trip median, a 0.85 m/s speed clamp, `dream.check`, the camera checklist, TCP between the fingertips) is in [the workshop takeaways](dream-workshop-takeaways.md).
 
@@ -31,11 +31,11 @@ Credentials: relay bearer tokens live in ignored files on Luna2 (`Saved/DreamDeb
 
 ## Steps
 
-0. **Flash and open SSH.** Follow [orin-nano-setup.md](orin-nano-setup.md) to put current JetPack on the SSD and reach the board from the Mac over SSH.
-1. **Identify the board.** Record the exact Jetson model, JetPack/L4T version, Ubuntu version, Python version (SDK needs 3.10+), free disk and its Tailscale hostname. Write them into this file.
-2. **Base environment.** Install `libusb-1.0` and `uv` with the normal package manager; create `arm/.venv` with Python 3.12 if available (3.10+ otherwise) and install `arm/requirements.txt`. Note that `arm/requirements-vision.txt` pins `opencv-python-headless`, which may have no aarch64 wheel; use JetPack's OpenCV if so and record the change.
+0. **Flash and open SSH.** Follow [orin-nano-setup.md](orin-nano-setup.md): JetPack 6.2.1 microSD, conditional older-firmware bridge, then supported APT update to 6.2.3. Verify boot/root device and SSH before continuing. Preserve the SSD; keep default power mode until cooling and temperatures are checked.
+1. **Identify the board.** Fill the [setup board-facts table](orin-nano-setup.md#board-facts--fill-from-the-device) with actual model/RAM, firmware, JetPack/L4T, Ubuntu, root device, Python versions, free disk and network identity. No Jetson result is established by the existing macOS bench evidence.
+2. **Checkout and base environment.** Install Linux `git` and `libusb-1.0-0`, then clone `https://github.com/zzfadi/geotech-robotics-hackathon.git` and `cd geotech-robotics-hackathon`. Verify `git branch --show-current` is `main`, record `git rev-parse HEAD`, and read `AGENTS.md`. If a checkout already exists, preserve its work and synchronize clean `main` with `git pull --ff-only origin main`. Obtain `uv`; create `arm/.venv` with **Python 3.12** and install `arm/requirements.txt`. The SDK declares 3.10+, but NumPy 2.5.4 requires 3.12+; do not replace system Python. The pickup client imports SciPy, so ensure the requirements include it. OpenCV is separate camera/vision work: verify an aarch64 wheel before using `arm/requirements-vision.txt`. Ubuntu/JetPack OpenCV built for Python 3.10 is not automatically usable from the isolated 3.12 environment. No PyTorch, local model or GPU stack installation is required for the controller.
 3. **USB access.** Add a udev rule for the gs_usb VID/PID so the adapters open without running the tools as root. Do not use `sudo` to paper over a USB error.
-4. **Offline checks first.** `bash arm/tools/arm --help`, `bash arm/tools/arm test`. These don't touch hardware.
+4. **Offline checks first.** `bash arm/tools/arm --help`, `bash arm/tools/arm test`, and `arm/.venv/bin/python arm/tools/pickup_client.py --help`. These don't touch hardware; record actual results before attaching CAN adapters.
 5. **Read-only hardware.** With the arms powered by the station operator, `scan` and `watch` both adapters; confirm left/right by adapter serial. One CAN owner at a time: stop any laptop session first.
 6. **Cameras on Linux.** `arm/tools/camera_inspect` is a macOS Swift helper. Add a Linux path (V4L2 via OpenCV) that returns the same 640×480 frames from the three robot UVC cameras.
 7. **Controller.** Run `pickup_server.py` on the Jetson, bound to localhost. Codex reaches it over an SSH tunnel from the Mac, never over an open port. Replay Saturday's right-arm pickup as the acceptance test. When Dream-1 drives the real arm, its returned targets go through this same controller and its limits, never straight to the motors.
@@ -47,7 +47,7 @@ Powered steps (5, 7, 9, 10) only with the station attended and the operator on t
 
 ## What done looks like
 
-- Board facts recorded here.
+- Actual board facts and SSH verification recorded in the setup handoff.
 - `arm test` passes on the Jetson; `scan`/`watch` show fresh feedback on all 14 motors with no faults.
 - Saturday's right-arm pickup replays from the Jetson, driven by Codex over the tunnel, and returns to rest.
 - Measured state reaches the Luna2 relay with its age reported.
@@ -56,7 +56,7 @@ Powered steps (5, 7, 9, 10) only with the station attended and the operator on t
 
 ## Open questions
 
-- ~~Which board is it?~~ Settled Nov 8: Jetson Orin Nano Developer Kit, so the old Nano's Python 3.6 limit doesn't apply.
+- Exact module/RAM, current firmware, card capacity and KVM compatibility await device inspection; Orin Nano and the microSD choice are user confirmed.
 - Does the Jetson stay at the station all day Sunday, and who powers the arms for the first read-only test?
 - Should the left arm be in scope? Its Saturday attempt missed high with different claw offsets.
 - Does the hold interlock stay in the MVP? See the plan's open questions.
@@ -64,5 +64,5 @@ Powered steps (5, 7, 9, 10) only with the station attended and the operator on t
 ## What needs the Mac or hardware
 
 - The Jetson itself, both arms, both CAN adapters, the USB hub and cameras, and the station operator.
-- The Mac to write the JetPack installer to a USB stick (see [orin-nano-setup.md](orin-nano-setup.md); NVIDIA no longer ships an SD card image for this kit, and SDK Manager needs an Ubuntu x86 host, not macOS), to SSH in, and to run Codex.
+- The Mac and microSD reader to write and validate the selected SD image, then SSH and run Codex. Prepared downloads belong under `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`; check completion and integrity before use. The [setup handoff](orin-nano-setup.md) contains official image, firmware, KVM, upgrade and power references.
 - Tailscale access to Luna2 for telemetry.

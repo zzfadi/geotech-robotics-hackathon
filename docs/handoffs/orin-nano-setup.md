@@ -1,90 +1,76 @@
-# Jetson Orin Nano setup: flash, first boot, SSH
+# Jetson Orin Nano setup: microSD, first boot, SSH
 
-**For FADI at home, the night before the arm server goes to the station.** The board is a **Jetson Orin Nano Developer Kit** with a 1 TB NVMe SSD on the carrier board. It hasn't been used in a long time, so its firmware may be old. These steps get it onto the current JetPack, booting from the SSD, and reachable over SSH so an agent on the Mac can finish the job in [jetson-end-to-end.md](jetson-end-to-end.md).
+**Selected route, Nov 7, 2026:** use microSD for the fresh OS installation on FADI's reported Jetson Orin Nano. A 1 TB NVMe SSD is attached; its contents, partitions and bootability are unknown. Do not format or install onto it as part of this setup. Firmware lives on the board even when the OS card is empty.
 
-Versions checked on Nov 8, 2026 against NVIDIA's [Orin Nano Quick Start](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html), [JetPack 6.x Update Path](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/update_firmware.html) and [JetPack downloads](https://developer.nvidia.com/embedded/jetpack/downloads). Nothing here has been run on this board yet; record what you see in [Board facts](#board-facts).
+This plan was checked against NVIDIA's resources below. No first boot, firmware update, Jetson dependency installation or hardware test has been verified on this board. Continue with [the robot-server handoff](jetson-end-to-end.md) after SSH works.
 
-## Which route
+## Selected images and preparation
 
-- **Target:** JetPack **7.2.1** (Jetson Linux **r39.2.1**), the latest NVIDIA lists for the Orin Nano dev kit.
-- **Install method:** the **Jetson ISO** on a USB stick, installed onto the NVMe SSD. NVIDIA no longer ships an SD card image for this kit, and **SDK Manager needs an Ubuntu x86_64 host**, so it doesn't run on the Mac. The ISO route needs only the Mac to write the stick.
-- **Firmware gate:** JetPack 7.2.x needs QSPI firmware **36.x or newer**. A kit still on 35.x firmware (JetPack 5 era) has to go through NVIDIA's JetPack 6.x update path first, which needs a microSD card.
+- **Boot image:** JetPack **6.2.1 / Jetson Linux 36.4.4**, then NVIDIA's supported APT update to **6.2.3 / 36.5.2**. Both use Ubuntu 22.04. This is NVIDIA's documented JetPack 6 microSD route.
+- **Conditional bridge:** updated JetPack **5.1.3**, filename `JP513-orin-nano-sd-card-image_b29.zip`, only if the board has older QSPI firmware. Check the version before choosing the card image.
+- Mac staging destination: `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`. This path is a preparation target, not proof that either download is complete. Check the actual files and integrity results before flashing.
+- Check ZIP integrity and record each completed file's SHA-256. The linked NVIDIA 36.4.4 hash manifest covers BSP artifacts, **not the SD ZIP**; a locally computed hash is not a match against a published NVIDIA digest.
+- Write the selected image with [balenaEtcher](https://etcher.balena.io), including its write validation. Identify the microSD by capacity/device before writing: flashing erases that card. Copying the ZIP onto a formatted card is insufficient.
 
-## What you need
+## What to plug in
 
-- On the Mac: [Balena Etcher](https://etcher.balena.io), about 25 GB free disk, the Jetson ISO `jetsoninstaller-r39.2.1-…-arm64.iso` from the Quick Start or downloads page.
-- A **USB stick, 16 GB or more** (it gets erased). Copying the ISO onto it as a file does not work; write it with Etcher.
-- The kit's power supply, Ethernet cable (easiest for first network), NVMe SSD already installed.
-- **A screen path, one of:** a DisplayPort monitor (or a DP-to-HDMI adapter) plus USB keyboard and mouse, **or** a 3.3 V USB-to-TTL serial cable for headless setup (see [No monitor](#no-monitor)).
-- **Only if firmware is 35.x:** a microSD card, 64 GB UHS-1 or better.
+- A **64 GB or larger UHS-I microSD**, plus a reader for the Mac. One card can be rewritten after the bridge; a second card saves that rewrite.
+- The included **19 V power supply** and Ethernet for first networking.
+- **KVM video from the Jetson's DisplayPort output.** For an HDMI KVM, use a **DP-to-HDMI** cable/adapter; NVIDIA supports passive and active adapters. Connect the KVM's keyboard/mouse USB link to a Jetson USB host port. The specific KVM still needs testing.
+- The Jetson's **USB-C port has no video output**. It does not replace the DisplayPort cable or the DC power supply.
+- Keep arm hardware disconnected during OS setup. Check that the heatsink and fan are fitted before running workloads.
 
-## Steps
+## First boot and firmware
 
-1. **Check the firmware version.** Power on, press **Esc** at the NVIDIA splash; the UEFI screen shows the firmware version. If the board still boots an old OS, `sudo nvbootctrl dump-slots-info` prints it too. **36.x or newer:** go to step 3. **35.x or older:** step 2.
-2. **Old firmware only (35.x): NVIDIA's JetPack 6.x update path.**
-   1. Write `JP513-orin-nano-sd-card-image_b29.zip` (JetPack 5.1.3) to the microSD with Etcher, boot from it, finish first-boot setup, connect to the internet.
-   2. `sudo systemctl status nv-l4t-bootloader-config` should end inactive with a successful exit. Reboot. `sudo nvbootctrl dump-slots-info` should now show 35.5.0.
-   3. `sudo apt update && sudo apt install nvidia-l4t-jetson-orin-nano-qspi-updater`, reboot, let the QSPI update finish.
-   4. Power off, write the JetPack 6.2.1 SD image (linked from the update-path page) to the microSD, boot it, check `nv-l4t-bootloader-config` again and reboot if it scheduled another update. Firmware should now read 36.x. Remove the microSD.
-3. **Write the ISO to the USB stick** with Etcher on the Mac.
-4. **Boot the installer.** USB stick in, power on, **Esc** at the splash → **Boot Manager** → the USB disk. Pick the USB explicitly; a forum user whose prompt timed out booted the wrong drive.
-5. **Firmware prompt.** When the installer asks to update QSPI firmware, press **Y within 30 seconds**. It can take two update passes and reboot on its own. If it reboots back past the installer, repeat step 4.
-6. **Install to the SSD.** In the GRUB menu choose **Install Jetson ISO r39.2.1**, select the **NVMe** drive (it erases it), confirm, and reboot when told. Pull the USB stick if asked.
-7. **First boot.** Accept the EULA, then language, keyboard, time zone, network (plug in Ethernet), and create the user. Suggested: computer name `orin-arm`, user `fadi`. Write both down.
-8. **Update and open SSH.** In a terminal on the Jetson:
+1. **Read UEFI first.** With KVM/display and keyboard connected, power on and press **Esc** at the NVIDIA splash. Record the firmware version. NVIDIA's guide treats **36.x** as ready for JetPack 6; if the version is unusual, verify compatibility before writing firmware.
+2. **Older-than-36 firmware only:** write the updated 5.1.3 image, boot it, complete Ubuntu setup and connect internet. Before package/updater commands, use `findmnt /` and `lsblk -f` to confirm the root filesystem is on the intended microSD, not the attached NVMe. Check `sudo systemctl status nv-l4t-bootloader-config`; successful scheduling ends inactive with a successful exit. Reboot and allow the firmware update to finish.
+3. **Bridge continued:** run `sudo nvbootctrl dump-slots-info`; NVIDIA's expected bridge version is **35.5.0**. Then run `sudo apt update` and `sudo apt install nvidia-l4t-jetson-orin-nano-qspi-updater`. Reboot and observe the QSPI update. Once it completes, power off and switch/rewrite the card to 6.2.1. The 5.1.3 card is no longer the target boot media.
+4. **Boot 6.2.1:** insert the written microSD, power on, review the licence and finish language, keyboard, time zone, network and account setup. Suggested hostname: `orin-arm`; record the actual username. Verify `findmnt /` and `lsblk -f` show the intended microSD root before any APT upgrade. If another drive boots, inspect the UEFI boot selection rather than formatting the SSD.
+5. Check `sudo systemctl status nv-l4t-bootloader-config` again. If it scheduled another firmware update, reboot and let it finish. Record `sudo nvbootctrl dump-slots-info` and `/etc/nv_tegra_release` afterward.
 
-   ```
-   sudo apt update && sudo apt full-upgrade -y
-   sudo apt install -y openssh-server
-   sudo systemctl enable --now ssh
-   hostname -I
-   ```
+**Never interrupt power during a firmware update.** If the display remains black or reaches a UEFI shell, inspect the firmware/image pairing rather than repeatedly retrying an incompatible image. Keep the KVM available through firmware updates.
 
-   The last line prints its IP address.
-9. **Power mode.** Set **MAXN SUPER** from the power-mode menu in the top bar, or check with `sudo nvpmodel -q`. Some JetPack 7.2 users reported only the 7 W and 15 W modes after upgrading; if that happens, note it here and carry on, it doesn't block the arm server.
-10. **Remote access from anywhere.** The station already uses Tailscale for Luna2. Install it on the Jetson with Tailscale's official installer and sign in to the same tailnet:
+## Update to JetPack 6.2.3
 
-    ```
-    curl -fsSL https://tailscale.com/install.sh | sh
-    sudo tailscale up --ssh=false
-    tailscale ip -4
-    ```
+After a healthy 6.2.1 boot, follow the [NVIDIA release instructions](https://forums.developer.nvidia.com/t/jetpack-6-2-3-jetson-linux-36-5-2-is-now-live/379872). Inspect `/etc/apt/sources.list.d/nvidia-l4t-apt-source.list` and change its NVIDIA repository versions to **`r36.5`** (Orin uses `common` and `t234`). Run `sudo apt update`, review the proposed upgrade, then `sudo apt dist-upgrade`; the release instructions also specify `sudo apt install --fix-broken -o Dpkg::Options::="--force-overwrite"` before reboot. Resolve unexpected errors before proceeding.
 
-    `--ssh=false` keeps plain OpenSSH as the way in, so key setup below is the one that counts.
-11. **SSH key from the Mac.** On the Mac:
+This updates the BSP and potentially QSPI, not just applications. Do not mix NVIDIA release repositories, APT-upgrade 35.x directly to 36.x, or substitute Ubuntu's `do-release-upgrade`. After reboot, verify the actual L4T version; the `r36.5` repository supplies its current point release, so do not infer the installed version from the command alone.
 
-    ```
-    ssh-copy-id fadi@orin-arm
-    ssh fadi@orin-arm 'uname -a; cat /etc/nv_tegra_release; python3 --version'
-    ```
+## SSH and runtime handoff
 
-    Use the IP from step 8 or the Tailscale name if `orin-arm` doesn't resolve. Once the key works, password login can be turned off later.
+1. On the Jetson, install `openssh-server`, enable it with `sudo systemctl enable --now ssh`, and record `hostname -I`.
+2. From the Mac, connect using the recorded username/IP; verify the host key via the local console before trusting it. Install the intended public SSH key and verify a second login with that key. LAN SSH is enough to start; join the existing Tailscale network when remote station access is needed.
+3. Record `uname -a`, `cat /etc/nv_tegra_release`, `cat /etc/os-release`, `python3 --version`, `findmnt /`, `lsblk -f` and `df -h /`. Confirm the root filesystem is on microSD. Inspect the SSD without modifying it.
+4. Keep the **default power mode** for first boot; record `sudo nvpmodel -q`. MAXN/SUPER and clock changes wait until cooling, power and workload temperatures have been verified.
+5. Follow [jetson-end-to-end.md](jetson-end-to-end.md). The project's current NumPy pin requires **Python 3.12+** even though the SDK declares 3.10+. Use an isolated **Python 3.12** environment; keep Ubuntu's system Python intact. The pickup client also requires SciPy. No local model training, PyTorch or CUDA application stack is needed to bring up the controller.
 
-## No monitor
-
-NVIDIA's documented headless path is a **USB-to-TTL serial cable** on the carrier board's Button Header: the adapter's TX to **pin 3 (RXD)**, RX to **pin 4 (TXD)**, ground to **pin 7 (GND)**. On the Mac, `ls /dev/cu.usbserial*`, then `screen /dev/cu.usbserial-XXXX 115200`, and press Esc there instead of on a keyboard. The installer and first-boot screens may still expect a display; if the serial console doesn't show them, borrow any monitor or TV with DisplayPort (or a DP-to-HDMI adapter) for steps 4 to 7 only. After step 8 everything is over SSH.
-
-## If 7.2.1 goes wrong
-
-The NVIDIA forum lists 7.2.1 install-failure reports. If the ISO install fails twice or the board won't come back, stop and fall back to **JetPack 6.2.x** (the firmware you'll already have after step 2 or 5): it runs Ubuntu 22.04 with Python 3.10, which the arm SDK accepts. Record which one you ended up on.
-
-## Hand off to the Mac agent
-
-- [ ] Hostname and IP (LAN and Tailscale) written in [Board facts](#board-facts)
-- [ ] Username, and `ssh fadi@orin-arm` works from the Mac with the key, no password
-- [ ] JetPack / L4T, Ubuntu and Python versions recorded (from step 11's command)
-- [ ] Point the agent at [`docs/handoffs/jetson-end-to-end.md`](jetson-end-to-end.md) in `github.com/zzfadi/geotech-robotics-hackathon`, starting at step 1
-- [ ] The Dream API key reaches the Jetson only as the `DREAM_API_KEY` environment variable, set in the shell or a local file outside the repo. Never in a commit, script or command line.
-
-## Board facts
+## Board facts — fill from the device
 
 | Field | Value |
 | --- | --- |
-| Model | Jetson Orin Nano Developer Kit |
-| Firmware before / after | |
-| JetPack / Jetson Linux | |
-| Ubuntu / Python | |
-| Boot drive | 1 TB NVMe SSD |
-| Hostname / user | |
-| LAN IP / Tailscale IP | |
-| Power mode | |
+| Model / RAM | Orin Nano reported; exact module and RAM unverified |
+| Firmware before / after | Unknown |
+| JetPack / Jetson Linux / Ubuntu | Not yet verified |
+| System Python / arm environment Python | Not yet verified |
+| Boot drive | microSD selected; actual root device unverified |
+| SSD | 1 TB attached, user reported; contents and format unknown |
+| Hostname / username / LAN or Tailscale address | Not yet configured or verified |
+| Power mode / fan / temperatures | Not yet verified |
+| SSH key login / offline arm tests | Not yet verified |
+
+Do not put passwords, private keys or API tokens in this table or Git. The basic controller does not require a Dream API key; supply credentials separately only when integrating that service.
+
+## Official reference table
+
+| Resource | Grounding |
+| --- | --- |
+| [NVIDIA hardware layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html) | microSD/NVMe ports, DisplayPort-only output, DP-to-HDMI support, USB-C limitations |
+| [NVIDIA JetPack 6 firmware path](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/update_firmware.html) | firmware inspection, 5.1.3 bridge, QSPI updater, first-boot checks, 19 V supply |
+| [JetPack 5.1.3 release](https://developer.nvidia.com/embedded/jetpack-sdk-513) · [bridge SD ZIP](https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v5.0/jp513-orin-nano-sd-card-image.zip) | updated download must resolve to `JP513-orin-nano-sd-card-image_b29.zip` |
+| [JetPack 6.2.1 release](https://developer.nvidia.com/embedded/jetpack-sdk-621) · [6.2.1 SD ZIP](https://developer.nvidia.com/downloads/embedded/L4T/r36_Release_v4.4/jp62-r1-orin-nano-sd-card-image.zip) | selected boot image |
+| [36.4.4 release hashes](https://developer.download.nvidia.com/embedded/L4T/r36_Release_v4.4/release/release_sha_hashes.txt) | BSP checksums; does not list the SD image ZIP |
+| [JetPack 6.2.3 release](https://developer.nvidia.com/embedded/jetpack-sdk-623) · [APT upgrade instructions](https://forums.developer.nvidia.com/t/jetpack-6-2-3-jetson-linux-36-5-2-is-now-live/379872) | explicit 6.2.1 SD to 6.2.3 route |
+| [NVIDIA package update guide](https://docs.nvidia.com/jetson/archives/r36.5/DeveloperGuide/SD/SoftwarePackagesAndTheUpdateMechanism.html) | consistent firmware/kernel/userspace releases and repository selection |
+| [NVIDIA power and thermal guide](https://docs.nvidia.com/jetson/archives/r36.4.4/DeveloperGuide/SD/PlatformPowerAndPerformance/JetsonOrinNanoSeriesJetsonOrinNxSeriesAndJetsonAgxOrinSeries.html) | query power mode, fan management and thermal behavior |
+
+The selected route above is microSD with JetPack 6; a newer JetPack ISO workflow is a separate installation decision, not a prerequisite for this task.
