@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T19:15:26-08:00",
+  "workstream": "arm-station",
+  "status": "blocked",
+  "what": "Audited Dream fine-tuning API and local cup-recording readiness; no upload or training job submitted.",
+  "why": "Existing cup trials are not verified expert demonstrations or synchronized LeRobot datasets. Standard-base eligibility and training price require confirmation before a paid job.",
+  "where": [
+    "docs/dream-finetuning.md",
+    "docs/dream-finetuning-readiness.json"
+  ],
+  "details": [
+    "Official SDK 1.1.3 local validation rejected the debug-recording directory.",
+    "Seven cup runs, 23 table episodes, zero independently verified grasps in the bounded audit.",
+    "Queued training jobs cannot be cancelled according to the inspected SDK documentation."
+  ]
+}

@@ -1,0 +1,333 @@
+{
+  "audited_unix": 1794107512.817261,
+  "scope": "12 most recent completed run summaries; cup objectives only",
+  "runs": [
+    {
+      "path": "Saved/DreamFleet/20261107-185817-e98465",
+      "tables": [
+        {
+          "table": "T05",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 24,
+          "outcome": "failed",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 105,
+          "wrist_observation_frames": 25,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T06",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 11,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 105,
+          "wrist_observation_frames": 11,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T03",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 16,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 105,
+          "wrist_observation_frames": 17,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T01",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 16,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 105,
+          "wrist_observation_frames": 16,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T07",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 18,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 104,
+          "wrist_observation_frames": 18,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T00",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 13,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 105,
+          "wrist_observation_frames": 13,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T04",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 11,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 105,
+          "wrist_observation_frames": 11,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T02",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 11,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 105,
+          "wrist_observation_frames": 11,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T08",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 5,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 104,
+          "wrist_observation_frames": 5,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        }
+      ]
+    },
+    {
+      "path": "Saved/DreamFleet/20261107-185137-96a66a",
+      "tables": [
+        {
+          "table": "T01",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 21,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 123,
+          "wrist_observation_frames": 21,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T03",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 23,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 123,
+          "wrist_observation_frames": 24,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T07",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 16,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 123,
+          "wrist_observation_frames": 17,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T06",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 14,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 123,
+          "wrist_observation_frames": 14,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T05",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 20,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 123,
+          "wrist_observation_frames": 21,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T08",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 16,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 74,
+          "wrist_observation_frames": 16,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T00",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 12,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 53,
+          "wrist_observation_frames": 12,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T02",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 6,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 36,
+          "wrist_observation_frames": 6,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        },
+        {
+          "table": "T04",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 22,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 96,
+          "wrist_observation_frames": 22,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        }
+      ]
+    },
+    {
+      "path": "Saved/DreamFleet/20261107-184805-49b8b6",
+      "tables": [
+        {
+          "table": "T00",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 0,
+          "outcome": "dry_run",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 39,
+          "wrist_observation_frames": 25,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        }
+      ]
+    },
+    {
+      "path": "Saved/DreamFleet/20261107-184432-c39523",
+      "tables": [
+        {
+          "table": "T00",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 18,
+          "outcome": "error",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 66,
+          "wrist_observation_frames": 18,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        }
+      ]
+    },
+    {
+      "path": "Saved/DreamFleet/20261107-183819-10a56c",
+      "tables": [
+        {
+          "table": "T00",
+          "target": "MakerStation_Prop_Cup_03",
+          "calls": 24,
+          "outcome": "failed",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 80,
+          "wrist_observation_frames": 25,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        }
+      ]
+    },
+    {
+      "path": "Saved/DreamFleet/20261107-183502-f4a3ce",
+      "tables": [
+        {
+          "table": "T00",
+          "target": "MakerStation_Prop_Cup",
+          "calls": 16,
+          "outcome": "failed",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 53,
+          "wrist_observation_frames": 17,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        }
+      ]
+    },
+    {
+      "path": "Saved/DreamFleet/20261107-174340-19f8ba",
+      "tables": [
+        {
+          "table": "T00",
+          "target": "MakerStation_Prop_Cup",
+          "calls": 16,
+          "outcome": "failed",
+          "grasp_verified": false,
+          "lift_held": false,
+          "overhead_review_frames": 48,
+          "wrist_observation_frames": 17,
+          "has_lerobot_info": false,
+          "parquet_files": 0
+        }
+      ]
+    }
+  ],
+  "training_ready": false,
+  "uploaded": false,
+  "training_job_created": false,
+  "blockers": [
+    "No independently verified successful cup demonstrations in audited summaries",
+    "Review JPEG/variable-frame-rate MP4 recordings are not synchronized LeRobot demonstration trajectories",
+    "Missing meta/info.json, episode/task metadata and per-frame action/state Parquet",
+    "Current review cadence is not a supported fixed dataset rate; do not duplicate frames and call it measured demonstration data"
+  ],
+  "next_step": "After mechanical grasp verification, collect reviewed successful approach, grasp, 10 cm lift and upright 5 s hold demonstrations with synchronized three-camera/state/action samples at 15 or 30 Hz. Split held-out scene seeds before conversion.",
+  "official_local_validator": {
+    "local_only": true,
+    "path": "Saved/DreamFleet/20261107-183502-f4a3ce/T00",
+    "ok": false,
+    "error": "'action-01.json' is not inside a session folder."
+  }
+}
