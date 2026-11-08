@@ -248,12 +248,16 @@ def lift_ceiling_cm(table, side='left', pitch_deg=45., step_cm=1., limit_cm=40.)
         return 0.
     fk = _fk()
     f = fk.pose(q)
+    approach = f[:3, :3]@np.array([0, 0, -1.])
+    horizontal = np.array([approach[0], approach[1], 0.])
+    horizontal = horizontal/np.linalg.norm(horizontal) if np.linalg.norm(horizontal) > 1e-6 else horizontal
     up, previous = 0., q
     while up+step_cm <= limit_cm:
-        try:
-            previous = solve_pose(f[:3, 3]+np.array([0, 0, (up+step_cm)/100]), f[:3, :3], previous, .003, .05)
-        except ValueError:
+        # Same solver as the held lift (straight, small tilt, then draw back toward the base).
+        solved = _lift_solve(f[:3, 3]+np.array([0, 0, (up+step_cm)/100]), f[:3, :3], previous, horizontal)
+        if solved is None:
             break
+        previous = solved
         up += step_cm
     return up
 
@@ -314,6 +318,19 @@ def tool_height(q):
     return float(fk.pose(np.clip(np.array(q, dtype=float), fk.low+1e-7, fk.high-1e-7))[2, 3])
 
 
+def _lift_solve(target, rotation, previous, horizontal):
+    """Straight up first; near the reach limit accept ~6 degrees of hand tilt (cup rule is 15),
+    then draw the cup back toward the base by up to 8 cm (keeps it level, extends the reach)."""
+    for back in (0., .02, .04, .06, .08):
+        point = target-horizontal*back
+        for tolerance in (.05, .1):
+            try:
+                return solve_pose(point, rotation, previous, tolerance_m=.003, tolerance_rad=tolerance)
+            except ValueError:
+                continue
+    return None
+
+
 def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25, back_per_up=0., up_gain=1.,
                   min_rise_cm=0.):
     """While an object is held: keep the measured tool x/y and orientation, apply only
@@ -340,23 +357,19 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
             z = start[2, 3]+(z-start[2, 3])*up_gain
         z = max(z, floor)
         target = point(z)
-        try:
-            solved = solve_pose(target, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
-        except ValueError:
-            try:  # near a joint limit: accept up to ~6 degrees of hand tilt (cup rule is 15)
-                solved = solve_pose(target, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.1)
-            except ValueError:
-                break  # higher than reachable: stop the chunk at the last feasible row
+        solved = _lift_solve(target, start[:3, :3], previous, horizontal)
+        if solved is None:
+            break  # higher than reachable: stop the chunk at the last feasible row
         # Split large vertical steps (<= max_step_cm per row) so a held cup rises at
         # about 3 cm/s, like the verified mechanical lift; targets are unchanged.
         last_z = start[2, 3] if not heights else start[2, 3]+heights[-1]/100
         steps = max(1, int(np.ceil(abs(z-last_z)*100/max_step_cm)))
         for k in range(1, steps):
             mid = point(last_z+(z-last_z)*k/steps)
-            try:
-                previous = solve_pose(mid, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
-            except ValueError:
+            solved_mid = _lift_solve(mid, start[:3, :3], previous, horizontal)
+            if solved_mid is None:
                 break
+            previous = solved_mid
             rows.append(list(previous)+[row[6]])
         rows.append(list(solved)+[row[6]])
         heights.append(round((z-start[2, 3])*100, 2))
@@ -370,10 +383,10 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         grip = (rows[-1][6] if rows else action[key][0][6])
         steps = max(1, int(np.ceil(min_rise_cm/max_step_cm)))
         for k in range(1, steps+1):
-            try:
-                last_q = solve_pose(point(base_z+min_rise_cm/100*k/steps), start[:3, :3], last_q, tolerance_m=.003, tolerance_rad=.1)
-            except ValueError:
+            solved_q = _lift_solve(point(base_z+min_rise_cm/100*k/steps), start[:3, :3], last_q, horizontal)
+            if solved_q is None:
                 break
+            last_q = solved_q
             rows.append(list(last_q)+[grip])
             heights.append(round((base_z+min_rise_cm/100*k/steps-start[2, 3])*100, 2))
             nudged = True

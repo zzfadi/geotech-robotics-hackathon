@@ -17,6 +17,8 @@ TAU_S = .05          # time constant of the friction drive
 MAX_SPEED_CM_S = 60.
 MAX_SPIN_DEG_S = 360.
 GRAVITY_CM_S2 = 980.
+MIN_GRIP_GAP_M = .055   # cup body is ~6-8 cm wide; a narrower stop means rim or mouth contact
+MAX_GRIP_TILT_DEG = 20.
 
 
 def _transform(p, q):
@@ -57,7 +59,11 @@ class FrictionGrip:
             if self.label not in props or requested > gap+.003:
                 return self.release('jaws opened' if self.label in props else 'cup missing', now)
             return None
-        if requested < gap-.002 and contacts and contacts[0] in props:
+        if requested < gap-.002 and contacts and contacts[0] in props and gap >= MIN_GRIP_GAP_M:
+            # Only a real side grip on the cup body: jaws stopped wide (not on the rim or inside
+            # the mouth) and the cup upright when it is taken.
+            if props[contacts[0]].get_actor_up_vector().z < math.cos(math.radians(MAX_GRIP_TILT_DEG)):
+                return None
             pose = props[contacts[0]].get_actor_transform()
             self.relative = unreal.MathLibrary.make_relative_transform(pose, _transform(*link_pose))
             self.label = contacts[0]

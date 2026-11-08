@@ -242,3 +242,16 @@ subgoal; per-table grasp angle from the lift ceiling (45–80°); re-grasp if a 
   Dream's own step is < 0.3 cm), counted per table as `lift_nudges`.
 - **Batch 37 (`3f89d8a2ec044ece807ef912a6b0f2df`): 9/9** — 22, 22, 22, 16, 20, 16, 21, 26, 26 cm. Seven tables
   used no nudges; the two 26 cm targets used 4 and 1.
+- Batch 38 (`0e27822d7c5b4188986e8b0e5b0fe137`): 8/9 on mostly 25–28 cm targets. Miss: a 68° reach left the cup
+  outside the jaws, yet the limiter's rim/mouth contact let the friction grip form and carry the cup tilted
+  60°. The grip now forms only when the jaws stop ≥ 5.5 cm apart (cup body) with the cup ≤ 20° from upright.
+- Batch 39 (`7daedc4c5ad04080bd5272c4a78f7971`): 8/9 incl. two 30 cm holds. Miss stalled at the straight-up reach
+  limit: the held lift now draws the cup back toward the base by up to 8 cm when straight up runs out (+3–4 cm
+  reach, cup stays level).
+- Batch 40 (`488e58efbf8544a8b480461bc43690de`): 8/9. Miss: another steep (68°) reach ended beside the cup. Grasp
+  angles are now chosen from ceilings that include the draw-back, so shallower, more accurate angles cover high
+  targets (60° → 28 cm).
+- **Batch 41 (`6821dd378db94c0799089f356deb4f05`): 9/9** — 24, 29, 17, 24, 24, 16, 16, 27, 15 cm.
+
+Tally since the friction grip and phase fixes (batches 26–41, excluding the checkpoint-disturbed 29/30):
+9/9 four times (28, 33, 37, 41), 8/9 eight times, 7/9 twice.
