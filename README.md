@@ -6,7 +6,7 @@ GeoTech robotics hackathon workspace.
 
 Our final hackathon demo goal is **Hold My Beer**: a Maker Arm grasps a drinking cup, lifts it 10 cm and holds it upright and steady. The simulation has **4–5 drinking cups per table on nine tables in a 3×3 grid**, with randomized cup positions, live camera previews and recorded trials. The user confirmed drinking cups, not bottle caps.
 
-The cup scene is saved in checkpoint `99ed368`; cup pickup and hold validation remain in progress. Initial trials use empty cups; liquid containment, spill prevention and trained-policy success are not yet demonstrated. See the [demo goal and acceptance criteria](docs/hold-my-beer.md). Previous block trials remain historical evidence, not proof of cup performance.
+The cup scene is saved in checkpoint `7fd63b1`; cup pickup and hold validation remain in progress. Initial trials use empty cups; liquid containment, spill prevention and trained-policy success are not yet demonstrated. See the [demo goal and acceptance criteria](docs/hold-my-beer.md). Previous block trials remain historical evidence, not proof of cup performance.
 
 ## Dashboard
 
