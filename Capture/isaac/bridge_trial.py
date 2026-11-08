@@ -35,6 +35,9 @@ def write(stream, record):
 async def station(args):
     space = "spoof-" + args.trial
     observed = {}
+    target_file = getattr(args, "contact_target", None)
+    if target_file:
+        from contact_fixture import SUBJECT as contact_subject, hand_sweep
 
     class AuditGateway(Gateway):
         def datagram_received(self, raw, address):
@@ -67,25 +70,50 @@ async def station(args):
                 gateway.accept, args.bind, 17867, limit=256
             ):
                 print("Ready for Luna", space, flush=True)
+                contact_seq = 0
+                center = None
                 for seq in range(round(args.seconds * 30)):
                     # Keep the fixture idle after preflight until the allowed WAN client connects.
                     if seq >= 360 and gateway.client is None:
                         await asyncio.sleep(1 / 30)
                         continue
-                    for name in SUBJECTS:
+                    if target_file:
+                        if center is None and target_file.is_file():
+                            target = json.loads(target_file.read_text())
+                            center = target["center_m"]
+                            if (
+                                target["trial"] != args.trial
+                                or len(center) != 3
+                                or not all(
+                                    math.isfinite(v) and abs(v) < 100 for v in center
+                                )
+                            ):
+                                raise ValueError(
+                                    "Invalid Maker Arm target for this trial"
+                                )
+                        if center is None or gateway.client is None:
+                            await asyncio.sleep(1 / 30)
+                            continue
+                    names = (contact_subject,) if center is not None else SUBJECTS
+                    for name in names:
                         frame = dict(
                             version=1,
                             subject=name,
                             session=args.trial,
                             space=space,
-                            seq=str(seq),
+                            seq=str(contact_seq if center is not None else seq),
                             station_ns=str(time.monotonic_ns()),
-                            bones=skeleton(name, POSES[(seq // 20) % len(POSES)]),
+                            bones=(
+                                hand_sweep(contact_seq, center)
+                                if center is not None
+                                else skeleton(name, POSES[(seq // 20) % len(POSES)])
+                            ),
                         )
                         tx.sendto(
                             json.dumps(frame, separators=(",", ":")).encode(),
                             ("127.0.0.1", 17860),
                         )
+                    contact_seq += 1
                     await asyncio.sleep(1 / 30)
         finally:
             udp.close()
@@ -198,6 +226,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="mode", required=True)
     p = sub.add_parser("station")
+    p.add_argument(
+        "--contact-target",
+        type=Path,
+        help="Wait for the live wrist center, then sweep the webcam hand into it",
+    )
     p.add_argument("--seconds", type=int, default=1800)
     for opt in ("bind", "luna", "trial"):
         p.add_argument("--" + opt, required=True)
