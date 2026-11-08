@@ -1,0 +1,19 @@
+{
+  "when": "2026-11-07T18:14:19-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Added an explicit runtime-only local measured-feedback mailbox watcher",
+  "why": "Connect validated telemetry to Table10 visuals without editor transactions or invented feedback",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_measured_mailbox.py",
+    "Unreal/TheHumanTouch/Tools/test_maker_arm_measured_mailbox.py",
+    "docs/table10-interaction-bay.md"
+  ],
+  "details": [
+    "Pinned32-character lowercasehex session; expectedserial/calibration identity viareceiver",
+    "Envelope and packet must independently remainfresh within250ms; max10Hz;16KiB input bound",
+    "Duplicates suppressed; unavailable/malformed/stale inputs never synthesize poses",
+    "SIEteardown unregisters callback; no network, hardware commands or autoSIE",
+    "16 combined receiver/watcher tests pass; no live runtimeactivation"
+  ]
+}

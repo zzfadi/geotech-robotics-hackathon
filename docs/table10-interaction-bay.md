@@ -35,3 +35,15 @@ An unknown `jaw_gap_m=None` **does not close the gripper**. The receiver checks 
 `close()` disables the receiver. Missing/stale feedback is not extrapolated; the transport/UI must show freshness rather than presenting a held visual pose as live hardware. SIE teardown naturally discards its visual changes. This helper creates no editor transactions and does **not** itself replicate runtime poses to other editors; that is a separate bounded mirror/transport concern. No live receiver or synthetic measured-feedback animation was started during implementation.
 
 Validation: seven isolated tests cover freshness/identity/order/limits, rate limiting, exact namespace isolation, unknown-gap preservation, malformed jaw geometry, editor-world rejection, and no setter calls for invalid/rate-limited data. Run `python3 -m unittest discover -s Unreal/TheHumanTouch/Tools -p test_maker_arm_measured_pose.py`.
+
+## Local mailbox watcher
+
+`Tools/maker_arm_measured_mailbox.py` connects a local atomic JSON mailbox to the receiver. The HTTPS producer is separate (`Interaction/mirror.py`); the UE watcher performs **no network or hardware calls**.
+
+An owning game-thread controller explicitly calls `start(path, current_game_world, registrations, session_id, hz=10)`. `session_id` must be the externally pinned32-character lowercase hexadecimal session nonce, and `registrations` pins the expected serial/calibration IDs. An editor world or an absent SIE session is rejected. Importing the module starts nothing. `stop()` unregisters the callback and closes the receiver; `status()` returns diagnostics without exposing a new pose.
+
+The Slate/game-thread callback reads at most16KiB from the local file, no more than10 times per second. It accepts only envelopes with the pinned session, status`fresh`, and a dictionary packet. Both `received_unix` and the packet's `feedback_unix` must independently be no older than250ms and not in the future. Refreshing an envelope timestamp cannot make old hardware feedback fresh. The receiver then performs its identity, source, joint-limit and pose checks. Identical already-applied packets are suppressed; changed packets with duplicate/out-of-order measured timestamps are rejected by the receiver.
+
+An `unavailable` envelope must have `packet:null`. Missing files, partial/malformed JSON, oversize files, mismatched sessions, stale data and rejected measurements update the unavailable status without moving anything or constructing a substitute pose. Once the game world ends, the watcher unregisters itself. Status freshness also expires if editor ticks pause. The local visual pose may remain at its last measured position until SIE ends, but that position is never advertised as fresh hardware feedback after expiry.
+
+The watcher creates no editor transactions and does not start SIE, arm physical output, animate test data, or replicate runtime state. No live watcher was activated during implementation. Validation: nine fake-runtime/callback tests plus the seven receiver tests pass with `python3 -m unittest discover -s Unreal/TheHumanTouch/Tools -p 'test_maker_arm_measured_*.py'`.

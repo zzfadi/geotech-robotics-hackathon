@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T18:13:19-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Prepared registered SDK feedback transport into a local Unreal mailbox.",
+  "why": "Complete the read-only measured-pose path without sending hardware commands or replaying stale positions.",
+  "where": [
+    "Interaction/mirror.py",
+    "Interaction/test_mirror.py"
+  ],
+  "details": [
+    "Pins host, session, arm and validated calibration.",
+    "Fresh encoder poses only; failures atomically clear the mailbox packet.",
+    "No live physical feedback or multi-host mirroring has been verified."
+  ]
+}

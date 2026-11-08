@@ -140,3 +140,27 @@ an output-enable signal. Physical lifecycle remains with the SDK owner.
 Three offline publisher tests exercise the request authentication and actual
 sampler-to-relay schema, stop retention, stale rejection, no retry, HTTPS-only
 origins and redirect refusal. No SDK host has run this publisher yet.
+
+## Read-only relay → Unreal transport
+
+After the SDK owner has explicitly registered, run `python -m Interaction.mirror`
+with `--session` (the exact registered nonce), `--host` (the selected SDK host),
+`--calibration` (a locally reviewed and validated calibration JSON), and
+`--mailbox` (an ignored local Saved path). Run it in a Python environment with
+NumPy. This consumer polls the HTTPS relay at at most 10 Hz; it does not connect
+to CAN, register a controller, clear a stop, start Unreal simulation, or send
+hardware commands. It rejects host/session/side changes and uncalibrated or
+stale measurements. It never substitutes requested motor targets for encoders.
+
+Each atomic mailbox envelope contains `status`, `session_id`, `received_unix`,
+`packet` and `reason`. A fresh packet contains converted measured URDF angles;
+network errors, stale measurements and transport shutdown write `packet: null`.
+Unreal must independently validate both the envelope and encoder timestamps
+before applying it. The pose remains visually frozen on loss of feedback; this
+is not evidence of a physically stationary robot. The SDK owner's independent
+hold/return lifecycle continues to govern the real arm.
+
+The same explicitly registered read-only stream can feed a mailbox on each
+Unreal host. Each host needs its own active simulation and receiver; Multi-User
+editor membership alone does not replicate runtime joint poses. Live multi-host
+mirroring remains unverified until the physical SDK host is available.
