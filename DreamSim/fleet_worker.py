@@ -180,6 +180,10 @@ class TableRun:
         self.latch_z = None  # tool height (m, arm frame) when the jaws first stalled
         self.hold_peak_z = None  # highest tool height while holding (hold_monotonic floor)
         self.cup_rise = 0.  # latest measured target rise (cm), for phase prompts
+        self.grasp_cycles = 0  # grasp_still cycles used before the jaws hold the cup
+        self.regrasps = 0  # re-reaches after the cup dropped back upright
+        self.lift_stalls = 0  # consecutive lift cycles without measured rise
+        self.last_rise = 0.
         self.result = {'table': self.key, 'name': variant['name'], 'prompt': variant['prompt'],
                        'checkpoint': variant['checkpoint'], 'position_ik': variant['position_ik'],
                        'pad_contacts': variant['pad_contacts'], 'action_rows': variant['action_rows'],
@@ -244,7 +248,10 @@ class TableRun:
         if self.grip_latch is None:
             return phases.get('grasp') or self.v['prompt']
         required = float((self.v.get('objective') or {}).get('height_cm', 10.))
-        return phases['lift'] if self.cup_rise < required-.5 else phases['hold']
+        if self.cup_rise >= required-.5:
+            return phases['hold']
+        options = phases.get('lift_variants') or [phases['lift']]
+        return options[self.lift_stalls % len(options)]
 
     def infer(self, packet):
         if self.args.dry_run:
@@ -359,6 +366,15 @@ class TableRun:
                     self.log('table guard raised %d row(s) to keep pads above the tabletop' % raised)
             latch_side = active_side or 'left'
             latch_key = 'q_l_chunk' if latch_side == 'left' else 'q_r_chunk'
+            if (self.v.get('assist', {}).get('grasp_still') and self.grip_latch is None and not reaching
+                    and not self.args.dry_run and self.grasp_cycles < 3):
+                # Grasp subgoal: the jaws are already around the cup after the reach. Keep
+                # the arm still so closing does not push the cup away; Dream drives the grip.
+                self.grasp_cycles += 1
+                still = list(packet['state']['q_'+latch_side])
+                action = dict(action)
+                action[latch_key] = [still+[row[6]] for row in action[latch_key]]
+                self.log('grasp: arm held still, Dream grip %.2f -> %.2f' % (action[latch_key][0][6], action[latch_key][-1][6]))
             vertical = None
             if self.v.get('assist', {}).get('hold_vertical') and self.grip_latch is not None and not self.args.dry_run:
                 from pregrasp import vertical_only
@@ -416,12 +432,29 @@ class TableRun:
                         from pregrasp import tool_height
                         self.latch_z = tool_height(playback.get('q_'+latch_side, packet['state']['q_'+latch_side]))
                     if self.grip_latch is None:
-                        # Command 1.9 cm inside the measured contact width, as in the verified
-                        # zero-API mechanical cup hold (5.5 cm on a 7.4 cm cup); the runtime contact
-                        # limiter keeps the pads at the surface. Deeper commands cut the thin wall.
-                        self.grip_latch = max(observed-float(self.v['assist'].get('grip_squeeze_m', .019)), 0.)/JAW_MAX_M
+                        # The runtime limiter stops the pads at contact width minus its 5 mm
+                        # compliance while both pads touch; if contact drops for a tick the jaws
+                        # snap to the command. Command just past the compliance (6 mm) so the
+                        # squeeze is unchanged but a lost contact cannot crush through the cup.
+                        self.grip_latch = max(observed-float(self.v['assist'].get('grip_squeeze_m', .006)), 0.)/JAW_MAX_M
                         self.log('jaws stalled on an object at %.1f cm (commanded %.1f cm); holding %.1f cm' %
                                  (observed*100, commanded*JAW_MAX_M*100, self.grip_latch*JAW_MAX_M*100))
+            if (self.grip_latch is not None and self.v.get('assist', {}).get('regrasp') and not reaching
+                    and self.regrasps < int(self.v['assist'].get('regrasp', 0))):
+                gap_now = playback.get('gap_'+latch_side+'_m', 1.)
+                cup = (self.status() or {}).get('props', {}).get(target, {})
+                if (gap_now <= self.grip_latch*JAW_MAX_M+.002 and cup.get('height_above_start_cm', 0.) < 2.
+                        and 0 <= cup.get('tilt_degrees', 180.) <= 15 and cup.get('table_local_cm')):
+                    # Jaws closed to the latch command: the cup dropped back onto the table upright.
+                    # Re-reach to where it is now and grasp again (counted, labelled).
+                    self.regrasps += 1
+                    self.v = {**self.v, 'target': {**self.v['target'], 'location_cm': list(cup['table_local_cm'][:2])+[81.]}}
+                    self.grip_latch = self.latch_z = self.hold_peak_z = None
+                    self.grasp_cycles = self.lift_stalls = 0
+                    self.last_rise = 0.
+                    reach_pending = True
+                    self.log('cup dropped upright at %s; re-reaching (regrasp %d)' %
+                             ([round(v, 1) for v in cup['table_local_cm'][:2]], self.regrasps))
             if self.latch_z is not None and playback.get('q_'+latch_side):
                 from pregrasp import tool_height
                 self.hold_peak_z = max(self.hold_peak_z or self.latch_z, tool_height(playback['q_'+latch_side]))
@@ -440,6 +473,9 @@ class TableRun:
             lift = lift_verdict(current, target, hold_seconds, max_tilt) if objective else metrics.get(monitored, {'measured':False})
             self.result['lift'] = lift
             self.cup_rise = float(lift.get('height_cm', 0.) or 0.)
+            if self.grip_latch is not None:
+                self.lift_stalls = self.lift_stalls+1 if self.cup_rise < self.last_rise+.5 else 0
+            self.last_rise = max(self.last_rise, self.cup_rise)
             self.log('cycle %d done (inference %.2fs) lift %.2f cm' % (cycle+1, inference, lift.get('height_cm', 0.)))
             gap_delta = max(abs(playback.get('gap_'+side+'_m', packet['state']['gap_'+side+'_m'])-
                                 packet['state']['gap_'+side+'_m']) for side in ('left','right'))

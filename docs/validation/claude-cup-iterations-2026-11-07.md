@@ -82,3 +82,23 @@ cycle, but the cup stayed down: a 2 mm squeeze carries nothing. Codex's verified
 
 Codex's mechanical lift path (back 0.67 cm per cm up along the tool), slower straight lift (≈1.5 cm/s), and a
 firmer 3 cm squeeze. Heights random 15–30 cm.
+
+Result (`437602b506f1425080fbd6329ad2cfbb`): **slow lift carried the cup** — T5 rose 15.2 cm upright (tilt
+2.3°), above 10 cm for 36 s, jaws at 7.4 cm throughout; failed only because its target was 26 cm. Firm 3 cm
+squeeze reached 14 cm then slipped. Only 2 of 9 tables had the cup between the jaws: Dream moves the arm while
+closing and nudges the cup away.
+
+## Batch 10 — still-arm grasp, slow lift everywhere, lift prompt variants
+
+`04245105d5604076b090e002bfae335a`: 7 of 9 tables closed on the cup (was 2/9); rises 9.8, 9.3, 8.0, 5.7, 4.4
+cm, mostly slipping. Runtime `contact_gap` explains the slip: while both pads touch, the jaws stop at contact
+width minus 5 mm compliance; when the both-pad check drops for a tick, the jaws snap to the command. A 5.5 cm
+command is 2 cm inside the cup and ejects it (logged gap jumps 7.4 → 5.5 cm).
+
+## Batch 11 — latch at contact minus 6 mm
+
+`b882f91d9b9a4055abf45121b8388ed4`: 8 of 9 grasped. **T8 carried 20.1 cm upright (tilt 4.5°), above 10 cm for
+86 s**; T6 12.7 cm upright (target 15). Dream now lifts the hand 17–20 cm on every table with the lift subgoal.
+Where the gap fell to the 6.9 cm command at the first lift the cup had already left the pads: the tool centre
+sits at the fingertip end of the runtime's pad contact corridor (flange Z −17..−10 cm), so contact is
+marginal. Batch 12 grasps 3.5 cm deeper and re-reaches (up to twice) when a cup drops back upright.

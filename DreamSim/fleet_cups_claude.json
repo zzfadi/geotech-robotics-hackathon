@@ -16,20 +16,30 @@
    "phase_prompts": {
     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
+    "lift_variants": [
+     "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
+     "Raise the cup higher above the table. Keep the right arm still.",
+     "Keep lifting the cup up, slowly and steadily. Keep the right arm still.",
+     "Move the gripper up with the cup, higher. Keep the right arm still."
+    ],
     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
    },
-   "approach": "scripted"
+   "approach": "scripted",
+   "lift_step_cm": 0.12,
+   "grasp_still": true,
+   "grasp_depth_cm": 3.5,
+   "regrasp": 2
   }
  },
  "tables": [
   {
    "index": 0,
-   "name": "T1 22cm mech-path",
+   "name": "T1 30cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 22,
+    "height_cm": 30,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -118,30 +128,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "lift_back_per_up": 0.667
-   }
+   "prompt": "Grab the cup and lift it 30 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 1,
-   "name": "T2 19cm mech-path",
+   "name": "T2 22cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 19,
+    "height_cm": 22,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -245,30 +241,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 19 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "lift_back_per_up": 0.667
-   }
+   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 2,
-   "name": "T3 30cm mech-path",
+   "name": "T3 23cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 30,
+    "height_cm": 23,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -357,30 +339,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 30 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "lift_back_per_up": 0.667
-   }
+   "prompt": "Grab the cup and lift it 23 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 3,
-   "name": "T4 20cm slow-lift",
+   "name": "T4 25cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 20,
+    "height_cm": 25,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -484,30 +452,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 20 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "lift_step_cm": 0.12
-   }
+   "prompt": "Grab the cup and lift it 25 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 4,
-   "name": "T5 26cm slow-lift",
+   "name": "T5 15cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 26,
+    "height_cm": 15,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -596,30 +550,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 26 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "lift_step_cm": 0.12
-   }
+   "prompt": "Grab the cup and lift it 15 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 5,
-   "name": "T6 30cm slow-lift",
+   "name": "T6 22cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 30,
+    "height_cm": 22,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -723,30 +663,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 30 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "lift_step_cm": 0.12
-   }
+   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 6,
-   "name": "T7 21cm firm-grip",
+   "name": "T7 22cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 21,
+    "height_cm": 22,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -835,30 +761,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 21 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "grip_squeeze_m": 0.03
-   }
+   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 7,
-   "name": "T8 18cm firm-grip",
+   "name": "T8 25cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 18,
+    "height_cm": 25,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -962,30 +874,16 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 18 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "grip_squeeze_m": 0.03
-   }
+   "prompt": "Grab the cup and lift it 25 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   },
   {
    "index": 8,
-   "name": "T9 15cm firm-grip",
+   "name": "T9 29cm deep grasp",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
     "side": "left",
-    "height_cm": 15,
+    "height_cm": 29,
     "hold_seconds": 5,
     "max_tilt_deg": 15
    },
@@ -1074,22 +972,8 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Grab the cup and lift it 15 cm straight up, then hold it upright for 5 seconds. Keep the right arm still.",
-   "assist": {
-    "table_guard": true,
-    "layout": "live",
-    "grip_latch": true,
-    "hold_vertical": true,
-    "hold_monotonic": true,
-    "phase_prompts": {
-     "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
-     "lift": "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
-     "hold": "Hold the cup still and upright in the air. Keep the right arm still."
-    },
-    "approach": "scripted",
-    "grip_squeeze_m": 0.03
-   }
+   "prompt": "Grab the cup and lift it 29 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
   }
  ],
- "height_seed": 1794117932
+ "height_seed": 1794118677
 }

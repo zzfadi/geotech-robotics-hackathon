@@ -79,7 +79,8 @@ def solve_pose(position, rotation, q0, tolerance_m=.002, tolerance_rad=.02):
     return best.x.tolist()
 
 
-def pregrasp_state(table, side='left', grasp_offset_cm=2.5, pitch_deg=45., standoff_cm=0., lift_cm=0., gap_m=.1):
+def pregrasp_state(table, side='left', grasp_offset_cm=2.5, pitch_deg=45., standoff_cm=0., lift_cm=0., gap_m=.1,
+                   grasp_depth_cm=0.):
     """Joint start pose: TCP grasp_offset_cm above the cup centre, approaching at pitch_deg.
 
     standoff_cm backs the tool off along its approach axis and lift_cm raises it,
@@ -89,7 +90,11 @@ def pregrasp_state(table, side='left', grasp_offset_cm=2.5, pitch_deg=45., stand
     yaw = math.atan2(cup[1], cup[0])
     rotation = Rotation.from_euler('z', yaw).as_matrix()@Rotation.from_euler('y', -pitch_deg, degrees=True).as_matrix()
     approach = rotation@np.array([0, 0, -1.])
-    position = cup+np.array([0, 0, grasp_offset_cm/100])-approach*standoff_cm/100+np.array([0, 0, lift_cm/100])
+    # grasp_depth_cm moves the tool centre past the cup axis along the approach, so the cup
+    # sits inside the runtime's pad contact corridor (flange Z -17..-10 cm) rather than at
+    # the fingertip edge (the tool centre is at -17 cm).
+    position = (cup+np.array([0, 0, grasp_offset_cm/100])+approach*(grasp_depth_cm-standoff_cm)/100
+                +np.array([0, 0, lift_cm/100]))
     initial = table.get('initial_state') or {}
     q = solve_pose(position, rotation, initial.get('q_'+side) or [0, -1.95, 1.47, -.12, 0, 0])
     state = dict(initial)
@@ -311,7 +316,7 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
     return out, {'side': side, 'rows': len(rows), 'dz_cm': heights}
 
 
-START_OPTIONS = ('grasp_offset_cm', 'pitch_deg', 'standoff_cm', 'lift_cm', 'gap_m')
+START_OPTIONS = ('grasp_offset_cm', 'pitch_deg', 'standoff_cm', 'lift_cm', 'gap_m', 'grasp_depth_cm')
 
 
 def approach_action(state, variant, standoff_lift_cm=8., transfer_rows=36, descend_rows=20):
