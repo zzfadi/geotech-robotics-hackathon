@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Post-update UEFI 39.2.1-gcid-46758480 directly verified; authorized agent-started NVMe reinstall actively partitioning; Beryl Port 1 LAN setting applied, physical KVM move and port access pending",
+  "scope": "Authenticated KVM cloud console from this Mac settles on P2P/no HDMI; Beryl address reservations verified while physical KVM move remains pending; NVMe reinstall installing packages",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -54,15 +54,15 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "Post-update UEFI version verified; subsequent NVMe reinstall is actively partitioning",
+    "observation": "NVMe reinstall in package phase; no active-install key test sent through cloud console",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
     "hid_delivery_verified": true,
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
     "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
-    "cloud": "Approved Google sign-in and Bind completed; GL-RM1-569 green online; actual remote-control session unverified",
-    "updated_at": "2026-11-08T02:03:18-08:00",
+    "cloud": "Authenticated console launched via glkvm.com Remote Control; settled P2P/no HDMI from this Mac, off-site/relay/keyboard path unverified",
+    "updated_at": "2026-11-08T02:09:16-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
@@ -83,7 +83,8 @@
       "device_name": "GL-RM1-569",
       "online": true,
       "paid_plan_activated": false,
-      "remote_control_session_verified": false
+      "remote_control_session_verified": true,
+      "remote_control_session_scope": "Authenticated console connection from this Mac only; no target input test or off-site test"
     },
     "hid_check": {
       "keyboard_enabled_in_settings": true,
@@ -130,17 +131,39 @@
     "hid_verification_scope": "Agent sent Enter through KVM at installer error prompt; webcam directly confirms root diagnostic shell",
     "agent_keypress_verified": true,
     "usb_host_attachment_directly_verified": true,
-    "hid_delivery_user_confirmed": true
+    "hid_delivery_user_confirmed": true,
+    "cloud_console": {
+      "recorded_at": "2026-11-08T02:09:16-08:00",
+      "entrypoint": "glkvm.com Remote Control",
+      "endpoint_domain": "Dynamic glkvm.top endpoint supplied by the authenticated portal; exact endpoint omitted",
+      "authenticated_console_verified": true,
+      "client_location": "Same Mac used for local setup",
+      "settled_transport": "P2P",
+      "transitional_transport_label": "Relay",
+      "relay_connection_verified": false,
+      "video_status": "No HDMI signal detected",
+      "hdmi_input_connected": false,
+      "jetson_key_test_during_active_install": false,
+      "cloud_route_keyboard_delivery_verified": false,
+      "offsite_access_verified": false,
+      "optional_web_terminal": "No shell established; later displayed reconnect prompt, not a blocker",
+      "local_screenshots": [
+        "/private/tmp/jetson-cloud-control-check-07.png",
+        "/private/tmp/jetson-cloud-control-check-08.png",
+        "/private/tmp/jetson-cloud-control-check-09.png"
+      ]
+    }
   },
   "pending": [
     "Observe active NVMe reinstall through completion/reboot without interrupting power or removing installer media",
     "Verify successful installed OS boot, actual root device and final OS versions",
     "Establish persistent installed-OS account and key-based SSH; previous root SSH was temporary failed-installer recovery only",
     "Record RAM and run cached arm environment/offline checks after installed-host verification",
-    "Await KVM cable move to Beryl Port 1, then verify its address and access through the physical port",
-    "Verify complete portable LAN without Mac sharing and off-site access separately; preserve home GL-MT6000"
+    "Await KVM cable move to Beryl Port 1, then verify reserved 192.168.8.166 is leased and accessible through that port",
+    "Verify complete portable LAN without Mac sharing and off-site access separately; preserve home GL-MT6000",
+    "After active installation, verify cloud-route keyboard/video and off-site access separately; current cloud-console proof is same-Mac P2P only"
   ],
-  "updated_at": "2026-11-08T02:03:18-08:00",
+  "updated_at": "2026-11-08T02:09:16-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -418,7 +441,7 @@
   },
   "portable_lan_proposal": {
     "recorded_at": "2026-11-08T01:21:56-08:00",
-    "status": "Port 1 LAN setting saved; KVM cable move requested, physical move/access and final topology pending",
+    "status": "Port 1 LAN and address reservations verified; physical KVM move/access and full topology still pending",
     "goal": "Portable Jetson/KVM LAN independent of Mac Internet Sharing",
     "intended_router": "Separate GL.iNet GL-MT3000 Beryl AX",
     "separate_model_confirmed": true,
@@ -433,7 +456,7 @@
     },
     "current_kvm_lan": "Mac Internet Sharing bridge100 192.168.2.1, KVM 192.168.2.2",
     "next_step": "Await KVM cable move and verify local access through Port 1; after OS installation verify both devices without Mac sharing and off-site access separately",
-    "updated_at": "2026-11-08T02:03:18-08:00",
+    "updated_at": "2026-11-08T02:09:16-08:00",
     "model_evidence": "User-provided photo identifies GL-MT3000 Beryl AX; no Wi-Fi credentials or hardware addresses retained",
     "internet_available_user_confirmed": true,
     "internet_independently_verified": true,
@@ -455,8 +478,8 @@
     "router_admin_login": "User recovered password; authenticated admin UI verified",
     "router_settings_changed": true,
     "home_router_unchanged": true,
-    "updated_at": "2026-11-08T02:03:18-08:00",
-    "router_change_scope": "User-started firmware upgrade plus Port 1 changed to LAN in UI; home GL-MT6000 unchanged",
+    "updated_at": "2026-11-08T02:09:16-08:00",
+    "router_change_scope": "Beryl upgrade, Port 1 saved as LAN, and verified device address reservations; home GL-MT6000 unchanged",
     "router_firmware_version": "4.11.0",
     "router_firmware_verified": true,
     "router_firmware_evidence": "/private/tmp/jetson-beryl-upgrade-check.png",
@@ -478,7 +501,16 @@
       "kvm_cable_move_requested": "Move KVM Ethernet from Mac to free WAN-labeled Beryl Port 1",
       "user_reply_received": false,
       "physical_kvm_move_verified": false
-    }
+    },
+    "address_reservations": {
+      "independently_verified": true,
+      "local_screenshot": "/private/tmp/beryl-lan-reservations-03.png",
+      "identity_check": "Each reservation matched known device hardware identity; hardware addresses omitted",
+      "kvm_ipv4": "192.168.8.166",
+      "jetson_ipv4": "192.168.8.136",
+      "scope": "Router reservations only; not proof of current leases, physical port access or installed-system reachability"
+    },
+    "kvm_reserved_beryl_ipv4": "192.168.8.166"
   },
   "current_attempt": "reinstallation",
   "firmware_after": {
@@ -506,12 +538,19 @@
     "target_device": "/dev/nvme0n1",
     "target_model_previously_verified": "SHPP41-1000GM",
     "target_lsblk_size_previously_verified": "931.5G",
-    "latest_stage": "Partitioning nvme0n1",
-    "progress_observed_at": "2026-11-08T02:01:41-08:00",
-    "progress_local_screenshot": "/private/tmp/jetson-retry-watch-hand-observation-03.png",
+    "latest_stage": "Installing many packages; displayed estimated wait of 15 minutes",
+    "progress_observed_at": "2026-11-08T02:03:50-08:00",
     "completion_verified": false,
     "installed_os_boot_verified": false,
     "persistent_ssh_verified": false,
-    "current_instruction": "Observe installation without interrupting power or removing media; do not assume a further erase confirmation will appear"
+    "current_instruction": "Observe installation without interrupting power or removing media; do not assume a further erase confirmation will appear",
+    "updated_at": "2026-11-08T02:09:16-08:00",
+    "partitioning_observation": {
+      "observed_at": "2026-11-08T02:01:41-08:00",
+      "local_screenshot": "/private/tmp/jetson-retry-watch-hand-observation-03.png"
+    },
+    "progress_evidence": "Direct webcam observation; installer remains running",
+    "displayed_wait_minutes": 15,
+    "wait_estimate_is_completion_evidence": false
   }
 }
