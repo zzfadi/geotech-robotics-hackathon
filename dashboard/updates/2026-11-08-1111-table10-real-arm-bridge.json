@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-08T11:11:32-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Linked Unreal Table 10 to both real Maker Arms through the MakerMods SDK. Mirror (real arm moved by hand -> Table 10 follows, torque off) works; drive (drag a Table 10 gripper -> real arm follows) is built but not yet run on hardware.",
+  "why": "Pose the real arms from the shared scene and see their pose 1:1 at joint level, without depending on Portal, which targets the Metal Arm.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_real_mapping.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_real_link.py",
+    "Unreal/TheHumanTouch/Tools/real_arm_bridge.py",
+    "Unreal/TheHumanTouch/Tools/test_maker_arm_real_mapping.py"
+  ],
+  "details": "Joint map: SDK motor angle = URDF angle except wrist yaw (sign flipped), checked against the SDK's own gravity chain over 200 random poses (0 mm difference). The Unreal side recovers Table 10 joints from link transforms, solves IK when a gripper is dragged, and sets transforms locally (no Multi-User transactions). Bridge safety: drive engages only within 5 deg of the real pose, speed cap 0.6 rad/s, stale (>0.3 s) Unreal state holds, >25 deg jumps rejected, SDK verified return-to-rest before release. Adapters: 003A... = left, 0027... = right (confirmed). Requires the local gs_usb (candleLight) backend in a maker-arm-sdk clone outside this repo. Unvalidated: drive on hardware, gripper gap mapping (linear), arm base placement vs the real station."
+}
