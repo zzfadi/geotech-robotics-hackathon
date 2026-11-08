@@ -1,0 +1,903 @@
+{
+  "description": "Controlled pregrasp contact fixtures: five distinct props twice, left then right. Setup-only placement, free Chaos bodies; cylinder diameter enlarged from 3 to 5cm. Requires target.rotation_deg support. Not a successful-pickup claim. Run configured mode without randomization.",
+  "defaults": {
+    "checkpoint": "dreamlabs/dream-1-beta-flash",
+    "position_ik": true,
+    "pad_contacts": true,
+    "tcp_back": 0,
+    "action_rows": 12,
+    "cycles": 24
+  },
+  "tables": [
+    {
+      "index": 1,
+      "name": "red-left-controlled",
+      "prompt": "Close the left gripper around the red block between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          -2.055434359182825,
+          0.42197567622073395,
+          1.691617186,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Red",
+        "location_cm": [
+          60,
+          -40,
+          81
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Red",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "name": "green-left-controlled",
+      "prompt": "Close the left gripper around the green cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          -2.1640439417523663,
+          0.44995526255155893,
+          1.691617186,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Green",
+        "location_cm": [
+          60,
+          -40,
+          77.5
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.05
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Green",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "name": "orange-left-controlled",
+      "prompt": "Close the left gripper around the orange cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          -2.1640439417523663,
+          0.44995526255155893,
+          1.691617186,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Orange",
+        "location_cm": [
+          60,
+          -40,
+          77.5
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.05
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Orange",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "name": "orangerodassembly-left-controlled",
+      "prompt": "Close the left gripper around the orange block with the yellow rod between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          -2.1478178865931037,
+          0.44490384164517144,
+          1.691617186,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "location_cm": [
+          60,
+          -40,
+          78
+        ],
+        "rotation_deg": [
+          0,
+          90,
+          0
+        ],
+        "yaw_deg": 90,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "name": "orangecylinder-left-controlled",
+      "prompt": "Close the left gripper around the orange cylinder between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the right arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          -2.1640439417523663,
+          0.44995526255155893,
+          1.691617186,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_OrangeCylinder",
+        "location_cm": [
+          60,
+          -40,
+          77.5
+        ],
+        "rotation_deg": [
+          90,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.16
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeCylinder",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "name": "red-right-controlled",
+      "prompt": "Close the right gripper around the red block between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          -2.055434359182825,
+          0.42197567622073395,
+          1.691617186,
+          0,
+          0
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Red",
+        "location_cm": [
+          60,
+          40,
+          81
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Red",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "name": "green-right-controlled",
+      "prompt": "Close the right gripper around the green cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          -2.1640439417523663,
+          0.44995526255155893,
+          1.691617186,
+          0,
+          0
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Green",
+        "location_cm": [
+          60,
+          40,
+          77.5
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.05
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Green",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "name": "orange-right-controlled",
+      "prompt": "Close the right gripper around the orange cube between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          -2.1640439417523663,
+          0.44995526255155893,
+          1.691617186,
+          0,
+          0
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Orange",
+        "location_cm": [
+          60,
+          40,
+          77.5
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.05
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Orange",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "name": "orangerodassembly-right-controlled",
+      "prompt": "Close the right gripper around the orange block with the yellow rod between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          -2.1478178865931037,
+          0.44490384164517144,
+          1.691617186,
+          0,
+          0
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "location_cm": [
+          60,
+          40,
+          78
+        ],
+        "rotation_deg": [
+          0,
+          90,
+          0
+        ],
+        "yaw_deg": 90,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "name": "orangecylinder-right-controlled",
+      "prompt": "Close the right gripper around the orange cylinder between its open fingers, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the left arm still.",
+      "initial_state": {
+        "q_left": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "q_right": [
+          0,
+          -2.1640439417523663,
+          0.44995526255155893,
+          1.691617186,
+          0,
+          0
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_OrangeCylinder",
+        "location_cm": [
+          60,
+          40,
+          77.5
+        ],
+        "rotation_deg": [
+          90,
+          0,
+          0
+        ],
+        "yaw_deg": 0,
+        "scale": [
+          0.05,
+          0.05,
+          0.16
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeCylinder",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    }
+  ]
+}
