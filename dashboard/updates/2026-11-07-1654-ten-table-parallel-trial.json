@@ -1,0 +1,18 @@
+{
+  "when": "2026-11-07T16:54:31-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Ran ten randomized Maker Arm trials with live previews and per-table recordings",
+  "why": "Verify multi-table API execution, observable motion, truthful outcomes and Luna2 replication before claiming task success",
+  "where": [
+    "docs/maker-arm-fleet.md",
+    "docs/validation/fleet-parallel-trial-2026-11-07.json",
+    "https://luna2.tail6864ac.ts.net/"
+  ],
+  "details": [
+    "All10 received Dream actions;84attempts/49returnedactions, peak4outstandingrequests, one capacity refusal recovered",
+    "Seven tables moved;three rejected invalid orientation hints;zero verified10cmheldpickups;finite170.44sec physics bound retained",
+    "Ten overhead recordings uploaded;Luna2 received seven-table movement and restored260sampledactors",
+    "All10idlecamera views visually verified before launch;single/all prompt routing and seededrandom layouts available"
+  ]
+}

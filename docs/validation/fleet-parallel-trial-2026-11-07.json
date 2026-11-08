@@ -1,0 +1,331 @@
+{
+  "request_id": "c45502194a2746a4a41bea810a8a72be",
+  "seed": 1453311647,
+  "task_mode": "random",
+  "randomized_props_per_table": 5,
+  "simulation_seconds": 170.44,
+  "concurrency": {
+    "peak_concurrent_request_tables": 4,
+    "peak_tables": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "tables_with_calls": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05",
+      "T06",
+      "T07",
+      "T08",
+      "T09",
+      "T10"
+    ],
+    "tables_with_measured_joint_change": [
+      "T02",
+      "T04",
+      "T05",
+      "T06",
+      "T08",
+      "T09",
+      "T10"
+    ],
+    "tables_with_motion_rows": [
+      "T02",
+      "T04",
+      "T05",
+      "T06",
+      "T08",
+      "T09",
+      "T10"
+    ],
+    "note": "Overlap measures outstanding Dream client calls; motion rows are playback evidence, not task success."
+  },
+  "observed_successes": 0,
+  "notes": [
+    "Ten authoritative physics simulations ran together on the Mac; Luna2 received bounded visual pose mirroring, not separate physics.",
+    "Seven tables moved; three rejected policy orientation references before movement.",
+    "The finite simulation deadline ended six unfinished trials. No held pickup success is claimed."
+  ],
+  "tables": [
+    {
+      "table": "T01",
+      "name": "baseline-ik",
+      "prompt": "Use the right arm to pick up the orange block with the yellow rod, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 1,
+      "cycles_run": 0,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "side": "right",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": false
+      },
+      "error": "Policy orientation reference outside model limits",
+      "stopped_reason": null
+    },
+    {
+      "table": "T02",
+      "name": "raw-joints-no-ik",
+      "prompt": "Use the right arm to pick up the orange cube, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 11,
+      "cycles_run": 10,
+      "cycles_planned": 10,
+      "outcome": "failed",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Orange",
+        "side": "right",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": true,
+        "height_cm": -3.6290060734245344e-07,
+        "max_height_cm": 4.165979677556777,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted"
+    },
+    {
+      "table": "T03",
+      "name": "short-horizon-6",
+      "prompt": "Use the right arm to pick up the red block, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 1,
+      "cycles_run": 0,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Red",
+        "side": "right",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": false
+      },
+      "error": "Policy orientation reference outside model limits",
+      "stopped_reason": null
+    },
+    {
+      "table": "T04",
+      "name": "long-horizon-24",
+      "prompt": "Use the right arm to pick up the orange block with the yellow rod, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 8,
+      "cycles_run": 4,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "side": "right",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": true,
+        "height_cm": -0.01925412468906984,
+        "max_height_cm": 0.040058694349752955,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": "Fleet runtime stopped: Fleet session duration limit",
+      "stopped_reason": null
+    },
+    {
+      "table": "T05",
+      "name": "full-model",
+      "prompt": "Use the left arm to pick up the orange block with the yellow rod, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta",
+      "calls": 10,
+      "cycles_run": 5,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "side": "left",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": true,
+        "height_cm": -0.019261308767269725,
+        "max_height_cm": 0.0,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": "Fleet runtime stopped: Fleet session duration limit",
+      "stopped_reason": null
+    },
+    {
+      "table": "T06",
+      "name": "rest-start-side-grasp",
+      "prompt": "Use the right arm to pick up the green cube, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 13,
+      "cycles_run": 6,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Green",
+        "side": "right",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": true,
+        "height_cm": 1.531587305692028e-05,
+        "max_height_cm": 0.000563887994260881,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": "Cycle 7 motion did not finish",
+      "stopped_reason": null
+    },
+    {
+      "table": "T07",
+      "name": "rest-start-short-prompt",
+      "prompt": "Use the left arm to pick up the orange block with the yellow rod, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 1,
+      "cycles_run": 0,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "side": "left",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": false
+      },
+      "error": "Policy orientation reference outside model limits",
+      "stopped_reason": null
+    },
+    {
+      "table": "T08",
+      "name": "convex-jaws",
+      "prompt": "Use the left arm to pick up the green cube, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 13,
+      "cycles_run": 6,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Green",
+        "side": "left",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": true,
+        "height_cm": -3.41584372165471e-06,
+        "max_height_cm": 0.0,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": "Cycle 7 motion did not finish",
+      "stopped_reason": null
+    },
+    {
+      "table": "T09",
+      "name": "wide-open-jaw-10cm",
+      "prompt": "Use the left arm to pick up the orange cylinder, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 13,
+      "cycles_run": 6,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeCylinder",
+        "side": "left",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": true,
+        "height_cm": -0.525743179076585,
+        "max_height_cm": 0.0,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": "Fleet runtime stopped: Fleet session duration limit",
+      "stopped_reason": null
+    },
+    {
+      "table": "T10",
+      "name": "cube-7cm",
+      "prompt": "Use the right arm to pick up the orange cube, lift it straight up by 10 cm, and hold it for 2 seconds. Keep the other arm still.",
+      "checkpoint": "dreamlabs/dream-1-beta-flash",
+      "calls": 13,
+      "cycles_run": 6,
+      "cycles_planned": 10,
+      "outcome": "error",
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Orange",
+        "side": "right",
+        "height_cm": 10.0,
+        "hold_seconds": 2.0
+      },
+      "lift": {
+        "measured": true,
+        "height_cm": 0.0,
+        "max_height_cm": 0.0,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": "Cycle 7 motion did not finish",
+      "stopped_reason": null
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "when": "2026-11-07T16:36:23-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Integrated Claude fleet panel with reproducible task plans and ten-table availability checks",
+  "why": "Run selected or all test tables without silently reducing the batch; show individual measured outcomes and inline recordings",
+  "where": [
+    "DreamSim/debug_server.py",
+    "DreamSim/web/index.html",
+    "DreamSim/fleet_planning.py",
+    "DreamSim/deploy_debugger_luna2.py"
+  ],
+  "details": [
+    "Nine fleet server tests, four routing tests, four planner tests and two main server tests pass.",
+    "Deployed a target selector and shared prompt: Table 1 is the main table; Tables 2\u201311 can run individually or all ten in parallel. Explicit typed targets override the selector visibly; invalid targets are rejected.",
+    "Removed the legacy three-camera section. Verified all ten correctly framed idle images at 320 pixels wide, with capture ages of 1\u20133 seconds, after the independent capture history fix.",
+    "Submitted ten randomized tasks from the browser: seed 1453311647, request c45502194a2746a4a41bea810a8a72be. There were 84 API attempts, 49 returned actions and seven tables with motion. No held pickup passed: nine errors and one failed objective.",
+    "All ten MP4 recordings loaded in the browser. Table 3 playback advanced from 0.29 to 11.62 seconds of an 18-second video. Restored all ten fresh live previews afterward.",
+    "A UUID worker lease and atomic command claim prevent duplicate execution. Actual capture timestamps distinguish fresh previews from stale images."
+  ]
+}

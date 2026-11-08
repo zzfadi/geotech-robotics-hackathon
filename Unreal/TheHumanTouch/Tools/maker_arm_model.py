@@ -1,5 +1,6 @@
 """Pinned Maker Arm geometry and kinematics; no validated dynamics or hardware control."""
 import math
+from functools import lru_cache
 import struct
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -10,11 +11,17 @@ MODEL = Path(__file__).resolve().parents[1] / 'SourceAssets/MakerArm/robot.urdf'
 def model():
     return ET.parse(MODEL).getroot()
 
+@lru_cache(maxsize=1)
+def _frames_model(path, mtime_ns, size):
+    # Private read-only root; public model() deliberately returns a fresh tree.
+    return ET.parse(path).getroot()
+
 def frames(q, gap=0.04):
     """Six radians plus total jaw gap in metres, in original CAD coordinates."""
     if len(q) != 6 or not all(math.isfinite(v) for v in [*q, gap]):
         raise ValueError('Expected six finite radians and a finite jaw gap in metres')
-    r = model()
+    stat = MODEL.stat()
+    r = _frames_model(str(MODEL.resolve()), stat.st_mtime_ns, stat.st_size)
     joints = r.findall('joint')
     values = {j.get('name'): v for j, v in zip([j for j in joints if j.get('type') == 'revolute'], q)}
     values['gripper_left_joint'] = gap / 2

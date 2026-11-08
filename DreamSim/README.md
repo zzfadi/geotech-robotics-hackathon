@@ -1,5 +1,7 @@
 # Dream → Maker Arm Unreal integration
 
+For the current ten-table test panel, seeded task/object plans, concurrent request handling and validation status, see [parallel Maker Arm trials](../docs/maker-arm-fleet.md). The sections below retain the integration and earlier single-table test history.
+
 Verified November 7, 2026: `dreamlabs/dream-1-beta-flash` accepted the three Unreal camera images and measured CAD joint state for “Move the left gripper toward the red cube on the table.” It returned two 48 × 7 trajectories in 2.73 seconds. Both were played through all 48 rows in the live shared Unreal scene in one editor transaction, then the starting pose was restored. This proves text-to-kinematic-motion integration, **not** a successful grasp, continuous feedback controller, physics articulation, or voice control. Those remain in progress. The web debugger subsequently verified two successive feedback cycles; see below.
 
 ## Exact arm convention

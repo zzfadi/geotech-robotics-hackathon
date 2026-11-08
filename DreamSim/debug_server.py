@@ -4,6 +4,8 @@ from urllib.parse import parse_qs,urlsplit
 from collections import deque
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
+from fleet_planning import build_plan
+from prompt_routing import parse_target
 
 class Store:
     def __init__(self,path):
@@ -11,6 +13,17 @@ class Store:
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
+        # Replica-table fleet (DreamSim/fleet_worker.py --serve). Shares the
+        # editor with the main worker, so the two command queues exclude each other.
+        self.fleet={'command':None,'worker_at':0,'tables':[],'status':None,'frames':{},'frame_times':{},'recording':None,'expected_tables':list(range(1,11)),'worker_id':None,'preview_enabled':False}
+        if (path/'fleet-recording.json').exists():
+            try:
+                recording=json.loads((path/'fleet-recording.json').read_text())
+                if re.fullmatch(r'[0-9a-f]{32}',recording.get('request_id','')):
+                    directory=path/'recordings'/('fleet-'+recording['request_id'])
+                    recording['recorded_tables']=[i for i in recording.get('tables',[]) if type(i) is int and (directory/('T%02d.mp4'%i)).is_file()]
+                    self.fleet['recording']=recording
+            except ValueError:pass
         if (path/'recording.json').exists():
             self.recording=json.loads((path/'recording.json').read_text())
             # Preserve existing deployed clips when moving to request-specific URLs.
@@ -73,9 +86,131 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError,ConnectionResetError):pass
 
     def worker(self):return secrets.compare_digest(self.headers.get('Authorization',''),'Bearer '+self.server.store.token)
+    def fleet_get(self,route):
+        s=self.server.store;f=s.fleet
+        if route.path=='/api/fleet':
+            with s.lock:return self.send(200,{'online':time.time()-f['worker_at']<15,'tables':[{**{'index':i,'name':'Awaiting worker','ready':False,'error':'Dream session not ready'},**next((t for t in f['tables'] if t['index']==i),{})} for i in f['expected_tables']],'command':f['command'],
+                                              'status':f['status'],'recording':f['recording'],'expected_tables':f['expected_tables'],'preview_enabled':f['preview_enabled'],'server_time':time.time()})
+        if route.path=='/api/fleet/frames':
+            with s.lock:return self.send(200,{'frames':f['frames'],'received_at':f['frame_times'],'server_time':time.time()})
+        match=re.fullmatch(r'/api/fleet/recording/([0-9a-f]{32})/(T\d\d)\.mp4',route.path)
+        if match:return self.send_video(s.path/'recordings'/('fleet-'+match[1])/(match[2]+'.mp4'))
+        if route.path=='/api/fleet/worker/next':
+            if not self.worker():return self.send(401,{'error':'Worker authentication required'})
+            with s.lock:
+                worker_id=parse_qs(route.query).get('worker_id',[''])[0]
+                if not worker_id or worker_id!=f.get('worker_id'):return self.send(409,{'error':'Fleet worker lease required'})
+                f['worker_at']=time.time();command=f['command']
+                if command and command['status']=='queued':
+                    command['status']='running';command['claimed_by']=worker_id
+                    return self.send(200,{'command':command,'preview_enabled':f['preview_enabled']})
+                return self.send(200,{'command':None,'preview_enabled':f['preview_enabled']})
+        return self.send(404,{'error':'Not found'})
+    def fleet_post(self,data):
+        s=self.server.store;f=s.fleet
+        if self.path in ('/api/fleet/command','/api/fleet/plan'):
+            with s.lock:
+                known=f['expected_tables']
+                tables=known if data.get('tables')=='all' else data.get('tables')
+                if not isinstance(tables,list) or not tables or any(type(t) is not int or t not in known for t in tables) or len(set(tables))!=len(tables):
+                    raise ValueError('Select one or more replica tables')
+                prompt=data.get('prompt') or ''
+                if not isinstance(prompt,str):raise ValueError('Prompt must be text')
+                prompt=prompt.strip()
+                if len(prompt)>1000:raise ValueError('Prompt must be at most 1000 characters')
+                mode=data.get('mode', 'same' if prompt else 'configured')
+                plan=build_plan(tables,mode=mode,prompt=prompt,seed=data.get('seed'),randomize=data.get('randomize',False))
+                if self.path=='/api/fleet/plan':return self.send(200,plan)
+                if time.time()-f['worker_at']>15:return self.send(503,{'error':'Fleet worker is offline'})
+                ready={t['index'] for t in f['tables'] if t.get('ready',True)}
+                unavailable=[i for i in tables if i not in ready]
+                if unavailable:return self.send(503,{'error':'Dream sessions unavailable for '+', '.join('Table %d'%(i+1) for i in unavailable)+'. No tables were started.'})
+                if f['command'] and f['command']['status'] in ('queued','running'):return self.send(409,{'error':'A replica-table run is already active'})
+                if s.command and s.command['status'] in ('queued','running'):return self.send(409,{'error':'The main table (T00) is running; wait for it to finish'})
+                f['command']={'id':uuid.uuid4().hex,'tables':sorted(tables),'prompt':prompt,'plan':plan,'status':'queued','stop':False,'created_at':time.time()}
+                f['status']=None;f['frames']={};f['frame_times']={}
+                s.event({'kind':'fleet.queued','request_id':f['command']['id'],'prompt':prompt or 'each table uses its configured prompt',
+                         'message':'Replica tables '+', '.join('T%02d'%t for t in f['command']['tables'])+' queued to run in parallel'})
+                return self.send(202,f['command'])
+        if self.path=='/api/fleet/preview':
+            if type(data.get('enabled')) is not bool:raise ValueError('Expected enabled boolean')
+            with s.lock:f['preview_enabled']=data['enabled']
+            return self.send(200,{'enabled':f['preview_enabled']})
+        if self.path=='/api/fleet/stop':
+            with s.lock:
+                if f['command']:f['command']['stop']=True
+            return self.send(200,{'stopping':True})
+        if not self.worker():return self.send(401,{'error':'Worker authentication required'})
+        with s.lock:
+            command=f['command']
+            worker_id=data.get('worker_id','')
+            if not isinstance(worker_id,str) or not re.fullmatch(r'[0-9a-f]{32}',worker_id):return self.send(409,{'error':'Fleet worker_id required'})
+            if self.path=='/api/fleet/worker/hello':
+                if f.get('worker_id') not in (None,worker_id) and (time.time()-f['worker_at']<15 or (command and command['status'] in ('queued','running'))):return self.send(409,{'error':'Another fleet worker owns the lease'})
+                tables=data.get('tables')
+                if (not isinstance(tables,list) or len(tables)>12 or any(not isinstance(t,dict) or type(t.get('index')) is not int or not 1<=t['index']<=12 for t in tables) or len({t['index'] for t in tables})!=len(tables)):
+                    raise ValueError('Expected distinct fleet table IDs')
+                expected=data.get('expected_tables',list(range(1,11)))
+                if not isinstance(expected,list) or not expected or len(set(expected))!=len(expected) or any(type(i) is not int or not 1<=i<=12 for i in expected):raise ValueError('Invalid expected table IDs')
+                f['worker_id']=worker_id;f['worker_at']=time.time()
+                f['expected_tables']=sorted(expected)
+                f['tables']=[dict({k:t.get(k) for k in ('index','name','prompt','checkpoint','position_ik','pad_contacts','action_rows','cycles','error')},ready=t.get('ready',True)) for t in tables]
+                return self.send(200,{'ok':True})
+            if self.path=='/api/fleet/worker/preview':
+                if worker_id!=f.get('worker_id'):return self.send(409,{'error':'Fleet worker lease required'})
+                frames=data.get('frames') or {};capture_times=data.get('frame_times') or {}
+                for key,value in frames.items():
+                    raw=base64.b64decode(value,validate=True)
+                    if key not in ['T%02d'%i for i in f['expected_tables']] or not raw.startswith(b'\xff\xd8') or not raw.endswith(b'\xff\xd9') or len(raw)>200_000:raise ValueError('Expected table JPEG frames')
+                    captured=capture_times.get(key)
+                    if not isinstance(captured,(float,int)) or not 0<captured<=time.time()+5:raise ValueError('Expected actual capture timestamp')
+                    f['frames'][key]=value;f['frame_times'][key]=captured
+                f['worker_at']=time.time()
+                return self.send(200,{'ok':True,'preview_enabled':f['preview_enabled']})
+            if worker_id!=f.get('worker_id') or (command and command.get('claimed_by')!=worker_id):return self.send(409,{'error':'Fleet command owned by another worker'})
+            f['worker_at']=time.time()
+            if self.path=='/api/fleet/worker/status':
+                if not command or data.get('request_id')!=command['id']:raise ValueError('Unknown fleet request')
+                frames={}
+                for key,value in (data.get('frames') or {}).items():
+                    raw=base64.b64decode(value,validate=True)
+                    if key not in ['T%02d'%i for i in command['tables']] or not raw.startswith(b'\xff\xd8') or not raw.endswith(b'\xff\xd9') or len(raw)>200_000:raise ValueError('Expected table JPEG frames')
+                    frames[key]=value
+                capture_times=data.get('frame_times') or {}
+                for key,value in frames.items():
+                    captured=capture_times.get(key)
+                    if isinstance(captured,(float,int)) and 0<captured<=time.time()+5:f['frame_times'][key]=captured
+                    elif value!=f['frames'].get(key):f['frame_times'][key]=time.time()
+                f['frames'].update(frames)
+                f['status']={'request_id':command['id'],'phase':str(data.get('phase','')),'tables':data.get('tables') or {},'updated':time.time()}
+                return self.send(200,{'ok':True,'stop':command['stop']})
+            if self.path=='/api/fleet/worker/video':
+                if not command or data.get('request_id')!=command['id'] or data.get('table') not in ['T%02d'%i for i in command['tables']]:raise ValueError('Unknown fleet recording')
+                raw=base64.b64decode(data['video'],validate=True)
+                if not 12<len(raw)<1_400_000 or raw[4:8]!=b'ftyp':raise ValueError('Expected bounded MP4 recording')
+                directory=s.path/'recordings'/('fleet-'+command['id']);directory.mkdir(parents=True,exist_ok=True)
+                target=directory/(data['table']+'.mp4')
+                if target.exists() and target.read_bytes()!=raw:return self.send(409,{'error':'Recording already uploaded'})
+                if not target.exists():
+                    tmp=directory/(data['table']+'.tmp');tmp.write_bytes(raw);tmp.replace(target)
+                return self.send(200,{'ok':True})
+            if self.path=='/api/fleet/worker/done':
+                if not command or data.get('request_id')!=command['id']:raise ValueError('Unknown fleet request')
+                command['status']=data.get('status','done') if data.get('status') in ('done','failed','stopped') else 'done'
+                results=data.get('results') or []
+                if not isinstance(results,list):raise ValueError('Expected per-table results')
+                by_table={r.get('table'):r for r in results if isinstance(r,dict)}
+                results=[by_table.get('T%02d'%i,{'table':'T%02d'%i,'outcome':'error','error':'Worker returned no result for this table'}) for i in command['tables']]
+                directory=s.path/'recordings'/('fleet-'+command['id'])
+                recorded=[i for i in command['tables'] if (directory/('T%02d.mp4'%i)).is_file()]
+                f['recording']={'request_id':command['id'],'tables':command['tables'],'recorded_tables':recorded,'prompt':command['prompt'],'plan':command.get('plan'),'status':command['status'],'results':results,'finished':time.time()}
+                (s.path/'fleet-recording.json').write_text(json.dumps(f['recording']))
+                return self.send(200,{'ok':True})
+        return self.send(404,{'error':'Not found'})
     def do_GET(self):
         s=self.server.store
         if self.path=='/':return self.send(200,(Path(__file__).parent/'web/index.html').read_bytes(),'text/html; charset=utf-8')
+        if self.path.startswith('/api/fleet'):return self.fleet_get(urlsplit(self.path))
         if self.path=='/api/live':
             with s.lock:return self.send(200,{'frame':s.live_frame,'count':len(s.preview),'server_time':time.time()})
         if self.path.startswith('/api/replay/'):
@@ -112,6 +247,8 @@ class Handler(BaseHTTPRequestHandler):
             origin=self.headers.get('Origin')
             if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):return self.send(403,{'error':'Cross-origin request refused'})
             data=json.loads(self.rfile.read(length))
+            if self.path=='/api/route':return self.send(200,parse_target(data.get('prompt','')))
+            if self.path.startswith('/api/fleet/'):return self.fleet_post(data)
             if self.path=='/api/worker/video':
                 if not self.worker():return self.send(401,{'error':'Worker authentication required'})
                 raw=base64.b64decode(data['video'],validate=True)
@@ -169,10 +306,15 @@ class Handler(BaseHTTPRequestHandler):
                     s.event({'kind':'voice.transcribed' if not data.get('error') else 'voice.failed','message':data.get('error') or data.get('text','')})
                     return self.send(200,{'ok':True})
             if self.path=='/api/command':
-                prompt=data.get('prompt','').strip()
+                route=parse_target(data.get('prompt',''))
+                if route['route']=='fleet':
+                    self.path='/api/fleet/command'
+                    return self.fleet_post({'tables':route['tables'],'prompt':route['prompt'],'mode':'same'})
+                prompt=route['prompt']
                 if not 1<=len(prompt)<=1000:raise ValueError('Enter a prompt of 1–1000 characters')
                 with s.lock:
                     if s.command and s.command['status'] in ('queued','running'):return self.send(409,{'error':'A command is already active'})
+                    if s.fleet['command'] and s.fleet['command']['status'] in ('queued','running'):return self.send(409,{'error':'Replica tables are running; wait for that run or stop it'})
                     if time.time()-s.worker_at>10:return self.send(503,{'error':'Unreal worker is offline'})
                     s.command={'id':uuid.uuid4().hex,'prompt':prompt,'status':'queued','stop':False,'created_at':time.time()}
                     s.event({'kind':'command.queued','request_id':s.command['id'],'prompt':prompt,'source':data.get('source','text')})

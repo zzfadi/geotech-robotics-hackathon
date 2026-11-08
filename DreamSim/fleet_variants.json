@@ -1,0 +1,39 @@
+{
+  "description": "Ten replica tables, one factor changed per table from Codex's live unassisted red-block trial (Flash, position IK, flat pads, 12-row horizon, left gripper open around a 5x5x7 cm block). Target pose is explicit so a block left displaced by an earlier run is never copied.",
+  "defaults": {
+    "prompt": "Close the left gripper firmly, lift the red block straight up by 10 cm, and hold it. Keep the right arm still.",
+    "checkpoint": "dreamlabs/dream-1-beta-flash",
+    "position_ik": true,
+    "pad_contacts": true,
+    "tcp_back": 0.0,
+    "action_rows": 12,
+    "cycles": 10,
+    "initial_state": {
+      "q_left": [0, -2.1318205591, 0.4402033511, 1.691617186, 0, 0],
+      "q_right": [0, 0, 0, 0, 0, 0],
+      "gap_left_m": 0.08,
+      "gap_right_m": 0.04
+    },
+    "target": {
+      "label": "MakerStation_Approximate_Block_Red",
+      "location_cm": [60, -40, 78.5],
+      "yaw_deg": 0,
+      "scale": [0.05, 0.05, 0.07]
+    }
+  },
+  "tables": [
+    {"name": "baseline-ik"},
+    {"name": "raw-joints-no-ik", "position_ik": false},
+    {"name": "short-horizon-6", "action_rows": 6},
+    {"name": "long-horizon-24", "action_rows": 24},
+    {"name": "full-model", "checkpoint": "dreamlabs/dream-1-beta"},
+    {"name": "rest-start-side-grasp", "prompt": "Use the left gripper to grasp the red cube from the side, lift it 10 cm, and hold it.",
+     "initial_state": {"q_left": [0, 0, 0, 0, 0, 0], "q_right": [0, 0, 0, 0, 0, 0], "gap_left_m": 0.04, "gap_right_m": 0.04}},
+    {"name": "rest-start-short-prompt", "prompt": "Pick up the red cube.",
+     "initial_state": {"q_left": [0, 0, 0, 0, 0, 0], "q_right": [0, 0, 0, 0, 0, 0], "gap_left_m": 0.04, "gap_right_m": 0.04}},
+    {"name": "convex-jaws", "pad_contacts": false},
+    {"name": "wide-open-jaw-10cm",
+     "initial_state": {"q_left": [0, -2.1318205591, 0.4402033511, 1.691617186, 0, 0], "q_right": [0, 0, 0, 0, 0, 0], "gap_left_m": 0.1, "gap_right_m": 0.04}},
+    {"name": "cube-7cm", "target": {"scale": [0.07, 0.07, 0.07]}}
+  ]
+}

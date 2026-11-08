@@ -1,0 +1,194 @@
+{
+  "run": "20261107-164929-13d280",
+  "phase": "stopped",
+  "mac_samples": 364,
+  "luna_samples": 892,
+  "interval": [
+    1794098987.8426776,
+    1794099169.2964044
+  ],
+  "tables": {
+    "T01": {
+      "distinct_arm_poses": 1,
+      "max_arm_displacement_cm": 0.0,
+      "max_prop_displacement_cm": 9.982126206202599,
+      "near_mac_max_error_cm": 0.516533998247815,
+      "command_seq": 0
+    },
+    "T02": {
+      "distinct_arm_poses": 28,
+      "max_arm_displacement_cm": 28.21593642059016,
+      "max_prop_displacement_cm": 26.4706788842097,
+      "near_mac_max_error_cm": 0.04840421092594508,
+      "command_seq": 10
+    },
+    "T03": {
+      "distinct_arm_poses": 1,
+      "max_arm_displacement_cm": 0.0,
+      "max_prop_displacement_cm": 8.001198864174498,
+      "near_mac_max_error_cm": 0.7576164989228963,
+      "command_seq": 0
+    },
+    "T04": {
+      "distinct_arm_poses": 16,
+      "max_arm_displacement_cm": 21.550852644995583,
+      "max_prop_displacement_cm": 3.8430494948808565,
+      "near_mac_max_error_cm": 0.7236752635391726,
+      "command_seq": 4
+    },
+    "T05": {
+      "distinct_arm_poses": 13,
+      "max_arm_displacement_cm": 8.443024260526785,
+      "max_prop_displacement_cm": 17.025542788298292,
+      "near_mac_max_error_cm": 0.11041813709705069,
+      "command_seq": 5
+    },
+    "T06": {
+      "distinct_arm_poses": 13,
+      "max_arm_displacement_cm": 18.683327477371666,
+      "max_prop_displacement_cm": 5.90311359252221,
+      "near_mac_max_error_cm": 0.2139304102322907,
+      "command_seq": 6
+    },
+    "T07": {
+      "distinct_arm_poses": 1,
+      "max_arm_displacement_cm": 0.0,
+      "max_prop_displacement_cm": 6.787398115680251,
+      "near_mac_max_error_cm": 0.1896733783317062,
+      "command_seq": 0
+    },
+    "T08": {
+      "distinct_arm_poses": 15,
+      "max_arm_displacement_cm": 29.679802028477138,
+      "max_prop_displacement_cm": 16.407274359615464,
+      "near_mac_max_error_cm": 0.14051532160266558,
+      "command_seq": 6
+    },
+    "T09": {
+      "distinct_arm_poses": 14,
+      "max_arm_displacement_cm": 24.92575332047152,
+      "max_prop_displacement_cm": 9.081884941130646,
+      "near_mac_max_error_cm": 0.08379323894982617,
+      "command_seq": 6
+    },
+    "T10": {
+      "distinct_arm_poses": 14,
+      "max_arm_displacement_cm": 20.109918023569897,
+      "max_prop_displacement_cm": 83.84865790305695,
+      "near_mac_max_error_cm": 0.26940528526886,
+      "command_seq": 6
+    }
+  },
+  "restoration": {
+    "actors": 260,
+    "baseline_unix": 1794098984.465683,
+    "last_remote_unix": 1794099169.2964044,
+    "max_position_error_cm": 7.232427806458827e-09,
+    "max_quaternion_one_minus_abs_dot": 4.440892098500626e-16
+  },
+  "runtime_error": "Fleet session duration limit",
+  "runtime_prop_comparisons": [
+    {
+      "table": "T01",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.20660584995120582
+    },
+    {
+      "table": "T02",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.21889494678421234
+    },
+    {
+      "table": "T03",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.00599515430739246
+    },
+    {
+      "table": "T04",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.0534530027659613
+    },
+    {
+      "table": "T05",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.03499089164582987
+    },
+    {
+      "table": "T06",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.02536714170911303
+    },
+    {
+      "table": "T07",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.020843754273495
+    },
+    {
+      "table": "T08",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.012778734439418089
+    },
+    {
+      "table": "T09",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.02944256041411786
+    },
+    {
+      "table": "T10",
+      "runtime_sample_unix": 1794099089.712137,
+      "best_max_prop_error_cm": 0.270545827656026
+    },
+    {
+      "table": "T01",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.015507383033826743
+    },
+    {
+      "table": "T02",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.11790791778191897
+    },
+    {
+      "table": "T03",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.032314486408775135
+    },
+    {
+      "table": "T04",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.0029548278219990263
+    },
+    {
+      "table": "T05",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.12902407922333076
+    },
+    {
+      "table": "T06",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.167513757637215
+    },
+    {
+      "table": "T07",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.033530406048362084
+    },
+    {
+      "table": "T08",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.008377896340553491
+    },
+    {
+      "table": "T09",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.037277854177156955
+    },
+    {
+      "table": "T10",
+      "runtime_sample_unix": 1794099151.40141,
+      "best_max_prop_error_cm": 0.0019774693187954453
+    }
+  ],
+  "scope": "Read-only Mac and Luna2 editor transform samples; measured authoritative Chaos prop positions cross-checked where captured. No Brian editor evidence. Visual replication, not peer physics.",
+  "sampling_note": "Mac2Hz and Luna5Hz independently sampled; near-frame search\u22122/+0.6seconds for editor parity,\u22121/+2seconds for runtime props. Errors are sampled alignment differences, not transport latency measurements."
+}
