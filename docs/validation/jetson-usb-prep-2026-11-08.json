@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Beryl AX v4.11.0 and retained internet verified; temporary installer key-based SSH and private log archive verified; DTB model/compatible mismatch identified; explicit USB boot and timed Y accepted, capsule update in progress",
+  "scope": "Post-update UEFI 39.2.1-gcid-46758480 directly verified; authorized agent-started NVMe reinstall actively partitioning; Beryl Port 1 LAN setting applied, physical KVM move and port access pending",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -54,7 +54,7 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "Explicit SanDisk USB boot and timed Y accepted; capsule update in progress, completion unverified",
+    "observation": "Post-update UEFI version verified; subsequent NVMe reinstall is actively partitioning",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
@@ -62,7 +62,7 @@
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
     "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
     "cloud": "Approved Google sign-in and Bind completed; GL-RM1-569 green online; actual remote-control session unverified",
-    "updated_at": "2026-11-08T01:54:45-08:00",
+    "updated_at": "2026-11-08T02:03:18-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
@@ -95,7 +95,7 @@
       "status": "Local KVM-to-Jetson HID independently verified by agent Enter opening the failed installer diagnostic shell",
       "tooltip_source": "Public KVM client JavaScript inspection",
       "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
-      "next_check": "Observe capsule update; final installed-system and off-site/cloud control remain separate verification tasks",
+      "next_check": "Observe reinstall outcome; verify KVM port access after requested cable move and off-site control separately",
       "physical_cable_check_completed": true,
       "usb_gadget_diagnostic": {
         "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
@@ -133,14 +133,14 @@
     "hid_delivery_user_confirmed": true
   },
   "pending": [
-    "Observe both capsule-update passes and expected reboots, then verify resulting firmware version",
-    "After firmware recovery, confirm intended storage before any reinstall and verify successful installed OS boot/root device/versions",
-    "Establish persistent installed-OS account and key-based SSH; previous root SSH was temporary installer recovery only",
-    "Record RAM; retain verified NVMe identity and prior-content uncertainty, then verify actual installed root after recovery",
-    "Run cached arm environment and offline checks on the installed Jetson",
-    "Complete and test Jetson/KVM portable LAN independent of Mac sharing, then test off-site access separately; preserve home GL-MT6000"
+    "Observe active NVMe reinstall through completion/reboot without interrupting power or removing installer media",
+    "Verify successful installed OS boot, actual root device and final OS versions",
+    "Establish persistent installed-OS account and key-based SSH; previous root SSH was temporary failed-installer recovery only",
+    "Record RAM and run cached arm environment/offline checks after installed-host verification",
+    "Await KVM cable move to Beryl Port 1, then verify its address and access through the physical port",
+    "Verify complete portable LAN without Mac sharing and off-site access separately; preserve home GL-MT6000"
   ],
-  "updated_at": "2026-11-08T01:55:56-08:00",
+  "updated_at": "2026-11-08T02:03:18-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -267,14 +267,14 @@
     "visible_target_device": "nvme0n1",
     "partitioning_stage_finished": true,
     "extract_stage_finished": true,
-    "latest_stage": "Original installation failed at late/run/command_27; logs preserved, rebooted via explicit SanDisk USB, Y accepted, capsule update in progress",
+    "latest_stage": "Original attempt failed at late/run/command_27; private evidence preserved. Subsequent firmware result verified; see reinstallation for active retry.",
     "target_model_capacity_independently_verified": true,
     "target_prior_contents_independently_verified": false,
     "final_firmware_verified": false,
     "completion_verified": false,
     "installed_os_boot_verified": false,
     "ssh_verified": false,
-    "current_instruction": "Observe capsule update through both passes and expected reboots; verify resulting firmware before claiming recovery complete",
+    "current_instruction": "Original attempt ended; preserve failure/archive evidence and observe the active reinstallation",
     "updated_at": "2026-11-08T01:55:56-08:00",
     "status": "failed",
     "failure": {
@@ -286,16 +286,16 @@
       "crash_location_pattern": "/var/crash/...install_fail.crash",
       "exact_crash_filename_verified": true,
       "root_cause_confirmed": false,
-      "diagnosis_status": "Immediate DTB model/compatible mismatch identified; capsule update in progress, outcome not yet verified",
+      "diagnosis_status": "Immediate DTB model/compatible mismatch identified; subsequent UEFI update verified, retry installation in progress",
       "reboot_performed_for_diagnosis": true,
-      "firmware_changed_for_diagnosis": null,
+      "firmware_changed_for_diagnosis": true,
       "dtb_override_applied": false,
-      "firmware_update_not_completed": true,
+      "firmware_update_not_completed": false,
       "trace_stage_evidence": "Preserved installer log; corrects earlier screen-based command23 transcription",
       "dtb_mismatch_confirmed": true,
       "root_cause_scope": "Immediate matching failure identified; cause of the mixed running identity and successful recovery remain unproven",
       "reboot_scope": "After private log preservation, rebooted for official USB/QSPI recovery",
-      "firmware_change_status": "Capsule update started; resulting firmware version not yet verified",
+      "firmware_change_status": "Subsequent UEFI directly verifies 39.2.1-gcid-46758480",
       "dtb_mismatch": {
         "evidence": "Read-only running device-tree and candidate DTB comparison during temporary installer SSH",
         "running_model": "NVIDIA Jetson Orin Nano Developer Kit",
@@ -330,7 +330,7 @@
         "value": "36.4.2-gcid-38685322",
         "directly_verified": true,
         "matches_starting_firmware": true,
-        "interpretation": "Last pre-recovery firmware observation; unchanged starting version. Later capsule update is in progress and needs fresh verification."
+        "interpretation": "Historical pre-recovery firmware. Later UEFI directly verifies 39.2.1-gcid-46758480."
       },
       "boot_slots": {
         "command": "nvbootctrl dump-slots-info",
@@ -368,7 +368,7 @@
     },
     "firmware_recovery": {
       "recorded_at": "2026-11-08T01:54:45-08:00",
-      "status": "capsule update in progress",
+      "status": "firmware result directly verified in UEFI",
       "rebooted_after_log_preservation": true,
       "boot_manager_selected_usb": "SanDisk installer USB",
       "prompt_before_grub": true,
@@ -376,10 +376,17 @@
       "seconds_remaining_when_sent": 19,
       "confirmation_observed": "User confirmed. Proceeding with capsule update.",
       "local_screenshot": "/private/tmp/jetson-firmware-recovery-06.png",
-      "both_capsule_passes_complete": false,
-      "resulting_firmware_version_verified": false,
+      "both_capsule_passes_complete": null,
+      "resulting_firmware_version_verified": true,
       "installed_os_boot_verified": false,
-      "official_reference": "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html"
+      "official_reference": "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html",
+      "updated_at": "2026-11-08T02:03:18-08:00",
+      "progress_screens_observed": 2,
+      "progress_observation": "Two update-progress screens separated by black-screen/reboot intervals",
+      "hundred_percent_frame_observed": false,
+      "completion_evidence_scope": "Result verified from post-update UEFI; no claim of observing both progress counters reach 100 percent",
+      "resulting_firmware_version": "39.2.1-gcid-46758480",
+      "resulting_firmware_screenshot": "/private/tmp/jetson-firmware-watch-hand-observation-11.png"
     },
     "target_storage": {
       "evidence": "Read-only lsblk through independently verified temporary installer SSH",
@@ -406,11 +413,12 @@
       "target_root_mountpoint": "/target",
       "installed_os_boot_verified": false,
       "prior_contents_independently_verified": false
-    }
+    },
+    "attempt_scope": "Original failed attempt; retained as historical evidence, with subsequent firmware recovery recorded below. See reinstallation for current attempt."
   },
   "portable_lan_proposal": {
     "recorded_at": "2026-11-08T01:21:56-08:00",
-    "status": "Travel router upgraded and Jetson recovery LAN path verified; KVM still uses Mac sharing, final portable topology pending",
+    "status": "Port 1 LAN setting saved; KVM cable move requested, physical move/access and final topology pending",
     "goal": "Portable Jetson/KVM LAN independent of Mac Internet Sharing",
     "intended_router": "Separate GL.iNet GL-MT3000 Beryl AX",
     "separate_model_confirmed": true,
@@ -424,14 +432,14 @@
       "must_remain_unchanged": true
     },
     "current_kvm_lan": "Mac Internet Sharing bridge100 192.168.2.1, KVM 192.168.2.2",
-    "next_step": "After firmware recovery, verify installed Jetson networking; complete KVM travel-LAN path and independently test local/off-site access",
-    "updated_at": "2026-11-08T01:54:45-08:00",
+    "next_step": "Await KVM cable move and verify local access through Port 1; after OS installation verify both devices without Mac sharing and off-site access separately",
+    "updated_at": "2026-11-08T02:03:18-08:00",
     "model_evidence": "User-provided photo identifies GL-MT3000 Beryl AX; no Wi-Fi credentials or hardware addresses retained",
     "internet_available_user_confirmed": true,
     "internet_independently_verified": true,
     "immediate_wiring_requested": "Jetson Ethernet to Beryl AX LAN; preserve KVM Ethernet to Mac",
     "immediate_wiring_verified": true,
-    "configuration_scope": "User-authorized Beryl firmware upgrade; final KVM LAN migration not performed"
+    "configuration_scope": "Beryl firmware upgrade and Port 1 saved as LAN; actual KVM move and physical-port access not yet verified"
   },
   "portable_network_current": {
     "router_model": "GL-MT3000 Beryl AX",
@@ -447,8 +455,8 @@
     "router_admin_login": "User recovered password; authenticated admin UI verified",
     "router_settings_changed": true,
     "home_router_unchanged": true,
-    "updated_at": "2026-11-08T01:54:45-08:00",
-    "router_change_scope": "User-started authorized firmware upgrade; home GL-MT6000 unchanged",
+    "updated_at": "2026-11-08T02:03:18-08:00",
+    "router_change_scope": "User-started firmware upgrade plus Port 1 changed to LAN in UI; home GL-MT6000 unchanged",
     "router_firmware_version": "4.11.0",
     "router_firmware_verified": true,
     "router_firmware_evidence": "/private/tmp/jetson-beryl-upgrade-check.png",
@@ -459,6 +467,51 @@
     "jetson_current_ipv4_after_reboot_verified": false,
     "mac_sharing_still_required_for_kvm": true,
     "portable_topology_independent_of_mac_verified": false,
-    "offsite_access_verified": false
+    "offsite_access_verified": false,
+    "port1_lan": {
+      "physical_label": "WAN",
+      "configured_mode": "LAN",
+      "apply_toast_observed": "Applied",
+      "reloaded_table_mode": "LAN",
+      "saved_setting_verified": true,
+      "physical_port_access_verified": false,
+      "kvm_cable_move_requested": "Move KVM Ethernet from Mac to free WAN-labeled Beryl Port 1",
+      "user_reply_received": false,
+      "physical_kvm_move_verified": false
+    }
+  },
+  "current_attempt": "reinstallation",
+  "firmware_after": {
+    "recorded_at": "2026-11-08T02:03:18-08:00",
+    "version": "39.2.1-gcid-46758480",
+    "directly_verified": true,
+    "evidence": "Post-update UEFI firmware setup screen",
+    "local_screenshot": "/private/tmp/jetson-firmware-watch-hand-observation-11.png",
+    "installed_os_boot_verified": false
+  },
+  "reinstallation": {
+    "recorded_at": "2026-11-08T02:03:18-08:00",
+    "started_at_approximate": "2026-11-08T02:00:00-08:00",
+    "started_by": "agent",
+    "authorization": "User-authorized fresh setup of previously identified NVMe target",
+    "menu_sequence": [
+      "UEFI Boot Manager: SanDisk USB",
+      "Install r39.2.1",
+      "Install on NVMe"
+    ],
+    "agent_triggered_install_or_erase": true,
+    "separate_erase_confirmation_observed_before_partitioning": false,
+    "status": "in-progress",
+    "active_directly_verified": true,
+    "target_device": "/dev/nvme0n1",
+    "target_model_previously_verified": "SHPP41-1000GM",
+    "target_lsblk_size_previously_verified": "931.5G",
+    "latest_stage": "Partitioning nvme0n1",
+    "progress_observed_at": "2026-11-08T02:01:41-08:00",
+    "progress_local_screenshot": "/private/tmp/jetson-retry-watch-hand-observation-03.png",
+    "completion_verified": false,
+    "installed_os_boot_verified": false,
+    "persistent_ssh_verified": false,
+    "current_instruction": "Observe installation without interrupting power or removing media; do not assume a further erase confirmation will appear"
   }
 }

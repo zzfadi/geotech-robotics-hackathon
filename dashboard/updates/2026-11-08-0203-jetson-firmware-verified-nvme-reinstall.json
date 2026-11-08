@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T02:03:18-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Jetson UEFI 39.2.1 verified; fresh NVMe installation is running after firmware recovery.",
+  "why": "The firmware result is established; the next acceptance point is a successful installed-system boot and persistent SSH.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "Post-update UEFI directly shows 39.2.1-gcid-46758480. Two progress screens and reboot intervals were seen, but no 100% frame was captured. At about 02:00 Pacific the agent selected explicit SanDisk USB boot, Install r39.2.1 and Install on NVMe under fresh-setup authorization. nvme0n1 partitioning was visible at 02:01:41; no separate erase confirmation appeared. Target was previously verified as 931.5G SHPP41-1000GM. Prior failure/log archive is preserved. Installed boot and persistent SSH remain unverified. Beryl Port 1 is saved as LAN; requested physical KVM move and port access remain pending. No arm milestone is claimed."
+}
