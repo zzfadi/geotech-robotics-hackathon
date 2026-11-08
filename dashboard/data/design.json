@@ -179,8 +179,8 @@
           "title": "Helpers being built",
           "text": "Nice to have, not needed for the 3 PM demo.",
           "items": [
-            { "label": "Small edge model", "status": "in-progress", "text": "A tiny AI model for the Jetson: fills in when Dream is slow and helps with the last centimetre. Scaffold only; not trained on the simulation yet." },
-            { "label": "LiveKit voice", "status": "planned", "text": "The robot says \"your turn\" or \"I'll wait\". Account active, no voice agent yet." }
+            { "label": "Small edge model", "status": "in-progress", "text": "A tiny AI model for the Jetson that fills in when Dream is slow and helps with the last centimetre. It's trained on our own simulated grasps and scored on 180 tables it never saw. With its help, a slightly-off operator held the cup 162 times instead of 18. Simulation only; not on the Jetson or the real arm yet." },
+            { "label": "Robot voice (LiveKit)", "status": "in-progress", "text": "The arms crack short scripted jokes (\"Beer me.\", \"Show-off.\") at each step, from recorded audio on a local speaker. They can also stream into a LiveKit room. Tested in replay and on a local test server, not yet on stage. The voice never moves the arm." }
           ]
         }
       ],
@@ -285,6 +285,6 @@
     { "term": "Jetson Orin Nano", "plain": "A small NVIDIA computer meant to become the arm's own robot server." },
     { "term": "Edge model", "plain": "A small AI model that runs right next to the arm, so it doesn't need the internet. Fills in when Dream is slow." },
     { "term": "Control center", "plain": "A web page that shows what the arm is doing, whether it's healthy, and why it made each decision." },
-    { "term": "LiveKit", "plain": "A sponsor's real-time audio and video platform. Planned for the robot's voice." }
+    { "term": "LiveKit", "plain": "A sponsor's real-time audio and video platform. The robot's voice lines and station events can stream into a LiveKit room so remote teammates can follow along." }
   ]
 }
