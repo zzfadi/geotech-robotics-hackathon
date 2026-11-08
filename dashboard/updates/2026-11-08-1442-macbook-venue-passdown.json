@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-08T14:42:00-08:00",
+  "workstream": "planning",
+  "status": "note",
+  "what": "Pass-down for picking up on FADI's MacBook at the venue: router reset recovery, SSH to the Jetson, the one-adapter-owner rule with Table 10, and what to show",
+  "why": "The Jetson kit is connected at the venue, but the travel router was factory reset and the MacBook has no Jetson key yet. A new session needs one page to get going without endangering the live Table 10 demo.",
+  "where": [
+    "docs/handoffs/macbook-venue-passdown.md"
+  ],
+  "details": "Priority order before 3 PM: live Table 10 demo, backup recording, submission, then the Jetson. Table 10's real-arm service holds both USB-CAN adapters, so nothing else may open them; switching to the handoff/ path is a team decision. After the reset the Beryl is at 192.168.8.1 with the label Wi-Fi, earlier address reservations are gone, and the Jetson rejoins by DHCP. The MacBook needs its own SSH key authorized on the Jetson (FADI types the password; host key SHA256:1Re9L+dbMLneresWeHhOM37nO2PW7a3mjuEhyHNGvvk). Includes a starter prompt for the new session."
+}
