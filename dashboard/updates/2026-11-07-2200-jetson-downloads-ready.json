@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T22:00:18-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Mac-side Orin Nano SD images, flashing app and offline arm runtime are ready",
+  "why": "The large downloads and compatible Python packages are cached so microSD flashing and first-boot setup can start when the hardware is connected.",
+  "where": [
+    "docs/validation/jetson-prep-2026-11-07.json",
+    "docs/handoffs/orin-nano-setup.md",
+    "arm/requirements.txt"
+  ],
+  "details": "Both official NVIDIA SD ZIPs match expected lengths and pass complete ZIP CRC checks; local SHA256 values recorded (no NVIDIA-published ZIP digest found). Etcher 2.1.9 passed publisher hash, disk-image, signature and notarization checks and is installed/open. Cached Linux ARM64 Python 3.12.15/uv, pinned SDK source, 17 runtime/build wheels, and a verified project Git bundle. 140 offline arm tests passed on macOS. No SD/SSD writes, firmware changes or robot commands. Jetson first boot, OS APT downloads, SSH and hardware verification remain pending."
+}
