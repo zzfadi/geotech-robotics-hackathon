@@ -61,6 +61,20 @@ def hold_action(state, rows=12):
             'q_r_chunk': [list(state['q_right'])+[state['gap_right_m']/JAW_MAX_M]]*rows}
 
 
+def constrain_motion_side(action, state, side):
+    """Hold the inactive arm at measured observation pose, including direct-joint mode."""
+    import copy
+    if side not in ('left', 'right'):
+        raise ValueError('Explicit motion side required')
+    active_key = 'q_l_chunk' if side == 'left' else 'q_r_chunk'
+    inactive_key = 'q_r_chunk' if side == 'left' else 'q_l_chunk'
+    inactive = 'right' if side == 'left' else 'left'
+    result = copy.deepcopy(action)
+    observed = list(state['q_'+inactive]) + [state['gap_'+inactive+'_m']/JAW_MAX_M]
+    result[inactive_key] = [list(observed) for _ in action[active_key]]
+    return result
+
+
 def lift_verdict(table_status, target, hold_seconds=2.0, max_tilt_deg=None):
     """Numbers only. Never a grasp claim: video review is still required."""
     p = (table_status or {}).get('props', {}).get(target)
@@ -247,14 +261,16 @@ class TableRun:
             raw, ik = action, None
             write_json(self.dir/('raw-action-%02d.json' % (cycle+1)),
                        {'state': packet['state'], 'action': raw, 'captured_unix': packet['captured_unix']})
+            active_side = self.v.get('motion_side')
             if self.v['position_ik'] and not self.args.dry_run:
                 from position_ik import adapt
-                side = (self.v.get('objective') or {}).get('side')
-                active = [side] if side in ('left', 'right') else None
+                active = [active_side] if active_side else None
                 action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12, active_sides=active)
+            if active_side and not self.args.dry_run:
+                action = constrain_motion_side(action, packet['state'], active_side)
             report = self.dir/('action-%02d.json' % (cycle+1))
             write_json(report, {'state': packet['state'], 'action': action, 'raw_action': raw if ik else None,
-                                'ik_report': ik, 'execution_rows': None if self.args.dry_run else self.v['action_rows'],
+                                'ik_report': ik, 'motion_side': active_side, 'execution_rows': None if self.args.dry_run else self.v['action_rows'],
                                 'checkpoint': None if self.args.dry_run else self.v['checkpoint'],
                                 'controller_source': 'dry-run hold' if self.args.dry_run else
                                 ('Dream EEF + position IK' if ik else 'Dream joint targets')})
