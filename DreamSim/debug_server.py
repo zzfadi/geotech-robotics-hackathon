@@ -7,12 +7,14 @@ from pathlib import Path
 from fleet_planning import build_plan
 from prompt_routing import parse_target
 from interaction_store import InteractionStore
+from table10_store import Table10Tests
 
 class Store:
     def __init__(self,path):
         self.path=path;path.mkdir(parents=True,exist_ok=True)
         self.interaction=InteractionStore(path)
         self.interaction_preview=None
+        self.table10=Table10Tests()
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
@@ -289,6 +291,8 @@ class Handler(BaseHTTPRequestHandler):
         s=self.server.store
         if self.path=='/':return self.send(200,(Path(__file__).parent/'web/index.html').read_bytes(),'text/html; charset=utf-8')
         if self.path.startswith('/api/interaction/'):return self.interaction_get(urlsplit(self.path))
+        if self.path=='/api/table10/test':
+            with s.lock:return self.send(200,s.table10.public())
         if self.path.startswith('/api/fleet'):return self.fleet_get(urlsplit(self.path))
         if self.path=='/api/live':
             with s.lock:return self.send(200,{'frame':s.live_frame,'count':len(s.preview),'server_time':time.time()})
@@ -327,6 +331,13 @@ class Handler(BaseHTTPRequestHandler):
             if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):return self.send(403,{'error':'Cross-origin request refused'})
             data=json.loads(self.rfile.read(length))
             if self.path.startswith('/api/interaction/'):return self.interaction_post(data)
+            if self.path=='/api/table10/test':
+                with s.lock:
+                    try:return self.send(202,s.table10.request(data if isinstance(data,dict) else {}))
+                    except ValueError as error:return self.send(409,{'error':str(error)})
+            if self.path=='/api/table10/agent':
+                if not self.worker():return self.send(401,{'error':'Worker authentication required'})
+                with s.lock:return self.send(200,s.table10.agent_update(data if isinstance(data,dict) else {}))
             if self.path=='/api/route':return self.send(200,parse_target(data.get('prompt','')))
             if self.path.startswith('/api/fleet/'):return self.fleet_post(data)
             if self.path=='/api/worker/video':

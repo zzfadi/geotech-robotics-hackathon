@@ -54,7 +54,7 @@ def main():
     if reason:
         raise SystemExit('Not deploying: ' + reason)
     stamp = time.strftime('%Y%m%d-%H%M%S')
-    targets = ('interaction_store.py', 'prompt_routing.py', 'fleet_planning.py', 'debug_server.py', 'web/index.html')
+    targets = ('interaction_store.py', 'table10_store.py', 'prompt_routing.py', 'fleet_planning.py', 'debug_server.py', 'web/index.html')
     for target in targets:
         local = HERE/target
         data = local.read_bytes()

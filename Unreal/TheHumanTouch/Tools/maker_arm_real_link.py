@@ -14,6 +14,10 @@ Modes (decided by the bridge, read here every tick):
   An arm posed by another tool through forward kinematics (set_pose, playback) is picked up by
   exact joint recovery instead.
 
+Test motions (web buttons via DreamSim/table10_agent.py -> command.json): 'move_up' and 'idle'
+(maker_arm_real_tests) play on Table 10 and are published like any other pose, so in drive
+mode the real arms follow under the bridge's guards. Refused in mirror mode (torque off).
+
 Transforms are set without transactions or Modify(): no Multi-User history and nothing saved.
 Runs in the active Simulate/PIE world when there is one, otherwise in the editor world.
 
@@ -30,6 +34,7 @@ from pathlib import Path
 import unreal
 
 import maker_arm_real_mapping as mapping
+import maker_arm_real_tests as tests
 from maker_arm_grid import offset
 from maker_arm_station import BASES, MOUNT_YAW, PREFIX, VISUAL_LINKS
 
@@ -73,6 +78,12 @@ class Link:
         self.dir.mkdir(parents=True, exist_ok=True)
         self.real_path = self.dir / "real_state.json"
         self.ue_path = self.dir / "ue_state.json"
+        self.command_path = self.dir / "command.json"
+        self.command_mtime = None
+        self.handled = None
+        self.motion = None
+        self.test = None
+        self.world_kind = "editor"
         self.limits = mapping.drive_limits()
         self.world = None
         self.world_name = None
@@ -101,6 +112,8 @@ class Link:
     def _active_world(self):
         ues = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
         game = ues.get_game_world()
+        # get_editor_world() logs an error every call during Play/Simulate: only ask when idle.
+        self.world_kind = "simulate" if game is not None else "editor"
         return game if game is not None else ues.get_editor_world()
 
     def _resolve(self, world):
@@ -158,6 +171,73 @@ class Link:
             return self.real
         return None
 
+    # ---- test motions -------------------------------------------------------------------
+    def _read_command(self):
+        try:
+            mtime = os.stat(self.command_path).st_mtime_ns
+        except FileNotFoundError:
+            return None
+        if mtime == self.command_mtime:
+            return None
+        self.command_mtime = mtime
+        try:
+            command = json.loads(self.command_path.read_text())
+        except (ValueError, OSError):
+            self.command_mtime = None  # mid-write; read again next tick
+            return None
+        if command.get("id") == self.handled:
+            return None
+        self.handled = command.get("id")
+        return command
+
+    def _report(self, command, state, detail="", **extra):
+        self.test = {"id": command.get("id"), "action": command.get("action"), "state": state,
+                     "detail": detail, "unix": time.time(), **extra}
+
+    def _start_test(self, command, real):
+        action = command.get("action")
+        if action == "stop":
+            if self.motion is not None:
+                self.motion = None
+                self._report(command, "stopped", "held at the current pose")
+            else:
+                self._report(command, "stopped", "nothing was moving")
+            return
+        if time.time() - float(command.get("unix", 0)) > 15:
+            return self._report(command, "rejected", "command too old")
+        if real and real.get("mode") == "mirror":
+            return self._report(command, "rejected", "bridge is in mirror mode (torque off): press d in the "
+                                                     "bridge terminal so the real arms follow, then press again")
+        if any(self.q[s] is None for s in SIDES):
+            return self._report(command, "rejected", "Table 10 arm pose not known yet")
+        try:
+            motion = tests.plan(action, self.q, self.gap, MOUNT_YAW, TABLE10_BASES, self.limits)
+        except ValueError as error:
+            return self._report(command, "rejected", str(error))
+        motion["start"] = time.monotonic()
+        motion["command"] = command
+        motion["real"] = bool(real)
+        self.motion = motion
+        self._report(command, "running", "real arms follow" if real else "virtual only (no bridge)",
+                     duration_s=round(motion["duration_s"], 2), progress=0.0)
+
+    def _step_test(self, real):
+        motion = self.motion
+        command = motion["command"]
+        if real and real.get("mode") == "mirror":
+            self.motion = None
+            return self._report(command, "aborted", "bridge switched to mirror (torque off)")
+        t = time.monotonic() - motion["start"]
+        for side, q in tests.sample(motion, t).items():
+            self._apply(side, q, self.gap[side])
+            self.source[side] = "test"
+        done = t >= motion["duration_s"]
+        self._report(command, "done" if done else "running",
+                     "real arms follow" if motion["real"] else "virtual only (no bridge)",
+                     duration_s=round(motion["duration_s"], 2), progress=round(min(1.0, t / motion["duration_s"]), 3))
+        if done:
+            self.motion = None
+
     # ---- per side -----------------------------------------------------------------------
     def _mirror(self, side, arm):
         q = mapping.clamp(arm["q"], mapping.URDF_LIMITS)
@@ -203,7 +283,13 @@ class Link:
                     or any(not unreal.SystemLibrary.is_valid(a) for a in self.actors.values())):
                 self._resolve(world)
             real = self._read_real()
-            if real and real.get("mode") == "mirror":
+            command = self._read_command()
+            if command:
+                self._start_test(command, real)
+            if self.motion is not None:
+                self.mode = "test"
+                self._step_test(real)
+            elif real and real.get("mode") == "mirror":
                 self.mode = "mirror"
                 for side, arm in real.get("arms", {}).items():
                     if side in SIDES and arm.get("q"):
@@ -216,7 +302,7 @@ class Link:
             self.ticks += 1
             _write(self.ue_path, {
                 "seq": self.seq, "unix": time.time(), "mode": self.mode,
-                "world": "simulate" if world.get_path_name() != self._editor_path() else "editor",
+                "world": self.world_kind, "test": self.test,
                 "arms": {s: {"q": self.q[s], "gap_m": self.gap[s], "source": self.source[s],
                              "ik_error_mm": round(self.ik_error[s][0], 2),
                              "ik_error_deg": round(self.ik_error[s][1], 2)}
@@ -230,17 +316,13 @@ class Link:
                 unreal.log_warning("maker_arm_real_link: " + traceback.format_exc())
             self.world = None
 
-    def _editor_path(self):
-        world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-        return world.get_path_name() if world else ""
-
     def status(self):
         return {"running": self.callback is not None, "mode": self.mode, "error": self.error,
                 "world": self.world_name, "ticks": self.ticks, "dir": str(self.dir),
                 "q_deg": {s: [round(math.degrees(v), 2) for v in self.q[s]] if self.q[s] else None
                           for s in SIDES},
                 "gap_mm": {s: round(1000 * self.gap[s], 1) for s in SIDES},
-                "source": self.source, "ik_error": self.ik_error}
+                "source": self.source, "ik_error": self.ik_error, "test": self.test}
 
 
 def start(directory=None):

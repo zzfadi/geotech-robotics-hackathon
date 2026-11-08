@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T11:37:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Table 10 web page now has a live Unreal camera stream and two real-arm link tests (Move up, Go to idle); virtual and real arms shown synced in mirror mode.",
+  "why": "User request: test the bridge between the real Maker Arms and virtual Table 10, sync positions first, and drive both with test buttons while watching a live stream.",
+  "where": ["DreamSim/table10_agent.py", "DreamSim/table10_store.py", "DreamSim/debug_server.py", "DreamSim/web/index.html", "Unreal/TheHumanTouch/Tools/maker_arm_real_link.py", "Unreal/TheHumanTouch/Tools/maker_arm_real_tests.py", "Unreal/TheHumanTouch/Tools/maker_arm_table10_camera.py"],
+  "details": ["Mirror mode: virtual Table 10 copies the real arms; page shows virtual-vs-real error (0.0 deg left/right at first check).", "Move up raises both grippers 8 cm straight up; Go to idle returns to the folded rest [0,-6,6,0,0,0] deg (the fleet idle pose is outside the real joint-4 range). Peak 0.35 rad/s, inside motor limits.", "Real arms follow only after the operator switches real_arm_bridge.py to drive at its terminal; tests are refused in mirror mode. Nine-table simulations paused at the user's request."]
+}
