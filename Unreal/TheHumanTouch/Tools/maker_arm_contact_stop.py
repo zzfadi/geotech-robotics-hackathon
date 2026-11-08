@@ -104,6 +104,10 @@ def _hollow_stop(requested, previous, shape, compliance, flat):
     This does not implement outward/internal gripping or remove Chaos contact.
     """
     hits={1:[], -1:[]}
+    # Total two-jaw penetration cannot exceed one wall thickness; each jaw
+    # remains within material after first contact rather than crossing the shell.
+    thicknesses=[math.dist(shape['points'][a],shape['points'][b]) for a,b in shape['wall_pairs']]
+    compliance=min(compliance,min(thicknesses))
     half=previous/2;target=requested/2
     thickness=.01 if flat else .02  # Legacy CAD contact envelope is approximate.
     for cell in shape['material_cells']:
@@ -123,7 +127,7 @@ def _hollow_stop(requested, previous, shape, compliance, flat):
             # Material only behind the advancing face: closing moves AWAY
             # from this inner wall; never latch solely because it is nearby.
             if lo>half+1e-9:continue
-            hits[sign].append(min(half,hi))
+            hits[sign].append(hi)  # Fixed material surface, never subtract compliance repeatedly.
     if not hits[1] or not hits[-1]:return None
     return max(0.,max(hits[1])+max(hits[-1])-compliance)
 
@@ -165,7 +169,8 @@ def cup_contact_shape(lo, hi, segments=128):
         e,f,g,h=2*segments+k,2*segments+j,4*segments+j,4*segments+k
         cell=((a,b,c,d),(e,h,g,f),(a,e,f,b),(d,c,g,h),(a,d,h,e),(b,f,g,c))
         cells.append(cell);faces.extend(cell)
-    return {'points':tuple(points),'faces':tuple(faces),'material_cells':tuple(cells)}
+    pairs=tuple((segments+k,3*segments+k) for k in range(segments))+tuple((2*segments+k,4*segments+k) for k in range(segments))
+    return {'points':tuple(points),'faces':tuple(faces),'material_cells':tuple(cells),'wall_pairs':pairs}
 
 
 def broad_phase(corners):
@@ -195,6 +200,6 @@ def actor_boxes(actors, flange, base):
             # Only nearby candidates need the 256 transformed ring vertices.
             if not broad_phase(corners):continue
             shape=cup_contact_shape(*bounds)
-            result.append((label,{'points':[convert(p) for p in shape['points']], 'faces':shape['faces'], 'material_cells':shape['material_cells']}))
+            result.append((label,{'points':[convert(p) for p in shape['points']], 'faces':shape['faces'], 'material_cells':shape['material_cells'], 'wall_pairs':shape['wall_pairs']}))
         else:result.append((label,corners))
     return result

@@ -9,3 +9,9 @@ Each material cell is clipped to the finite pad X/Z footprint. The inward leadin
 A conservative cell-AABB rejection retains128-sector accuracy. Offline100-call timing measured approximately3.1ms per nearby cup in the closing path (previous unfiltered hollow version3.8ms). All18 arms simultaneously closing on one nearby cup each would add roughly56ms, so this is not a fleet real-time guarantee. Opening commands return immediately, and actor broad phase rejects distant cups.32sectors were not substituted: their inner chord error is approximately0.183mm compared with0.0114mm at128, outside the retained fine-envelope regression tolerance. Runtime profiling remains required with the new physics hulls before broad deployment.
 
 Source-only verification at this commit: no live Unreal module was replaced and no inference was launched.
+
+## Repeated-update regression and correction
+
+The first hollow implementation had a confirmed actuator bug: it clipped the material contact position to the previous jaw position, then subtracted compliance again each update. A stationary upright cup reproduced gaps0.066688→0.061688→0.056688→0.051688→fullyclosed, incorrectly passing through the wall. This could be missed by slower status snapshots. The combined33-hull run also had cup displacement, so that run alone cannot isolate collision geometry from this independent limiter bug.
+
+The correction retains the fixed material-surface limit and caps total two-jaw compliance to the minimum transformed wall thickness (approximately2.012mm for this conservative128-sided envelope, about1.006mm penetration per jaw). This keeps first contact within material rather than jumping across the2mm wall.100 identical closure updates now preserve the same gap for upright and tilted cups, with continuous contact labels.29 tests pass, including empty-cavity closure and unchanged legacy box behavior. This source correction has not itself established a successful live grasp.

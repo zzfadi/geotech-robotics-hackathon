@@ -12,14 +12,18 @@ class CupContact(unittest.TestCase):
             points.append([x+offset[0],c*y-s*z+offset[1],s*y+c*z+offset[2]])
         return dict(shape,points=points)
 
+    def wall_compliance(self):
+        shape=self.shape()
+        return min(math.dist(shape['points'][a],shape['points'][b]) for a,b in shape['wall_pairs'])
+
     def test_midheight_taper_not_rim_aabb(self):
         gap,names=contact_gap(0,.10,[('cup',self.shape())],flat=True)
-        self.assertAlmostEqual(gap,.07166666666666667-.005,delta=.000025)
+        self.assertAlmostEqual(gap,.07166666666666667-self.wall_compliance(),delta=.000025)
         self.assertEqual(names,['cup'])
         self.assertLess(gap,.075)
 
     def test_yaw_invariance_without_underestimating_round_support(self):
-        expected=.07166666666666667-.005
+        expected=.07166666666666667-self.wall_compliance()
         for degrees in range(0,180,7):
             gap,_=contact_gap(0,.10,[('cup',self.shape(yaw=math.radians(degrees)))],flat=True)
             self.assertGreaterEqual(gap,expected-1e-10)
@@ -56,7 +60,8 @@ class CupContact(unittest.TestCase):
         shape=self.shape()
         gap,_=contact_gap(0,.1,[('cup',shape)],compliance=.005,flat=True)
         width=max(p[1] for p in pad_points(shape,True))-min(p[1] for p in pad_points(shape,True))
-        self.assertAlmostEqual(gap,width-.005)
+        wall=min(math.dist(shape["points"][a],shape["points"][b]) for a,b in shape["wall_pairs"])
+        self.assertAlmostEqual(gap,width-wall)
         # Both finite pads start inside empty cavity; closing must not latch.
         self.assertEqual(contact_gap(0,.02,[('cup',shape)],flat=True),(0,[]))
         self.assertEqual(contact_gap(.10,.02,[('cup',shape)],flat=True),(.10,[]))
@@ -89,6 +94,15 @@ class CupContact(unittest.TestCase):
         self.assertEqual(contact_gap(0,.01,[('narrow',shape)],flat=True),(0,[]))
         gap,names=contact_gap(0,.06,[('narrow',shape)],flat=True)
         self.assertGreater(gap,.025);self.assertEqual(names,['narrow'])
+
+    def test_repeated_contact_does_not_ratchet_through_wall(self):
+        for shape in (self.shape(),self.shape(tilt=.2,yaw=.37)):
+            gap,names=contact_gap(.02,.1,[('cup',shape)],flat=True)
+            self.assertEqual(names,['cup']);held=gap
+            for _ in range(100):
+                gap,names=contact_gap(.02,gap,[('cup',shape)],flat=True)
+                self.assertAlmostEqual(gap,held,places=10)
+                self.assertEqual(names,['cup'])
 
     def test_broad_phase_only_rejects_outside_candidates(self):
         corners=local_bounds_points((-.04,-.04,-.23),(.04,.04,-.11))
