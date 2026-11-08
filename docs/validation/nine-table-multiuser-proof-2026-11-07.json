@@ -1,0 +1,276 @@
+{
+  "runtime_interval": [
+    1794100836.3054302,
+    1794100914.8119192
+  ],
+  "baseline_time": 1794100836.203274,
+  "remote_last": 1794100935.1285567,
+  "tables": {
+    "0": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 27,
+      "max_arm_displacement_cm": 22.286975872624573,
+      "max_prop_displacement_cm": 26.85924495122851,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 0.00010749716927292698,
+      "restore_quaternion_error": 1.4093504141499125e-11
+    },
+    "1": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 27,
+      "max_arm_displacement_cm": 13.86823251308234,
+      "max_prop_displacement_cm": 13.259346100475684,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 0.00010728539334727417,
+      "restore_quaternion_error": 1.3979595259172584e-11
+    },
+    "2": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 17,
+      "max_arm_displacement_cm": 20.544421285446653,
+      "max_prop_displacement_cm": 21.230576980723395,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 2.929642751054232e-14,
+      "restore_quaternion_error": 5.551115123125783e-16
+    },
+    "3": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 17,
+      "max_arm_displacement_cm": 16.274012554712904,
+      "max_prop_displacement_cm": 16.65993353224432,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.232416834878573e-09,
+      "restore_quaternion_error": 3.3306690738754696e-16
+    },
+    "4": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 59,
+      "max_arm_displacement_cm": 35.09563226979241,
+      "max_prop_displacement_cm": 17.886839733513757,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 2.842170943040401e-14,
+      "restore_quaternion_error": 4.440892098500626e-16
+    },
+    "5": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 69,
+      "max_arm_displacement_cm": 27.243134039411718,
+      "max_prop_displacement_cm": 4.885692703629071,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 1.1148473951141036e-08,
+      "restore_quaternion_error": 3.3306690738754696e-16
+    },
+    "6": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 22,
+      "max_arm_displacement_cm": 17.456852102453915,
+      "max_prop_displacement_cm": 13.821599398710555,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.232441673950013e-09,
+      "restore_quaternion_error": 3.3306690738754696e-16
+    },
+    "7": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 1,
+      "max_arm_displacement_cm": 0.0,
+      "max_prop_displacement_cm": 3.994120176296851,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 0.00010779767614905851,
+      "restore_quaternion_error": 1.4093060052289275e-11
+    },
+    "8": {
+      "tracked": 26,
+      "remote_samples": 157,
+      "max_distinct_arm_poses": 18,
+      "max_arm_displacement_cm": 18.553725999351467,
+      "max_prop_displacement_cm": 18.586638935659877,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 1.1397743190917658e-08,
+      "restore_quaternion_error": 2.220446049250313e-16
+    }
+  },
+  "scope": "Editor mirror transforms; not independent peer physics or pickup success",
+  "final_mac_remote_position_error_cm": 1.4210854715202004e-14,
+  "final_mac_remote_common_actors": 234,
+  "runtime_peak_correspondence": {
+    "T00": {
+      "runtime_snapshot_time": 1794100898.256757,
+      "runtime_peak_height_cm": 22.74537603797539,
+      "runtime_target_position_cm": [
+        48.53340393152138,
+        -31.508268945694258,
+        103.74537603797539
+      ],
+      "remote_sample_time": 1794100897.4002798,
+      "remote_target_position_cm": [
+        48.52304120078145,
+        -31.508791384274435,
+        103.74321438261666
+      ],
+      "position_difference_cm": 0.010598673707037357,
+      "command_seq_at_peak": 5,
+      "temporal_match_window_s": 1
+    },
+    "T01": {
+      "runtime_snapshot_time": 1794100868.063634,
+      "runtime_peak_height_cm": 10.812729768841521,
+      "runtime_target_position_cm": [
+        54.70625011507796,
+        785.0445817276537,
+        91.81272976884152
+      ],
+      "remote_sample_time": 1794100868.3637505,
+      "remote_target_position_cm": [
+        54.706630867535715,
+        785.0461945287453,
+        91.81098558619215
+      ],
+      "position_difference_cm": 0.002405882979183427,
+      "command_seq_at_peak": 5,
+      "temporal_match_window_s": 1
+    },
+    "T02": {
+      "runtime_snapshot_time": 1794100852.028266,
+      "runtime_peak_height_cm": 18.261574041835942,
+      "runtime_target_position_cm": [
+        50.56238328167732,
+        1601.0267782985825,
+        99.26157404183594
+      ],
+      "remote_sample_time": 1794100852.3463204,
+      "remote_target_position_cm": [
+        50.56066478251319,
+        1601.0293611154566,
+        99.26031819986112
+      ],
+      "position_difference_cm": 0.0033468375293737476,
+      "command_seq_at_peak": 3,
+      "temporal_match_window_s": 1
+    },
+    "T03": {
+      "runtime_snapshot_time": 1794100912.2607749,
+      "runtime_peak_height_cm": 14.881612175118036,
+      "runtime_target_position_cm": [
+        873.7846241894931,
+        -36.0318031499221,
+        97.88161217511804
+      ],
+      "remote_sample_time": 1794100911.4792318,
+      "remote_target_position_cm": [
+        873.7839595764896,
+        -36.03515201859642,
+        97.84014915392848
+      ],
+      "position_difference_cm": 0.04160335032191522,
+      "command_seq_at_peak": 3,
+      "temporal_match_window_s": 1
+    },
+    "T04": {
+      "runtime_snapshot_time": 1794100902.2592828,
+      "runtime_peak_height_cm": 13.175504637686814,
+      "runtime_target_position_cm": [
+        869.5991301969729,
+        860.3318984321646,
+        94.17550463768681
+      ],
+      "remote_sample_time": 1794100902.3982346,
+      "remote_target_position_cm": [
+        870.4009590911894,
+        860.5913348249618,
+        94.49498689296655
+      ],
+      "position_difference_cm": 0.901280050232323,
+      "command_seq_at_peak": 16,
+      "temporal_match_window_s": 1
+    },
+    "T05": {
+      "runtime_snapshot_time": 1794100836.990199,
+      "runtime_peak_height_cm": 0.09386414880329141,
+      "runtime_target_position_cm": [
+        879.9449274940044,
+        1600.1414948960874,
+        82.09386414880329
+      ],
+      "remote_sample_time": 1794100837.350968,
+      "remote_target_position_cm": [
+        879.9833486814772,
+        1600.0449735895481,
+        82.0781782974415
+      ],
+      "position_difference_cm": 0.10506472384105842,
+      "command_seq_at_peak": 0,
+      "temporal_match_window_s": 1
+    },
+    "T06": {
+      "runtime_snapshot_time": 1794100913.3242729,
+      "runtime_peak_height_cm": 13.502662780435955,
+      "runtime_target_position_cm": [
+        1697.0776822721502,
+        40.2990914549976,
+        94.50266278043595
+      ],
+      "remote_sample_time": 1794100913.4947042,
+      "remote_target_position_cm": [
+        1697.0750392313466,
+        40.31132079377726,
+        94.49364200848149
+      ],
+      "position_difference_cm": 0.015424549210001996,
+      "command_seq_at_peak": 3,
+      "temporal_match_window_s": 1
+    },
+    "T07": {
+      "runtime_snapshot_time": 1794100881.113264,
+      "runtime_peak_height_cm": 0.0001170062080717571,
+      "runtime_target_position_cm": [
+        1700.000464284675,
+        860.0004190176452,
+        81.00011700620807
+      ],
+      "remote_sample_time": 1794100881.894757,
+      "remote_target_position_cm": [
+        1700.0004259195841,
+        860.00044934337,
+        81.0001161126606
+      ],
+      "position_difference_cm": 4.891143226498446e-05,
+      "command_seq_at_peak": 0,
+      "temporal_match_window_s": 1
+    },
+    "T08": {
+      "runtime_snapshot_time": 1794100882.1756108,
+      "runtime_peak_height_cm": 15.909733623790842,
+      "runtime_target_position_cm": [
+        1690.4668529265462,
+        1678.7361745678754,
+        98.90973362379084
+      ],
+      "remote_sample_time": 1794100882.3995154,
+      "remote_target_position_cm": [
+        1690.4677649238392,
+        1678.7372749309475,
+        98.90488396983741
+      ],
+      "position_difference_cm": 0.005055856151132613,
+      "command_seq_at_peak": 2,
+      "temporal_match_window_s": 1
+    }
+  },
+  "request_id": "8376c5b6e9c94cab8441b1facac1ffcc",
+  "run": "20261107-172022-44fa24",
+  "limitations": [
+    "T07 received no joint commands; no claim that all nine arms moved.",
+    "All nine target prop poses replicated; matching geometry is not independent peer physics.",
+    "Near-time peak matching uses a \u00b11 second window and is not a latency measurement.",
+    "Restoration uses final pre-runtime Mac sample; maximum difference0.000108cm.",
+    "No Brian editor observation."
+  ]
+}

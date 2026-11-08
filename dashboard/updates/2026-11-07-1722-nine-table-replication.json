@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T17:22:47-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Verified Luna2 receives nine-station trial poses and final restoration",
+  "why": "Prove actual shared motion including original Table1",
+  "where": [
+    "docs/validation/nine-table-multiuser-proof-2026-11-07.json"
+  ],
+  "details": [
+    "Eight tables had real joint commands and intermediate remote poses; T07 had no joint commands",
+    "All234trackedactors restored; finalMac/Luna positiondifference\u22641.5e-14cm",
+    "Runtime target snapshots match near-time remote poses; not independent remotephysics or pickup verification"
+  ]
+}

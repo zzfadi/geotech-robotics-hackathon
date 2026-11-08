@@ -1,0 +1,468 @@
+{
+  "runtime_interval": [
+    1794101132.147818,
+    1794101243.5472581
+  ],
+  "baseline_time": 1794101131.91989,
+  "remote_last": 1794101257.8643703,
+  "tables": {
+    "0": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 68,
+      "max_arm_displacement_cm": 33.062105828685475,
+      "max_prop_displacement_cm": 10.143469984375251,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.033284199834673e-09,
+      "restore_quaternion_error": 6.661338147750939e-16
+    },
+    "1": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 70,
+      "max_arm_displacement_cm": 32.61998708862108,
+      "max_prop_displacement_cm": 16.830710091705136,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.033284199831083e-09,
+      "restore_quaternion_error": 2.220446049250313e-16
+    },
+    "2": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 75,
+      "max_arm_displacement_cm": 33.218841805016886,
+      "max_prop_displacement_cm": 13.23610891310324,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.033284199831083e-09,
+      "restore_quaternion_error": 2.220446049250313e-16
+    },
+    "3": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 45,
+      "max_arm_displacement_cm": 30.804928005557702,
+      "max_prop_displacement_cm": 12.811953243872013,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 1.4210854715202004e-14,
+      "restore_quaternion_error": 2.220446049250313e-16
+    },
+    "4": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 75,
+      "max_arm_displacement_cm": 31.447197189490744,
+      "max_prop_displacement_cm": 5.375627230934953,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.033278124508423e-09,
+      "restore_quaternion_error": 2.220446049250313e-16
+    },
+    "5": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 72,
+      "max_arm_displacement_cm": 31.8103866755864,
+      "max_prop_displacement_cm": 6.9370642237893385,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.033278124508423e-09,
+      "restore_quaternion_error": 2.220446049250313e-16
+    },
+    "6": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 82,
+      "max_arm_displacement_cm": 25.616110569284377,
+      "max_prop_displacement_cm": 11.08809221443684,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.033278124508423e-09,
+      "restore_quaternion_error": 2.220446049250313e-16
+    },
+    "7": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 72,
+      "max_arm_displacement_cm": 35.97318638058939,
+      "max_prop_displacement_cm": 9.078321288121899,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 7.232441673950013e-09,
+      "restore_quaternion_error": 3.3306690738754696e-16
+    },
+    "8": {
+      "tracked": 26,
+      "remote_samples": 219,
+      "max_distinct_arm_poses": 87,
+      "max_arm_displacement_cm": 31.737730666178212,
+      "max_prop_displacement_cm": 17.319051266023955,
+      "restored_actor_count": 26,
+      "restore_position_error_cm": 1.4210854715202004e-14,
+      "restore_quaternion_error": 2.220446049250313e-16
+    }
+  },
+  "scope": "Editor mirror transforms; not independent peer physics or pickup success",
+  "request_id": "bb1de7b4ea504bd888fcbfb717c55986",
+  "run": "20261107-172518-312091",
+  "initial_condition": "TCP starts8cm behindtarget, approach-inclusive",
+  "final_mac_remote_common_actors": 234,
+  "final_mac_remote_position_error_cm": 1.4210854715202004e-14,
+  "runtime_peak_correspondence": {
+    "T00": {
+      "runtime_snapshot_time": 1794101156.3608441,
+      "runtime_peak_height_cm": 0.1067359096003031,
+      "runtime_target_position_cm": [
+        60.90422939112528,
+        -39.20037515385413,
+        81.1067359096003
+      ],
+      "remote_sample_time": 1794101156.9245381,
+      "remote_target_position_cm": [
+        61.02749935741484,
+        -39.25114331051201,
+        80.97869553302071
+      ],
+      "position_difference_cm": 0.18484379447012156,
+      "command_seq_at_peak": 3,
+      "temporal_match_window_s": 1
+    },
+    "T01": {
+      "runtime_snapshot_time": 1794101148.285609,
+      "runtime_peak_height_cm": 0.15703277067486,
+      "runtime_target_position_cm": [
+        59.66271226233718,
+        780.8105030542824,
+        81.15703277067486
+      ],
+      "remote_sample_time": 1794101148.7167017,
+      "remote_target_position_cm": [
+        59.854730517235744,
+        780.8229182510919,
+        81.58532528730912
+      ],
+      "position_difference_cm": 0.4695312845072343,
+      "command_seq_at_peak": 3,
+      "temporal_match_window_s": 1
+    },
+    "T02": {
+      "runtime_snapshot_time": 1794101157.378193,
+      "runtime_peak_height_cm": 3.857922891880662,
+      "runtime_target_position_cm": [
+        56.70812438847149,
+        1602.8187658996865,
+        84.85792289188066
+      ],
+      "remote_sample_time": 1794101157.9296396,
+      "remote_target_position_cm": [
+        56.20811986751279,
+        1603.0405483674515,
+        85.66412595511571
+      ],
+      "position_difference_cm": 0.9742460485712279,
+      "command_seq_at_peak": 5,
+      "temporal_match_window_s": 1
+    },
+    "T03": {
+      "runtime_snapshot_time": 1794101141.371197,
+      "runtime_peak_height_cm": 0.0053746118672393095,
+      "runtime_target_position_cm": [
+        880.0172758061286,
+        -39.98140069470118,
+        83.00537461186724
+      ],
+      "remote_sample_time": 1794101141.4556043,
+      "remote_target_position_cm": [
+        880.0109437392028,
+        -39.98786277587349,
+        83.0035719178699
+      ],
+      "position_difference_cm": 0.00922514337439144,
+      "command_seq_at_peak": 0,
+      "temporal_match_window_s": 1
+    },
+    "T04": {
+      "runtime_snapshot_time": 1794101147.382072,
+      "runtime_peak_height_cm": 0.00012387594583174177,
+      "runtime_target_position_cm": [
+        880.0004311835045,
+        860.0005088451032,
+        81.00012387594583
+      ],
+      "remote_sample_time": 1794101147.1563637,
+      "remote_target_position_cm": [
+        880.0004221327588,
+        860.0005792729074,
+        81.00013164121137
+      ],
+      "position_difference_cm": 7.14303223380591e-05,
+      "command_seq_at_peak": 1,
+      "temporal_match_window_s": 1
+    },
+    "T05": {
+      "runtime_snapshot_time": 1794101153.4034638,
+      "runtime_peak_height_cm": 0.5665101915437845,
+      "runtime_target_position_cm": [
+        880.8544688478614,
+        1599.6307606534504,
+        81.56651019154378
+      ],
+      "remote_sample_time": 1794101153.8414574,
+      "remote_target_position_cm": [
+        880.5018207675247,
+        1599.549666958942,
+        81.48695576496883
+      ],
+      "position_difference_cm": 0.37049394413656606,
+      "command_seq_at_peak": 4,
+      "temporal_match_window_s": 1
+    },
+    "T06": {
+      "runtime_snapshot_time": 1794101148.285609,
+      "runtime_peak_height_cm": 0.20718001538013198,
+      "runtime_target_position_cm": [
+        1699.9402502542807,
+        41.523925122720605,
+        81.20718001538013
+      ],
+      "remote_sample_time": 1794101149.2467446,
+      "remote_target_position_cm": [
+        1699.67256232081,
+        41.95515133940802,
+        81.00026422638113
+      ],
+      "position_difference_cm": 0.5481122361537814,
+      "command_seq_at_peak": 3,
+      "temporal_match_window_s": 1
+    },
+    "T07": {
+      "runtime_snapshot_time": 1794101207.682292,
+      "runtime_peak_height_cm": 0.16681443229100523,
+      "runtime_target_position_cm": [
+        1699.8054621502658,
+        863.1068724960568,
+        81.16683318856758
+      ],
+      "remote_sample_time": 1794101207.8319876,
+      "remote_target_position_cm": [
+        1699.9550367394033,
+        863.1420816644036,
+        81.2954102941846
+      ],
+      "position_difference_cm": 0.20036046351557768,
+      "command_seq_at_peak": 19,
+      "temporal_match_window_s": 1
+    },
+    "T08": {
+      "runtime_snapshot_time": 1794101141.371197,
+      "runtime_peak_height_cm": 0.005411971264450699,
+      "runtime_target_position_cm": [
+        1700.0206215646342,
+        1680.0144475840227,
+        83.00541197126445
+      ],
+      "remote_sample_time": 1794101141.4556043,
+      "remote_target_position_cm": [
+        1700.013129623939,
+        1680.0094874300617,
+        83.0035938984938
+      ],
+      "position_difference_cm": 0.009167207388157628,
+      "command_seq_at_peak": 1,
+      "temporal_match_window_s": 1
+    }
+  },
+  "runtime_final_target_correspondence": {
+    "T00": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.2830093,
+      "target": "MakerStation_Approximate_Block_Red",
+      "height_cm": 1.8704711919781403e-05,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        61.750855977684104,
+        -41.107532853266946,
+        81.00001870471192
+      ],
+      "remote_position_cm": [
+        61.7506976919698,
+        -41.107360515079705,
+        81.00006305947417
+      ],
+      "error_cm": 0.00023816415152037567
+    },
+    "T01": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.2830093,
+      "target": "MakerStation_Approximate_Block_Green",
+      "height_cm": -3.4999996539796996,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        52.94034612841132,
+        790.8898888608093,
+        77.5000003460203
+      ],
+      "remote_position_cm": [
+        52.94035981902853,
+        790.8898834136878,
+        77.50000018855528
+      ],
+      "error_cm": 1.473529527734452e-05
+    },
+    "T02": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.8011694,
+      "target": "MakerStation_Approximate_Block_Orange",
+      "height_cm": -2.4825229808126608,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        56.24557644714843,
+        1605.7216751238448,
+        78.51747701918734
+      ],
+      "remote_position_cm": [
+        56.269434629046124,
+        1605.7547323558156,
+        78.57565768613925
+      ],
+      "error_cm": 0.0710421243770561
+    },
+    "T03": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.2830093,
+      "target": "MakerStation_Approximate_Block_OrangeCylinder",
+      "height_cm": -5.511181302531554,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        890.4997981873262,
+        -35.15732726650113,
+        77.48881869746845
+      ],
+      "remote_position_cm": [
+        890.5003716496694,
+        -35.173195149629116,
+        77.48860350765197
+      ],
+      "error_cm": 0.015879700270463214
+    },
+    "T04": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.2830093,
+      "target": "MakerStation_Approximate_Block_Red",
+      "height_cm": -3.500000783965106,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        877.7591030773101,
+        860.57473403964,
+        77.4999992160349
+      ],
+      "remote_position_cm": [
+        877.7590648289608,
+        860.5747054305076,
+        77.49999890438724
+      ],
+      "error_cm": 4.776521540355194e-05
+    },
+    "T05": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101243.309429,
+      "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+      "height_cm": -3.142842894628302,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        878.9578482694919,
+        1594.3323116812976,
+        77.8571571053717
+      ],
+      "remote_position_cm": [
+        879.0468881023838,
+        1594.1555407562346,
+        77.80288100936014
+      ],
+      "error_cm": 0.2052363183924965
+    },
+    "T06": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.2830093,
+      "target": "MakerStation_Approximate_Block_Green",
+      "height_cm": 3.821445537255386e-05,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        1699.673947784794,
+        41.95522734466125,
+        81.00003821445537
+      ],
+      "remote_position_cm": [
+        1699.673937542998,
+        41.95536398818616,
+        81.00004851711674
+      ],
+      "error_cm": 0.00013741358054641923
+    },
+    "T07": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.2830093,
+      "target": "MakerStation_Approximate_Block_Orange",
+      "height_cm": -3.500011282354251,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        1699.9548865962547,
+        867.9669525159068,
+        77.50000747392232
+      ],
+      "remote_position_cm": [
+        1699.9548865962547,
+        867.9669525159068,
+        77.50000747392232
+      ],
+      "error_cm": 0.0
+    },
+    "T08": {
+      "runtime_time": 1794101242.774871,
+      "remote_time": 1794101242.2830093,
+      "target": "MakerStation_Approximate_Block_OrangeCylinder",
+      "height_cm": -5.512038207794774,
+      "held_seconds_current": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "runtime_position_cm": [
+        1703.4876072449665,
+        1666.1185728009596,
+        77.48796179220523
+      ],
+      "remote_position_cm": [
+        1703.4876066202457,
+        1666.1185657617896,
+        77.48796214158187
+      ],
+      "error_cm": 7.075468477802721e-06
+    }
+  },
+  "limitations": [
+    "All nine rooms had intermediate arm motion; this does not establish successful pickup.",
+    "No target remained10cm elevated at batch end; remote mirrors the actual failed retention state.",
+    "Near-time matching uses \u00b11second window, not latency measurement.",
+    "Peer physics does not run independently; proof concerns shared editor pose replication.",
+    "No Brian editor observed."
+  ]
+}

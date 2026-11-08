@@ -1,0 +1,814 @@
+{
+  "description": "Approach-inclusive trials: initial TCP is8cm behind object along actual gripper approach axis; Dream controls approach, closure and lift. Objects are free Chaos bodies, no scripted paths or attachments.",
+  "defaults": {
+    "checkpoint": "dreamlabs/dream-1-beta-flash",
+    "position_ik": true,
+    "pad_contacts": true,
+    "tcp_back": 0,
+    "action_rows": 12,
+    "cycles": 24
+  },
+  "tables": [
+    {
+      "index": 0,
+      "name": "red-left-approach8cm",
+      "prompt": "Approach the red block with the left gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          9.014691356788212e-07,
+          -1.5915245157576459,
+          1.0000000000004791e-08,
+          1.5866874357426053,
+          -1.7577402654669743e-06,
+          2.419378050839077e-07
+        ],
+        "q_right": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Red",
+        "location_cm": [
+          60,
+          -40,
+          81.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Red",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 1,
+      "name": "green-left-approach8cm",
+      "prompt": "Approach the green block with the left gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          9.014691356788212e-07,
+          -1.5915245157576459,
+          1.0000000000004791e-08,
+          1.5866874357426053,
+          -1.7577402654669743e-06,
+          2.419378050839077e-07
+        ],
+        "q_right": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Green",
+        "location_cm": [
+          60,
+          -40,
+          81.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Green",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 2,
+      "name": "orange-left-approach8cm",
+      "prompt": "Approach the orange block with the left gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          9.014691356788212e-07,
+          -1.5915245157576459,
+          1.0000000000004791e-08,
+          1.5866874357426053,
+          -1.7577402654669743e-06,
+          2.419378050839077e-07
+        ],
+        "q_right": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Orange",
+        "location_cm": [
+          60,
+          -40,
+          81.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Orange",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 3,
+      "name": "orangecylinder-left-approach8cm",
+      "prompt": "Approach the upright orange cylinder with the left gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          -7.223643315305328e-08,
+          -1.4883686884025762,
+          3.080186438318854e-08,
+          1.5316862770552968,
+          7.931088045192496e-08,
+          -9.620986439200861e-09
+        ],
+        "q_right": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_OrangeCylinder",
+        "location_cm": [
+          60,
+          -40,
+          83.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.16
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeCylinder",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 4,
+      "name": "red-right-approach8cm",
+      "prompt": "Approach the red block with the right gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "q_right": [
+          9.014691356788212e-07,
+          -1.5915245157576459,
+          1.0000000000004791e-08,
+          1.5866874357426053,
+          -1.7577402654669743e-06,
+          2.419378050839077e-07
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Red",
+        "location_cm": [
+          60,
+          40,
+          81.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Red",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 5,
+      "name": "orangerodassembly-left-approach8cm",
+      "prompt": "Approach the orange cube with yellow rod with the left gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          9.014691356788212e-07,
+          -1.5915245157576459,
+          1.0000000000004791e-08,
+          1.5866874357426053,
+          -1.7577402654669743e-06,
+          2.419378050839077e-07
+        ],
+        "q_right": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gap_left_m": 0.08,
+        "gap_right_m": 0.04
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "location_cm": [
+          60,
+          -40,
+          81
+        ],
+        "rotation_deg": [
+          0,
+          90,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          2
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+        "side": "left",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 6,
+      "name": "green-right-approach8cm",
+      "prompt": "Approach the green block with the right gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "q_right": [
+          9.014691356788212e-07,
+          -1.5915245157576459,
+          1.0000000000004791e-08,
+          1.5866874357426053,
+          -1.7577402654669743e-06,
+          2.419378050839077e-07
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Green",
+        "location_cm": [
+          60,
+          40,
+          81.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Green",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 7,
+      "name": "orange-right-approach8cm",
+      "prompt": "Approach the orange block with the right gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "q_right": [
+          9.014691356788212e-07,
+          -1.5915245157576459,
+          1.0000000000004791e-08,
+          1.5866874357426053,
+          -1.7577402654669743e-06,
+          2.419378050839077e-07
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_Orange",
+        "location_cm": [
+          60,
+          40,
+          81.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.12
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_Orange",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeCylinder",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    },
+    {
+      "index": 8,
+      "name": "orangecylinder-right-approach8cm",
+      "prompt": "Approach the upright orange cylinder with the right gripper from its current position. Place the object between the fingers, close firmly, then lift it straight up by 10 cm and keep holding it still for at least 2 seconds. Keep the other arm still. Do not lower the fingers through the table.",
+      "initial_state": {
+        "q_left": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "q_right": [
+          -7.223643315305328e-08,
+          -1.4883686884025762,
+          3.080186438318854e-08,
+          1.5316862770552968,
+          7.931088045192496e-08,
+          -9.620986439200861e-09
+        ],
+        "gap_left_m": 0.04,
+        "gap_right_m": 0.08
+      },
+      "target": {
+        "label": "MakerStation_Approximate_Block_OrangeCylinder",
+        "location_cm": [
+          60,
+          40,
+          83.0
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.16
+        ]
+      },
+      "objective": {
+        "kind": "lift_hold",
+        "target": "MakerStation_Approximate_Block_OrangeCylinder",
+        "side": "right",
+        "height_cm": 10,
+        "hold_seconds": 2
+      },
+      "objects": [
+        {
+          "label": "MakerStation_Approximate_Block_Red",
+          "location_cm": [
+            30,
+            -75,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Green",
+          "location_cm": [
+            30,
+            -15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_Orange",
+          "location_cm": [
+            30,
+            15,
+            75
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Approximate_Block_OrangeRodAssembly",
+          "location_cm": [
+            30,
+            75,
+            75
+          ],
+          "yaw_deg": 0
+        }
+      ],
+      "checkpoint": "dreamlabs/dream-1-beta-flash"
+    }
+  ]
+}

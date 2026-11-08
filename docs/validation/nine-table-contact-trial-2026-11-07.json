@@ -1,0 +1,222 @@
+{
+  "request_id": "8376c5b6e9c94cab8441b1facac1ffcc",
+  "run_name": "20261107-172022-44fa24",
+  "setup": "Controlled pregrasp fixtures; all nine physical simulations active; bounded four concurrent API requests",
+  "concurrency": {
+    "peak_concurrent_request_tables": 4,
+    "peak_tables": [
+      "T00",
+      "T01",
+      "T02",
+      "T03"
+    ],
+    "tables_with_calls": [
+      "T00",
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05",
+      "T06",
+      "T07",
+      "T08"
+    ],
+    "tables_with_measured_joint_change": [
+      "T00",
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05",
+      "T06",
+      "T08"
+    ],
+    "tables_with_motion_rows": [
+      "T00",
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05",
+      "T06",
+      "T08"
+    ],
+    "note": "Overlap measures outstanding Dream client calls; motion rows are playback evidence, not task success."
+  },
+  "results": [
+    {
+      "table": "T00",
+      "target": "MakerStation_Approximate_Block_Red",
+      "calls": 5,
+      "cycles_run": 5,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": 22.743383247773878,
+        "max_height_cm": 22.745153386767342,
+        "held_slow_above_10cm_s": 2.5113905829493888,
+        "max_held_slow_above_10cm_s": 2.5113905829493888,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "batch_end_height_cm": 22.743026966310396,
+      "batch_end_continuous_hold_seconds": 58.363220915955026
+    },
+    {
+      "table": "T02",
+      "target": "MakerStation_Approximate_Block_Orange",
+      "calls": 3,
+      "cycles_run": 3,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": 18.209106869885872,
+        "max_height_cm": 18.27115095686503,
+        "held_slow_above_10cm_s": 2.2815965409972705,
+        "max_held_slow_above_10cm_s": 2.2815965409972705,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "batch_end_height_cm": 1.9414454087041122e-05,
+      "batch_end_continuous_hold_seconds": 0.0
+    },
+    {
+      "table": "T08",
+      "target": "MakerStation_Approximate_Block_OrangeCylinder",
+      "calls": 5,
+      "cycles_run": 2,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": 15.891891617181614,
+        "max_height_cm": 15.911180805584266,
+        "held_slow_above_10cm_s": 2.3486929169739597,
+        "max_held_slow_above_10cm_s": 2.3486929169739597,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "batch_end_height_cm": 15.876507594337852,
+      "batch_end_continuous_hold_seconds": 33.56428570795106
+    },
+    {
+      "table": "T03",
+      "target": "MakerStation_Approximate_Block_OrangeCylinder",
+      "calls": 3,
+      "cycles_run": 3,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": 14.836027839394191,
+        "max_height_cm": 14.837226168995741,
+        "held_slow_above_10cm_s": 2.3423355420236476,
+        "max_held_slow_above_10cm_s": 2.3423355420236476,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "batch_end_height_cm": 14.876771633163457,
+      "batch_end_continuous_hold_seconds": 63.01051320799161
+    },
+    {
+      "table": "T04",
+      "target": "MakerStation_Approximate_Block_Red",
+      "calls": 19,
+      "cycles_run": 16,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": 12.404319712906585,
+        "max_height_cm": 13.508269879243272,
+        "held_slow_above_10cm_s": 2.104300457984209,
+        "max_held_slow_above_10cm_s": 2.104300457984209,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "batch_end_height_cm": 12.404887143858474,
+      "batch_end_continuous_hold_seconds": 11.232687582960352
+    },
+    {
+      "table": "T06",
+      "target": "MakerStation_Approximate_Block_Green",
+      "calls": 6,
+      "cycles_run": 3,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": 13.492589249127676,
+        "max_height_cm": 13.5030395026604,
+        "held_slow_above_10cm_s": 2.61463308299426,
+        "max_held_slow_above_10cm_s": 2.61463308299426,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "batch_end_height_cm": 13.498210351314725,
+      "batch_end_continuous_hold_seconds": 31.02805633295793
+    },
+    {
+      "table": "T01",
+      "target": "MakerStation_Approximate_Block_Green",
+      "calls": 5,
+      "cycles_run": 5,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": 10.8098734698454,
+        "max_height_cm": 10.813211926480108,
+        "held_slow_above_10cm_s": 2.433560708013829,
+        "max_held_slow_above_10cm_s": 2.433560708013829,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": true
+      },
+      "batch_end_height_cm": 10.810454027309675,
+      "batch_end_continuous_hold_seconds": 57.358818707987666
+    },
+    {
+      "table": "T05",
+      "target": "MakerStation_Approximate_Block_OrangeRodAssembly",
+      "calls": 27,
+      "cycles_run": 24,
+      "error": null,
+      "at_task_completion_lift": {
+        "measured": true,
+        "height_cm": -4.0127714312797025,
+        "max_height_cm": 0.11742760202935187,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "batch_end_height_cm": -4.0127714312797025,
+      "batch_end_continuous_hold_seconds": 0.0
+    },
+    {
+      "table": "T07",
+      "target": "MakerStation_Approximate_Block_Orange",
+      "calls": 4,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_full): Dream-1 is at max capacity right now",
+      "at_task_completion_lift": {
+        "measured": false
+      },
+      "batch_end_height_cm": 1.782131357686012e-05,
+      "batch_end_continuous_hold_seconds": 0.0
+    }
+  ],
+  "goal_achieved": false,
+  "summary": "Six retained held-lift candidates at batch end; one orange object dropped after initial held measurement, one rod assembly toppled, one table exhausted provider capacity retries. No claim of nine successful pickups."
+}

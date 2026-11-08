@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T17:27:54-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Verified all nine approach-trial arm motions replicate to Luna2",
+  "why": "Separate working replication from unsuccessful task retention",
+  "where": [
+    "docs/validation/nine-table-approach-multiuser-proof-2026-11-07.json"
+  ],
+  "details": [
+    "All nine room arms show 45\u201387 distinct intermediate poses on Luna2",
+    "All 234 actors restored within 7.3e-9cm; final Mac/Luna positions agree at floating precision",
+    "No target remained 10cm above initial height at batch end; final target poses match remote within 0.206cm",
+    "No scene changes; read-only transform audit"
+  ]
+}
