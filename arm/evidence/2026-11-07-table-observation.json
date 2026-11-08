@@ -1,0 +1,92 @@
+{
+  "schema": "maker-arm-table-observation-v1",
+  "motion_ready": false,
+  "coordinate_frame": "card: corner0 origin, corner0->1 +X, corner0->3 +Y; millimetres",
+  "reference_size_mm": [
+    63.0,
+    88.0
+  ],
+  "dimension_source": "assumed",
+  "pixel_to_table_homography": [
+    [
+      -1.574999999999992,
+      -0.13897058823529443,
+      499.2749999999978
+    ],
+    [
+      1.3448758405553947e-16,
+      -1.9411764705882273,
+      593.9999999999975
+    ],
+    [
+      5.955290601591794e-18,
+      -0.005147058823529408,
+      1.0
+    ]
+  ],
+  "table_points": {
+    "yellow_cylinder_foot_center": {
+      "xy_mm": [
+        85.51410658307202,
+        68.96551724137942
+      ],
+      "annotation_only_95pct_interval_mm": [
+        [
+          78.7932922824445,
+          61.83858588886613
+        ],
+        [
+          93.14398333683664,
+          75.75033765951578
+        ]
+      ]
+    },
+    "yellow_cylinder_foot_left": {
+      "xy_mm": [
+        74.32288401253905,
+        68.96551724137942
+      ],
+      "annotation_only_95pct_interval_mm": [
+        [
+          68.66465538888622,
+          62.04009682979461
+        ],
+        [
+          80.43619194917449,
+          75.71901096918769
+        ]
+      ]
+    },
+    "yellow_cylinder_foot_right": {
+      "xy_mm": [
+        96.70532915360482,
+        68.96551724137942
+      ],
+      "annotation_only_95pct_interval_mm": [
+        [
+          88.22176600493133,
+          61.25568452428646
+        ],
+        [
+          107.38282931659029,
+          76.2134625496095
+        ]
+      ]
+    }
+  },
+  "annotation_sigma_px": 1.0,
+  "robot_base_transforms": null,
+  "camera_intrinsics": null,
+  "object_heights_mm": null,
+  "limitations": [
+    "Manual annotations, not automatic object detection",
+    "Only points physically on the reference table plane are valid",
+    "Intervals exclude lens distortion, uncertain card size and nonflat reference",
+    "Four fitted corners are not independent calibration validation",
+    "No arm-base registration, jaw calibration, obstacle model or motion permission"
+  ],
+  "image_path": "arm/local/card-flat-reference-2026-11-07/camera-0x11130002c7f4a60.jpg",
+  "image_sha256": "84cd2e7fa52b8f79588f00788e323af5d308c45c71080fa831b40b31ee90aa8d",
+  "capture_time": "2026-11-08T01:16:08Z",
+  "annotation_file": "arm/evidence/2026-11-07-card-annotations.json"
+}

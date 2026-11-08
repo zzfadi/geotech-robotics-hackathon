@@ -351,3 +351,34 @@ jaw transmission are unmeasured. A ruler/calibration grid and cylinder dimension
 were requested to establish a measured reference before reaching. See
 `arm/evidence/2026-11-07-elbow-lifts.json` for compact run evidence, source hashes,
 startup-failure interpretation and post-test feedback.
+
+## Playing-card table reference — 17:16 Pacific
+
+The operator added a ten of diamonds, then laid it flat beside the cylinder.
+Fresh overview, both wrist views and the laptop front view were captured. The
+overview card occupies only about 23–30 pixels across, so manual corner selection
+is a material source of error. **63 × 88 mm is assumed, not confirmed or measured.**
+
+`table_reference.py` is an offline measurement helper, with no arm or camera
+access. It fits a table-plane homography from four manually annotated card corners
+and maps annotated points that physically lie on that plane. The cylinder's foot
+center is provisionally `(85.5, 69.0)` mm in card coordinates (origin at top-left;
+X along the short edge, Y along the long edge). A 1-pixel annotation-noise model
+produces approximate 95% coordinate ranges X 78.8–93.1 mm, Y 61.8–75.8 mm.
+Those ranges exclude lens distortion, card-size error and table/reference
+nonflatness; they are not total localization accuracy or collision clearance.
+
+```sh
+arm/.venv/bin/python arm/tools/table_reference.py \
+  arm/evidence/2026-11-07-card-annotations.json \
+  --output arm/local/NEW_TABLE_OBSERVATION.json
+```
+
+The referenced image stays local, so this command requires the capture file on
+the originating machine. The compact resulting observation is retained in
+`arm/evidence/2026-11-07-table-observation.json`. It records manual annotations,
+the assumed size, capture time, image hash and uncertainty. Robot-base transforms,
+camera intrinsics and object height are explicitly null; `motion_ready` is false.
+Do not project elevated jaw or cylinder-top pixels through this table homography.
+The card does not establish depth, motor-to-CAD registration or a grasp pose.
+No reach, gripper closure or pickup was attempted from these provisional numbers.

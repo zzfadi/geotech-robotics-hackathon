@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T17:17:32.946460-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Added a provisional card-based table observation and offline planar measurement helper for the physical yellow cylinder.",
+  "why": "Begin a measured scene representation after successful physical lift routines without treating unregistered image coordinates as robot commands.",
+  "where": [
+    "arm/tools/table_reference.py",
+    "arm/evidence/2026-11-07-card-annotations.json",
+    "arm/evidence/2026-11-07-table-observation.json",
+    "arm/docs/control-and-vision.md"
+  ],
+  "details": "Operator laid card flat. Card size 63x88 mm remains assumed. Cylinder foot about (85.5,69.0) mm in card coordinates; annotation-only uncertainty about +/-7 mm. Camera intrinsics, arm-base transforms and object height remain unmeasured; motion_ready=false. No physical grasp attempted. 140 offline tests pass."
+}
