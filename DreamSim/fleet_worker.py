@@ -173,6 +173,7 @@ class TableRun:
         self.grip_latch = None  # opt-in assist: max grip command once jaws stall on the cup
         self.latch_z = None  # tool height (m, arm frame) when the jaws first stalled
         self.hold_peak_z = None  # highest tool height while holding (hold_monotonic floor)
+        self.cup_rise = 0.  # latest measured target rise (cm), for phase prompts
         self.result = {'table': self.key, 'name': variant['name'], 'prompt': variant['prompt'],
                        'checkpoint': variant['checkpoint'], 'position_ik': variant['position_ik'],
                        'pad_contacts': variant['pad_contacts'], 'action_rows': variant['action_rows'],
@@ -214,6 +215,17 @@ class TableRun:
             time.sleep(.1)
         raise TimeoutError('No fresh verified observation for ' + self.key)
 
+    def prompt_now(self):
+        """Opt-in language subgoals: grasp until the jaws hold the cup, lift until the
+        table's height is reached, then hold. Dream produces every action for each."""
+        phases = self.v.get('assist', {}).get('phase_prompts')
+        if not phases:
+            return self.v['prompt']
+        if self.grip_latch is None:
+            return phases.get('grasp') or self.v['prompt']
+        required = float((self.v.get('objective') or {}).get('height_cm', 10.))
+        return phases['lift'] if self.cup_rise < required-.5 else phases['hold']
+
     def infer(self, packet):
         if self.args.dry_run:
             return hold_action(packet['state'], self.v['action_rows'] or 12), None
@@ -226,7 +238,7 @@ class TableRun:
                 holder['packet'] = self.fresh(time.time())
             holder['used'] = True
             p = holder['packet']
-            obs = {'prompt': self.v['prompt']}
+            obs = {'prompt': self.prompt_now()}
             for side in ('left', 'right'):
                 obs['state.'+side+'_arm'] = p['state']['q_'+side]
                 obs['state.'+side+'_grip'] = [p['state']['gap_'+side+'_m']/JAW_MAX_M]
@@ -236,7 +248,7 @@ class TableRun:
         def call():
             self.result['calls'] += 1
             request = {'call': self.result['calls'], 'started_unix': time.time(),
-                       'observation_unix': holder['packet']['captured_unix']}
+                       'observation_unix': holder['packet']['captured_unix'], 'prompt': self.prompt_now()}
             self.result['requests'].append(request)
             try:
                 action = self.client.get_action()
@@ -256,9 +268,12 @@ class TableRun:
             try:
                 return request_action(call, refresh, self.stopped, lambda m: self.log(m), DreamSessionExpired)
             except Exception as error:
-                if 'NO_CAPACITY' not in str(error) or attempt == 8 or time.monotonic() >= capacity_deadline:
+                numerical = 'SVD did not converge' in str(error)
+                if (('NO_CAPACITY' not in str(error) and not numerical) or attempt == 8
+                        or time.monotonic() >= capacity_deadline):
                     raise
-                self.log('Dream capacity busy; bounded retry %d/8 (60 s budget)' % (attempt+1))
+                self.log(('Dream client IK numerical failure; retry %d/8' if numerical else
+                          'Dream capacity busy; bounded retry %d/8 (60 s budget)') % (attempt+1))
             finally:
                 _INFERENCE_SLOTS.release()
             deadline = min(capacity_deadline, time.monotonic() + min(8, 2**(attempt+1)) + self.v['index']*.1)
@@ -323,9 +338,9 @@ class TableRun:
                 self.log('holding: applied only vertical motion (dz %+.1f cm over %d rows)' %
                          ((vertical['dz_cm'] or [0])[-1], vertical['rows']))
             if self.v.get('assist', {}).get('grip_latch') and self.grip_latch is not None and not self.args.dry_run:
-                clamped = sum(1 for row in action[latch_key] if row[6] > self.grip_latch)
+                clamped = sum(1 for row in action[latch_key] if abs(row[6]-self.grip_latch) > 1e-3)
                 action = dict(action)
-                action[latch_key] = [list(row[:6])+[min(row[6], self.grip_latch)] for row in action[latch_key]]
+                action[latch_key] = [list(row[:6])+[self.grip_latch] for row in action[latch_key]]
                 if clamped:
                     self.log('grip latch kept %d row(s) closed at %.2f' % (clamped, self.grip_latch))
             execution = (ik or {}).get('_execution') or {}
@@ -361,10 +376,13 @@ class TableRun:
                     if self.grip_latch is None:
                         from pregrasp import tool_height
                         self.latch_z = tool_height(playback.get('q_'+latch_side, packet['state']['q_'+latch_side]))
-                    if self.grip_latch is None or commanded < self.grip_latch:
-                        self.grip_latch = commanded
-                        self.log('jaws stalled on an object at %.1f cm (commanded %.1f cm); grip latch set' %
-                                 (observed*100, commanded*JAW_MAX_M*100))
+                    if self.grip_latch is None:
+                        # Command 1.9 cm inside the measured contact width, as in the verified
+                        # zero-API mechanical cup hold (5.5 cm on a 7.4 cm cup); the runtime contact
+                        # limiter keeps the pads at the surface. Deeper commands cut the thin wall.
+                        self.grip_latch = max(observed-.019, 0.)/JAW_MAX_M
+                        self.log('jaws stalled on an object at %.1f cm (commanded %.1f cm); holding %.1f cm' %
+                                 (observed*100, commanded*JAW_MAX_M*100, self.grip_latch*JAW_MAX_M*100))
             if self.latch_z is not None and playback.get('q_'+latch_side):
                 from pregrasp import tool_height
                 self.hold_peak_z = max(self.hold_peak_z or self.latch_z, tool_height(playback['q_'+latch_side]))
@@ -382,6 +400,7 @@ class TableRun:
             self.result['measured_cup']=monitored
             lift = lift_verdict(current, target, hold_seconds, max_tilt) if objective else metrics.get(monitored, {'measured':False})
             self.result['lift'] = lift
+            self.cup_rise = float(lift.get('height_cm', 0.) or 0.)
             self.log('cycle %d done (inference %.2fs) lift %.2f cm' % (cycle+1, inference, lift.get('height_cm', 0.)))
             gap_delta = max(abs(playback.get('gap_'+side+'_m', packet['state']['gap_'+side+'_m'])-
                                 packet['state']['gap_'+side+'_m']) for side in ('left','right'))

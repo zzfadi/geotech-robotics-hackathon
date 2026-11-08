@@ -233,7 +233,7 @@ def tool_height(q):
     return float(fk.pose(np.clip(np.array(q, dtype=float), fk.low+1e-7, fk.high-1e-7))[2, 3])
 
 
-def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5):
+def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25):
     """While an object is held: keep the measured tool x/y and orientation, apply only
     Dream's vertical motion, never below floor_z (the height where the jaws closed)
     minus allow_down_cm; without floor_z the current height is the floor."""
@@ -251,6 +251,17 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5):
             solved = solve_pose(target, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
         except ValueError:
             break  # higher than reachable: stop the chunk at the last feasible row
+        # Split large vertical steps (<= max_step_cm per row) so a held cup rises at
+        # about 3 cm/s, like the verified mechanical lift; targets are unchanged.
+        last_z = start[2, 3] if not heights else start[2, 3]+heights[-1]/100
+        steps = max(1, int(np.ceil(abs(z-last_z)*100/max_step_cm)))
+        for k in range(1, steps):
+            mid = np.array([start[0, 3], start[1, 3], last_z+(z-last_z)*k/steps])
+            try:
+                previous = solve_pose(mid, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
+            except ValueError:
+                break
+            rows.append(list(previous)+[row[6]])
         rows.append(list(solved)+[row[6]])
         heights.append(round((z-start[2, 3])*100, 2))
         previous = solved
