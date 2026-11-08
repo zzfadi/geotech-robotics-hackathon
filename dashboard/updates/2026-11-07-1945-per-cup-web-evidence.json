@@ -1,0 +1,17 @@
+{
+  "when": "2026-11-07T19:45:07-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Web panel now shows per-cup rise and retention without treating transient motion or finished runs as successful grasps.",
+  "why": "Custom prompts must not be labeled leftmost-cup tasks, and stale acceptance receipts must not contradict the latest authoritative command.",
+  "where": [
+    "DreamSim/web/index.html",
+    "DreamSim/test_web_cup_status.py",
+    "https://luna2.tail6864ac.ts.net/"
+  ],
+  "details": [
+    "Three JavaScript behavior tests and complete inline-script syntax check passed.",
+    "Validated rendering against actual API results, including Cup03 metrics.",
+    "Static HTML-only deployment verified by SHA256; no backend/worker restart or inference."
+  ]
+}
