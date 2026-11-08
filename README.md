@@ -26,12 +26,14 @@ The [two-arm bench handoff](arm/README.md) captures the tested candleLight/gs_us
 setup, portable tools, pinned dependencies, offline tests and supervised gripper
 opening results (including aborted attempts). The later [physical control and
 camera exploration](arm/docs/control-and-vision.md) connected both arms, captured
-all three robot cameras plus the laptop camera, and completed a small right-wrist
-roll/return. USB reconnection and fresh four-camera capture were verified again
-at 16:42 Pacific. Whole-arm control and Dream hardware integration remain
-unverified; velocity-feedback consistency, joint-reference discrepancies and
-workspace registration remain open. The cleared-workspace 8° wrist attempt was
-rejected before enable by its stationary preflight; no larger motion was completed.
+all three robot cameras plus the laptop camera, and completed two right-wrist 8°
+routines and staged right-elbow 15° and 30° lift/return routines with six-joint
+gravity hold. The 30° trial was recorded from overview and laptop front views;
+rest was verified before torque release. A preceding startup acknowledgment
+failure and camera USB disconnection are retained in the evidence. General
+whole-arm control, calibrated reaching/grasping and Dream hardware integration
+remain unverified. The yellow cylinder is visible; pickup still requires measured
+camera-to-arm registration and gripper calibration.
 
 The close-up from our station shows **MakerMods Maker Arm**. The earlier YAM model was a provisional identification and must not be used as the one-to-one model. Dream Labs supplies the Dream-1 policy; MakerMods supplies this hardware. Specifications checked November 7, 2026.
 

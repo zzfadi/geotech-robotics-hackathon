@@ -1,0 +1,432 @@
+{
+  "when": "2026-11-07T17:12:17.299954-08:00",
+  "scope": "Supervised six-joint hold and elbow lift/return; gripper excluded; no grasp attempted",
+  "sdk_commit": "0245316c05cb3e8d900f35e70c08e2e18e36731e",
+  "runs": [
+    {
+      "when": "2026-11-08T01:03:36.699511+00:00",
+      "arm": "right",
+      "serial": "0027002E4146570520313238",
+      "motor_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "gripper_enabled": false,
+      "step_deg": 15.0,
+      "speed_deg_s": 3.0,
+      "effort_guards_nm": [
+        1.5,
+        5.0,
+        6.0,
+        2.5,
+        1.0,
+        1.0
+      ],
+      "motion_requested": true,
+      "motion_completed": true,
+      "watchdog_verified": false,
+      "stationary_evidence": [
+        {
+          "duration_s": 1.3621524159098044,
+          "position_span_deg": 0.0,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -0.46172423050855765
+        },
+        {
+          "duration_s": 1.3621524159098044,
+          "position_span_deg": 0.021979337712122585,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -0.615632307344472
+        },
+        {
+          "duration_s": 1.3621524159098044,
+          "position_span_deg": 0.021979337712020097,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -0.615632307344472
+        },
+        {
+          "duration_s": 1.3621524159098044,
+          "position_span_deg": 0.021979337711919178,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": 0.46172423050855765
+        },
+        {
+          "duration_s": 1.3621524159098044,
+          "position_span_deg": 0.021979337712020097,
+          "net_encoder_speed_deg_s": -0.01613574035864388,
+          "median_reported_velocity_deg_s": -1.3851726915252658
+        },
+        {
+          "duration_s": 1.3621524159098044,
+          "position_span_deg": 0.021979337712020763,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -0.46172423050855765
+        }
+      ],
+      "start_deg": [
+        2.121006089212298,
+        -0.0769276819922255,
+        10.802844485470288,
+        -0.9780805281860964,
+        10.209402367245014,
+        1.4836052955630838
+      ],
+      "clipped_rest_target_deg": [
+        2.121006089212298,
+        -3.2,
+        10.802844485470288,
+        -0.9780805281860964,
+        10.209402367245014,
+        1.4836052955630838
+      ],
+      "lift_target_deg": [
+        2.121006089212298,
+        -3.2,
+        25.80284448547029,
+        -0.9780805281860964,
+        10.209402367245014,
+        1.4836052955630838
+      ],
+      "stage": "completed",
+      "outbound_measured_deg": [
+        2.099026751500379,
+        -3.5496630404953806,
+        25.353166050844347,
+        -0.9780805281860964,
+        10.209402367245014,
+        1.4836052955630838
+      ],
+      "return_measured_deg": [
+        2.121006089212298,
+        -3.5057043650712374,
+        12.187542761329125,
+        -0.5165144362330488,
+        10.209402367245014,
+        1.4836052955630838
+      ],
+      "return_verified": true,
+      "after_stop_deg": [
+        2.1429854269244206,
+        -3.659559729055587,
+        10.12148501639693,
+        -0.9561011904739738,
+        10.275340380381177,
+        1.5055846332751046
+      ],
+      "release_command_acknowledged": true,
+      "release_mode_verified": false,
+      "source_file": "arm/local/lift-trial-2026-11-07/right-15deg.json",
+      "raw_report_sha256": "cdca5e6e43867d82e5f4bbd2c98d4accb2b37219107d033bfe602cda096b0238",
+      "trajectory_duration_s": 10.303390457993373,
+      "peak_abs_torque_nm": [
+        0.07863247863247835,
+        0.5438339438339455,
+        4.977533577533578,
+        1.3709401709401714,
+        0.0512820512820511,
+        0.05811965811965791
+      ],
+      "peak_abs_reported_velocity_deg_s": [
+        5.078966535592098,
+        11.69701383954497,
+        16.622072298300747,
+        5.078966535592098,
+        6.002414996608807,
+        5.078966535592098
+      ],
+      "max_feedback_age_s": 0.12151683296542615
+    },
+    {
+      "when": "2026-11-08T01:07:27.803893+00:00",
+      "arm": "right",
+      "serial": "0027002E4146570520313238",
+      "motor_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "gripper_enabled": false,
+      "step_deg": 30.0,
+      "speed_deg_s": 3.0,
+      "effort_guards_nm": [
+        1.5,
+        5.0,
+        6.0,
+        2.5,
+        1.0,
+        1.0
+      ],
+      "motion_requested": true,
+      "motion_completed": false,
+      "watchdog_verified": false,
+      "stationary_evidence": [
+        {
+          "duration_s": 1.2737433339934796,
+          "position_span_deg": 0.0,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -0.46172423050855765
+        },
+        {
+          "duration_s": 1.2737433339934796,
+          "position_span_deg": 0.0,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": 1.8468969220334164
+        },
+        {
+          "duration_s": 1.2737433339934796,
+          "position_span_deg": 0.021979337712020097,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": 0.615632307344472
+        },
+        {
+          "duration_s": 1.2737433339934796,
+          "position_span_deg": 0.0,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -1.3851726915252658
+        },
+        {
+          "duration_s": 1.2737433339934796,
+          "position_span_deg": 0.021979337712123126,
+          "net_encoder_speed_deg_s": -0.017255703818455186,
+          "median_reported_velocity_deg_s": -1.3851726915252658
+        },
+        {
+          "duration_s": 1.2737433339934796,
+          "position_span_deg": 0.021979337712020763,
+          "net_encoder_speed_deg_s": -0.017255703818374823,
+          "median_reported_velocity_deg_s": -0.46172423050855765
+        }
+      ],
+      "start_deg": [
+        2.1429854269244206,
+        -3.6815390667676073,
+        10.341278393517342,
+        -0.9780805281860964,
+        10.297319718093199,
+        1.4836052955630838
+      ],
+      "clipped_rest_target_deg": [
+        2.1429854269244206,
+        -3.6815390667676073,
+        10.341278393517342,
+        -0.9780805281860964,
+        10.297319718093199,
+        1.4836052955630838
+      ],
+      "lift_target_deg": [
+        2.1429854269244206,
+        -3.6815390667676073,
+        40.34127839351734,
+        -0.9780805281860964,
+        10.297319718093199,
+        1.4836052955630838
+      ],
+      "stage": "verified_return",
+      "error": "ConnectError: motor 6 did not acknowledge the neutral preload",
+      "return_verified": null,
+      "after_stop_deg": [
+        2.1429854269244206,
+        -3.6815390667676073,
+        10.319299055805322,
+        -0.9780805281860964,
+        10.297319718093199,
+        1.4836052955630838
+      ],
+      "release_command_acknowledged": true,
+      "release_mode_verified": false,
+      "source_file": "arm/local/lift-30deg-ready-2026-11-07/right-30deg.json",
+      "raw_report_sha256": "422d1b69df79a59de07365cfdd60fd7d48d8dbaa129c3a0972315c822b97ce31",
+      "interpretation": "Startup failed at neutral preload for motor 6; SDK released all motors before control loop. Older raw report incorrectly labeled stop() in CONNECTED as a verified return; fixed in source and tested. No lift started."
+    },
+    {
+      "when": "2026-11-08T01:10:48.194210+00:00",
+      "arm": "right",
+      "serial": "0027002E4146570520313238",
+      "motor_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "gripper_enabled": false,
+      "step_deg": 30.0,
+      "speed_deg_s": 3.0,
+      "effort_guards_nm": [
+        1.5,
+        5.0,
+        6.0,
+        2.5,
+        1.0,
+        1.0
+      ],
+      "motion_requested": true,
+      "motion_completed": true,
+      "watchdog_verified": false,
+      "stationary_evidence": [
+        {
+          "duration_s": 1.2867231669370085,
+          "position_span_deg": 0.0,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": 0.46172423050855765
+        },
+        {
+          "duration_s": 1.2867231669370085,
+          "position_span_deg": 0.021979337712020985,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -3.0781615367223605
+        },
+        {
+          "duration_s": 1.2867231669370085,
+          "position_span_deg": 0.021979337712020097,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": 0.615632307344472
+        },
+        {
+          "duration_s": 1.2867231669370085,
+          "position_span_deg": 0.0,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -0.46172423050855765
+        },
+        {
+          "duration_s": 1.2867231669370085,
+          "position_span_deg": 0.021979337712123126,
+          "net_encoder_speed_deg_s": -0.01708163673188852,
+          "median_reported_velocity_deg_s": -0.46172423050855765
+        },
+        {
+          "duration_s": 1.2867231669370085,
+          "position_span_deg": 0.021979337712020763,
+          "net_encoder_speed_deg_s": 0.0,
+          "median_reported_velocity_deg_s": -0.46172423050855765
+        }
+      ],
+      "start_deg": [
+        2.1429854269244206,
+        -3.6815390667676073,
+        10.341278393517342,
+        -0.9780805281860964,
+        10.297319718093199,
+        1.5055846332751046
+      ],
+      "clipped_rest_target_deg": [
+        2.1429854269244206,
+        -3.6815390667676073,
+        10.341278393517342,
+        -0.9780805281860964,
+        10.297319718093199,
+        1.5055846332751046
+      ],
+      "lift_target_deg": [
+        2.1429854269244206,
+        -3.6815390667676073,
+        40.34127839351734,
+        -0.9780805281860964,
+        10.297319718093199,
+        1.5055846332751046
+      ],
+      "stage": "completed",
+      "outbound_measured_deg": [
+        2.1429854269244206,
+        -4.077167145584389,
+        39.83754960308214,
+        -1.0000598658980155,
+        10.297319718093199,
+        1.4836052955630838
+      ],
+      "return_measured_deg": [
+        2.1429854269244206,
+        -3.9233117816001415,
+        11.989728721920734,
+        -0.2527623836885955,
+        10.275340380381177,
+        1.4836052955630838
+      ],
+      "return_verified": true,
+      "stop_from_state": "powered",
+      "after_stop_deg": [
+        2.1649647646364416,
+        -4.077167145584389,
+        9.989608990124601,
+        -0.8462045019136663,
+        10.187423029532994,
+        1.4836052955630838
+      ],
+      "release_command_acknowledged": true,
+      "release_mode_verified": false,
+      "source_file": "arm/local/lift-30deg-final-2026-11-07/right-30deg.json",
+      "raw_report_sha256": "5d272248b2242ac3fc5d3c142a064bc2c8aaf09a1a4f7519514ff49c6849838d",
+      "trajectory_duration_s": 20.694470667047426,
+      "peak_abs_torque_nm": [
+        0.08547008547008517,
+        1.2329670329670321,
+        4.969230769230769,
+        1.3982905982905987,
+        0.07179487179487154,
+        0.08547008547008517
+      ],
+      "peak_abs_reported_velocity_deg_s": [
+        6.925863457625515,
+        12.928278454233913,
+        19.084601527678636,
+        6.925863457625515,
+        6.925863457625515,
+        8.772760379658932
+      ],
+      "max_feedback_age_s": 0.08942441595718265
+    }
+  ],
+  "limitations": [
+    "No verified hardware watchdog or legacy enabled/disabled mode",
+    "No calibrated camera-to-base transforms, motor-to-URDF alignment, or jaw transmission",
+    "Maximum 30-degree elbow trial does not verify full travel or collision avoidance",
+    "Cylinder visible, physical pose/dimensions unmeasured"
+  ],
+  "camera_interruptions": [
+    "Initial longer-burst rebuild required normal camera authorization again; capture later succeeded.",
+    "All three USB cameras subsequently disappeared from both AVFoundation and IOUSB. Operator reconnected hub; all three restored before successful 30-degree trial."
+  ],
+  "recording": {
+    "overview": {
+      "frames": 300,
+      "duration_s": 59.4001676250482,
+      "covers_trajectory": true,
+      "sensor_exposure_alignment_verified": false
+    },
+    "front": {
+      "frames": 300,
+      "duration_s": 59.816384125035256,
+      "covers_trajectory": true,
+      "sensor_exposure_alignment_verified": false
+    },
+    "local_video_decode_verified": true,
+    "visual_review": "Front-view lift and final rest inspected; overview monitored during trial. Combined 5fps clip aligned by host receipt times; exposure synchronization not calibrated."
+  },
+  "local_video": "arm/local/lift-30deg-final-2026-11-07/right-elbow-lift-and-return.mp4",
+  "post_motion_feedback": [
+    {
+      "name": "right",
+      "readings": 35,
+      "all_fresh": true,
+      "all_fault_words_zero": true,
+      "any_fault_or_warning": false,
+      "max_temperature_c": 34.0
+    },
+    {
+      "name": "left",
+      "readings": 35,
+      "all_fresh": true,
+      "all_fault_words_zero": true,
+      "any_fault_or_warning": false,
+      "max_temperature_c": 34.0
+    }
+  ]
+}

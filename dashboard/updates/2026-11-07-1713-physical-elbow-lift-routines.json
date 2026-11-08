@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T17:13:13.859902-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Completed supervised 15-degree and 30-degree right-elbow lifts with six-joint gravity hold, verified return and overview/front recording.",
+  "why": "Progress from wrist-only motion toward a measured yellow-cylinder pickup while preserving the physical startup and USB failure evidence.",
+  "where": [
+    "arm/tools/lift_probe.py",
+    "arm/evidence/2026-11-07-elbow-lifts.json",
+    "arm/docs/control-and-vision.md"
+  ],
+  "details": "Elbow 10.34 to 39.84 to 9.99 degrees; release acknowledged, legacy mode unverified. All 14 motors fresh and fault-free after motion. Previous 30-degree startup failed neutral preload; cameras disconnected and were restored before successful trial. Camera liveness guard and persistent hold/recovery added; 134 tests pass. No grasp or physical Dream integration. Measured table/object and camera-to-arm calibration remain pending."
+}

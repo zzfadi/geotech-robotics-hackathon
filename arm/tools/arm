@@ -3,7 +3,7 @@ set -euo pipefail
 tool_dir="$(cd "$(dirname "$0")" && pwd)"
 
 usage() {
-  echo "Usage: bash arm/tools/arm {scan|watch|diagnose|claw_probe|wrist_probe|test} [arguments]"
+  echo "Usage: bash arm/tools/arm {scan|watch|diagnose|claw_probe|wrist_probe|lift_probe|test} [arguments]"
   echo "No command runs by default. --help and test do not access hardware."
 }
 
@@ -14,6 +14,7 @@ case "${1:---help}" in
   diagnose) script=diagnose_arms.py ;;
   claw_probe) script=claw_probe.py ;;
   wrist_probe) script=wrist_probe.py ;;
+  lift_probe) script=lift_probe.py ;;
   test) script= ;;
   *) usage >&2; exit 2 ;;
 esac
@@ -29,6 +30,6 @@ if [[ "$(uname -s)" == Darwin ]] && command -v brew >/dev/null 2>&1; then
   export DYLD_FALLBACK_LIBRARY_PATH="$prefix/lib${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
 fi
 if [[ "$tool" == test ]]; then
-  exec "$python" -m pytest -q "$tool_dir/test_claw_probe.py" "$tool_dir/test_portability.py" "$tool_dir/test_diagnose_arms.py" "$tool_dir/test_wrist_probe.py" "$@"
+  exec "$python" -m pytest -q "$tool_dir/test_claw_probe.py" "$tool_dir/test_portability.py" "$tool_dir/test_diagnose_arms.py" "$tool_dir/test_wrist_probe.py" "$tool_dir/test_lift_probe.py" "$@"
 fi
 exec "$python" "$tool_dir/$script" "$@"

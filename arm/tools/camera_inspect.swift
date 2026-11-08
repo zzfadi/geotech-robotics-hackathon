@@ -43,7 +43,7 @@ let app = NSApplication.shared
 app.setActivationPolicy(.accessory)
 let args = CommandLine.arguments
 let frameLimit = args.count > 2 ? Int(args[2]) ?? 0 : 1
-guard (1...100).contains(frameLimit) else { exit(2) }
+guard (1...300).contains(frameLimit) else { exit(2) }
 let selection = args.count > 3 ? args[3] : "all"
 let base = URL(fileURLWithPath: args.count > 1 ? args[1] : NSTemporaryDirectory() + "maker-camera")
 try FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
