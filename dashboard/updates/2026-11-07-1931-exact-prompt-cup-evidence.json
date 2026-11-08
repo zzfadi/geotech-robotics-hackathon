@@ -1,0 +1,18 @@
+{
+  "when": "2026-11-07T19:31:57-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Preserved exact custom Dream prompts and added per-cup measured retention evidence.",
+  "why": "Grab a cup must not silently become a leftmost or blue-cup command; any actual cup can be measured while grasp success remains independently reviewed.",
+  "where": [
+    "DreamSim/fleet_planning.py",
+    "DreamSim/cup_metrics.py",
+    "DreamSim/fleet_worker.py"
+  ],
+  "details": [
+    "Unstructured prompts retain objective=None and outcome unverified.",
+    "Five-second monitoring stays on one cup label; stale, attached, nonfinite or short holds cannot pass measured retention.",
+    "Only explicit target tasks stop because their configured target fell.",
+    "127 DreamSim tests passed. No live worker restart or deployment in this change."
+  ]
+}

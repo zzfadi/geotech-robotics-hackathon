@@ -65,8 +65,6 @@ def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
                     'and steady for 5 seconds. Keep the other arm still and leave the other cups on the table.')
             objective = {'kind':'lift_hold','target':target['label'],'side':side,
                          'height_cm':10.,'hold_seconds':5.,'max_tilt_deg':15.}
-        elif mode == 'same':
-            text = 'For the leftmost drinking cup in the overhead view, nearest the left arm: '+text
         tables.append({'index': index, 'display_number': index+1, 'prompt': text,
                        'objective': objective,
                        'motion_side': side if objective else explicit_motion_side(prompt),

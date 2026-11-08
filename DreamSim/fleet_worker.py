@@ -32,6 +32,7 @@ REPO = HERE.parent
 sys.path.insert(0, str(REPO/'Unreal/TheHumanTouch/Tools'))
 from maker_arm_fleet_layout import normalize_config, JAW_MAX_M  # noqa: E402
 from queueing import wait_for_editor  # noqa: E402
+from cup_metrics import cup_metrics, candidate as cup_candidate
 
 STANDARD = 'dreamlabs/dream-1-beta'
 # Dream's configure stages a shared temporary URDF; serialize setup, not inference.
@@ -263,7 +264,7 @@ class TableRun:
 
     def execute(self):
         objective = self.v.get('objective') or {}
-        hold_seconds = float(objective.get('hold_seconds', 2.))
+        hold_seconds = float(objective.get('hold_seconds', 5.))
         max_tilt = objective.get('max_tilt_deg')
         after = time.time() - 1
         target = self.v['target']['label']
@@ -273,7 +274,7 @@ class TableRun:
             if self.stopped():
                 self.result['stopped_reason'] = 'fleet stopped'
                 return
-            if target_cup_fell(self.status(), target):
+            if objective and target_cup_fell(self.status(), target):
                 self.target_fell = True
                 self.result['stopped_reason'] = 'target cup fell more than 20 cm below its starting height'
                 self.log(self.result['stopped_reason'])
@@ -325,7 +326,12 @@ class TableRun:
             self.result['motion_chunks'].append(motion_evidence)
             after = playback.get('finished_unix') or time.time()
             self.result['cycles_run'] = cycle+1
-            lift = lift_verdict(self.status(), target, hold_seconds, max_tilt)
+            current=self.status()
+            metrics=cup_metrics(current)
+            self.result['cup_metrics']=metrics
+            monitored=target if objective else cup_candidate(metrics)
+            self.result['measured_cup']=monitored
+            lift = lift_verdict(current, target, hold_seconds, max_tilt) if objective else metrics.get(monitored, {'measured':False})
             self.result['lift'] = lift
             self.log('cycle %d done (inference %.2fs) lift %.2f cm' % (cycle+1, inference, lift.get('height_cm', 0.)))
             gap_delta = max(abs(playback.get('gap_'+side+'_m', packet['state']['gap_'+side+'_m'])-
@@ -344,7 +350,11 @@ class TableRun:
                         raise RuntimeError('Stopped during hold verification')
                     self.status()
                     time.sleep(.1)
-                lift = lift_verdict(self.status(), target, hold_seconds, max_tilt)
+                current=self.status()
+                metrics=cup_metrics(current)
+                self.result['cup_metrics']=metrics
+                # Hold the SAME object label through this retention window.
+                lift = lift_verdict(current,target,hold_seconds,max_tilt) if objective else metrics.get(monitored,{'measured':False})
                 self.result['lift'] = lift
                 if lift.get('lift_held'):
                     self.result['stopped_reason'] = 'measured held lift (needs video review)'
@@ -371,6 +381,7 @@ class TableRun:
         verification = verify_pickup(self.v.get('objective'), self.v['target']['label'], status,
                                      requests=self.result['requests'], motion_chunks=self.result['motion_chunks'])
         self.result['verification'] = verification
+        self.result['cup_metrics']=cup_metrics(status)
         if self.args.dry_run:
             self.result['outcome'] = 'dry_run'
         elif self.target_fell:
@@ -561,6 +572,7 @@ def run_trials(args, editor, variants, clients, run, progress=None, should_stop=
         final_table = final_fleet.get('tables', {}).get(result['table'], {})
         target = result.get('objective', {}).get('target') if result.get('objective') else None
         objective = result.get('objective') or {}
+        result['batch_end_cup_metrics']=cup_metrics({**final_table,'sampled_unix':final_fleet.get('sampled_unix')})
         result['batch_end_lift'] = lift_verdict(final_table, target, objective.get('hold_seconds', 2.), objective.get('max_tilt_deg'))
         result['videos'] = videos(run, result['table'], args.fps)
     results.sort(key=lambda r: (not r['lift'].get('lift_held', False), -r['lift'].get('max_height_cm', 0.)))
@@ -651,12 +663,14 @@ def table_progress(fleet, runs):
     out = {}
     tables = fleet.get('tables', {})
     for r in runs:
-        status = tables.get(r.key, {})
+        status = {**tables.get(r.key, {}),'sampled_unix':fleet.get('sampled_unix')}
         objective = r.v.get('objective') or {}
-        lift = lift_verdict(status, r.v['target']['label'], objective.get('hold_seconds', 2.), objective.get('max_tilt_deg'))
+        metrics=cup_metrics(status)
+        selected=r.result.get('measured_cup') or cup_candidate(metrics)
+        lift = lift_verdict(status,r.v['target']['label'],objective.get('hold_seconds',2.),objective.get('max_tilt_deg')) if objective else metrics.get(selected,{'measured':False})
         out[r.key] = {'calls': r.result['calls'], 'returned_actions': sum(bool(q.get('returned_action')) for q in r.result['requests']),
                       'cycles_run': r.result['cycles_run'], 'cycles_planned': r.result['cycles_planned'],
-                      'lift': lift, 'error': r.result['error'] or status.get('error'),
+                      'cup_metrics':metrics,'measured_cup':selected,'lift': lift, 'error': r.result['error'] or status.get('error'),
                       'stopped_reason': r.result['stopped_reason'], 'moving': status.get('moving')}
     return out
 
@@ -875,7 +889,7 @@ def serve(args, config):
             status = 'stopped' if stop['flag'] else 'done'
             server.event('fleet.finished', request_id, ('Measured held lift on ' + ', '.join(held) + ' (review videos)') if held
                          else 'No table measured a held 10 cm lift')
-            summary = [{k: r.get(k) for k in ('batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason')} for r in results]
+            summary = [{k: r.get(k) for k in ('batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason')} for r in results]
         except Exception as error:
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))

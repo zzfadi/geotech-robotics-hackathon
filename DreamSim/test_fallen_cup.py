@@ -33,7 +33,7 @@ class FallenCup(unittest.TestCase):
             table=status(-77);table.pop('sampled_unix')
             (root/'fleet.json').write_text(json.dumps({'phase':'ready','sampled_unix':time.time(),'tables':{'T00':table}}))
             variant={'index':0,'name':'cup','prompt':'lift','checkpoint':'test','position_ik':True,
-                     'pad_contacts':True,'action_rows':12,'cycles':16,'target':{'label':CUP},'objective':None}
+                     'pad_contacts':True,'action_rows':12,'cycles':16,'target':{'label':CUP},'objective':{'kind':'lift_hold','target':CUP,'side':'left','height_cm':10,'hold_seconds':5}}
             client=Client();run=TableRun(variant,root,SimpleNamespace(dry_run=False),client)
             run.fresh=lambda _: self.fail('No new observation should be requested after a confirmed fall')
             run.infer=lambda _: self.fail('No paid request after a confirmed fall')
@@ -41,3 +41,12 @@ class FallenCup(unittest.TestCase):
             self.assertEqual(result['outcome'],'failed');self.assertEqual(result['calls'],0)
             self.assertIn('fell more than 20 cm',result['stopped_reason'])
             self.assertTrue(client.released)
+            # Free-form 'grab a cup' must not fail solely because an unrelated
+            # configured target fell; another actual cup may remain viable.
+            variant['objective']=None
+            free=TableRun(variant,root,SimpleNamespace(dry_run=False),Client())
+            def next_observation(_):raise RuntimeError('fresh observation requested')
+            free.fresh=next_observation
+            result=free()
+            self.assertFalse(free.target_fell)
+            self.assertEqual(result['error'],'fresh observation requested')
