@@ -609,6 +609,8 @@ class IdlePreview:
         self.running = False
         self.sent = {}
         self.retry_after = 0.
+        self.last_sequence = None
+        self.last_advance = time.monotonic()
 
     def set_enabled(self, enabled):
         if bool(enabled) == self.running or (enabled and time.monotonic() < self.retry_after):
@@ -619,6 +621,8 @@ class IdlePreview:
             function = 'start_preview' if enabled else 'stop_preview'
             self.editor.deferred(function, [str(self.directory)] if enabled else [], self.directory/'control-result.json')
             self.running = bool(enabled)
+            self.last_sequence = None
+            self.last_advance = time.monotonic()
         finally:
             self.editor.call('end_task', {'summary': 'Local fleet camera preview updated; no robot motion.', 'keep_view': True})
 
@@ -631,6 +635,17 @@ class IdlePreview:
         if packet.get('error'):
             self.retry_after = time.monotonic() + 10
             raise RuntimeError('Idle camera preview: ' + packet['error'])
+        # Judge the UE callback by actual capture progress, not our cached flag.
+        # A frozen/missing callback is restarted by the next idle worker cycle.
+        sequence = packet.get('sequence')
+        if sequence is not None and sequence != self.last_sequence:
+            self.last_sequence = sequence
+            self.last_advance = time.monotonic()
+        elif self.running and time.monotonic()-self.last_advance > 10:
+            self.running = False
+            self.sent.clear()
+            self.retry_after = time.monotonic()+1
+            raise RuntimeError('Idle camera callback stalled; reconnecting')
         frames, stamps = {}, {}
         for key, path in packet.get('frames', {}).items():
             stamp = packet.get('frame_times', {}).get(key)
@@ -659,6 +674,11 @@ def serve(args, config):
     data = args.data or args.project/'Saved/DreamFleet'
     data.mkdir(parents=True, exist_ok=True)
     acquire_worker_lock(data)
+    previous_reset = read_json(data/'last-reset.json')
+    if previous_reset is not None:
+        from fleet_reset import reset_config
+        config = reset_config(config, previous_reset['seed'])
+        variants = normalize_config(config)
     setup_errors = {}
     clients = {} if args.dry_run else warm_clients(variants, data, setup_errors)
     import atexit, signal
@@ -679,12 +699,43 @@ def serve(args, config):
     print('Fleet worker ready: %d tables%s' % (len(usable), ' (dry run)' if args.dry_run else ''), flush=True)
     while True:
         try:
-            server.api('/api/fleet/worker/hello', {'tables': hello, 'expected_tables': list(range(9))})
+            server.api('/api/fleet/worker/hello', {'tables': hello, 'expected_tables': list(range(9)), 'reset_supported': True})
             next_reply = server.api('/api/fleet/worker/next')
             command = next_reply['command']
         except Exception as error:
             print('debugger unreachable: %s' % error, flush=True)
             time.sleep(3)
+            continue
+        reset = next_reply.get('reset')
+        if reset:
+            error = None
+            heartbeat_stop = threading.Event()
+            def reset_heartbeat():
+                while not heartbeat_stop.wait(3):
+                    try:
+                        server.api('/api/fleet/worker/reset-progress', {'request_id': reset['id']})
+                    except Exception as exc:
+                        print('Reset heartbeat failed: '+str(exc), flush=True)
+            heartbeat = threading.Thread(target=reset_heartbeat, daemon=True)
+            heartbeat.start()
+            try:
+                from fleet_reset import reset_config, apply_idle_reset
+                preview.set_enabled(False)
+                reset_scene = reset_config(config, reset['seed'])
+                reset_dir = data/('reset-'+reset['id'])
+                reset_dir.mkdir(parents=True, exist_ok=True)
+                write_json(reset_dir/'config.json', reset_scene)
+                apply_idle_reset(editor, reset_dir/'config.json')
+                config = reset_scene
+                write_json(data/'last-reset.json', {'seed': reset['seed'], 'request_id': reset['id']})
+                preview.sent.clear()
+            except Exception as exc:
+                error = str(exc)
+                print('Reset failed: '+error, flush=True)
+            finally:
+                heartbeat_stop.set()
+                heartbeat.join(timeout=11)
+            server.api('/api/fleet/worker/reset-done', {'request_id': reset['id'], 'error': error})
             continue
         if not command or command['status'] != 'running' or command['id'] in seen:
             try:

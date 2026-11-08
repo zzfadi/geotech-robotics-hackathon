@@ -18,7 +18,11 @@ class Store:
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
         # Replica-table fleet (DreamSim/fleet_worker.py --serve). Shares the
         # editor with the main worker, so the two command queues exclude each other.
-        self.fleet={'command':None,'worker_at':0,'tables':[],'status':None,'frames':{},'frame_times':{},'recording':None,'expected_tables':list(range(9)),'worker_id':None,'preview_enabled':False}
+        self.fleet={'reset_supported':False,'reset':None,'command':None,'worker_at':0,'tables':[],'status':None,'frames':{},'frame_times':{},'recording':None,'expected_tables':list(range(9)),'worker_id':None,'preview_enabled':True}
+        try:
+            saved_preview=json.loads((path/'fleet-preview.json').read_text())
+            if type(saved_preview.get('enabled')) is bool:self.fleet['preview_enabled']=saved_preview['enabled']
+        except (OSError,ValueError,AttributeError):pass
         if (path/'fleet-recording.json').exists():
             try:
                 recording=json.loads((path/'fleet-recording.json').read_text())
@@ -44,6 +48,12 @@ class Store:
             for line in log.read_text().splitlines():
                 try:self.events.append(json.loads(line))
                 except ValueError:continue
+    def set_preview(self, enabled):
+        temporary=self.path/'fleet-preview.tmp'
+        temporary.write_text(json.dumps({'enabled':enabled}))
+        temporary.replace(self.path/'fleet-preview.json')
+        self.fleet['preview_enabled']=enabled
+
     def event(self,data):
         allowed={'kind','request_id','prompt','message','elapsed_seconds','state','frames','action','cycle','source'}
         event={k:v for k,v in data.items() if k in allowed};event['at']=time.time();event['id']=uuid.uuid4().hex
@@ -125,7 +135,7 @@ class Handler(BaseHTTPRequestHandler):
         s=self.server.store;f=s.fleet
         if route.path=='/api/fleet':
             with s.lock:return self.send(200,{'online':time.time()-f['worker_at']<15,'tables':[{**{'index':i,'name':'Awaiting worker','ready':False,'error':'Dream session not ready'},**next((t for t in f['tables'] if t['index']==i),{})} for i in f['expected_tables']],'command':f['command'],
-                                              'status':f['status'],'recording':f['recording'],'expected_tables':f['expected_tables'],'preview_enabled':f['preview_enabled'],'server_time':time.time()})
+                                              'reset':f['reset'],'status':f['status'],'recording':f['recording'],'expected_tables':f['expected_tables'],'preview_enabled':f['preview_enabled'],'server_time':time.time()})
         if route.path=='/api/fleet/frames':
             with s.lock:return self.send(200,{'frames':f['frames'],'received_at':f['frame_times'],'server_time':time.time()})
         match=re.fullmatch(r'/api/fleet/recording/([0-9a-f]{32})/(T\d\d)\.mp4',route.path)
@@ -136,6 +146,11 @@ class Handler(BaseHTTPRequestHandler):
                 worker_id=parse_qs(route.query).get('worker_id',[''])[0]
                 if not worker_id or worker_id!=f.get('worker_id'):return self.send(409,{'error':'Fleet worker lease required'})
                 f['worker_at']=time.time();command=f['command']
+                reset=f['reset']
+                busy=any(c and c['status'] in ('queued','running') for c in (command,s.command))
+                if reset and reset['status']=='queued' and not busy:
+                    reset['status']='running';reset['claimed_by']=worker_id
+                    return self.send(200,{'command':None,'reset':reset,'preview_enabled':f['preview_enabled']})
                 if command and command['status']=='queued':
                     command['status']='running';command['claimed_by']=worker_id
                     return self.send(200,{'command':command,'preview_enabled':f['preview_enabled']})
@@ -143,6 +158,19 @@ class Handler(BaseHTTPRequestHandler):
         return self.send(404,{'error':'Not found'})
     def fleet_post(self,data):
         s=self.server.store;f=s.fleet
+        if self.path=='/api/fleet/reset':
+            with s.lock:
+                if not f['reset_supported']:return self.send(503,{'error':'Fleet worker needs reset support before this action is available'})
+                if f['reset'] and f['reset']['status'] in ('queued','running'):return self.send(202,f['reset'])
+                if time.time()-f['worker_at']>15:return self.send(503,{'error':'Fleet worker is offline'})
+                seed=data.get('seed',secrets.randbits(32))
+                if type(seed) is not int or not 0<=seed<2**32:raise ValueError('Invalid reset seed')
+                for active in (f['command'],s.command):
+                    if active and active['status'] in ('queued','running'):
+                        active['stop']=True
+                        if active['status']=='queued':active['status']='stopped'
+                f['reset']={'id':uuid.uuid4().hex,'status':'queued','seed':seed,'tables':list(range(9)),'created_at':time.time()}
+                return self.send(202,f['reset'])
         if self.path in ('/api/fleet/command','/api/fleet/plan'):
             with s.lock:
                 known=f['expected_tables']
@@ -156,6 +184,7 @@ class Handler(BaseHTTPRequestHandler):
                 mode=data.get('mode', 'same' if prompt else 'configured')
                 plan=build_plan(tables,mode=mode,prompt=prompt,seed=data.get('seed'),randomize=data.get('randomize',False))
                 if self.path=='/api/fleet/plan':return self.send(200,plan)
+                if f['reset'] and f['reset']['status'] in ('queued','running'):return self.send(409,{'error':'Table reset is pending'})
                 if time.time()-f['worker_at']>15:return self.send(503,{'error':'Fleet worker is offline'})
                 ready={t['index'] for t in f['tables'] if t.get('ready',True)}
                 unavailable=[i for i in tables if i not in ready]
@@ -169,7 +198,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(202,f['command'])
         if self.path=='/api/fleet/preview':
             if type(data.get('enabled')) is not bool:raise ValueError('Expected enabled boolean')
-            with s.lock:f['preview_enabled']=data['enabled']
+            with s.lock:s.set_preview(data['enabled'])
             return self.send(200,{'enabled':f['preview_enabled']})
         if self.path=='/api/fleet/stop':
             with s.lock:
@@ -187,7 +216,7 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError('Expected distinct fleet table IDs')
                 expected=data.get('expected_tables',list(range(9)))
                 if not isinstance(expected,list) or any(type(i) is not int for i in expected) or sorted(expected)!=list(range(9)):raise ValueError('Expected all nine table IDs 0..8')
-                f['worker_id']=worker_id;f['worker_at']=time.time()
+                f['worker_id']=worker_id;f['worker_at']=time.time();f['reset_supported']=data.get('reset_supported') is True
                 f['expected_tables']=sorted(expected)
                 f['tables']=[dict({k:t.get(k) for k in ('index','name','prompt','checkpoint','position_ik','pad_contacts','action_rows','cycles','error')},ready=t.get('ready',True)) for t in tables]
                 return self.send(200,{'ok':True})
@@ -202,6 +231,17 @@ class Handler(BaseHTTPRequestHandler):
                     f['frames'][key]=value;f['frame_times'][key]=captured
                 f['worker_at']=time.time()
                 return self.send(200,{'ok':True,'preview_enabled':f['preview_enabled']})
+            if self.path in ('/api/fleet/worker/reset-done','/api/fleet/worker/reset-progress'):
+                reset=f['reset']
+                if worker_id!=f.get('worker_id') or not reset or reset.get('claimed_by')!=worker_id or data.get('request_id')!=reset['id'] or reset['status']!='running':return self.send(409,{'error':'Reset lease required'})
+                if self.path.endswith('reset-progress'):
+                    f['worker_at']=time.time()
+                    return self.send(200,{'ok':True})
+                reset['status']='failed' if data.get('error') else 'done'
+                reset['error']=str(data.get('error') or '')[:1000];reset['finished_at']=time.time()
+                f['worker_at']=time.time()
+                if reset['status']=='done':s.set_preview(True)  # Keep old images with honest timestamps until fresh captures arrive.
+                return self.send(200,{'ok':True})
             if worker_id!=f.get('worker_id') or (command and command.get('claimed_by')!=worker_id):return self.send(409,{'error':'Fleet command owned by another worker'})
             f['worker_at']=time.time()
             if self.path=='/api/fleet/worker/status':
@@ -350,6 +390,7 @@ class Handler(BaseHTTPRequestHandler):
                 prompt=route['prompt']
                 if not 1<=len(prompt)<=1000:raise ValueError('Enter a prompt of 1–1000 characters')
                 with s.lock:
+                    if s.fleet['reset'] and s.fleet['reset']['status'] in ('queued','running'):return self.send(409,{'error':'Table reset is pending'})
                     if s.command and s.command['status'] in ('queued','running'):return self.send(409,{'error':'A command is already active'})
                     if s.fleet['command'] and s.fleet['command']['status'] in ('queued','running'):return self.send(409,{'error':'Replica tables are running; wait for that run or stop it'})
                     if time.time()-s.worker_at>10:return self.send(503,{'error':'Unreal worker is offline'})

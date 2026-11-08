@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T18:44:41-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Add Reset all tables with immediate randomized cup layout and idle arms.",
+  "why": "Reset should change the actual nine-table Unreal scene, safely after active simulation cleanup.",
+  "where": [
+    "DreamSim/fleet_reset.py",
+    "DreamSim/debug_server.py",
+    "DreamSim/fleet_worker.py",
+    "DreamSim/web/index.html",
+    "docs/validation/nine-table-reset-2026-11-07.json"
+  ],
+  "details": "Live web button request23d9b286cd51440a8e3367bfb551bd33 completed in8.3s without inference. Read-only UE audit matched40cuppositions exactly toseed157479489 and verifiedbotharmhomeposes/gaps on9tables. Table10bases/table unchanged.21reset/planning/server tests passed. Liveframesresumed1\u20133secondsold."
+}

@@ -90,7 +90,8 @@ def apply_plan(config, plan):
         if plan.get('mode') != 'configured':
             table['objective'] = copy.deepcopy(task['objective'])
             table['motion_side'] = task.get('motion_side')
-            table['objects'] = copy.deepcopy(task['objects'])
+            if task['objects'] or not table.get('preserve_scene_layout'):
+                table['objects'] = copy.deepcopy(task['objects'])
         elif task['objects']:
             # Configured fixtures retain their task, target, geometry and pose.
             # Only an explicit rearrangement request replaces their object layout.

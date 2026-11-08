@@ -1,0 +1,689 @@
+{
+  "request": "23d9b286cd51440a8e3367bfb551bd33",
+  "seed": 157479489,
+  "world": "/Game/Maps/TheHumanTouch.TheHumanTouch",
+  "tables": [
+    {
+      "index": 0,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T01__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T01__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T01__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T01__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T01__MakerStation_Prop_Cup_05",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T02__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T02__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T02__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T02__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T03__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T03__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T03__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T03__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T03__MakerStation_Prop_Cup_05",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T04__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T04__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T04__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T04__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T05__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T05__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T05__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T05__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T05__MakerStation_Prop_Cup_05",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T06__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T06__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T06__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T06__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T07__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T07__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T07__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T07__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T07__MakerStation_Prop_Cup_05",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "both_arm_home_verified": true,
+      "cups": [
+        {
+          "label": "MakerFleet_T08__MakerStation_Prop_Cup",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T08__MakerStation_Prop_Cup_02",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        },
+        {
+          "label": "MakerFleet_T08__MakerStation_Prop_Cup_03",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue.M_Cup_Blue"
+        },
+        {
+          "label": "MakerFleet_T08__MakerStation_Prop_Cup_04",
+          "position_error_cm": 0.0,
+          "rotation_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "material": "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Ivory.M_Cup_Ivory"
+        }
+      ]
+    }
+  ],
+  "interaction": [
+    {
+      "label": "MakerInteraction_T09__Dreamlabs_YAM_Table",
+      "location_cm": [
+        2505.0,
+        0.0,
+        72.0
+      ]
+    },
+    {
+      "label": "MakerInteraction_T09__MakerArm_left_base_link",
+      "location_cm": [
+        2480.0,
+        -40.0,
+        76.0
+      ]
+    },
+    {
+      "label": "MakerInteraction_T09__MakerArm_right_base_link",
+      "location_cm": [
+        2480.0,
+        40.0,
+        76.0
+      ]
+    }
+  ],
+  "seed_layout_regenerated_verified": true,
+  "table10_check_scope": "Tabletop and both bases match previous scene baseline; not a complete Table10 actor transform audit."
+}

@@ -68,6 +68,43 @@ class FleetServer(unittest.TestCase):
         command = self.request('/api/fleet/command', {'tables': [1]})
         self.assertEqual(command['tables'], [1])
 
+    def test_preview_preference_survives_server_restart_default_on(self):
+        self.assertTrue(self.server.store.fleet['preview_enabled'])
+        self.request('/api/fleet/preview',{'enabled':False})
+        restored=Store(Path(self.dir.name))
+        self.assertFalse(restored.fleet['preview_enabled'])
+        self.request('/api/fleet/preview',{'enabled':True})
+        self.assertTrue(Store(Path(self.dir.name)).fleet['preview_enabled'])
+
+    def test_legacy_worker_cannot_accept_reset(self):
+        self.request('/api/fleet/worker/hello', {'tables': TABLES}, self.token)
+        self.assertEqual(self.status('/api/fleet/reset',{}),503)
+        self.assertIsNone(self.server.store.fleet['reset'])
+
+    def test_reset_waits_for_run_cleanup_and_claims_once_without_command(self):
+        self.request('/api/fleet/worker/hello', {'tables': TABLES, 'reset_supported': True}, self.token)
+        command=self.request('/api/fleet/command',{'tables':[0]})
+        self.request('/api/fleet/worker/next',token=self.token)
+        reset=self.request('/api/fleet/reset',{'seed':42})
+        self.assertTrue(self.server.store.fleet['command']['stop'])
+        self.assertEqual(self.request('/api/fleet/reset',{})['id'],reset['id'])
+        self.assertNotIn('reset',self.request('/api/fleet/worker/next',token=self.token))
+        self.assertEqual(self.status('/api/fleet/command',{'tables':[0]}),409)
+        self.request('/api/fleet/worker/done',{'request_id':command['id'],'status':'stopped','results':[]},self.token)
+        claimed=self.request('/api/fleet/worker/next',token=self.token)
+        self.assertEqual(claimed['reset']['id'],reset['id']);self.assertIsNone(claimed['command'])
+        self.assertNotIn('reset',self.request('/api/fleet/worker/next',token=self.token))
+        self.request('/api/fleet/worker/reset-progress',{'request_id':reset['id']},self.token)
+        self.assertEqual(self.request('/api/fleet')['reset']['status'],'running')
+        self.server.store.fleet['frames']={'T00':JPEG}
+        self.server.store.fleet['frame_times']={'T00':100}
+        self.request('/api/fleet/worker/reset-done',{'request_id':reset['id'],'error':None},self.token)
+        self.assertEqual(self.server.store.fleet['frames'],{'T00':JPEG})
+        self.assertEqual(self.server.store.fleet['frame_times'],{'T00':100})
+        state=self.request('/api/fleet')
+        self.assertEqual(state['reset']['status'],'done');self.assertTrue(state['preview_enabled'])
+        self.assertEqual(state['recording']['request_id'],command['id'])
+
     def test_review_plan_is_reproducible_without_starting(self):
         payload = {'tables': 'all', 'mode': 'random', 'seed': 42, 'randomize': True}
         plan = self.request('/api/fleet/plan', payload)
