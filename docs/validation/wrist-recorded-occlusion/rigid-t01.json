@@ -1,0 +1,138 @@
+{
+  "home-left": {
+    "camera_base_m": [
+      0.16935760160069002,
+      1.1768470811427129e-08,
+      0.20649636538425342
+    ],
+    "world_down_in_flange": [
+      -0.19494708027180155,
+      -5.24770466022318e-09,
+      -0.9808137620840667
+    ],
+    "tool_approach_world": [
+      0.19494708027180166,
+      2.536900537051014e-11,
+      -0.9808137620840667
+    ],
+    "down_vs_tool_approach_dot": 0.9808137620840667,
+    "nearest_surface_cm": 1.8303773106282493,
+    "nearest_link": "link_007",
+    "down_ray_hits": []
+  },
+  "home-right": {
+    "camera_base_m": [
+      0.16935760160069002,
+      1.1768470811427129e-08,
+      0.20649636538425342
+    ],
+    "world_down_in_flange": [
+      -0.19494708027180155,
+      -5.24770466022318e-09,
+      -0.9808137620840667
+    ],
+    "tool_approach_world": [
+      0.19494708027180166,
+      2.536900537051014e-11,
+      -0.9808137620840667
+    ],
+    "down_vs_tool_approach_dot": 0.9808137620840667,
+    "nearest_surface_cm": 1.8303773106282493,
+    "nearest_link": "link_007",
+    "down_ray_hits": []
+  },
+  "recorded-final-left": {
+    "camera_base_m": [
+      0.2292353523464019,
+      0.003927036632805223,
+      0.13971343905050304
+    ],
+    "world_down_in_flange": [
+      -0.6944152274000318,
+      0.5022514841621715,
+      -0.5152969421720435
+    ],
+    "tool_approach_world": [
+      0.7844440028296846,
+      -0.34513282633311415,
+      -0.5152969421720435
+    ],
+    "down_vs_tool_approach_dot": 0.5152969421720435,
+    "nearest_surface_cm": 1.473289774426501,
+    "nearest_link": "gripper_left",
+    "down_ray_hits": [
+      {
+        "distance_cm": 1.8144322995412132,
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl"
+      },
+      {
+        "distance_cm": 2.11428525675816,
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl"
+      },
+      {
+        "distance_cm": 2.206040135022927,
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl"
+      },
+      {
+        "distance_cm": 2.289941082959504,
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl"
+      },
+      {
+        "distance_cm": 2.5921089320953214,
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl"
+      },
+      {
+        "distance_cm": 3.78015899331611,
+        "link": "gripper_left",
+        "mesh": "meshes/part_045_solid_045.stl"
+      }
+    ]
+  },
+  "recorded-final-right": {
+    "camera_base_m": [
+      0.4683423763568963,
+      0.12687396712839355,
+      0.37074848702532776
+    ],
+    "world_down_in_flange": [
+      -0.9119032626060913,
+      -0.24381772251091902,
+      0.3301293047246106
+    ],
+    "tool_approach_world": [
+      0.5637178221897918,
+      0.7571240711453067,
+      0.3301293047246106
+    ],
+    "down_vs_tool_approach_dot": -0.3301293047246106,
+    "nearest_surface_cm": 1.8303773106282482,
+    "nearest_link": "link_007",
+    "down_ray_hits": [
+      {
+        "distance_cm": 2.9060106603736924,
+        "link": "link_007",
+        "mesh": "meshes/part_027_solid_027.stl"
+      },
+      {
+        "distance_cm": 3.089696653452773,
+        "link": "link_007",
+        "mesh": "meshes/part_027_solid_027.stl"
+      },
+      {
+        "distance_cm": 5.810320570002397,
+        "link": "link_007",
+        "mesh": "meshes/part_026_solid_026.stl"
+      },
+      {
+        "distance_cm": 5.972954959728005,
+        "link": "link_007",
+        "mesh": "meshes/part_026_solid_026.stl"
+      }
+    ]
+  }
+}
