@@ -50,9 +50,9 @@ def cup_layout(index, seed=20261107):
     import random
     if type(index) is not int or not 0 <= index <= 8:raise ValueError('Expected table index0..8')
     rng=random.Random(f'{seed}:{index}');out=[]
-    for ordinal,y in enumerate((-60,60,-30,30,0)[:4+index%2]):
+    for ordinal,y in enumerate((-32,32,-16,16,0)[:4+index%2]):
         out.append({'label':LABEL+('' if ordinal==0 else '_%02d'%(ordinal+1)),
-                    'location_cm':[rng.uniform(48,66),y+rng.uniform(-3,3),81],
+                    'location_cm':[rng.uniform(48,52 if ordinal==4 else 62),y+rng.uniform(-1.5,1.5),81],
                     'rotation_deg':[0,0,0], 'yaw_deg':0})
     return out
 
@@ -100,3 +100,22 @@ def mark_blue_target():
         actor.modify();component.modify();component.set_material(0,material)
     return {'target_label':LABEL+'_03','material':material.get_path_name(),'cups':labels,
             'scope':'Visual cue only; geometry, placement, collisions and dynamics unchanged'}
+
+
+def center_existing(seed=20261107):
+    """Reposition only the existing40 cups; no asset/arm/physics changes."""
+    import unreal,maker_arm_grid
+    if unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_game_world() is not None:
+        raise RuntimeError('Move cups only while simulation idle')
+    actors={a.get_actor_label():a for a in unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()}
+    changes=[]
+    for index in range(9):
+        offset=maker_arm_grid.offset(index);prefix='' if index==0 else 'MakerFleet_T%02d__'%index
+        for spec in cup_layout(index,seed):
+            name=prefix+spec['label']
+            if name not in actors:raise RuntimeError('Missing existing cup '+name)
+            changes.append((actors[name],spec,offset))
+    for actor,spec,offset in changes:
+        actor.modify();actor.root_component.modify();p=spec['location_cm']
+        actor.set_actor_location_and_rotation(unreal.Vector(*(p[i]+offset[i] for i in range(3))),unreal.Rotator(),False,True)
+    return {'seed':seed,'cups_moved':len(changes),'bounds_cm':{'x':[48,62],'y':[-33.5,33.5],'center_slot_x':[48,52]},'table10_untouched':True}

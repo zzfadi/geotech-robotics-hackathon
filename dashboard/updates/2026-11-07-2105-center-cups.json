@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T21:05:08-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Centered all 40 drinking cups between the arms across nine tables.",
+  "why": "Keep cups within the requested central workspace and make future reset/randomization use the same bounds.",
+  "where": [
+    "DreamSim/cup_scene_layout.json",
+    "DreamSim/fleet_planning.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_cups.py",
+    "docs/validation/cups-central-layout-2026-11-07.json"
+  ],
+  "details": "Four or five cups per table; X48\u201362 cm (fifth X48\u201352), Y\u00b133.5 cm; at least13 cm center separation. Mac and Luna positions agree within floating-point precision. Table10 and robot/camera poses unchanged. No inference or physics run; guarded persistence follows separately."
+}

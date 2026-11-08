@@ -1,0 +1,389 @@
+{
+  "seed": 20261107,
+  "cups_moved": 40,
+  "bounds_cm": {
+    "x": [
+      48,
+      62
+    ],
+    "y": [
+      -33.5,
+      33.5
+    ],
+    "center_slot_x": [
+      48,
+      52
+    ]
+  },
+  "table10_untouched": true,
+  "actual": [
+    {
+      "index": 0,
+      "label": "MakerStation_Prop_Cup",
+      "local_cm": [
+        54.754745570716935,
+        -30.834875774035144,
+        81.0
+      ]
+    },
+    {
+      "index": 0,
+      "label": "MakerStation_Prop_Cup_02",
+      "local_cm": [
+        60.89438237375383,
+        33.33305052104268,
+        81.0
+      ]
+    },
+    {
+      "index": 0,
+      "label": "MakerStation_Prop_Cup_03",
+      "local_cm": [
+        51.72787215657715,
+        -16.497595657249025,
+        81.0
+      ]
+    },
+    {
+      "index": 0,
+      "label": "MakerStation_Prop_Cup_04",
+      "local_cm": [
+        54.607323936645614,
+        15.098876893841087,
+        81.0
+      ]
+    },
+    {
+      "index": 1,
+      "label": "MakerFleet_T01__MakerStation_Prop_Cup",
+      "local_cm": [
+        53.21776527794097,
+        -31.663615011033585,
+        81.0
+      ]
+    },
+    {
+      "index": 1,
+      "label": "MakerFleet_T01__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        48.37928753098024,
+        31.98058839744681,
+        81.0
+      ]
+    },
+    {
+      "index": 1,
+      "label": "MakerFleet_T01__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        53.74845143723464,
+        -15.962253295344908,
+        81.0
+      ]
+    },
+    {
+      "index": 1,
+      "label": "MakerFleet_T01__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        51.075276011118554,
+        16.222494158950553,
+        81.0
+      ]
+    },
+    {
+      "index": 1,
+      "label": "MakerFleet_T01__MakerStation_Prop_Cup_05",
+      "local_cm": [
+        51.967535064491024,
+        -1.1673262315929378,
+        81.0
+      ]
+    },
+    {
+      "index": 2,
+      "label": "MakerFleet_T02__MakerStation_Prop_Cup",
+      "local_cm": [
+        60.21002903663168,
+        -33.22896539861449,
+        81.0
+      ]
+    },
+    {
+      "index": 2,
+      "label": "MakerFleet_T02__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        53.79032068590784,
+        33.37368132328129,
+        81.0
+      ]
+    },
+    {
+      "index": 2,
+      "label": "MakerFleet_T02__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        48.51542108129713,
+        -16.25017228326942,
+        81.0
+      ]
+    },
+    {
+      "index": 2,
+      "label": "MakerFleet_T02__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        60.986253486885786,
+        17.29365048418822,
+        81.0
+      ]
+    },
+    {
+      "index": 3,
+      "label": "MakerFleet_T03__MakerStation_Prop_Cup",
+      "local_cm": [
+        59.00278670999785,
+        -31.346358303923385,
+        81.0
+      ]
+    },
+    {
+      "index": 3,
+      "label": "MakerFleet_T03__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        61.267427533434216,
+        31.705558047070145,
+        81.0
+      ]
+    },
+    {
+      "index": 3,
+      "label": "MakerFleet_T03__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        52.6409509988805,
+        -17.2099007831718,
+        81.0
+      ]
+    },
+    {
+      "index": 3,
+      "label": "MakerFleet_T03__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        51.2373733351435,
+        16.597903747665097,
+        81.0
+      ]
+    },
+    {
+      "index": 3,
+      "label": "MakerFleet_T03__MakerStation_Prop_Cup_05",
+      "local_cm": [
+        50.91433470971788,
+        0.7306957478021494,
+        81.0
+      ]
+    },
+    {
+      "index": 4,
+      "label": "MakerFleet_T04__MakerStation_Prop_Cup",
+      "local_cm": [
+        54.211051408832304,
+        -32.29028882189266,
+        81.0
+      ]
+    },
+    {
+      "index": 4,
+      "label": "MakerFleet_T04__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        54.07833207582689,
+        32.21854398791777,
+        81.0
+      ]
+    },
+    {
+      "index": 4,
+      "label": "MakerFleet_T04__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        60.32620209460822,
+        -14.930583636883739,
+        81.0
+      ]
+    },
+    {
+      "index": 4,
+      "label": "MakerFleet_T04__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        56.579505774486734,
+        14.504924970409547,
+        81.0
+      ]
+    },
+    {
+      "index": 5,
+      "label": "MakerFleet_T05__MakerStation_Prop_Cup",
+      "local_cm": [
+        59.97275226057525,
+        -33.19950381587046,
+        81.0
+      ]
+    },
+    {
+      "index": 5,
+      "label": "MakerFleet_T05__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        61.80973258109452,
+        31.22930544367,
+        81.0
+      ]
+    },
+    {
+      "index": 5,
+      "label": "MakerFleet_T05__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        53.933523823917085,
+        -17.25211544521494,
+        81.0
+      ]
+    },
+    {
+      "index": 5,
+      "label": "MakerFleet_T05__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        55.08557898608581,
+        17.35067443344701,
+        81.0
+      ]
+    },
+    {
+      "index": 5,
+      "label": "MakerFleet_T05__MakerStation_Prop_Cup_05",
+      "local_cm": [
+        51.40515543417291,
+        1.410075018178759,
+        81.0
+      ]
+    },
+    {
+      "index": 6,
+      "label": "MakerFleet_T06__MakerStation_Prop_Cup",
+      "local_cm": [
+        48.599427927234274,
+        -31.487766689840512,
+        81.0
+      ]
+    },
+    {
+      "index": 6,
+      "label": "MakerFleet_T06__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        56.138310960620856,
+        31.295066173620214,
+        81.0
+      ]
+    },
+    {
+      "index": 6,
+      "label": "MakerFleet_T06__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        60.427244523426225,
+        -15.971232575659776,
+        81.0
+      ]
+    },
+    {
+      "index": 6,
+      "label": "MakerFleet_T06__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        48.812199377237675,
+        16.406514117110213,
+        81.0
+      ]
+    },
+    {
+      "index": 7,
+      "label": "MakerFleet_T07__MakerStation_Prop_Cup",
+      "local_cm": [
+        58.5041545919446,
+        -31.786565627280652,
+        81.0
+      ]
+    },
+    {
+      "index": 7,
+      "label": "MakerFleet_T07__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        55.32729427883146,
+        31.938225085740214,
+        81.0
+      ]
+    },
+    {
+      "index": 7,
+      "label": "MakerFleet_T07__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        52.04825907368331,
+        -15.019105972376451,
+        81.0
+      ]
+    },
+    {
+      "index": 7,
+      "label": "MakerFleet_T07__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        50.24371799914434,
+        16.002901538362835,
+        81.0
+      ]
+    },
+    {
+      "index": 7,
+      "label": "MakerFleet_T07__MakerStation_Prop_Cup_05",
+      "local_cm": [
+        51.930288935600174,
+        -0.34410447358152396,
+        81.0
+      ]
+    },
+    {
+      "index": 8,
+      "label": "MakerFleet_T08__MakerStation_Prop_Cup",
+      "local_cm": [
+        52.80047588474781,
+        -30.55933384615696,
+        81.0
+      ]
+    },
+    {
+      "index": 8,
+      "label": "MakerFleet_T08__MakerStation_Prop_Cup_02",
+      "local_cm": [
+        61.486575634004794,
+        31.82646568892801,
+        81.0
+      ]
+    },
+    {
+      "index": 8,
+      "label": "MakerFleet_T08__MakerStation_Prop_Cup_03",
+      "local_cm": [
+        52.08225360259553,
+        -16.8463651958632,
+        81.0
+      ]
+    },
+    {
+      "index": 8,
+      "label": "MakerFleet_T08__MakerStation_Prop_Cup_04",
+      "local_cm": [
+        51.952981190844866,
+        15.820985742674566,
+        81.0
+      ]
+    }
+  ],
+  "protected_actors_unchanged": 257,
+  "all40_verified": true,
+  "luna_verification": {
+    "cups": 40,
+    "max_position_error_cm": 1.1368683772161603e-13,
+    "all40_centered": true
+  },
+  "scope": "Placement only; no simulation or Dream calls. Table10 and 257 protected arm/camera/interaction transforms unchanged."
+}

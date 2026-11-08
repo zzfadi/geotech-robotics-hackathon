@@ -12,9 +12,9 @@ DEFAULT_SEED = 20261107
 def cup_layout(index, seed):
     """Match the scene's existing 4/5 cups; shuffle positions, never invent actors."""
     rng = random.Random('%d:%d' % (seed, index))
-    return [{'label': PREFIX+name, 'location_cm': [rng.uniform(48,66), y+rng.uniform(-3,3),81],
+    return [{'label': PREFIX+name, 'location_cm': [rng.uniform(48,52 if ordinal==4 else 62), y+rng.uniform(-1.5,1.5),81],
              'yaw_deg': 0., 'rotation_deg': [0.,0.,0.], 'clearance_radius_cm': 4.}
-            for name,y in list(zip(OBJECTS,(-60,60,-30,30,0)))[:4+index%2]]
+            for ordinal,(name,y) in enumerate(list(zip(OBJECTS,(-32,32,-16,16,0)))[:4+index%2])]
 
 
 def explicit_motion_side(prompt):
