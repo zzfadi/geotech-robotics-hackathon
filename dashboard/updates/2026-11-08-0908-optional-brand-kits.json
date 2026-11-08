@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-08T09:08:41-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Made the final brand kit and scratchpad optional in new checkouts.",
+  "why": "Collaborators can pull the pitch and fetch the two artwork libraries on demand using the handoff.",
+  "where": [
+    ".gitignore",
+    "demo/pitch/HANDOFF.md"
+  ]
+}

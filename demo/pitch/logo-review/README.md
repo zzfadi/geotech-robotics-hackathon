@@ -8,7 +8,7 @@
 | Lapis & Apricot | [Compare](comparisons/lapis.jpg) | The strongest stage contrast. The lapis also picks up the blue of the Milkmaid’s apron. The apricot approaches the brass in brightness. |
 | Aubergine & Chartreuse | [Compare](comparisons/botanical.jpg) | The most contemporary gallery direction. The light enamel needs a visible cut edge on brass. |
 
-**Recommendation.** Interval in Patina & Fired Clay best conveys the human touch. The sliver between two shapes makes the pause before Emmy acts visible; on brass, the plate itself forms the meeting point. Dovetail gives a compact, more mechanical reading of the platform: two parts fit and carry a load. It is easier to recognize small. Keep Interval’s channel open when reducing or fabricating the mark. The original two symbols are still available in the [ten-direction study](../../../brand-kit-scratchpad/logo-studies-02/).
+**Recommendation.** Interval in Patina & Fired Clay best conveys the human touch. The sliver between two shapes makes the pause before Emmy acts visible; on brass, the plate itself forms the meeting point. Dovetail gives a compact, more mechanical reading of the platform: two parts fit and carry a load. It is easier to recognize small. Keep Interval’s channel open when reducing or fabricating the mark. The original two symbols are still available in the [ten-direction study](https://github.com/zzfadi/geotech-robotics-hackathon/tree/5a20417c10b8d51316eb96e7139d78c7fd5dac5a/brand-kit-scratchpad/logo-studies-02).
 
 ## Cloud handoff
 

@@ -35,3 +35,7 @@ vision/local/
 voice_agent/local/
 /yolo*.pt
 /yolo*.engine
+
+# Optional pitch artwork libraries
+/brand-kit-final/
+/brand-kit-scratchpad/
