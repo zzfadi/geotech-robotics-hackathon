@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T22:58:00-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Added the Parian hero turnaround and four museum exhibit stills for pitch review.",
+  "why": "The presentation team can choose among eight transparent views of the same robot and review each complete widescreen scene before animation.",
+  "where": [
+    "brand-kit-final/parian/character-sheet.jpg",
+    "brand-kit-final/parian/README.md",
+    "brand-kit-scratchpad/parian-hero-v1/exhibits/contact-sheet.jpg"
+  ]
+}
