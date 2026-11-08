@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T17:23:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Added the existing Unreal project input settings to version control.",
+  "why": "Shared checkouts can reproduce the station's controller and mouse axis settings and Enhanced Input classes.",
+  "where": [
+    "Unreal/TheHumanTouch/Config/DefaultInput.ini"
+  ]
+}
