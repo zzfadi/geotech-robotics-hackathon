@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T16:33:22.017897-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Inspected both physical Maker Arms and four cameras; completed a supervised right-wrist roll and return.",
+  "why": "Establish an evidence-backed SDK and vision baseline before whole-arm control or Dream hardware integration.",
+  "where": [
+    "arm/docs/control-and-vision.md",
+    "arm/evidence/2026-11-07-control-exploration.json",
+    "arm/tools/diagnose_arms.py",
+    "arm/tools/wrist_probe.py",
+    "arm/tools/camera_inspect"
+  ],
+  "details": "All 14 motors returned fresh fault-free feedback. Right motor 6 completed 3.132 \u2192 4.868 \u2192 3.286 degrees using pinned SDK gains; torque-off acknowledged, disabled mode unverified. Earlier low-gain timeout and velocity-preflight rejection retained. Captured three UVC views and laptop camera locally. No lifting joints, zero changes, Dream API calls or physical Cartesian control."
+}

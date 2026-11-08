@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
-cd "$(dirname "$0")"
+tool_dir="$(cd "$(dirname "$0")" && pwd)"
 
 usage() {
-  echo "Usage: bash arm/tools/arm {scan|watch|claw_probe|test} [arguments]"
+  echo "Usage: bash arm/tools/arm {scan|watch|diagnose|claw_probe|wrist_probe|test} [arguments]"
   echo "No command runs by default. --help and test do not access hardware."
 }
 
@@ -11,13 +11,15 @@ case "${1:---help}" in
   --help|-h) usage; exit 0 ;;
   scan) script=scan_arms.py ;;
   watch) script=watch_arms.py ;;
+  diagnose) script=diagnose_arms.py ;;
   claw_probe) script=claw_probe.py ;;
+  wrist_probe) script=wrist_probe.py ;;
   test) script= ;;
   *) usage >&2; exit 2 ;;
 esac
 tool="$1"
 shift
-python="${ARMCTL_PYTHON:-../.venv/bin/python}"
+python="${ARMCTL_PYTHON:-$tool_dir/../.venv/bin/python}"
 if ! command -v "$python" >/dev/null 2>&1; then
   echo "Python environment missing. Follow arm/README.md or set ARMCTL_PYTHON." >&2
   exit 1
@@ -27,6 +29,6 @@ if [[ "$(uname -s)" == Darwin ]] && command -v brew >/dev/null 2>&1; then
   export DYLD_FALLBACK_LIBRARY_PATH="$prefix/lib${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
 fi
 if [[ "$tool" == test ]]; then
-  exec "$python" -m pytest -q test_claw_probe.py test_portability.py "$@"
+  exec "$python" -m pytest -q "$tool_dir/test_claw_probe.py" "$tool_dir/test_portability.py" "$tool_dir/test_diagnose_arms.py" "$tool_dir/test_wrist_probe.py" "$@"
 fi
-exec "$python" "$script" "$@"
+exec "$python" "$tool_dir/$script" "$@"

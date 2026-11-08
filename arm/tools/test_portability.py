@@ -1,6 +1,8 @@
 """Offline packaging checks. USB discovery and backend opens are forbidden."""
 
 import sys
+import os
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -12,6 +14,8 @@ import claw_probe
 import gsusb_backend
 import scan_arms
 import watch_arms
+import wrist_probe
+import diagnose_arms
 
 
 @pytest.fixture(autouse=True)
@@ -23,7 +27,7 @@ def forbid_hardware(monkeypatch):
     monkeypatch.setattr(gsusb_backend.GsUsbBackend, "open", forbidden)
 
 
-@pytest.mark.parametrize("module", [scan_arms, watch_arms, claw_probe])
+@pytest.mark.parametrize("module", [scan_arms, watch_arms, claw_probe, wrist_probe, diagnose_arms])
 def test_help_exits_before_hardware(module, monkeypatch):
     monkeypatch.setattr(sys, "argv", [module.__name__, "--help"])
     with pytest.raises(SystemExit) as result:
@@ -99,3 +103,14 @@ def test_no_machine_paths_in_portable_tools():
         if path.suffix == ".py" and path != Path(__file__):
             assert "/Users/" not in path.read_text()
             assert "/opt/homebrew/" not in path.read_text()
+
+
+def test_launcher_preserves_caller_directory_for_output_paths(tmp_path):
+    fake_python = tmp_path / "fake-python"
+    fake_python.write_text("#!/bin/sh\npwd\n")
+    fake_python.chmod(0o755)
+    launcher = Path(__file__).with_name("arm").resolve()
+    result = subprocess.run(["bash", str(launcher), "diagnose"], cwd=tmp_path,
+        env={**os.environ, "ARMCTL_PYTHON": str(fake_python)},
+        capture_output=True, text=True, check=True)
+    assert Path(result.stdout.strip()) == tmp_path.resolve()

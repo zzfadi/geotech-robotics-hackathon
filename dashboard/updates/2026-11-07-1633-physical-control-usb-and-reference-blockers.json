@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T16:33:22.017897-08:00",
+  "workstream": "arm-station",
+  "status": "blocked",
+  "what": "Larger wrist test did not start after robot cameras dropped off USB; both arm adapters subsequently disappeared too.",
+  "why": "Further physical control needs current camera/encoder feedback and resolved coordinate references.",
+  "where": [
+    "arm/docs/control-and-vision.md"
+  ],
+  "details": "Operator asked to restore USB connections. Both shoulders, left elbow and both grippers had out-of-nominal readings; no re-zero or limit widening. Stationary velocity reports also varied while encoder positions were nearly constant. Wrist-camera serial-to-arm assignment, camera/base calibration and whole-arm stop behavior remain unverified."
+}

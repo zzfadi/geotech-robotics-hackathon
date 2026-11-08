@@ -19,6 +19,9 @@ __pycache__/
 *.py[cod]
 .venv-turn-gate/
 turn_gate/local/
+arm/.venv/
+arm/local/
+arm/results/
 
 # Dashboard build output
 dashboard/data/feed.json

@@ -1,9 +1,15 @@
 # Two Maker Arms: bench handoff
 
-**Paused until Dream application testing.** Do not run hardware commands as part
-of setup or validation. Both claws were opened under direct supervision on
-November 7, 2026; no shoulder/elbow/wrist joint was enabled. This is experimental
-bench bring-up, not an unattended-ready controller or Dream/Portal adapter.
+**Latest physical control/vision record:** [November 7 exploration](docs/control-and-vision.md).
+After the operator resumed supervised testing, both arms and all three USB cameras
+were inspected, the laptop camera was captured, and a small right-wrist roll and
+return completed. Joint-reference discrepancies and USB connectivity remain
+unresolved; whole-arm control and Dream hardware integration are not verified.
+
+The original gripper-only handoff below records the earlier pause before Dream
+testing. Its historical results remain unchanged. Do not run hardware commands
+as part of offline setup. This is experimental bench bring-up, not an
+unattended-ready controller or Dream/Portal adapter.
 
 ## New laptop: offline setup first
 
@@ -193,7 +199,7 @@ an aborted motion: stop, retain the JSON, use physical cutoff if release is
 unconfirmed, and do not force, re-zero, or increase limits. Duplicate labels or
 ambiguous serial suffixes are errors; use a full serial.
 
-## Pause boundary before Dream
+## Original pause boundary before Dream (earlier handoff)
 
 No complete close cycle, up/down movement, whole-arm powered controller, browser
 control panel, camera feedback loop or Dream application integration is verified.
@@ -202,8 +208,9 @@ Read [robot-stack-contract.md](../docs/robot-stack-contract.md) for the existing
 policy/camera/freshness/cancellation boundary, and
 [maker-arm-model.md](../docs/maker-arm-model.md) for the separate kinematic model.
 Keep SDK motor radians separate from URDF radians and uncalibrated jaw gap.
-Testing stays paused until the team explicitly resumes the Dream application
-check with an operator and verifies that application's hardware/stop contract.
+The later supervised wrist-only work is recorded in the exploration linked above.
+The Dream application's hardware/stop contract still requires verification before
+policy-driven physical control.
 
 ## Offline handoff verification
 
