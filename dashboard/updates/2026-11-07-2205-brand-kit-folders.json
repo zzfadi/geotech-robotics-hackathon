@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T22:05:00-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Added scratchpad and final folders for The Human Touch pitch deck.",
+  "why": "Separate visual experiments from assets selected for the presentation.",
+  "where": [
+    "brand-kit-scratchpad/",
+    "brand-kit-final/"
+  ]
+}
