@@ -439,7 +439,7 @@ class Session:
             v = c.get_physics_linear_velocity()
             d = maker_arm_fleet.offset(table.index)
             update_lift_evidence(table.evidence[name], table.timers[name], [p.x, p.y, p.z], [v.x, v.y, v.z], now)
-            if name in ('MakerStation_Prop_Cup', 'MakerStation_Prop_Cup_02', 'MakerStation_Prop_Cup_03'):
+            if name in ('MakerStation_Prop_Cup', 'MakerStation_Prop_Cup_02', 'MakerStation_Prop_Cup_03', 'MakerStation_Prop_Cup_04', 'MakerStation_Prop_Cup_05'):
                 from maker_arm_cup_evidence import update as update_cup
                 up = actor.get_actor_up_vector()
                 tilt = math.degrees(math.acos(max(-1., min(1., up.z))))

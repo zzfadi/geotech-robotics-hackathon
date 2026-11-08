@@ -1,0 +1,18 @@
+{
+  "when": "2026-11-07T17:52:26-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Expanded to40 cups with4\u20135 pertable at seeded positions",
+  "why": "User requested fuller randomized drinking-cup layouts",
+  "where": [
+    "DreamSim/cup_scene_layout.json",
+    "Unreal/TheHumanTouch/Tools/maker_arm_cups.py",
+    "docs/validation/holdmybeer-forty-cup-scene-2026-11-07.json"
+  ],
+  "details": [
+    "Mac and Luna2 match40 uprightcups acrossnine tables",
+    "All noncup actor transforms unchanged; obsolete props/boxes remain absent",
+    "NewCup_04/Cup_05 labels supported by taperedcontact geometry and upright evidence",
+    "Six targetedcupcontact/evidence/config tests pass"
+  ]
+}

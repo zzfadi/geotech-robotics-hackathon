@@ -577,7 +577,8 @@ def table_progress(fleet, runs):
     tables = fleet.get('tables', {})
     for r in runs:
         status = tables.get(r.key, {})
-        lift = lift_verdict(status, r.v['target']['label'])
+        objective = r.v.get('objective') or {}
+        lift = lift_verdict(status, r.v['target']['label'], objective.get('hold_seconds', 2.), objective.get('max_tilt_deg'))
         out[r.key] = {'calls': r.result['calls'], 'returned_actions': sum(bool(q.get('returned_action')) for q in r.result['requests']),
                       'cycles_run': r.result['cycles_run'], 'cycles_planned': r.result['cycles_planned'],
                       'lift': lift, 'error': r.result['error'] or status.get('error'),

@@ -12,7 +12,7 @@ class Planning(unittest.TestCase):
         self.assertEqual(full['tables'][5], build_plan([5], mode='random', seed=42, randomize=True)['tables'][0])
         self.assertGreater(len({tuple(t['objects'][0]['location_cm']) for t in full['tables']}), 1)
         self.assertTrue(all(t['target']=='MakerStation_Prop_Cup' for t in full['tables']))
-        self.assertTrue(all(len(t['objects'])==2+t['index']%2 for t in full['tables']))
+        self.assertTrue(all(len(t['objects'])==4+t['index']%2 for t in full['tables']))
         self.assertTrue(all(t['objective']['hold_seconds']==5 for t in full['tables']))
 
     def test_objects_have_clearance_and_remain_on_table(self):
@@ -64,7 +64,7 @@ class Planning(unittest.TestCase):
         randomized=apply_plan(config,build_plan([1],mode='configured',seed=7,randomize=True))['tables'][0]
         self.assertEqual(randomized['objective'],fixture['objective'])
         self.assertEqual(randomized['target'],fixture['target'])
-        self.assertEqual(len(randomized['objects']),3)
+        self.assertEqual(len(randomized['objects']),5)
         self.assertEqual(randomized['initial_state']['q_left'],[0]*6)
         self.assertEqual(config['tables'][0],fixture)
 

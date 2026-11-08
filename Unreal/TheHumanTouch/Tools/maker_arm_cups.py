@@ -50,9 +50,9 @@ def cup_layout(index, seed=20261107):
     import random
     if type(index) is not int or not 0 <= index <= 8:raise ValueError('Expected table index0..8')
     rng=random.Random(f'{seed}:{index}');out=[]
-    for ordinal,y in enumerate((-50,50,0)[:2+index%2]):
+    for ordinal,y in enumerate((-60,60,-30,30,0)[:4+index%2]):
         out.append({'label':LABEL+('' if ordinal==0 else '_%02d'%(ordinal+1)),
-                    'location_cm':[rng.uniform(48,66),y+rng.uniform(-4,4),81],
+                    'location_cm':[rng.uniform(48,66),y+rng.uniform(-3,3),81],
                     'rotation_deg':[0,0,0], 'yaw_deg':0})
     return out
 

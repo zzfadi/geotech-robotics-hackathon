@@ -5,16 +5,16 @@ import re
 import secrets
 
 PREFIX = 'MakerStation_Prop_'
-OBJECTS = {name: ('drinking cup', 6.0, 4.0) for name in ('Cup','Cup_02','Cup_03')}
+OBJECTS = {name: ('drinking cup', 6.0, 4.0) for name in ('Cup','Cup_02','Cup_03','Cup_04','Cup_05')}
 DEFAULT_SEED = 20261107
 
 
 def cup_layout(index, seed):
-    """Match the scene's existing 2/3 cups; shuffle positions, never invent actors."""
+    """Match the scene's existing 4/5 cups; shuffle positions, never invent actors."""
     rng = random.Random('%d:%d' % (seed, index))
-    return [{'label': PREFIX+name, 'location_cm': [rng.uniform(48,66), y+rng.uniform(-4,4),81],
+    return [{'label': PREFIX+name, 'location_cm': [rng.uniform(48,66), y+rng.uniform(-3,3),81],
              'yaw_deg': 0., 'rotation_deg': [0.,0.,0.], 'clearance_radius_cm': 4.}
-            for name,y in list(zip(OBJECTS,(-50,50,0)))[:2+index%2]]
+            for name,y in list(zip(OBJECTS,(-60,60,-30,30,0)))[:4+index%2]]
 
 
 def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
