@@ -13,7 +13,7 @@ def _xyz(v):
     return (v.x, v.y, v.z)
 
 
-def number_sticker(index):
+def number_sticker(index, local=False):
     """A flush tabletop number; stable internal T00..T10 become visible 1..11."""
     fleet._check_idle()
     d = grid.offset(index)
@@ -25,6 +25,8 @@ def number_sticker(index):
         if old is not None:
             subsystem.destroy_actor(old)
     tags = [unreal.Name(fleet.FLEET_TAG), unreal.Name('MakerTableNumber')]
+    if local:
+        tags.append(unreal.Name(fleet._local_tag()))
     if index:
         tags.append(unreal.Name(fleet.table_tag(index)))
     for suffix, kind, height in (('NumberSticker', unreal.StaticMeshActor, 75.06),
@@ -71,8 +73,9 @@ def brighten_global():
     ambient.modify()
     component = ambient.light_component
     component.modify()
+    component.set_mobility(unreal.ComponentMobility.MOVABLE)
     component.set_editor_property('source_type', unreal.SkyLightSourceType.SLS_SPECIFIED_CUBEMAP)
-    component.set_editor_property('cubemap', unreal.load_asset('/Engine/MapTemplates/Sky/DaylightAmbientCubemap'))
+    component.set_cubemap(unreal.load_asset('/Engine/MapTemplates/Sky/DaylightAmbientCubemap'))
     component.set_intensity(2.0)
     component.set_editor_property('lower_hemisphere_is_black', False)
     sun = actors.get('MakerLighting_GlobalDaylight')
@@ -81,13 +84,73 @@ def brighten_global():
         sun.set_actor_label('MakerLighting_GlobalDaylight')
         sun.set_folder_path('MakerStation/Environment')
     sun.modify()
-    sun.set_actor_rotation(unreal.Rotator(pitch=-45, yaw=-35, roll=0), False)
+    sun.set_actor_rotation(unreal.Rotator(pitch=-60, yaw=-35, roll=0), False)
     light = sun.light_component
     light.modify()
-    light.set_intensity(2500.0)
+    light.set_mobility(unreal.ComponentMobility.MOVABLE)
+    light.set_intensity(6500.0)
     light.set_editor_property('light_source_angle', 3.0)
+    light.set_editor_property('atmosphere_sun_light', True)
     light.set_cast_shadows(True)
+    if not any(isinstance(a, unreal.SkyAtmosphere) for a in actors.values()):
+        sky = fleet._subsystem().spawn_actor_from_class(unreal.SkyAtmosphere, unreal.Vector(0, 0, 0))
+        sky.set_actor_label('MakerLighting_DaylightSky')
+        sky.set_folder_path('MakerStation/Environment')
     return {'ambient_intensity': component.intensity, 'daylight_lux': light.intensity}
+
+
+def enable_global_illumination():
+    """Daylight with live screen-space GI and room fill at overview distances."""
+    result = brighten_global()
+    actors = fleet._actors()
+    changed = 0
+    for actor in actors.values():
+        name = actor.get_actor_label()
+        if not name.startswith(('MakerLighting_', 'MakerEnvironment_', 'MakerFleet_')):
+            continue
+        if isinstance(actor, unreal.Light):
+            component = actor.light_component
+            actor.modify()
+            component.modify()
+            component.set_mobility(unreal.ComponentMobility.MOVABLE)
+            component.set_editor_property('max_draw_distance', 0.0)
+            component.set_editor_property('max_distance_fade_range', 0.0)
+            changed += 1
+        if isinstance(actor, unreal.PostProcessVolume):
+            actor.modify()
+            settings = actor.settings
+            settings.set_editor_property('override_dynamic_global_illumination_method', False)
+            actor.set_editor_property('settings', settings)
+    unreal.SystemLibrary.execute_console_command(None, 'r.DynamicGlobalIlluminationMethod 2')
+    result.update({'movable_lights': changed,
+                   'gi_method': unreal.SystemLibrary.get_console_variable_int_value('r.DynamicGlobalIlluminationMethod'),
+                   'mesh_distance_fields': unreal.SystemLibrary.get_console_variable_int_value('r.GenerateMeshDistanceFields')})
+    return result
+
+
+def simplify_daylight():
+    """Sun/sky plus two practical ceiling fixtures per room, stable exposure."""
+    result = enable_global_illumination()
+    removed = []
+    extra = ('MakerLighting_SoftKey', 'MakerLighting_SoftFill', 'MakerLighting_BackFill',
+             'MakerEnvironment_WindowFill', 'MakerEnvironment_RoomBounce')
+    for name, actor in fleet._actors().items():
+        short = name.split('__', 1)[-1]
+        if short in extra and isinstance(actor, unreal.Light):
+            removed.append(name)
+            fleet._subsystem().destroy_actor(actor)
+        elif short in ('MakerEnvironment_CeilingLeft', 'MakerEnvironment_CeilingRight'):
+            actor.modify()
+            actor.light_component.modify()
+            actor.light_component.set_intensity(1800.0)
+        elif isinstance(actor, unreal.PostProcessVolume) and name == 'MakerLighting_Exposure':
+            actor.modify()
+            settings = actor.settings
+            settings.set_editor_property('override_auto_exposure_bias', True)
+            settings.set_editor_property('auto_exposure_bias', .5)
+            actor.set_editor_property('settings', settings)
+    result.update({'removed_fill_lights': len(removed), 'exposure_bias_ev': .5})
+    return result
 
 
 def migrate_table(index):
