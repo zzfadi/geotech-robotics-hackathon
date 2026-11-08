@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T15:40:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Multi-User session rolled over to a fresh, history-free session after a checkpoint, and the Mac's stale arm assets were synced, fixing the disjointed Table 10 arms.",
+  "why": "User request: no more replay of thousands of transactions on rejoin. The Mac editor showed the arms broken apart because its on-disk arm meshes and map differed from Luna2's.",
+  "where": ["docs/checkpoints.md", "09c422f"],
+  "details": ["Checkpoint 09c422f pushed from Luna2.", "The server now uses the fresh working folder Saved/MultiUser/Working-20261108-rollover; the old session database is kept for recovery.", "62 content files synced on the Mac; overwritten files backed up in Saved/ContentBackup-20261108-rollover. Both arms check as rigid chains after relaunch."]
+}
