@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T20:25:00-08:00",
+  "workstream": "planning",
+  "status": "decision",
+  "what": "Sunday plan written from the Day 1 EOD sync: Codex drives the physical arm directly, Dream-1 runs in the Unreal sims",
+  "why": "Tonight's sync changed who drives the real arm and the demo story, so the plan, owners and open questions needed one place in the repo.",
+  "where": ["docs/plan.md", "docs/slack-log-2026-11-07.md"],
+  "details": "Supersedes Dream-1 as the real-arm brain. Several items have no owner yet: the handed-over can grab and fist bump, the hold interlock, the Isaac to Unreal stream, the voice agent and submission."
+}

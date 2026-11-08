@@ -12,6 +12,10 @@ The cup scene is saved in checkpoint `7fd63b1`; cup pickup and hold validation r
 
 A separate interaction bay prepares measured-position mirroring from the physical Maker Arm SDK and virtual-contact experiments. The [Luna2 panel](https://luna2.tail6864ac.ts.net/) shows controller presence and feedback. The SDK host is not selected yet; physical motion and force coupling are **not verified**. See the [connection plan](docs/table10-sdk-connection.md) and [offline bridge](Interaction/README.md).
 
+## Plan
+
+The current team plan for Sunday, with owners, the demo outline and open questions, is in [docs/plan.md](docs/plan.md).
+
 ## Dashboard
 
 Track the team's progress at **https://zzfadi.github.io/geotech-robotics-hackathon/**. To post an update, see [dashboard/README.md](dashboard/README.md).
