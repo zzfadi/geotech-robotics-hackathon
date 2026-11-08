@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T16:42:17-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified the physical Quest 2 is streaming TheHumanTouch over Wi-Fi through the Mac editor in the Luna2 Multi-User session.",
+  "why": "The headset can receive the shared XR scene over the local wireless network while USB debugging remains unauthorized.",
+  "where": [
+    "8ed1946"
+  ],
+  "details": "The OXRSys runtime identified Oculus Quest2 on Wi-Fi. Its encoded frame counter advanced from 1,142 to 1,365 across two samples, the headset returned decoder and compositor timings, and passthrough was enabled, supported and ready. The same editor process reported membership in the shared TheHumanTouch session alongside the Luna2 participant. The wearer has yet to confirm seeing room video behind scene objects."
+}
