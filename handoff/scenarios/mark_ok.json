@@ -1,0 +1,4 @@
+{"name": "Fallback: pick the can from the taped mark, lift it and carry it back",
+ "mode": "mark", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 60, "can_in_jaws": true}],
+ "expect": {"outcome": "success", "reason": "held", "holding": true, "grasp_attempts": 1, "pauses": 0}}

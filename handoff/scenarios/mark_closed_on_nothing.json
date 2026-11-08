@@ -1,0 +1,4 @@
+{"name": "Fallback: detector thinks the can is there but the jaws close on nothing",
+ "mode": "mark", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 60, "can_in_jaws": true, "truth_can": false}],
+ "expect": {"outcome": "failed", "reason": "missed_can", "grasp_attempts": 1, "holding": false, "final_step": "halted"}}

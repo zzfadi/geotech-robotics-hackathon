@@ -1,0 +1,4 @@
+{"name": "Nobody puts the can in the jaws: give up after 20 s and go back to ready",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 80}],
+ "expect": {"outcome": "failed", "reason": "no_can_presented", "holding": false, "grasp_attempts": 0, "final_step": "halted"}}

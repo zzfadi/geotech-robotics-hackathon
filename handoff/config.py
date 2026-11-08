@@ -56,6 +56,7 @@ class Gripper:
     # After the lift, more closure than this since contact means it slipped.
     slip_deg: float = 6.0
     contact_calibrated: bool = False
+    contact_note: str = ""
 
 
 @dataclass(frozen=True)

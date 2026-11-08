@@ -1,0 +1,10 @@
+{"name": "The detector feed stops mid-approach: pause, resume when frames are back and the operator says go",
+ "mode": "hand", "operator": [[1.0, "go"], [6.0, "go"]],
+ "timeline": [
+   {"from": 0, "to": 3.0},
+   {"from": 3.0, "to": 4.0, "missing": true},
+   {"from": 4.0, "to": 4.5, "valid": false},
+   {"from": 4.5, "to": 12, "missing": false, "valid": true},
+   {"from": 12, "to": 14, "can_in_jaws": true, "hand_on_can": true},
+   {"from": 14, "to": 60, "can_in_jaws": true, "hand_on_can": false}],
+ "expect": {"outcome": "success", "reason": "held", "min_pauses": 1}}

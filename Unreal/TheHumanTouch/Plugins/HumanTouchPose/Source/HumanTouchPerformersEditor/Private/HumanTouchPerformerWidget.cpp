@@ -60,5 +60,27 @@ TSharedRef<SWidget> UHumanTouchPerformerWidget::RebuildWidget()
             .OnClicked_Lambda([] { HumanTouchXRTable::AlignAfter(5); return FReply::Handled(); })];
     Box->AddSlot().AutoHeight().Padding(10, 4)
         [SNew(STextBlock).AutoWrapText(true).Text_Lambda([] { return FText::FromString(HumanTouchXRTable::Status()); })];
+    Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 4)
+        [SNew(SButton)
+            .Text_Lambda([] { return HumanTouchXRTable::SurveyRunning()
+                ? NSLOCTEXT("HumanTouch", "NextSurveyMark", "Capture marked point")
+                : NSLOCTEXT("HumanTouch", "BeginSurvey", "Survey with right-controller probe"); })
+            .OnClicked_Lambda([] {
+                if (HumanTouchXRTable::SurveyRunning()) HumanTouchXRTable::CaptureMark();
+                else HumanTouchXRTable::BeginSurvey();
+                return FReply::Handled();
+            })];
+    Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 0)
+        [SNew(SButton).Text(NSLOCTEXT("HumanTouch", "CancelSurvey", "Cancel survey"))
+            .Visibility_Lambda([] { return HumanTouchXRTable::SurveyRunning() ? EVisibility::Visible : EVisibility::Collapsed; })
+            .OnClicked_Lambda([] { HumanTouchXRTable::CancelSurvey(); return FReply::Handled(); })];
+    Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 2)
+        [SNew(SButton).Text(NSLOCTEXT("HumanTouch", "SurveyHand", "Survey with tracked fingertip"))
+            .Visibility_Lambda([] { return HumanTouchXRTable::SurveyRunning() ? EVisibility::Collapsed : EVisibility::Visible; })
+            .OnClicked_Lambda([] { HumanTouchXRTable::BeginSurvey(false); return FReply::Handled(); })];
+    Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 2)
+        [SNew(SButton).Text(NSLOCTEXT("HumanTouch", "CheckMounts", "Recheck both mounts"))
+            .Visibility_Lambda([] { return HumanTouchXRTable::CanCheckSurvey() ? EVisibility::Visible : EVisibility::Collapsed; })
+            .OnClicked_Lambda([] { HumanTouchXRTable::CheckSurvey(); return FReply::Handled(); })];
     return Box;
 }

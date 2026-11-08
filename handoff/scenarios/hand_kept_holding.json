@@ -1,0 +1,4 @@
+{"name": "Brian never lets go: hold still 10 s, open the jaws to give it back, return to ready",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 8}, {"from": 8, "to": 80, "can_in_jaws": true, "hand_on_can": true}],
+ "expect": {"outcome": "failed", "reason": "person_kept_holding", "holding": false, "grasp_attempts": 1, "final_step": "halted"}}

@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T22:20:06-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Prepared a markerless Quest station survey using the actual Maker Arm mounting holes, plus the live-cast and offline pitch-clip workflow.",
+  "why": "Independent contact measurements can reject a bad overlay, and an embedded headset recording gives the presentation an offline playback path.",
+  "where": [
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Source/HumanTouchXR",
+    "Unreal/TheHumanTouch/Tools/test_xr_survey_datums.py",
+    "docs/quest-demo-registration-and-capture.md",
+    "output/pdf/quest-arm-registration-guide.pdf",
+    "Capture/prepare_pitch_clip.py"
+  ],
+  "details": "Verified CAD hole rims, the Mac native build, Unreal survey and legacy alignment tests, and layout lookup in the original station and Table 10. Both saved stations put the flange upper face 15.7 mm below the tabletop. The clip helper produced a 1080p H.264 MP4 from test footage. Physical registration, composed Quest 3 casting and demo footage are rehearsal checks."
+}

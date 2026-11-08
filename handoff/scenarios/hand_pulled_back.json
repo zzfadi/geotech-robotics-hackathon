@@ -1,0 +1,5 @@
+{"name": "Brian pulls the can back out of the closed jaws before letting go",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "arm": {"slip_at": 12.5},
+ "timeline": [{"from": 0, "to": 8}, {"from": 8, "to": 80, "can_in_jaws": true, "hand_on_can": true}],
+ "expect": {"outcome": "failed", "reason": "pulled_or_slipped", "holding": false, "final_step": "halted"}}

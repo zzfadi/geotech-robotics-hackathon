@@ -146,6 +146,33 @@ def facts_from_boxes(dets, zones: Zones, *, path: bool, jaws: bool) -> Dict[str,
     return out
 
 
+# vision.moments states (python3 -m vision.run --verbose prints one record per frame).
+_VISION_CAN_IN_JAWS = ("ENGAGED", "RELEASED")
+_VISION_HAND_OFF_CAN = ("RELEASED", "EMPTY")
+
+
+def flags_from_vision(record: dict) -> Optional[dict]:
+    """Map one vision.run frame record onto the three handoff facts.
+
+    The vision tracker's handoff zone is where the can is offered, which for
+    this routine is where the open jaws wait, so a steady offered can
+    (ENGAGED) or a can left there (RELEASED) counts as between the jaws.
+    ``motion_ok`` false means a hand the arm must not move near. Only the
+    per-frame moment is used: the vision coordinator's own gate and actions
+    are ignored, so exactly one turn gate sits at the arm boundary (here).
+    """
+    m = record.get("moment")
+    if not isinstance(m, dict) or not _num(m.get("captured_at")):
+        return None
+    state, ok = m.get("state"), m.get("motion_ok")
+    if m.get("valid") is not True or state == "INVALID" or type(ok) is not bool:
+        return {"captured_at": m["captured_at"], "valid": False}
+    return {"captured_at": m["captured_at"], "valid": True,
+            "hand_in_path": not ok,
+            "can_in_jaws": state in _VISION_CAN_IN_JAWS,
+            "hand_on_can": state not in _VISION_HAND_OFF_CAN}
+
+
 @dataclass
 class _Latest:
     captured_at: float
@@ -199,6 +226,8 @@ class Fuser:
             self._push(msg)
 
     def _push(self, msg: dict) -> None:
+        if isinstance(msg, dict) and isinstance(msg.get("moment"), dict):
+            msg = flags_from_vision(msg)
         if not isinstance(msg, dict) or not _num(msg.get("captured_at")):
             return
         t = float(msg["captured_at"])
