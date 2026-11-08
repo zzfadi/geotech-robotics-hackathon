@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "User reconnected KVM data cable and started installer; webcam directly verifies NVMe installation progressing beyond partitioning; completion, final firmware and SSH unverified",
+  "scope": "Installer failed; read-only diagnostics confirm unchanged starting firmware and no non-loopback IPv4 address; local KVM HID verified; separate Beryl AX identified, portable network configuration pending",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -54,15 +54,15 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "Subiquity/curtin install logs show nvme0n1 partitions 1-15 configured, partitioning and extraction finished, then curthooks configuring installed system/installing missing packages",
+    "observation": "Explicit installer error followed by root diagnostic shell after agent-sent Enter; successful installed OS boot not established",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
-    "hid_delivery_verified": false,
+    "hid_delivery_verified": true,
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
     "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
     "cloud": "Approved Google sign-in and Bind completed; GL-RM1-569 green online; actual remote-control session unverified",
-    "updated_at": "2026-11-08T01:07:15-08:00",
+    "updated_at": "2026-11-08T01:21:56-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
@@ -92,10 +92,10 @@
       "focus_attempted": true,
       "visible_character_observed": false,
       "tooltip": "Keyboard captured, inactive",
-      "status": "USB host attachment directly verified after reconnect; keyboard operation user-confirmed; agent keypress not tested during active install",
+      "status": "Local KVM-to-Jetson HID independently verified by agent Enter opening the failed installer diagnostic shell",
       "tooltip_source": "Public KVM client JavaScript inspection",
       "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
-      "next_check": "No exploratory keypress during active installation; independently verify agent control later when safe",
+      "next_check": "Off-site/cloud remote-control verification remains separate; current shell used for read-only diagnosis",
       "physical_cable_check_completed": true,
       "usb_gadget_diagnostic": {
         "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
@@ -118,22 +118,29 @@
         "scope": "Read-only through same authenticated KVM built-in terminal; USB host connection directly verified",
         "local_screenshot": "/private/tmp/jetson-kvm-usb-state-after-reconnect.png",
         "agent_keypress_on_jetson_verified": false
+      },
+      "agent_keypress_evidence": {
+        "key": "Enter",
+        "before": "An error occurred. Press enter to start a shell",
+        "after": "Root diagnostic shell prompt visible",
+        "local_screenshot": "/private/tmp/jetson-installer-shell-open.png",
+        "scope": "Local KVM path, not off-site/cloud control test"
       }
     },
-    "hid_verification_scope": "User-reported successful keyboard interaction and install selection after USB-C-to-USB-C cable reconnect; agent has not independently sent/observed a successful keypress",
-    "agent_keypress_verified": false,
+    "hid_verification_scope": "Agent sent Enter through KVM at installer error prompt; webcam directly confirms root diagnostic shell",
+    "agent_keypress_verified": true,
     "usb_host_attachment_directly_verified": true,
     "hid_delivery_user_confirmed": true
   },
   "pending": [
-    "Observe active installation through completion without interrupting it; retain full-screen outcome/error evidence",
-    "Follow actual completion/reboot/media-removal prompts and verify installed-system boot",
-    "Record final firmware, L4T/Ubuntu versions, NVMe model/capacity and actual root device",
-    "Complete Jetson initial account/network/SSH setup",
-    "Independently verify an agent-sent key and actual GLKVM remote-control session when safe; user operation already succeeded",
-    "Run cached arm environment and offline checks on actual Jetson"
+    "Collect exact installer crash filename/logs and remaining read-only board/storage facts; exact DTB-match root cause unresolved despite confirmed unchanged starting firmware",
+    "Review recovery choice before any reboot, firmware operation, DTB override or reinstall",
+    "Verify requested Jetson Ethernet to separate Beryl AX LAN and non-loopback IPv4 address while preserving KVM Ethernet to Mac",
+    "After recovery, verify successful installed OS boot, root device, final firmware and versions",
+    "Complete Jetson account/network/SSH and actual arm-environment offline checks",
+    "Prepare and verify portable Jetson/KVM LAN on separate GL-MT3000, independent of Mac sharing; preserve home GL-MT6000 gateway 192.168.8.1 and test off-site access separately"
   ],
-  "updated_at": "2026-11-08T01:07:15-08:00",
+  "updated_at": "2026-11-08T01:24:56-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -168,13 +175,64 @@
         "Verify an actual GLKVM remote-control session; cloud online status alone is insufficient",
         "Run cached arm environment and offline checks on actual Jetson"
       ]
+    },
+    {
+      "recorded_at": "2026-11-08T01:07:15-08:00",
+      "scope": "User reconnected KVM data cable and started installer; webcam directly verifies NVMe installation progressing beyond partitioning; completion, final firmware and SSH unverified",
+      "console_observation": "Subiquity/curtin install logs show nvme0n1 partitions 1-15 configured, partitioning and extraction finished, then curthooks configuring installed system/installing missing packages",
+      "hid_delivery_verified": false,
+      "hid_verification_scope": "User-reported successful keyboard interaction and install selection after USB-C-to-USB-C cable reconnect; agent has not independently sent/observed a successful keypress",
+      "installation": {
+        "recorded_at": "2026-11-08T01:07:15-08:00",
+        "started_by": "user",
+        "agent_triggered_install_or_erase": false,
+        "active_directly_verified": true,
+        "screenshots": [
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-a.png",
+            "observation": "Subiquity/curtin partitioning with nvme0n1 text; bottom of display cut off"
+          },
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-b.png",
+            "observation": "nvme0n1 partitions 1-15 configured; partitioning finished; extracting install sources to disk"
+          },
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-c.png",
+            "observation": "Extract stage finished; configuring installed system and installing missing packages through curthooks"
+          },
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-d.png",
+            "observation": "NVIDIA/Ubuntu package list and active installing packages progress; screen estimates 15 minutes"
+          }
+        ],
+        "screenshot_scope": "Local webcam captures inspected directly; paths are local evidence, not committed image artifacts",
+        "visible_target_device": "nvme0n1",
+        "partitioning_stage_finished": true,
+        "extract_stage_finished": true,
+        "latest_stage": "Installing NVIDIA and Ubuntu packages; screen estimates 15 minutes",
+        "target_model_capacity_independently_verified": false,
+        "target_prior_contents_independently_verified": false,
+        "final_firmware_verified": false,
+        "completion_verified": false,
+        "installed_os_boot_verified": false,
+        "ssh_verified": false,
+        "current_instruction": "Observe progress without interrupting power, removing installer USB or sending exploratory keys"
+      },
+      "pending": [
+        "Observe active installation through completion without interrupting it; retain full-screen outcome/error evidence",
+        "Follow actual completion/reboot/media-removal prompts and verify installed-system boot",
+        "Record final firmware, L4T/Ubuntu versions, NVMe model/capacity and actual root device",
+        "Complete Jetson initial account/network/SSH setup",
+        "Independently verify an agent-sent key and actual GLKVM remote-control session when safe; user operation already succeeded",
+        "Run cached arm environment and offline checks on actual Jetson"
+      ]
     }
   ],
   "installation": {
     "recorded_at": "2026-11-08T01:07:15-08:00",
     "started_by": "user",
     "agent_triggered_install_or_erase": false,
-    "active_directly_verified": true,
+    "active_directly_verified": false,
     "screenshots": [
       {
         "local_path": "/private/tmp/jetson-installer-20261108-a.png",
@@ -191,19 +249,109 @@
       {
         "local_path": "/private/tmp/jetson-installer-20261108-d.png",
         "observation": "NVIDIA/Ubuntu package list and active installing packages progress; screen estimates 15 minutes"
+      },
+      {
+        "local_path": "/private/tmp/jetson-install-watch-hand-observation-09.png",
+        "observation": "Explicit installation failure, no matching -nv DTB message, crash report under /var/crash and Enter-to-shell prompt"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-shell-open.png",
+        "observation": "Root diagnostic shell visible after agent Enter through KVM"
+      },
+      {
+        "local_path": "/private/tmp/jetson-network-bios-result.png",
+        "observation": "Read-only bios_version still 36.4.2-gcid-38685322; nvbootctrl unavailable; IPv4 query shows only loopback"
       }
     ],
     "screenshot_scope": "Local webcam captures inspected directly; paths are local evidence, not committed image artifacts",
     "visible_target_device": "nvme0n1",
     "partitioning_stage_finished": true,
     "extract_stage_finished": true,
-    "latest_stage": "Installing NVIDIA and Ubuntu packages; screen estimates 15 minutes",
+    "latest_stage": "Failed late/run/command23 board model/compatible DTB matching; prompted diagnostic shell open",
     "target_model_capacity_independently_verified": false,
     "target_prior_contents_independently_verified": false,
     "final_firmware_verified": false,
     "completion_verified": false,
     "installed_os_boot_verified": false,
     "ssh_verified": false,
-    "current_instruction": "Observe progress without interrupting power, removing installer USB or sending exploratory keys"
+    "current_instruction": "Preserve failed-installer state and crash/log evidence; read-only diagnosis, no reboot/firmware changes/DTB overrides",
+    "updated_at": "2026-11-08T01:24:56-08:00",
+    "status": "failed",
+    "failure": {
+      "observed_at": "2026-11-08T01:17:00-08:00",
+      "directly_verified": true,
+      "prompt": "An error occurred. Press enter to start a shell",
+      "trace_stage": "late/run/command23",
+      "trace_message": "No matching -nv DTB found for running board",
+      "crash_location_pattern": "/var/crash/...install_fail.crash",
+      "exact_crash_filename_verified": false,
+      "root_cause_confirmed": false,
+      "diagnosis_status": "Starting firmware remains 36.4.2-gcid-38685322; firmware-update stage has not advanced it; exact DTB-match root cause remains unresolved",
+      "reboot_performed_for_diagnosis": false,
+      "firmware_changed_for_diagnosis": false,
+      "dtb_override_applied": false,
+      "firmware_update_not_completed": true
+    },
+    "diagnostic_shell_open": true,
+    "read_only_diagnostics": {
+      "recorded_at": "2026-11-08T01:24:56-08:00",
+      "local_screenshot": "/private/tmp/jetson-network-bios-result.png",
+      "bios_version": {
+        "command": "cat /sys/class/dmi/id/bios_version",
+        "value": "36.4.2-gcid-38685322",
+        "directly_verified": true,
+        "matches_starting_firmware": true,
+        "interpretation": "Running firmware has not advanced through the expected firmware-update stage; exact DTB-match error cause remains unresolved"
+      },
+      "boot_slots": {
+        "command": "nvbootctrl dump-slots-info",
+        "result": "nvbootctrl: command not found in live installer",
+        "slot_state_verified": false
+      },
+      "ipv4": {
+        "command": "ip -br -4 addr",
+        "result": "Only lo 127.0.0.1/8",
+        "non_loopback_ipv4_observed": false
+      }
+    }
+  },
+  "portable_lan_proposal": {
+    "recorded_at": "2026-11-08T01:21:56-08:00",
+    "status": "Separate router identified; internet user-confirmed; Jetson LAN cable connection requested; configuration pending",
+    "goal": "Portable Jetson/KVM LAN independent of Mac Internet Sharing",
+    "intended_router": "Separate GL.iNet GL-MT3000 Beryl AX",
+    "separate_model_confirmed": true,
+    "separate_wiring_confirmed": false,
+    "configuration_performed": false,
+    "local_topology_verified": false,
+    "remote_access_verified": false,
+    "home_gateway": {
+      "model": "GL-MT6000",
+      "ipv4": "192.168.8.1",
+      "must_remain_unchanged": true
+    },
+    "current_kvm_lan": "Mac Internet Sharing bridge100 192.168.2.1, KVM 192.168.2.2",
+    "next_step": "Verify requested Jetson-to-Beryl LAN cable and address while preserving KVM-to-Mac; then prepare portable LAN plan and verify local and remote access separately",
+    "updated_at": "2026-11-08T01:24:56-08:00",
+    "model_evidence": "User-provided photo identifies GL-MT3000 Beryl AX; no Wi-Fi credentials or hardware addresses retained",
+    "internet_available_user_confirmed": true,
+    "internet_independently_verified": false,
+    "immediate_wiring_requested": "Jetson Ethernet to Beryl AX LAN; preserve KVM Ethernet to Mac",
+    "immediate_wiring_verified": false
+  },
+  "portable_network_current": {
+    "router_model": "GL-MT3000 Beryl AX",
+    "mac_joined_travel_wifi": true,
+    "mac_ipv4": "192.168.8.174",
+    "travel_router_ipv4": "192.168.8.1",
+    "router_identity_verified_by": "Changed gateway hardware identity and GL-MT3000 admin page",
+    "internet_http_check": "Apple success page returned successfully",
+    "kvm_local_reachable_after_wifi_change": true,
+    "kvm_ipv4": "192.168.2.2",
+    "jetson_ethernet_to_beryl_lan_user_confirmed": true,
+    "jetson_ipv4_after_cable_unverified": true,
+    "router_admin_login": "Awaiting user authentication in browser",
+    "router_settings_changed": false,
+    "home_router_unchanged": true
   }
 }
