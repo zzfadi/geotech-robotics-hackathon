@@ -47,6 +47,45 @@ See `arm/evidence/2026-11-07-wrist-preflight-velocity.json` for the samples and
 source hashes. The next dependency is resolving feedback consistency and the
 motor-reference questions, not another automatic powered retry.
 
+### Supervised wrist routines — 16:52–16:55 Pacific
+
+After renewed operator authorization and a fresh view of the cleared table, an
+explicit `--position-preflight` mode was used. It requires 21 fresh samples across
+at least one second, no sample gap over 150 ms, encoder span ≤0.1°, net drift
+≤0.05°/s and raw reported speed ≤15°/s. The noisy median velocity is logged but is
+not used as a stationary threshold in this mode. This changes preflight admission;
+the 0.4 Nm effort, 15°/s moving-speed, 150 ms freshness, 45 °C temperature,
+0.5° following-error and bounded-travel guards remain. The old instantaneous
+preflight is still the default, and `--encoder-stationary` remains read-only.
+
+The right motor-6 8° target routine at a 3°/s target rate completed twice:
+1.3297° → 9.0225° → 1.4177°, then 1.4396° → 9.0665° → 1.4836°.
+Each outbound/return settled within 0.5° of its target and acknowledged release.
+The left motor-6 2° test reached −1.1763° from −2.8687°, but its return stopped at
+−1.8577° after the eight-second deadline. Release was acknowledged; no force or
+retry was added. These are wrist-only tests, not calibrated whole-arm control.
+Post-test samples from both arms were fresh and fault words zero. Legacy firmware
+still cannot independently verify disabled mode or watchdog behavior.
+
+The first overview clip ended before the return completed. A second 100-frame
+clip covers the complete repeat and decodes successfully. Video and full raw
+samples remain local under `arm/local/routine-2026-11-07`; compact evidence is in
+`arm/evidence/2026-11-07-wrist-routines.json`.
+
+Repeat the validated right routine only with the station operator and verified
+clearance, choosing a new output file:
+
+```sh
+bash arm/tools/arm wrist_probe right --move --operator-cutoff --vendor-gains \
+  --position-preflight --step-deg 8 --speed-deg-s 3 \
+  --output arm/results/new-right-wrist-routine.json
+```
+
+The newly supplied yellow cylinder is the next target. Its appearance is visible
+in the overview and right-wrist view; no pickup has been attempted. Lifting-joint
+work must preserve the SDK's verified-return-or-hold behavior rather than applying
+the wrist test's unconditional release cleanup to an elevated arm.
+
 ## Verified hardware and software
 
 - Both Maker Arm adapters are accessible by exact serial: left `2077378045465008`,

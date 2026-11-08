@@ -9,7 +9,10 @@ def identity():
     return [[float(i == j) for j in range(4)] for i in range(4)]
 
 def mul(a, b):
-    return [[sum(a[i][k]*b[k][j] for k in range(4)) for j in range(4)] for i in range(4)]
+    # Unrolled 4x4 product. "0 + ..." keeps sum()'s exact left-to-right float
+    # evaluation (including the sign of zero), so results are bit-identical.
+    b0, b1, b2, b3 = b
+    return [[0 + r[0]*b0[j] + r[1]*b1[j] + r[2]*b2[j] + r[3]*b3[j] for j in range(4)] for r in a]
 
 def numbers(s):
     return list(map(float, s.split()))

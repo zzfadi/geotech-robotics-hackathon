@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T16:59:18.617294-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Completed two supervised right-wrist 8-degree target routines; left wrist moved out but its return timed out.",
+  "why": "Establish repeatable physical wrist control and record the exact scope and failure before progressing toward a yellow-cylinder pickup.",
+  "where": [
+    "arm/evidence/2026-11-07-wrist-routines.json",
+    "arm/docs/control-and-vision.md",
+    "arm/tools/wrist_probe.py"
+  ],
+  "details": "Explicit position-window preflight used after stationary encoder evidence and renewed operator authorization. Moving effort/speed/travel/freshness limits retained. Right returned within 0.5 degree both runs, release acknowledged. Left remained about 1 degree from start after timeout and release; no forced retry. Fresh post-test feedback and zero fault words on all motors. Full repeat clip retained locally. No lifting joint or gripper enabled."
+}
