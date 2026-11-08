@@ -120,6 +120,7 @@ class Table:
         self.next_poll = 0.
         self.last_progress = 0.
         self.error = None
+        self.expert = None  # Explicit opt-in only; normal policy path unchanged.
         self.desired_gap = {}
         self.last_grip_tick = time.monotonic()
 
@@ -599,12 +600,20 @@ class Session:
                     continue
                 try:
                     t0 = time.perf_counter()
+                    if table.expert:
+                        table.expert.before_control()
                     self.poll_command(table, now)
                     t1 = time.perf_counter()
                     if table.motion:
                         self.step_motion(table, now)
                     else:
                         self.hold_grip(table, now)
+                    if table.expert:
+                        # Explicit held actuator application, not fabricated fresh ack.
+                        if table.motion is None:
+                            for side in BASES:
+                                self.apply_row(table, side, table.state["q_"+side]+[table.state["gap_"+side+"_m"]/JAW_MAX_M])
+                        table.expert.after_control(table.state)
                     table.last_grip_tick = now
                     t2 = time.perf_counter()
                     self.measure_props(table, now)
@@ -634,7 +643,7 @@ class Session:
                     except Exception as error:
                         table.error = 'capture: ' + str(error)
             budget = self.captures_per_tick
-            live = [t for t in self.tables if not t.error]
+            live = [t for t in self.tables if not t.error and t.expert is None]
             for table in [t for t in live if t.queue][:budget]:
                 try:
                     self.capture_role(table)
@@ -650,7 +659,7 @@ class Session:
                     table.error = 'capture: ' + str(error)
                 budget -= 1
             from maker_arm_passive_preview import review_candidates
-            due = review_candidates(self.tables, now)
+            due = review_candidates([t for t in self.tables if t.expert is None], now)
             for table in due[:max(0, budget)]:
                 try:
                     self.record(table, now)
@@ -687,6 +696,8 @@ class Session:
         if self.phase in ('stopped', 'ending', 'error'):
             return
         for table in self.tables:
+            if table.expert:
+                table.expert.recorder.stop()
             if table.motion:
                 self.motion_report(table, True, self.error or 'Fleet runtime ended')
                 table.motion = None
@@ -731,3 +742,20 @@ def start_preview(directory):
 def stop_preview():
     import maker_arm_fleet_preview
     return maker_arm_fleet_preview.stop()
+
+
+def enable_expert_capture(directory, task, provenance, index=0, tabletop_label="Dreamlabs_YAM_Table"):
+    """Explicit single-table offline expert recording; call only after ready."""
+    if not _session or _session.phase != 'ready':raise RuntimeError('Runtime must be ready')
+    table=next(t for t in _session.tables if t.index==index)
+    if table.expert or table.motion or table.pending:raise RuntimeError('Wait for idle table and completed observation')
+    from maker_arm_expert_capture import ExpertCapture
+    table.expert=ExpertCapture(_session,table,directory,task,provenance,tabletop_label)
+    return {'enabled':True,'index':index,'scope':'simulation expert, no Dream inference'}
+
+
+def finish_expert_capture(index=0):
+    table=next(t for t in _session.tables if t.index==index)
+    if table.expert is None:raise RuntimeError('Expert capture is not enabled')
+    table.expert.recorder.finish()
+    return {'closed':table.expert.recorder.closed,'error':table.expert.recorder.error}

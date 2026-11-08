@@ -1,0 +1,19 @@
+{
+  "when": "2026-11-07T19:23:43-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Added opt-in synchronized simulation demonstration capture and offline LeRobot exporter.",
+  "why": "Existing review recordings cannot train a reliable cup policy; collect verified state and actual future action acknowledgements without fabricated frames.",
+  "where": [
+    "DreamSim/demonstration_dataset.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_demonstration_recorder.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_expert_capture.py",
+    "docs/dream-demonstration-recorder.md"
+  ],
+  "details": [
+    "Five recorder/export checks and three authoritative runtime adapter tests pass.",
+    "Official dreamlabs-client 1.1.3 validator accepted a 29-frame synthetic format test; positive eligibility remained false.",
+    "No live expert episode, upload or training job executed. 5 Hz capture is an opt-in hypothesis pending GPU cadence verification.",
+    "Updated official indicative training prices; spending and standard-base confirmation still required."
+  ]
+}
