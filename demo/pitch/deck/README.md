@@ -2,7 +2,7 @@
 
 [Present in Keynote](The%20Human%20Touch%20%E2%80%94%20Judges.key) · [Keynote PDF](The%20Human%20Touch%20%E2%80%94%20Judges.pdf) · [Spoken script](judges-script.md) · [Station run card](judges-run-card.md) · [Rubric analysis and verification gates](creative-rubric.md)
 
-Use this edition for judging. The live gag follows the opening reveal, and the title slide carries the box example into the human-participation concept. The 2:52 target includes the physical action. The first 13 slides are the timed run; the final two support questions. The native file includes the five exhibit movies. The earlier Stage edition is retained below for comparison.
+Use this edition for judging. The live gag follows the opening reveal, and the title slide carries the box example into the human-participation concept. The 2:52 target includes the physical action. The first 13 slides are the timed run; the final two support questions. The native file includes the five exhibit movies and the [six-second logo reveal](../films/logo/README.md), which plays on the title slide. The earlier Stage edition is retained below for comparison.
 
 ## Earlier stage edition
 

@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T15:53:59-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Embedded the six-second Higgsfield logo reveal in the Judges, Stage and Investor title slides and saved a lossless transparent master.",
+  "why": "The human palm lights first, Emmy responds, and both streams resolve to the locked logo.",
+  "where": [
+    "demo/pitch/films/logo/README.md",
+    "demo/pitch/deck",
+    "https://drive.google.com/drive/folders/1coavOSNd3tsg4kwHHR7qOXiuugRxO5tP"
+  ]
+}
