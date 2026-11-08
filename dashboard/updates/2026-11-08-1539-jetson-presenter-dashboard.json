@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T15:39:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Jetson presenter dashboard: live webcam with pose, hand and bottle boxes, the handoff zone, current moment / safety gate / router decision, latency and a timeline, plus the full-loop strip.",
+  "why": "Demo split: FADI shows Jetson human detection, Saleh the Dream prompt on the arm, Denys the Unreal simulation. One page tells the full story while saying which parts are live here and which are shown separately.",
+  "where": ["vision/live_view.py"],
+  "details": ["Runs the team's own MomentTracker, TurnGate and ExecutorRouter on live frames; measured about 25 fps, 33 ms p95 on the Orin Nano.", "Watch-only: serves 127.0.0.1:8790 on the Jetson, viewed from the Mac over an SSH tunnel; it never talks to an arm.", "Router shows 'local' on the real arm by design (Dream within 850 ms otherwise)."]
+}
