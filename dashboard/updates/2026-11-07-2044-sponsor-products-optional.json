@@ -1,0 +1,8 @@
+{
+  "when": "2026-11-07T20:44:47-08:00",
+  "workstream": "dream1",
+  "status": "note",
+  "what": "Brian: Dream-1 on the real arm isn't necessary; sponsor products aren't required for our build",
+  "why": "He had asked for Dream-1 in the plan thinking sponsor products were required. The Dream API stays in the simulation per FADI's 8:31 PM call in the team plan.",
+  "where": ["docs/slack-log-2026-11-07.md", "docs/plan.md"]
+}

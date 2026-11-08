@@ -57,11 +57,20 @@ def solve_pose(position, rotation, q0, tolerance_m=.002, tolerance_rad=.02):
     def residual(q):
         f = fk.pose(q)
         return np.r_[20*(f[:3, 3]-position), Rotation.from_matrix(rotation.T@f[:3, :3]).as_rotvec()]
+    def within(x):
+        f = fk.pose(x)
+        return (np.linalg.norm(f[:3, 3]-position) <= tolerance_m and
+                np.linalg.norm(Rotation.from_matrix(rotation.T@f[:3, :3]).as_rotvec()) <= tolerance_rad)
     best = None
+    # Prefer the branch continuous with q0: only try other seeds if it misses tolerance,
+    # otherwise consecutive rows can jump between equivalent joint solutions.
     for start in (q0, [0, -1.95, 1.47, -.12, 0, 0], [0, -1.33, 1.59, -1.47, 0, 0]):
         r = least_squares(residual, np.clip(start, low, high), bounds=(low, high), max_nfev=400)
         if best is None or r.cost < best.cost:
             best = r
+        if within(r.x):
+            best = r
+            break
     f = fk.pose(best.x)
     error = float(np.linalg.norm(f[:3, 3]-position))
     angle = float(np.linalg.norm(Rotation.from_matrix(rotation.T@f[:3, :3]).as_rotvec()))
@@ -112,7 +121,7 @@ def prepare_run_config(run_config, base_config):
     base = {t.get('index', i): t for i, t in enumerate((base_config or {}).get('tables') or [])}
     for position, table in enumerate(out.get('tables') or []):
         assist = _assist(table, defaults)
-        if assist.get('start') != 'pregrasp':
+        if assist.get('start') != 'pregrasp' and assist.get('approach') != 'scripted':
             continue
         index = table.get('index', position)
         source = base.get(index, {})
@@ -132,9 +141,14 @@ def prepare_run_config(run_config, base_config):
         table['target'] = target
         table['objects'] = [o for o in table.get('objects') or [] if o.get('label') != target.get('label')]
         side = (table.get('objective') or {}).get('side') or 'left'
-        options = {k: assist[k] for k in ('grasp_offset_cm', 'pitch_deg', 'standoff_cm', 'lift_cm', 'gap_m') if k in assist}
-        table['initial_state'] = pregrasp_state({**table, 'initial_state': table.get('initial_state') or source.get('initial_state')},
-                                                side, **options)
+        options = {k: assist[k] for k in START_OPTIONS if k in assist}
+        if assist.get('approach') == 'scripted':
+            # Every run starts from idle; the reach is the first, recorded motion.
+            table['initial_state'] = {'q_left': list(HOME_Q), 'q_right': list(HOME_Q), 'gap_left_m': .1, 'gap_right_m': .1}
+            pregrasp_state({**table, 'initial_state': table['initial_state']}, side, **options)  # reachability check
+        else:
+            table['initial_state'] = pregrasp_state({**table, 'initial_state': table.get('initial_state') or source.get('initial_state')},
+                                                    side, **options)
         table['assist'] = {**assist, 'resolved_start': {'side': side, 'target_cm': target['location_cm'], **options}}
     return out
 
@@ -181,12 +195,23 @@ def apply_live_layout(config, world_cups):
             for name in ('MakerStation_Prop_Cup',)+tuple('MakerStation_Prop_Cup_%02d' % k for k in range(2, 10)):
                 if world_label == label(index, name):
                     cups[name] = [p[0]-d[0], p[1]-d[1], p[2]-d[2]]
+        # The last Reset layout is authoritative (every run restarts from it, upright);
+        # live editor positions only fill cups the config does not place. Never reuse a
+        # fallen cup's height.
+        if table.get('preserve_scene_layout'):
+            for item in table.get('objects') or []:
+                if item.get('label') in cups and item.get('location_cm'):
+                    cups[item['label']] = [float(v) for v in item['location_cm']]
+        for name, loc in cups.items():
+            if abs(loc[2]-81.) > 1.:
+                cups[name] = [loc[0], loc[1], 81.]
         target = (table.get('target') or {}).get('label') or 'MakerStation_Prop_Cup'
         if target not in cups:
             raise ValueError('Table %d live layout has no %s' % (index, target))
         table['target'] = {**(table.get('target') or {}), 'label': target, 'location_cm': cups[target]}
         table['objects'] = [{'label': n, 'location_cm': loc, 'yaw_deg': 0., 'rotation_deg': [0., 0., 0.]}
                             for n, loc in sorted(cups.items()) if n != target]
+        table['preserve_scene_layout'] = True
     return prepare_run_config(out, out)
 
 
@@ -267,6 +292,7 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         previous = solved
     if not rows:
         rows = [list(state['q_'+side])+[action[key][0][6]]]
+    rows[0] = list(state['q_'+side])+[rows[0][6]]  # start exactly at the measured pose
     out = dict(action)
     out[key] = rows
     other = 'q_r_chunk' if side == 'left' else 'q_l_chunk'
@@ -275,3 +301,36 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         out[other].append(list(out[other][-1]))
     return out, {'side': side, 'rows': len(rows), 'dz_cm': heights}
 
+
+START_OPTIONS = ('grasp_offset_cm', 'pitch_deg', 'standoff_cm', 'lift_cm', 'gap_m')
+
+
+def approach_action(state, variant, standoff_lift_cm=8., transfer_rows=36, descend_rows=20):
+    """Planned reach from the measured (idle) pose: joint move to a point standoff_lift_cm
+    above the pregrasp pose, then a straight descent with open jaws. No Dream call."""
+    assist = variant.get('assist') or {}
+    side = (variant.get('objective') or {}).get('side') or 'left'
+    options = {k: assist[k] for k in START_OPTIONS if k in assist}
+    table = {'target': variant['target'], 'objects': variant.get('objects'), 'initial_state': state}
+    goal = pregrasp_state(table, side, **options)
+    above = pregrasp_state(table, side, **{**options, 'lift_cm': options.get('lift_cm', 0)+standoff_lift_cm})
+    key, other = ('q_l_chunk', 'q_r_chunk') if side == 'left' else ('q_r_chunk', 'q_l_chunk')
+    q0 = np.array(state['q_'+side], dtype=float)
+    q1 = np.array(above['q_'+side], dtype=float)
+    g0 = state['gap_'+side+'_m']/JAW_MAX_M
+    g1 = goal['gap_'+side+'_m']/JAW_MAX_M
+    rows = []
+    for a in np.linspace(0, 1, transfer_rows):
+        s_ = .5-.5*np.cos(np.pi*a)  # ease in/out
+        rows.append(list(q0*(1-s_)+q1*s_)+[g0*(1-s_)+g1*s_])
+    fk = _fk()
+    f_above, f_goal = fk.pose(q1), fk.pose(goal['q_'+side])
+    previous = q1.tolist()
+    for a in np.linspace(0, 1, descend_rows)[1:]:
+        s_ = .5-.5*np.cos(np.pi*a)
+        target = f_above[:3, 3]*(1-s_)+f_goal[:3, 3]*s_
+        previous = solve_pose(target, f_goal[:3, :3], previous, tolerance_m=.002, tolerance_rad=.02)
+        rows.append(list(previous)+[g1])
+    hold = list(state['q_'+('right' if side == 'left' else 'left')])+[state['gap_'+('right' if side == 'left' else 'left')+'_m']/JAW_MAX_M]
+    return {key: rows, other: [hold[:] for _ in rows]}, {'side': side, 'rows': len(rows),
+            'pregrasp_q': goal['q_'+side], 'standoff_lift_cm': standoff_lift_cm}

@@ -25,3 +25,6 @@ arm/results/
 
 # Dashboard build output
 dashboard/data/feed.json
+
+# Control center sessions written locally
+control_center/local/

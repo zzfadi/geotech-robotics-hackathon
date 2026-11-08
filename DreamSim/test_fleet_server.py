@@ -187,6 +187,14 @@ class FleetServer(unittest.TestCase):
         self.assertEqual(self.status('/api/fleet/worker/done', {'request_id':command['id'],'results':[]}, self.token),409)
         self.assertEqual(self.server.store.fleet['command']['status'],'running')
 
+    def test_unclaimed_queued_batch_does_not_pin_a_dead_worker(self):
+        self.request('/api/fleet/worker/hello', {'tables': TABLES}, self.token)
+        command = self.request('/api/fleet/command', {'tables': [1]})
+        self.server.store.fleet['worker_at'] = 0  # first worker died before claiming
+        self.worker_id = 'b'*32
+        self.request('/api/fleet/worker/hello', {'tables': TABLES}, self.token)
+        self.assertEqual(self.request('/api/fleet/worker/next', token=self.token)['command']['id'], command['id'])
+
     def test_full_fleet_cycle_and_mutual_exclusion(self):
         self.request('/api/fleet/worker/hello', {'tables': TABLES}, self.token)
         public = self.request('/api/fleet')

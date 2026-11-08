@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T21:53:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Fixed Mac editor memory pressure (Metal heap kept 23 GB unused); fleet runs start idle with cups reset; web goal banner; lease deadlock fix.",
+  "why": "User saw a memory pressure warning; runs must start from idle with every cup reset; success must be visible per table.",
+  "where": ["Unreal/TheHumanTouch/Config/DefaultEngine.ini", "DreamSim/fleet_worker.py", "DreamSim/pregrasp.py", "DreamSim/debug_server.py", "DreamSim/web/index.html", "DreamSim/deploy_debugger_luna2.py"],
+  "details": ["memreport: Metal heap buffer 24.6 GB used, 23.1 GB unused; enabled rhi.Metal.ResourcePurgeInPool and HeapBufferBytesToCompact (Mac only; ignored on D3D12) and restarted the Mac editor, which rejoined TheHumanTouch: 23 GB -> 6.5 GB, pressure normal, 744 actors and 40 cups synced.", "Every run: arms at idle, all cups back upright at the last Reset layout, planned reach (no Dream call), then Dream grasp/lift/hold subgoals.", "Server: an unclaimed queued batch no longer pins a dead worker's lease. Deployed to Luna2 with the per-table goal banner.", "Editor calls add the project Tools folder to Unreal's Python path after restarts."]
+}

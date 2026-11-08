@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robot Control Center</title>
+  <meta name="description" content="What the arm is doing, whether it is healthy, and why it made each decision. Live and history from one telemetry stream.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%231baf7a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="wrap bar-row">
+      <div class="brand"><span class="mark" aria-hidden="true"><i></i></span><span>Control center</span></div>
+      <label class="picker"><span class="sr">Session</span><select id="session" aria-label="Session"></select></label>
+      <button class="live-btn" id="live" type="button" aria-pressed="true"><span class="pulse" aria-hidden="true"></span><span id="live-text">Live</span></button>
+      <button class="icon-btn" id="theme" type="button" aria-label="Switch light or dark mode" title="Switch light or dark mode">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p class="banner" id="banner" hidden></p>
+
+    <section class="card now" id="now" aria-live="polite">
+      <div class="now-main">
+        <p class="eyebrow" id="now-eyebrow">Loading</p>
+        <h1><span class="dot" id="now-dot" aria-hidden="true"></span><span id="now-title">Waiting for telemetry</span></h1>
+        <p class="now-sub" id="now-sub"></p>
+        <ol class="steps" id="steps" aria-label="Task steps"></ol>
+      </div>
+      <div class="now-side">
+        <div class="clock" id="clock"></div>
+        <div class="clock-note" id="clock-note"></div>
+        <div class="tally" id="tally"></div>
+      </div>
+    </section>
+
+    <section class="vitals" aria-label="Vital signs">
+      <article class="card vital" id="v-rtt"></article>
+      <article class="card vital" id="v-mode"></article>
+      <article class="card vital" id="v-speed"></article>
+      <article class="card vital" id="v-cams"></article>
+    </section>
+
+    <section class="pair">
+      <article class="card seen">
+        <div class="card-head">
+          <div><h2>What the model saw</h2><p class="sub" id="seen-sub">The frame sent with the latest request</p></div>
+          <span class="tag" id="seen-tag"></span>
+        </div>
+        <figure class="frame" id="frame"><div class="frame-empty">No frame yet</div></figure>
+      </article>
+      <article class="card decisions">
+        <div class="card-head">
+          <div><h2>Decisions</h2><p class="sub">Who decided what, and why. Step changes show above.</p></div>
+        </div>
+        <ol class="dlist" id="decisions"></ol>
+      </article>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div><h2>Session</h2><p class="sub" id="tl-sub">Attempts, mode and every round trip. Click or drag to look back.</p></div>
+        <div class="tl-legend" id="tl-legend"></div>
+      </div>
+      <div class="timeline" id="timeline" role="slider" tabindex="0" aria-label="Session time" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"></div>
+    </section>
+
+    <details class="card more" id="more">
+      <summary><span><h2>Details</h2><span class="sub">Cameras, network and the last action chunk</span></span><span class="chev" aria-hidden="true"></span></summary>
+      <div class="more-grid">
+        <div>
+          <h3>Camera checklist</h3>
+          <p class="sub">None of these raise an error on their own.</p>
+          <div id="cam-table"></div>
+        </div>
+        <div>
+          <h3>Network</h3>
+          <p class="sub">This session, up to the time shown above.</p>
+          <dl class="facts" id="net-facts"></dl>
+        </div>
+        <div class="span2">
+          <h3>Last action chunk</h3>
+          <p class="sub" id="chunk-sub">48 actions (2.4 s). The reply should land near action 30; its first 16 actions blend in. The loop never skips ahead.</p>
+          <div id="chunk"></div>
+        </div>
+      </div>
+    </details>
+
+    <footer class="foot" id="foot"></footer>
+  </main>
+  <div id="tip" role="tooltip"></div>
+  <script src="app.js"></script>
+</body>
+</html>
