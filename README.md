@@ -2,6 +2,12 @@
 
 GeoTech robotics hackathon workspace.
 
+## TheHumanTouch — Hold My Beer
+
+Our final hackathon demo goal is **Hold My Beer**: a Maker Arm grasps a drinking cup, lifts it 10 cm and holds it upright and steady. The simulation is moving to **cups only on nine tables in a 3×3 grid**, with live camera previews and recorded trials. The user confirmed drinking cups, not bottle caps.
+
+Cup scene conversion and validation are in progress. Initial trials use empty cups; liquid containment, spill prevention and trained-policy success are not yet demonstrated. See the [demo goal and acceptance criteria](docs/hold-my-beer.md). Previous block trials remain historical evidence, not proof of cup performance.
+
 ## Dashboard
 
 Track the team's progress at **https://zzfadi.github.io/geotech-robotics-hackathon/**. To post an update, see [dashboard/README.md](dashboard/README.md).

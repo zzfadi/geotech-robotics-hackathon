@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T17:33:48-08:00",
+  "workstream": "vrxr",
+  "status": "decision",
+  "what": "TheHumanTouch final demo goal changed to Hold My Beer with drinking cups on all nine tables.",
+  "why": "User replaced the block objective and confirmed drinking cups, not bottle caps.",
+  "where": [
+    "docs/hold-my-beer.md",
+    "README.md"
+  ],
+  "details": [
+    "Old block trials stopped; historical evidence preserved.",
+    "Cup-only scene conversion and real grasp/hold verification are in progress.",
+    "Initial empty-cup evaluation is not a claim of liquid simulation or completed model training."
+  ]
+}
