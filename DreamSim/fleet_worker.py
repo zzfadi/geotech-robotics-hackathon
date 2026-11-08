@@ -335,13 +335,34 @@ class TableRun:
                 return
             packet = self.fresh(after)
             started = time.monotonic()
-            reaching, reach = reach_pending, None
+            reaching, reach, probe = reach_pending, None, False
             if reaching:
                 from pregrasp import approach_action
                 reach_pending = False
                 action, reach = approach_action(packet['state'], self.v)
                 used = None
                 self.log('planned reach from idle to the cup (%d rows, no Dream call)' % reach['rows'])
+            elif self.v.get('assist', {}).get('scripted_probe') and not self.args.dry_run:
+                # DIAGNOSTIC ONLY (no Dream call): close, then rise 2 cm per chunk, to measure
+                # whether the simulated grip carries the cup independent of policy motion.
+                from pregrasp import _fk, solve_pose
+                side = self.v.get('motion_side') or 'left'
+                q = list(packet['state']['q_'+side]); fk = _fk()
+                f = fk.pose(np.clip(q, fk.low+1e-7, fk.high-1e-7))
+                if self.grip_latch is None:
+                    g0 = packet['state']['gap_'+side+'_m']/JAW_MAX_M
+                    rows = [q+[g0+(.525-g0)*k/64] for k in range(65)]  # verified 65-row close to 5.5 cm
+                    self.probe_close = True
+                else:
+                    rows, prev = [], q
+                    for k in range(12):
+                        prev = solve_pose(f[:3, 3]+np.array([0, 0, .02*(k+1)/12]), f[:3, :3], prev, .003, .05)
+                        rows.append(list(prev)+[.525])
+                other = 'q_r_chunk' if side == 'left' else 'q_l_chunk'
+                hold = list(packet['state']['q_'+('right' if side == 'left' else 'left')])+[1.]
+                action = {'q_l_chunk' if side == 'left' else 'q_r_chunk': rows, other: [hold for _ in rows]}
+                used = None
+                reaching = probe = True  # skip policy IK adaptation for this synthetic chunk
             else:
                 action, used = self.infer(packet)
             packet = used or packet
@@ -379,7 +400,17 @@ class TableRun:
                 self.grasp_cycles += 1
                 still = list(packet['state']['q_'+latch_side])
                 action = dict(action)
-                action[latch_key] = [still+[row[6]] for row in action[latch_key]]
+                target_grip = min(row[6] for row in action[latch_key])
+                start_grip = packet['state']['gap_'+latch_side+'_m']/JAW_MAX_M
+                ramp = int(self.v['assist'].get('grasp_ramp_rows', 0))
+                if ramp > 1 and target_grip < start_grip:
+                    # Close smoothly to Dream's commanded grip (like the verified 3 s mechanical
+                    # close) instead of snapping shut and shoving the cup off-centre.
+                    action[latch_key] = [still+[start_grip+(target_grip-start_grip)*k/(ramp-1)] for k in range(ramp)]
+                    other = 'q_r_chunk' if latch_key == 'q_l_chunk' else 'q_l_chunk'
+                    action[other] = [list(action[other][0]) for _ in range(ramp)]
+                else:
+                    action[latch_key] = [still+[row[6]] for row in action[latch_key]]
                 self.log('grasp: arm held still, Dream grip %.2f -> %.2f' % (action[latch_key][0][6], action[latch_key][-1][6]))
             vertical = None
             if self.v.get('assist', {}).get('hold_vertical') and self.grip_latch is not None and not self.args.dry_run:
@@ -403,7 +434,7 @@ class TableRun:
                 self.log('Executing feasible policy prefix %s/%s rows; replan from fresh feedback' %
                          (execution.get('executed_rows'), execution.get('requested_rows')))
             rows_to_play = None if self.args.dry_run else execution.get('executed_rows', self.v['action_rows'])
-            if (reaching or vertical) and not self.args.dry_run:
+            if (reaching or vertical or len(action[latch_key]) > (self.v['action_rows'] or 12)) and not self.args.dry_run:
                 # The planned reach and split held lifts are complete trajectories; the
                 # policy horizon (action_rows) must not truncate them.
                 rows_to_play = len(action[latch_key])
@@ -413,7 +444,8 @@ class TableRun:
                                 'checkpoint': None if self.args.dry_run else self.v['checkpoint'],
                                 'reach': reach,
                                 'controller_source': 'dry-run hold' if self.args.dry_run else
-                                ('planned reach from idle (no Dream call)' if reaching else
+                                ('scripted grip probe (diagnostic, no Dream call)' if probe else
+                                 'planned reach from idle (no Dream call)' if reaching else
                                  'Dream EEF + position IK' if ik else 'Dream joint targets')})
             inference = time.monotonic() - started
             self.status()  # Runtime may have reached its deadline during IK.
@@ -431,6 +463,11 @@ class TableRun:
                 if time.monotonic() > deadline:
                     raise TimeoutError('Cycle %d motion did not finish' % (cycle+1))
                 time.sleep(.1)
+            if getattr(self, 'probe_close', False) and self.grip_latch is None:
+                from pregrasp import tool_height
+                self.grip_latch = .525
+                self.latch_z = tool_height(playback.get('q_'+latch_side, packet['state']['q_'+latch_side]))
+                self.log('probe: closed to the verified 5.5 cm command (gap %.1f cm)' % (playback.get('gap_'+latch_side+'_m', 0)*100))
             if self.v.get('assist', {}).get('grip_latch') and not self.args.dry_run:
                 commanded = float(action[latch_key][-1][6])
                 observed = playback.get('gap_'+latch_side+'_m')
