@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T20:50:52-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Draft Sunday run-of-day: 9 AM standup, 11:30 feature freeze, filming, submitted by 2:30, on site at 3",
+  "why": "Brian asked for an exact schedule, a risk plan and the pitch media list; the submission cutoff and finalist time are still unpublished, so the draft is safe for a 3 or 4 PM cutoff.",
+  "where": ["docs/slack-log-2026-11-07.md"],
+  "details": "Proposed by the team Slack assistant and not yet agreed. Five standup decisions: pickup from a taped mark, fixed-pose fist bump, scripted push-to-talk voice, show whatever sim prop succeeds, and name a submission owner and an e-stop person. Recommends cutting the Isaac stream and the hold interlock."
+}

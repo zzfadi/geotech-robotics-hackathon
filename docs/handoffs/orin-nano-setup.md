@@ -8,9 +8,15 @@ This plan was checked against NVIDIA's resources below. No first boot, firmware 
 
 - **Boot image:** JetPack **6.2.1 / Jetson Linux 36.4.4**, then NVIDIA's supported APT update to **6.2.3 / 36.5.2**. Both use Ubuntu 22.04. This is NVIDIA's documented JetPack 6 microSD route.
 - **Conditional bridge:** updated JetPack **5.1.3**, filename `JP513-orin-nano-sd-card-image_b29.zip`, only if the board has older QSPI firmware. Check the version before choosing the card image.
-- Mac staging destination: `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`. This path is a preparation target, not proof that either download is complete. Check the actual files and integrity results before flashing.
+- Mac staging destination: `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`. See `START-HERE.txt` there and the [preparation evidence](../validation/jetson-prep-2026-11-07.json) for completed downloads, sizes, hashes and verification scope. Etcher 2.1.9 is installed in `/Applications`.
 - Check ZIP integrity and record each completed file's SHA-256. The linked NVIDIA 36.4.4 hash manifest covers BSP artifacts, **not the SD ZIP**; a locally computed hash is not a match against a published NVIDIA digest.
 - Write the selected image with [balenaEtcher](https://etcher.balena.io), including its write validation. Identify the microSD by capacity/device before writing: flashing erases that card. Copying the ZIP onto a formatted card is insufficient.
+
+## Cached runtime and project
+
+The staging folder also contains `jetson-runtime-ready.tar.gz` (Linux ARM64 uv 0.13.7, Python 3.12.15, pinned Maker Arm SDK source, 15 base dependency wheels and two build-tool wheels) and `geotech-robotics-hackathon-4070db1.bundle` (complete Git history at that main commit). Transfer these after SSH works. The runtime archive includes its own source/hash manifest and offline instructions; its ARM64 code has not been executed on the Mac or Jetson.
+
+`START-HERE.txt` explains cloning from the Git bundle, restoring the GitHub remote, synchronizing main, and selecting the cached environment with `ARMCTL_PYTHON`. Compare any newer requirement changes before installing from this frozen cache. NVIDIA firmware/APT upgrades and needed Ubuntu packages still require the board and network; they are not part of the Python bundle.
 
 ## What to plug in
 
