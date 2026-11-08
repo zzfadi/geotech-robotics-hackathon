@@ -321,3 +321,9 @@ hitches 6.5/s → 0, and 58 FPS from run start. Trade-off: arm links no longer p
 - **Place 7 (`20261108-104941-0fc4de`): 9/9 handed over and placed** — every cup taken by the left arm, passed
   to the right arm, put back on the table and released, upright (0.0°) and still for 3 s; 144 s for all nine.
   T02 used both re-reaches.
+- Place 8, first attempt (`20261108-105232-dc3b62`): all nine stopped after 38 s. The Multi-User mirror found
+  another editor transaction open at sample time and raised `Mirror sample requires no enclosing transaction`,
+  which ended the whole fleet. The mirror is a 0.5 Hz visual share, so an occupied moment now skips that sample
+  and retries; only the teardown restore still requires it.
+- Place 8 (`20261108-105434-5fc460`): **8/9** confirmation. The miss: the left jaws closed past a cup on the table
+  (no contact at 4.5 cm). Left grasp misses now re-reach from the live cup position 1 cm deeper (up to 2 times).

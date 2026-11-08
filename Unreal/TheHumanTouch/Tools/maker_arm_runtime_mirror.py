@@ -121,8 +121,14 @@ class RuntimeMirror:
                 if not all(math.isfinite(v) for v in _values(pose)):
                     raise RuntimeError('Nonfinite runtime pose: '+key)
                 measured[key] = pose
-            # No editor transaction survives this synchronous Slate callback.
-            self._apply(measured, 'Measured runtime Maker Arm sample')
+            # Normally no editor transaction survives this synchronous Slate callback, but a user
+            # drag/details edit or a Multi-User apply can hold one open. A visual sample is
+            # optional: skip it and retry shortly instead of stopping every table's simulation
+            # (place 8: one such moment ended all nine runs).
+            if not self._apply(measured, 'Measured runtime Maker Arm sample'):
+                self.skipped = getattr(self, 'skipped', 0)+1
+                self.last = now-self.period*.75
+                return False
             self.last = now
             return True
         except Exception as error:
@@ -130,18 +136,20 @@ class RuntimeMirror:
             self.finish(commit=False)
             raise
 
-    def _apply(self, poses, description):
+    def _apply(self, poses, description, required=False):
         changed = {key: pose for key, pose in poses.items()
                    if not _same(pose, self.targets[key].get_actor_transform())}
         if not changed:
-            return
+            return True
         before = tracking.undo_count()
         index = unreal.SystemLibrary.begin_transaction('CoPresence', unreal.Text(
             tracking.transaction_title(description)), self.targets[next(iter(changed))])
         if index != 0:
             if index > 0:
                 unreal.SystemLibrary.end_transaction()
-            raise RuntimeError('Mirror sample requires no enclosing transaction')
+            if required:
+                raise RuntimeError('Mirror sample requires no enclosing transaction')
+            return False  # another transaction is open: the caller skips this optional sample
         try:
             for key, pose in changed.items():
                 actor = self.targets[key]
@@ -154,6 +162,7 @@ class RuntimeMirror:
             unreal.SystemLibrary.end_transaction()
             if tracking.current_task['id'] == self.task_id:
                 tracking.current_task['transactions'] += tracking.undo_count()-before
+        return True
 
     def finish(self, commit=False):
         if self.closed:
@@ -171,7 +180,7 @@ class RuntimeMirror:
                     # Preserve concurrent edits rather than overwriting them.
                     if _same(actor.get_actor_transform(), self.expected[key]):
                         restored[key] = self.original[key]
-                self._apply(restored, 'Restore runtime diagnostic editor poses')
+                self._apply(restored, 'Restore runtime diagnostic editor poses', required=True)
         finally:
             if self.callback is not None:
                 unreal.unregister_slate_post_tick_callback(self.callback)

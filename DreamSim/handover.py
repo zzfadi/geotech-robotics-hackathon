@@ -183,6 +183,7 @@ class Handover:
         self.place_heights = []
         self.recoveries = 0
         self.right_reaches = 0
+        self.left_reaches = 0
 
     # ---- plumbing ---------------------------------------------------------------------
     def play(self, packet, action, label, extra=None):
@@ -291,10 +292,19 @@ class Handover:
                 continue
             if self.phase == 'reach_left':
                 variant = tr.v
-                if self.recoveries:
-                    # Re-grasp where the dropped cup now stands (live position, not the reset layout).
-                    variant = {**tr.v, 'target': {**tr.v['target'], 'location_cm': list(c['table_local_cm'])}}
-                action, info = approach_action(state, variant)
+                if self.recoveries or self.left_reaches:
+                    # Re-grasp where the cup now stands (live position, not the reset layout); after
+                    # a miss, vary the depth so the cup lands inside the pad corridor.
+                    depth = float((tr.v.get('assist') or {}).get('grasp_depth_cm', 0.))+(0., 1., -.5)[self.left_reaches % 3]
+                    variant = {**tr.v, 'target': {**tr.v['target'], 'location_cm': list(c['table_local_cm'])},
+                               'assist': {**(tr.v.get('assist') or {}), 'grasp_depth_cm': depth}}
+                try:
+                    action, info = approach_action(state, variant)
+                except ValueError:
+                    if variant is tr.v:
+                        raise
+                    variant = {**variant, 'assist': {**variant['assist'], 'grasp_depth_cm': (tr.v.get('assist') or {}).get('grasp_depth_cm', 0.)}}
+                    action, info = approach_action(state, variant)
                 playback = self.play(packet, action, 'planned reach (left, no Dream call)', info)
                 self.phase = 'grasp_left'
             elif self.phase in ('grasp_left', 'grasp_right'):
@@ -322,6 +332,19 @@ class Handover:
                     tr.log('%s: jaws closed on the cup at %.1f cm' % (self.phase, observed*100))
                     self.grasp_cycles = 0
                     self.phase = 'lift_left' if side == 'left' else 'release_left'
+                elif side == 'left' and self.grasp_cycles >= 2 and observed <= .055 and self.left_reaches < 2:
+                    # Left jaws closed past the cup on the table (place 8, T00): open, lift clear and
+                    # reach again from the live cup position, 1 cm deeper.
+                    self.left_reaches += 1
+                    self.counts['left_reaches'] = self.left_reaches
+                    tr.log('grasp_left: jaws stopped at %.1f cm (not the cup body); re-reaching (%d)' % (observed*100, self.left_reaches))
+                    q = list(packet['state']['q_left'])
+                    g0 = packet['state']['gap_left_m']/JAW_MAX_M
+                    rows = [q+[g0+(.95-g0)*k/14] for k in range(15)]+lift_clear_rows(q, 8.)[1:]
+                    action = {KEY['left']: rows, KEY['right']: hold_rows(packet['state'], 'right', len(rows))}
+                    playback = self.play(packet, action, 'planned re-reach: open and lift clear (left, no Dream call)')
+                    self.grasp_cycles = 0
+                    self.phase = 'reach_left'
                 elif side == 'right' and self.grasp_cycles >= 2 and observed <= .055 and self.right_reaches < 2:
                     # Jaws closed past the cup or on a narrow off-centre chord (place 6, T05: 5.2 cm):
                     # open, slide back out, and reach again from the live cup position with a

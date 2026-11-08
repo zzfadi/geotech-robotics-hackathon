@@ -150,9 +150,10 @@ class Editor:
         """Run maker_arm_fleet_runtime.<function> on the next editor tick and wait for its result file."""
         result_path = Path(result_path)
         result_path.unlink(missing_ok=True)
-        code = ('import importlib, maker_arm_fleet_layout, maker_arm_fleet, maker_arm_fleet_runtime, maker_arm_friction_grip\n'
+        code = ('import importlib, maker_arm_fleet_layout, maker_arm_fleet, maker_arm_fleet_runtime, maker_arm_friction_grip, maker_arm_runtime_mirror\n'
                 'importlib.reload(maker_arm_fleet_layout); importlib.reload(maker_arm_fleet)\n'
-                'maker_arm_fleet_runtime._session and maker_arm_fleet_runtime._session.callback or importlib.reload(maker_arm_friction_grip)\n'
+                'maker_arm_fleet_runtime._session and maker_arm_fleet_runtime._session.callback or '
+                '(importlib.reload(maker_arm_friction_grip), importlib.reload(maker_arm_runtime_mirror))\n'
                 'runtime = maker_arm_fleet_runtime if maker_arm_fleet_runtime._session and maker_arm_fleet_runtime._session.callback '
                 'else importlib.reload(maker_arm_fleet_runtime)\n'
                 'result = runtime.deferred(%r, %r, %r)' % (function, list(args), str(result_path)))
