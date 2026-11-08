@@ -11,8 +11,10 @@ Hand mode ("hold my beer"):
   4. Grasp: close. The jaw angle says what happened: on nothing (open, try
      again), something thinner than a can such as fingers (open at once, try
      again), or the can.
-  5. Release: keep holding still until the hand is off the can, continuously.
-     If the person never lets go, open the jaws and give it back.
+  5. Release: keep holding still until the hand is off the can, continuously,
+     and the detector saw it off the can (a hand that just vanishes, or a
+     covered lens, is not a release). If the person never lets go, or the
+     release is never seen, open the jaws and give it back.
   6. Retreat: a fresh gate grant, then a guarded move to the carry pose.
   7. Confirm: hold for a moment, re-read the jaw angle. Success means the can
      is still held at the carry pose; the arm stays holding for the next beat.
@@ -334,6 +336,31 @@ class Routine:
                 return False
             self._sleep(0.03)
 
+    @staticmethod
+    def _release_evidence():
+        """A release predicate for _wait_for that needs positive evidence.
+
+        A frame counts toward the release only once the hand has been seen in
+        view and off the can since it was last on it. After that, the hand may
+        leave the view (people pull their hand back). A hand on the can, or an
+        invalid frame, starts over. "No hand on the can" straight after "hand
+        on the can", with no hand in view, is uncertain: it may be a hand
+        hidden behind the can or a covered lens, so the arm keeps holding.
+        """
+        watch = {"seen_off": False, "unseen": False}
+
+        def released(sc: Scene) -> bool:
+            if not sc.valid or sc.hand_on_can is not False:
+                watch["seen_off"] = watch["unseen"] = False
+                return False
+            if sc.hand_seen_off_can:
+                watch["seen_off"], watch["unseen"] = True, False
+            elif not watch["seen_off"]:
+                watch["unseen"] = True
+            return watch["seen_off"]
+
+        return released, watch
+
     def _check_holding(self) -> None:
         self._status()
         if not self._still_holding():
@@ -422,9 +449,15 @@ class Routine:
         self._decide("loop", "Holding still until the hand lets go",
                      "Pulling away while the person still holds the can would tug it.")
         self._start_watch("jaws")
-        if not self._wait_for("jaws", lambda s: s.released, t.release_debounce_s,
+        released, watch = self._release_evidence()
+        if not self._wait_for("jaws", released, t.release_debounce_s,
                               t.release_timeout_s, on_poll=self._check_holding):
             self._open()
+            if watch["unseen"]:
+                self._decide("controller", "Gave the can back",
+                             "The hand left the camera's view while on the can, so the release was never seen.")
+                raise Abort("release_not_seen", "The hand vanished from view while on the can (hidden hand or "
+                            "covered lens) and was never seen off it for %.0f s." % t.release_timeout_s)
             self._decide("controller", "Gave the can back", "The person kept holding it.")
             raise Abort("person_kept_holding", "The hand stayed on the can for %.0f s." % t.release_timeout_s)
         self._check_holding()

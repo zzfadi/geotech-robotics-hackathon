@@ -200,23 +200,38 @@ class Controller:
         return st
 
 
-def main():
+def refuse_early_clients(server):
+    """Drop connections that queued on the claimed port while the arm started.
+
+    Before the port was claimed first, such a client was refused; keep it that
+    way, so a move sent before READY never runs once the arm is enabled.
+    """
+    sock, dropped = server.socket, 0
+    sock.setblocking(False)
+    try:
+        while True:
+            try:
+                conn, _ = sock.accept()
+            except ConnectionAbortedError:
+                continue
+            except OSError:  # BlockingIOError: nothing (more) queued
+                break
+            conn.close()
+            dropped += 1
+    finally:
+        sock.setblocking(True)
+    return dropped
+
+
+def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('arm')
     p.add_argument('--operator-cutoff', action='store_true', required=True)
     p.add_argument('--port', type=int, default=8765)
     p.add_argument('--log', type=Path, required=True)
-    args = p.parse_args()
-    name, serial = resolve(args.arm)
+    args = p.parse_args(argv)
     args.log.parent.mkdir(parents=True, exist_ok=True)
-    arm = Arm(config(), GsUsbBackend(serial))
-    arm.connect()
-    ctl = Controller(arm, args.log)
-    ctl.record(event='connect', arm=name, serial=serial, when=datetime.now(timezone.utc).isoformat())
-    arm.enable()
-    ctl.enabled_at = time.monotonic()
-    ctl.record(event='enabled', state=ctl.state())
-    threading.Thread(target=ctl.monitor, daemon=True).start()
+    arm = ctl = None
 
     class Handler(socketserver.StreamRequestHandler):
         def handle(self):
@@ -251,18 +266,42 @@ def main():
                     threading.Thread(target=server.shutdown, daemon=True).start()
                     return
 
+    # Claim the port before touching the arm: a busy port (another server, an old
+    # control center) must fail here, with the motors never connected or enabled.
+    # Connections made while the arm starts are dropped before READY, unserved.
     socketserver.TCPServer.allow_reuse_address = True
-    server = socketserver.TCPServer(('127.0.0.1', args.port), Handler)
-    print(f'READY {name} port {args.port}', flush=True)
     try:
-        server.serve_forever()
+        server = socketserver.TCPServer(('127.0.0.1', args.port), Handler)
+    except OSError as exc:
+        print(f'PORT_BUSY 127.0.0.1:{args.port} ({exc}); arm not connected or enabled', file=sys.stderr, flush=True)
+        return 1
+    try:
+        name, serial = resolve(args.arm)
+        arm = Arm(config(), GsUsbBackend(serial))
+        arm.connect()
+        ctl = Controller(arm, args.log)
+        ctl.record(event='connect', arm=name, serial=serial, when=datetime.now(timezone.utc).isoformat())
+        arm.enable()
+        ctl.enabled_at = time.monotonic()
+        ctl.record(event='enabled', state=ctl.state())
+        threading.Thread(target=ctl.monitor, daemon=True).start()
+        try:
+            dropped = refuse_early_clients(server)
+            if dropped:
+                print(f'REFUSED {dropped} connection(s) made before READY', flush=True)
+                ctl.record(event='refused_early_clients', count=dropped)
+            print(f'READY {name} port {args.port}', flush=True)
+            server.serve_forever()
+        finally:
+            if not ctl.closed:
+                # Never drop an elevated arm on server exit: keep holding until released.
+                # The port stays claimed meanwhile, so no second server can start on this arm.
+                print('SERVER_EXIT_WITH_ARM_ENABLED: holding; use physical cutoff', flush=True)
+                ctl.record(event='server_exit_holding', state=ctl.state())
+                while True:
+                    time.sleep(1)
     finally:
-        if not ctl.closed:
-            # Never drop an elevated arm on server exit: keep holding until released.
-            print('SERVER_EXIT_WITH_ARM_ENABLED: holding; use physical cutoff', flush=True)
-            ctl.record(event='server_exit_holding', state=ctl.state())
-            while True:
-                time.sleep(1)
+        server.server_close()
 
 
 if __name__ == '__main__':

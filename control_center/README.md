@@ -12,17 +12,19 @@ Python 3.9 or newer, standard library only. From the repo root, on the Mac or on
 python3 -m control_center serve --demo
 ```
 
-Then open http://127.0.0.1:8765. `--demo` writes three finished demo sessions (if the folder is empty) and runs a live simulated one, so every view has data before the arm is wired. Demo sessions say so in a banner.
+Then open http://127.0.0.1:8780. `--demo` writes three finished demo sessions (if the folder is empty) and runs a live simulated one, so every view has data before the arm is wired. Demo sessions say so in a banner.
 
 Without `--demo` it serves whatever is in the sessions folder: `control_center/local/sessions/` (git-ignored), or `--data <folder>`, or `$CONTROL_CENTER_DATA`.
 
 **From the Mac, with the server on the Orin Nano:** keep it on localhost there and tunnel the port.
 
 ```
-ssh -N -L 8765:127.0.0.1:8765 <user>@<orin-host>
+ssh -N -L 8780:127.0.0.1:8780 <user>@<orin-host>
 ```
 
-Then open http://127.0.0.1:8765 on the Mac.
+Then open http://127.0.0.1:8780 on the Mac.
+
+The control center uses port **8780**. Port 8765 belongs to the arm tools (`arm/tools/pickup_server.py`, `pickup_client.py` and `handoff/`); the two used to collide, so do not move it back. Use `--port` to pick another one.
 
 Other commands:
 

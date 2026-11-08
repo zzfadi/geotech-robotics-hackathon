@@ -1,0 +1,7 @@
+{"name": "Brian lets go (his hand is seen off the can for 0.2 s), then pulls his hand out of view. The release was seen, so the arm carries the can back",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 8},
+              {"from": 8, "to": 14, "can_in_jaws": true, "hand_on_can": true},
+              {"from": 14, "to": 14.2, "can_in_jaws": true, "hand_on_can": false, "hand_visible": true},
+              {"from": 14.2, "to": 60, "can_in_jaws": true, "hand_on_can": false, "hand_visible": false}],
+ "expect": {"outcome": "success", "reason": "held", "holding": true, "grasp_attempts": 1, "pauses": 0}}

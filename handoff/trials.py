@@ -1,7 +1,8 @@
 """Tally handoff trials and apply the morning rule.
 
-The draft run-of-day rule: demo the hand-to-arm handoff only if it succeeds 8 of
-10 times by 11:00; otherwise demo the pickup from the taped mark.
+The rule: the pickup from the taped mark is the live beat, unless the
+hand-to-arm handoff reached 8 of its last 10 live trials. The mark itself
+should also be 8 of 10 before it is locked (target about 10:15).
 
   python3 -m handoff.trials                    # arm/local/handoff/trials.jsonl
   python3 -m handoff.trials --last 10 some.jsonl
@@ -28,15 +29,21 @@ def tally(rows, last=OF):
         reasons = collections.Counter(r.get("reason") for r in recent if r.get("outcome") != "success")
         out[mode] = {"live_trials": len(runs), "last": len(recent), "successes": wins,
                      "failures_by_reason": dict(reasons.most_common())}
-    h = out["hand"]
+    h, m = out["hand"], out["mark"]
     if h["last"] < OF:
-        verdict = "hand handoff: only %d live trials so far, need %d to decide" % (h["last"], OF)
+        verdict = "demo the taped mark: hand handoff has only %d live trials, needs %d of %d" % (
+            h["last"], NEED, OF)
     elif h["successes"] >= NEED:
         verdict = "hand handoff passes (%d of %d): demo it" % (h["successes"], h["last"])
     else:
         verdict = "hand handoff is %d of %d, under %d of %d: demo the taped mark" % (
             h["successes"], h["last"], NEED, OF)
     out["verdict"] = verdict
+    if m["last"] >= OF and m["successes"] >= NEED:
+        out["mark"]["status"] = "mark passes (%d of %d): ready to lock" % (m["successes"], m["last"])
+    else:
+        out["mark"]["status"] = "mark is %d of %d live trials, needs %d of %d before it is locked" % (
+            m["successes"], m["last"], NEED, OF)
     return out
 
 

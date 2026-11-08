@@ -12,7 +12,8 @@ Boxes, one per frame and camera::
 Flags, when the detector already decided::
 
     {"captured_at": 12.345, "valid": true,
-     "hand_in_path": false, "can_in_jaws": true, "hand_on_can": true}
+     "hand_in_path": false, "can_in_jaws": true, "hand_on_can": true,
+     "hand_visible": true}
 
 ``captured_at`` is the frame's capture time on the routine's monotonic clock
 (time.monotonic() on the same host), never receipt or inference time. Boxes
@@ -25,6 +26,10 @@ Facts:
   can_in_jaws   the best can box is centred in the jaw zone and its width is in
                 the expected band (it is close, not across the room).
   hand_on_can   a hand box overlaps the can box: the person is still holding it.
+  hand_visible  the jaw camera sees a hand at all. "No hand on the can" only
+                counts as letting go if the hand was seen off the can (see
+                Scene.hand_seen_off_can); a hand that just vanishes, or a
+                covered lens, may still be holding. Missing means unknown.
 """
 from __future__ import annotations
 
@@ -98,6 +103,14 @@ class Scene:
     hand_on_can: Optional[bool] = None
     can_offset: Optional[Tuple[float, float]] = None  # can centre minus jaw centre
     reason: str = ""
+    hand_visible: Optional[bool] = None
+
+    @property
+    def hand_seen_off_can(self) -> bool:
+        """Positive evidence of a release: the can is in the jaws, a hand is in
+        view and it is not on the can. Not just "no hand seen"."""
+        return (self.valid and self.can_in_jaws is True and self.hand_on_can is False
+                and self.hand_visible is True)
 
     @property
     def presenting(self) -> bool:
@@ -130,6 +143,7 @@ def facts_from_boxes(dets, zones: Zones, *, path: bool, jaws: bool) -> Dict[str,
         out["hand_in_path"] = any(_intersects(b, zones.path) for b in hands)
     if jaws:
         cans = sorted(_labelled(dets, "can", zones.min_conf), reverse=True)
+        out["hand_visible"] = bool(hands)
         if not cans:
             out.update(can_in_jaws=False, hand_on_can=False, can_offset=None)
         else:
@@ -149,6 +163,8 @@ def facts_from_boxes(dets, zones: Zones, *, path: bool, jaws: bool) -> Dict[str,
 # vision.moments states (python3 -m vision.run --verbose prints one record per frame).
 _VISION_CAN_IN_JAWS = ("ENGAGED", "RELEASED")
 _VISION_HAND_OFF_CAN = ("RELEASED", "EMPTY")
+# RELEASED reasons in vision.moments: the hand seen off the can, or no hand seen.
+_VISION_RELEASED_HAND_VISIBLE = {"hand_let_go": True, "can_without_hand": False}
 
 
 def flags_from_vision(record: dict) -> Optional[dict]:
@@ -160,6 +176,11 @@ def flags_from_vision(record: dict) -> Optional[dict]:
     ``motion_ok`` false means a hand the arm must not move near. Only the
     per-frame moment is used: the vision coordinator's own gate and actions
     are ignored, so exactly one turn gate sits at the arm boundary (here).
+
+    vision.moments reads "no hand in view while an engaged can is" as
+    RELEASED (reason ``can_without_hand``), and no hand and no can as EMPTY.
+    A hidden hand or a covered lens looks the same, so those frames carry
+    ``hand_visible: false`` and are not evidence of a release on their own.
     """
     m = record.get("moment")
     if not isinstance(m, dict) or not _num(m.get("captured_at")):
@@ -167,10 +188,19 @@ def flags_from_vision(record: dict) -> Optional[dict]:
     state, ok = m.get("state"), m.get("motion_ok")
     if m.get("valid") is not True or state == "INVALID" or type(ok) is not bool:
         return {"captured_at": m["captured_at"], "valid": False}
-    return {"captured_at": m["captured_at"], "valid": True,
-            "hand_in_path": not ok,
-            "can_in_jaws": state in _VISION_CAN_IN_JAWS,
-            "hand_on_can": state not in _VISION_HAND_OFF_CAN}
+    if state == "EMPTY":
+        visible = False
+    elif state == "RELEASED":
+        visible = _VISION_RELEASED_HAND_VISIBLE.get(m.get("reason"))
+    else:
+        visible = True
+    out = {"captured_at": m["captured_at"], "valid": True,
+           "hand_in_path": not ok,
+           "can_in_jaws": state in _VISION_CAN_IN_JAWS,
+           "hand_on_can": state not in _VISION_HAND_OFF_CAN}
+    if visible is not None:
+        out["hand_visible"] = visible
+    return out
 
 
 @dataclass
@@ -218,7 +248,7 @@ class Fuser:
             else:
                 out.append(Scene(e.captured_at, True, e.facts.get("hand_in_path"),
                                  e.facts.get("can_in_jaws"), e.facts.get("hand_on_can"),
-                                 e.facts.get("can_offset")))
+                                 e.facts.get("can_offset"), hand_visible=e.facts.get("hand_visible")))
         return out
 
     def push(self, msg: dict) -> None:
@@ -252,9 +282,9 @@ class Fuser:
                     self._store(role, _Latest(t, valid, facts, reason))
             return
         # Flags message: one source that already decided all three.
-        facts = {k: msg[k] for k in ("hand_in_path", "can_in_jaws", "hand_on_can", "can_offset")
-                 if k in msg}
-        for k in ("hand_in_path", "can_in_jaws", "hand_on_can"):
+        facts = {k: msg[k] for k in ("hand_in_path", "can_in_jaws", "hand_on_can", "can_offset",
+                                     "hand_visible") if k in msg}
+        for k in ("hand_in_path", "can_in_jaws", "hand_on_can", "hand_visible"):
             if k in facts and type(facts[k]) is not bool:
                 valid = False
         for role, key in (("path", "hand_in_path"), ("jaws", "can_in_jaws")):
@@ -275,11 +305,13 @@ class Fuser:
                 valid, reason = False, "stale"
         merged: Dict[str, object] = {}
         for r, e in zip(roles, entries):
-            keys = ("hand_in_path",) if r == "path" else ("can_in_jaws", "hand_on_can", "can_offset")
+            keys = ("hand_in_path",) if r == "path" else ("can_in_jaws", "hand_on_can", "can_offset",
+                                                          "hand_visible")
             for k in keys:
                 if k in e.facts:
                     merged[k] = e.facts[k]
         if not valid:
             return Scene(captured, False, reason=reason)
         return Scene(captured, True, merged.get("hand_in_path"), merged.get("can_in_jaws"),
-                     merged.get("hand_on_can"), merged.get("can_offset"))
+                     merged.get("hand_on_can"), merged.get("can_offset"),
+                     hand_visible=merged.get("hand_visible"))

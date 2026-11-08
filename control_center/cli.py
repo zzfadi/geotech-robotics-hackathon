@@ -1,6 +1,6 @@
 """python3 -m control_center <command>
 
-  serve      open the control center on http://127.0.0.1:8765
+  serve      open the control center on http://127.0.0.1:8780
   demo       write a live demo session (simulated robot) while you watch
   history    write a few finished demo sessions for the history view
   validate   check a session's events against the schema
@@ -14,6 +14,7 @@ import threading
 import time
 
 from control_center import telemetry
+from control_center.server import DEFAULT_PORT
 
 DEFAULT_DATA = os.environ.get('CONTROL_CENTER_DATA') or os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'local', 'sessions')
@@ -26,7 +27,8 @@ def main(argv=None):
     sub = p.add_subparsers(dest='command')
     s = sub.add_parser('serve', help='serve the UI')
     s.add_argument('--host', default='127.0.0.1', help='bind address; keep 127.0.0.1 and use an SSH tunnel')
-    s.add_argument('--port', type=int, default=8765)
+    s.add_argument('--port', type=int, default=DEFAULT_PORT,
+                   help='default %(default)s; 8765 is the arm server\'s port')
     s.add_argument('--demo', action='store_true', help='also run a live demo session and seed some history')
     d = sub.add_parser('demo', help='write a live simulated session')
     d.add_argument('--minutes', type=float, default=15)

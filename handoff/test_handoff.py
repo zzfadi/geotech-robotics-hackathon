@@ -148,6 +148,96 @@ class Detections(unittest.TestCase):
                          {"captured_at": 1.0, "valid": False})
 
 
+class OcclusionFailSafe(unittest.TestCase):
+    """A hand that vanishes from view while on the can is not a release."""
+
+    def _run(self, sc):
+        cfg = load()
+        clock = FakeClock(limit=300)
+        segments = replay._segments(sc["timeline"])
+        fuser = Fuser(stale_after_s=cfg.timing.stale_after_s)
+        feed = replay.ReplayFeed(segments, fuser, clock, 15)
+        arm = FakeArm(clock, cfg.poses["ready"].q,
+                      can_between_jaws=lambda t: bool((replay._at(segments, t) or {}).get("can_in_jaws")))
+        result = Routine(cfg, arm, fuser, ScriptedOperator(clock, sc["operator"]), clock,
+                         before_read=feed.pump).run()
+        return cfg, result, arm.calls
+
+    def test_hidden_hand_never_carries_the_can_away(self):
+        for name in ("hand_occluded_while_holding", "hand_lens_covered_while_holding"):
+            with self.subTest(name):
+                cfg, result, calls = self._run(scenario(name))
+                self.assertEqual((result.outcome, result.reason), ("failed", "release_not_seen"))
+                steps = [e["step"] for e in result.events if e["kind"] == "step"]
+                self.assertNotIn("retreat", steps)
+                self.assertNotIn("confirm", steps)
+                # After the grasp, nothing moves until the jaws are open again.
+                grips = [i for i, c in enumerate(calls) if c["cmd"] == "grip"]
+                close = next(i for i in grips if calls[i]["deg"] == cfg.gripper.close_deg)
+                reopen = next(i for i in grips if i > close and calls[i]["deg"] == cfg.gripper.open_deg)
+                self.assertFalse([c for c in calls[close:reopen] if c["cmd"] == "move"])
+                # And it waited the full release timeout before giving the can back.
+                self.assertGreaterEqual(calls[reopen]["t"] - calls[close]["t"],
+                                        cfg.gripper.close_wait_s + cfg.timing.release_timeout_s - 0.1)
+
+    def test_hidden_then_seen_letting_go_completes(self):
+        sc = {"operator": [[1.0, "go"]], "timeline": [
+            {"from": 0, "to": 8},
+            {"from": 8, "to": 14, "can_in_jaws": True, "hand_on_can": True},
+            {"from": 14, "to": 17, "can_in_jaws": True, "hand_on_can": False, "hand_visible": False},
+            {"from": 17, "to": 60, "can_in_jaws": True, "hand_on_can": False, "hand_visible": True}]}
+        _, result, _ = self._run(sc)
+        self.assertEqual((result.outcome, result.reason), ("success", "held"))
+        release = next(e["t"] for e in result.events if e["kind"] == "contact" and e["what"] == "release")
+        self.assertGreaterEqual(release, 17.0)
+
+    def test_release_predicate(self):
+        from handoff.detections import Scene
+        released, watch = Routine._release_evidence()
+        on = Scene(1.0, True, False, True, True)
+        gone = Scene(1.1, True, False, True, False, hand_visible=False)
+        seen_off = Scene(1.2, True, False, True, False, hand_visible=True)
+        unknown = Scene(1.3, True, False, True, False)
+        self.assertFalse(released(on))
+        self.assertFalse(released(gone))
+        self.assertTrue(watch["unseen"])
+        self.assertFalse(released(unknown))
+        self.assertTrue(released(seen_off))
+        self.assertTrue(released(gone))          # seen letting go, then left the view
+        self.assertFalse(released(on))           # back on the can: start over
+        self.assertFalse(released(gone))
+        self.assertFalse(released(Scene(1.4, False)))
+
+    def test_boxes_and_vision_report_hand_visible(self):
+        zones = Zones(jaws=(0.3, 0.3, 0.7, 0.8))
+        can = {"label": "can", "box": [0.35, 0.3, 0.65, 0.8], "conf": 0.9}
+        far_hand = {"label": "hand", "box": [0.0, 0.0, 0.1, 0.1], "conf": 0.9}
+        self.assertFalse(facts_from_boxes([can], zones, path=False, jaws=True)["hand_visible"])
+        f = facts_from_boxes([can, far_hand], zones, path=False, jaws=True)
+        self.assertEqual((f["hand_visible"], f["hand_on_can"]), (True, False))
+        self.assertFalse(facts_from_boxes([], zones, path=False, jaws=True)["hand_visible"])
+
+        def vision(state, reason):
+            return flags_from_vision({"moment": {"captured_at": 1.0, "valid": True, "state": state,
+                                                 "reason": reason, "motion_ok": True}})
+        self.assertEqual(vision("RELEASED", "can_without_hand")["hand_visible"], False)
+        self.assertEqual(vision("RELEASED", "hand_let_go")["hand_visible"], True)
+        self.assertEqual(vision("EMPTY", "no_hand_in_keep_out")["hand_visible"], False)
+        self.assertEqual(vision("ENGAGED", "holding_offer")["hand_visible"], True)
+        self.assertNotIn("hand_visible", vision("RELEASED", None))
+
+    def test_vision_occlusion_through_the_fuser_is_not_seen_off(self):
+        f = Fuser()
+        f.push({"moment": {"captured_at": 1.0, "valid": True, "state": "ENGAGED", "reason": "holding_offer",
+                           "motion_ok": True}})
+        f.push({"moment": {"captured_at": 1.1, "valid": True, "state": "RELEASED", "reason": "can_without_hand",
+                           "motion_ok": True}})
+        f.push({"moment": {"captured_at": 1.2, "valid": True, "state": "RELEASED", "reason": "hand_let_go",
+                           "motion_ok": True}})
+        seen = [sc.hand_seen_off_can for sc in f.history("jaws", None)]
+        self.assertEqual(seen, [False, False, True])
+
+
 class Server(socketserver.StreamRequestHandler):
     def handle(self):
         for line in self.rfile:
