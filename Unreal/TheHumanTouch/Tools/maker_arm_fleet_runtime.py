@@ -46,6 +46,9 @@ SOLID_CUP_COLLISION = False  # tested opt-in: no carry improvement (1/9)
 SOLID_CUP_MESH = '/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/SM_DrinkingCup_SolidCollision'
 CUP_FRICTION = .8  # baseline; 1.0 cup / 1.5 Max pads tested: 0/9
 PAD_FRICTION = .8
+# Squeeze-activated friction grip for the kinematic pads (user-requested realistic side
+# grasp: pads squeeze the paper cup a little and the arm can still take it).
+FRICTION_GRIP = True
 WAKE_PROPS_DURING_MOTION = False  # tested: awake cups were ejected by the kinematic pads (0/9 carried)
 WAKE_AFTER_MOTION_S = 3.
 CUP_MASS_KG = .05  # uncalibrated; 15 g (empty paper cup) tipped far more often in batch 17
@@ -133,6 +136,9 @@ class Table:
         self.error = None
         self.expert = None  # Explicit opt-in only; normal policy path unchanged.
         self.desired_gap = {}
+        self.grips = {}
+        self.grip_status = {}
+        self.grip_events = []
         self.last_grip_tick = time.monotonic()
 
     def name(self, source):
@@ -450,6 +456,18 @@ class Session:
         table.state['q_'+side] = row[:6]
         table.state['gap_'+side+'_m'] = gap
         table.state['contact_stop_'+side] = contacts
+        if FRICTION_GRIP:
+            # Squeeze-activated friction model (maker_arm_friction_grip): carries the cup only
+            # while both pads press it and the jaw is commanded tighter than contact.
+            grip = table.grips.get(side)
+            if grip is None:
+                from maker_arm_friction_grip import FrictionGrip
+                grip = table.grips[side] = FrictionGrip()
+            lp, lq = ue_pose(frames['link_007'])
+            state = grip.update(table.props, ([lp[i]+base[i] for i in range(3)], lq), contacts, requested, gap, time.monotonic())
+            table.grip_status[side] = grip.label
+            if state and state != 'holding':
+                table.grip_events.append({'side': side, 'state': state, 't': round(time.time(), 2)})
         for link, t in frames.items():
             if link not in VISUAL_LINKS or (jaws_only and link not in GRIPPERS):
                 continue
@@ -469,6 +487,18 @@ class Session:
                 else:
                     pp, pq = p, q
                 table.proxies[name].set_actor_location_and_rotation(unreal.Vector(*pp), unreal.Quat(*pq).rotator(), False, False)
+
+    def follow_grips(self, table, now):
+        for side, grip in table.grips.items():
+            if not grip.active:
+                continue
+            frames = mounted_frames(table.state['q_'+side], table.state['gap_'+side+'_m'], yaw=MOUNT_YAW[side])
+            lp, lq = ue_pose(frames['link_007'])
+            base = table.bases[side]
+            state = grip.follow(table.props, ([lp[i]+base[i] for i in range(3)], lq), time.monotonic())
+            table.grip_status[side] = grip.label
+            if state and state != 'holding':
+                table.grip_events.append({'side': side, 'state': state, 't': round(time.time(), 2)})
 
     def hold_grip(self, table, now):
         from maker_arm_grip_hold import next_gap
@@ -579,7 +609,9 @@ class Session:
             'tables': {('T%02d' % t.index): {'name': t.v['name'], 'error': t.error, 'frames': t.frames,
                                               'moving': t.motion is not None, 'command_seq': t.command_seq,
                                               'contact_mode': 'approximate flat pads' if t.v['pad_contacts'] else 'approximate convex jaws',
-                                              'target': t.v['target']['label'], 'state': t.state, 'props': t.evidence}
+                                              'target': t.v['target']['label'], 'state': t.state, 'props': t.evidence,
+                                              'friction_grip': {'enabled': FRICTION_GRIP, 'holding': dict(t.grip_status),
+                                                                'events': t.grip_events[-8:]}}
                        for t in self.tables}})
 
     # ---- tick ------------------------------------------------------------------
@@ -653,6 +685,9 @@ class Session:
                     table.last_grip_tick = now
                     t2 = time.perf_counter()
                     self.measure_props(table, now)
+                    if FRICTION_GRIP:
+                        # After measuring, so evidence reads the solver's result, not the drive.
+                        self.follow_grips(table, now)
                     t3 = time.perf_counter()
                     self.sections['commands'] += t1-t0
                     self.sections['motion'] += t2-t1

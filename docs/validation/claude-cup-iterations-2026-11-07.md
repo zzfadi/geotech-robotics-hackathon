@@ -171,3 +171,21 @@ named constants, switched off (baseline restored); `SM_DrinkingCup_SolidCollisio
 `/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups` but is unused while `SOLID_CUP_COLLISION = False`.
 Separately, `Mirror sample requires no enclosing transaction` and `SIE exit timed out` appeared once (batch 19)
 while another editor operation was active.
+
+## Friction-grip model (user-requested realistic side grasp) — 5/9 pass
+
+The user asked for real-cup behaviour on a side grasp: the pads squeeze the paper cup a little and the arm can
+still take it. `Tools/maker_arm_friction_grip.py` models the friction the kinematic pads cannot transfer:
+while BOTH pads press the same cup and the jaw is commanded tighter than contact (a squeeze), each tick the
+cup's velocity is driven toward the pose it had relative to the gripper when the grip formed (gripper motion +
+error/50 ms + gravity feed-forward, capped at 60 cm/s). Gravity stays enabled, there is no actor attachment or
+teleport, and it releases when the jaws open, the cup leaves the pads or it slips more than 2.5 cm. Runtime
+status reports `friction_grip` per table. **Results with it are "friction-grip model" results.**
+
+- Probe 10 (no Dream): 9/9 cups carried upright to the 45°-grasp reach ceiling (10–20.5 cm).
+- Batch 21 (`04004d8aa9d94a548e6e79c65a555421`): Dream lifted every cup upright, 6 above target (up to
+  26.5 cm), but the hold check read the commanded drive velocity as cup motion and 5 tables hit the 300 s
+  session limit. Fixed: drive after measurement, feed-forward, ≈3 cm/s lift.
+- **Batch 22 (`8b2993843b1543b5bb50830b90bcd29d`): 5/9 passed** — T1 20 cm (peak 23.3), T3 16 cm (18.6),
+  **T7 29 cm (30.0)**, T8 19 cm (19.5), T9 21 cm (21.8), each a continuous 5 s hold, tilt ≤ 9.4°. Near misses
+  hovered just under target (23.1/23, 26.8/27): batch 23 keeps lifting to target + 1.5 cm before holding.

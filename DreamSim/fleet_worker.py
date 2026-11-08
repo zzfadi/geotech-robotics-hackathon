@@ -248,7 +248,9 @@ class TableRun:
         if self.grip_latch is None:
             return phases.get('grasp') or self.v['prompt']
         required = float((self.v.get('objective') or {}).get('height_cm', 10.))
-        if self.cup_rise >= required-.5:
+        # Keep lifting until comfortably above the target; switching to "hold" right at the
+        # line left cups hovering 0.1-0.3 cm under it (batch 22).
+        if self.cup_rise >= required+float(self.v['assist'].get('hold_margin_cm', 1.5)):
             return phases['hold']
         options = phases.get('lift_variants') or [phases['lift']]
         return options[self.lift_stalls % len(options)]
@@ -534,7 +536,7 @@ class TableRun:
                 self.log(bounded_stop)
                 return
             required = float(objective.get('height_cm', 10.)) if objective else 10.
-            if objective and required != 10 and lift.get('height_cm', 0) >= required:
+            if objective and required != 10 and lift.get('height_cm', 0) >= required+float(self.v.get('assist', {}).get('hold_start_cm', .5)):
                 self.log('target above %.0f cm; holding pose to measure a continuous %.1f s hold' % (required, hold_seconds))
                 held = self.sampled_hold(target, required, hold_seconds, max_tilt)
                 self.result['threshold_hold'] = held
