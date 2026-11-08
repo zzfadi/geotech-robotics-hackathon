@@ -48,7 +48,7 @@ See [migration research](../../docs/agentcopresence-migration.md) for VR and lat
 
 The target is MakerMods Maker Arm. The shared scene's earlier I2RT YAM preview has been replaced with the official Maker Arm geometry, as recorded in the [model assessment](../../docs/maker-arm-model.md). The initial zero-actor map validator is historical after the station addition.
 
-The **URDF (Unified Robot Description Format)** is [SourceAssets/MakerArm/robot.urdf](SourceAssets/MakerArm/robot.urdf), from the [official SDK model package](https://github.com/makermods-robotics/maker-arm-sdk/tree/0245316c05cb3e8d900f35e70c08e2e18e36731e/urdf/maker_arm). Keep `meshes/` adjacent to it. The package includes 52 STL meshes, six revolute arm joints, two prismatic jaws with a mimic relationship, and a fixed `grasp_center`. See the [upstream usage and limitations](SourceAssets/MakerArm/README.md) and [provenance manifest](SourceAssets/MakerArm/provenance.json).
+The **URDF (Unified Robot Description Format)** is [SourceAssets/MakerArm/robot.urdf](SourceAssets/MakerArm/robot.urdf), from the [official SDK model package](https://github.com/makermods-robotics/maker-arm-sdk/tree/0245316c05cb3e8d900f35e70c08e2e18e36731e/urdf/maker_arm). Keep `meshes/` adjacent to it. The package includes 52 STL meshes, six revolute arm joints, two prismatic jaws with a mimic relationship, and a fixed `grasp_center`. See the [upstream usage and limitations](SourceAssets/MakerArm/README.md) and [provenance manifest](SourceAssets/MakerArm/PROVENANCE.json).
 
 ### Existing Unreal workflow
 

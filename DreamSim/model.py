@@ -19,7 +19,7 @@ def prepare(destination,tcp_back=0.):
     if not math.isfinite(tcp_back) or not 0<=tcp_back<=.04:raise ValueError("Simulation TCP offset must be 0..4 cm")
     destination=Path(destination);destination.mkdir(parents=True,exist_ok=True)
     digest=hashlib.sha256(MODEL.read_bytes()).hexdigest()
-    provenance=json.loads((MODEL.parent/'provenance.json').read_text())
+    provenance=json.loads((MODEL.parent/'PROVENANCE.json').read_text())
     if digest!=provenance['sha256']['robot.urdf']:raise ValueError('Pinned URDF changed')
     source=ET.parse(MODEL).getroot()
     derived=ET.Element('robot',name='maker_arm_unreal_simulation')

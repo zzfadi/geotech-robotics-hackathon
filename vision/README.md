@@ -76,7 +76,7 @@ The Orin runs JetPack 7.2.1 (L4T 39.2.1, Ubuntu 24.04, system Python 3.12). The 
    python3 -m vision.run --replay vision/examples/handoff.jsonl --target real
    ```
    Expect `OK` and, in the replay, one `start_handoff` with `"executor": "local"` and one `retreat_with_can`.
-2. **Ultralytics**, in its own environment, never the arm controller's (`/home/fadi/jetson-runtime/.venv`): follow the [Ultralytics Jetson guide](https://docs.ultralytics.com/guides/nvidia-jetson/) for JetPack 7, with the CUDA-enabled PyTorch and torchvision it lists for that release. A plain `pip install torch` gives a CPU-only build on the Jetson. Check with `python3 -c "import torch; print(torch.cuda.is_available())"`; it must print `True`. Record what worked in the [Jetson brief](../docs/handoffs/jetson-end-to-end.md).
+2. **Ultralytics**, in its own environment, never the arm controller's (`/home/fadi/jetson-runtime/.venv`): follow the [Ultralytics Jetson guide](https://docs.ultralytics.com/guides/nvidia-jetson/) for JetPack 7, with the CUDA-enabled PyTorch and torchvision it lists for that release. On this Orin with JetPack 7.2.1, the plain PyPI wheel (`torch 2.15.0+cu132`) was CUDA-enabled on Nov 8; see [Jetson hub testing](../docs/jetson-hub-testing.md) for the tested install and the TensorRT FP16 export. Check with `python3 -c "import torch; print(torch.cuda.is_available())"`; it must print `True`. Record what worked in the [Jetson brief](../docs/handoffs/jetson-end-to-end.md).
 3. **Check the webcam opens:** `ls /dev/video*`.
 4. **First run on the `.pt` weights** (downloads `yolo26n.pt` and `yolo26n-pose.pt` once), 30 s, with a preview window on the KVM display:
    ```sh

@@ -13,6 +13,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 from handoff import preflight
 from handoff.preflight import MARK_ONLY, NO_GO, OK, WARN, Check
@@ -248,7 +249,9 @@ class MainTest(unittest.TestCase):
     def run_main(self, args, answers):
         r = FakeRunner(answers)
         out = io.StringIO()
-        with redirect_stdout(out):
+        # Point the arm-venv check at this interpreter, so the GO cases do not
+        # depend on whether this host has arm/.venv (a fresh clone does not).
+        with redirect_stdout(out), mock.patch.dict(os.environ, {"ARMCTL_PYTHON": sys.executable}):
             code = preflight.main(args, runner=r)
         return code, out.getvalue(), r
 

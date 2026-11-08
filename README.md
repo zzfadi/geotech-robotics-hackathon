@@ -94,7 +94,7 @@ The profile requests 200 Hz and a 5 rad/s command-rate limit; the README documen
 
 - [Official SDK](https://github.com/makermods-robotics/maker-arm-sdk/tree/main) and [current upstream URDF package](https://github.com/makermods-robotics/maker-arm-sdk/tree/main/urdf/maker_arm).
 - [Local robot.urdf](Unreal/TheHumanTouch/SourceAssets/MakerArm/robot.urdf): keep the adjacent `meshes/` directory when copying or importing.
-- [Provenance and file hashes](Unreal/TheHumanTouch/SourceAssets/MakerArm/provenance.json) and [Unreal model workflow](Unreal/TheHumanTouch/README.md#maker-arm-station).
+- [Provenance and file hashes](Unreal/TheHumanTouch/SourceAssets/MakerArm/PROVENANCE.json) and [Unreal model workflow](Unreal/TheHumanTouch/README.md#maker-arm-station).
 
 The [official URDF + meshes](https://github.com/makermods-robotics/maker-arm-sdk/tree/0245316c05cb3e8d900f35e70c08e2e18e36731e/urdf/maker_arm) are vendored unmodified in [SourceAssets/MakerArm](Unreal/TheHumanTouch/SourceAssets/MakerArm), with license, source commit and per-file hashes. Entry point: `robot.urdf`. It contains 52 STL files, six revolute joints, two symmetric prismatic jaws (one mimic), and a fixed grasp-center frame. Total model jaw opening: 0–104.825 mm. STL scale is 0.001 into URDF metres; original CAD is Y-up.
 
