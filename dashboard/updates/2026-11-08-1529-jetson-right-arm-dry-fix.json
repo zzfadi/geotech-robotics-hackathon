@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T15:29:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "pickup_client --dry now never moves the arm: joints --dry prints the target tip, grip/clear/rest refuse to send.",
+  "why": "On the Jetson, 'joints ... --dry' really moved the right arm through Saturday's three grasp waypoints because --dry only applied to tip/nudge. Holding the low reach tripped the 52 C motor-2 guard (peaked 59 C); after release_supported the arm dropped onto the bench while hand-held.",
+  "where": ["arm/tools/pickup_client.py"],
+  "details": ["Verified on the Jetson against a closed port: dry joints/grip/rest never connect.", "Right arm: all 7 motors answered a read-only scan after the drop, no faults; physical inspection and cool-down pending before it is powered again.", "Jetson now has a udev rule giving the candleLight adapter (1d50:606f) user access; right adapter 0027002E... read cleanly from orin-arm.", "release_supported cuts holding torque instantly: the full arm weight drops onto whoever supports it."]
+}

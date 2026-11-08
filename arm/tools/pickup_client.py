@@ -6,7 +6,8 @@ the arm base. Provisional: not a calibrated hardware model.
 
   pickup_client.py status
   pickup_client.py fk Q1..Q6
-  pickup_client.py joints Q1..Q6 [--speed 5]
+  pickup_client.py joints Q1..Q6 [--speed 5] [--dry]
+--dry never sends a motion command: joints prints the target's tip, grip/clear/rest refuse.
   pickup_client.py tip X Y Z [--pitch 0] [--speed 5] [--dry]
   pickup_client.py nudge DX DY DZ [--pitch 0] [--speed 3] [--dry]
   pickup_client.py grip DEG [--wait 4]
@@ -105,13 +106,20 @@ def main():
     a = p.parse_args()
     global PORT
     PORT = a.port
+    if a.dry and a.cmd in ('grip', 'clear', 'rest'):
+        sys.exit(f'--dry: {a.cmd} not sent')
     if a.cmd == 'status':
         show(send({'cmd': 'status'}))
     elif a.cmd == 'fk':
         tip, rot = fk(a.values)
         print(json.dumps({'tip_m': tip.round(4).tolist(), 'approach': (-rot[:, 2]).round(3).tolist()}))
     elif a.cmd == 'joints':
-        show(send({'cmd': 'move', 'q': a.values, 'speed': a.speed}))
+        if a.dry:
+            tip, rot = fk(a.values)
+            print(json.dumps({'dry': True, 'q_deg': a.values, 'tip_m': tip.round(4).tolist(),
+                              'approach': (-rot[:, 2]).round(3).tolist()}))
+        else:
+            show(send({'cmd': 'move', 'q': a.values, 'speed': a.speed}))
     elif a.cmd in ('tip', 'nudge'):
         st = send({'cmd': 'status'})
         cur = st['q_deg'][:6]
