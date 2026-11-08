@@ -1,6 +1,6 @@
 # Handoff: a small edge model on the Orin Nano
 
-**Owner: FADI, working on the Mac Mini from this repo** (with whichever agents run there). Written Saturday night, Nov 7, from FADI's voice notes at 8:39 and 8:43 PM, the [training brief](small-model-training.md), the [Jetson brief](jetson-end-to-end.md) and the [Dream workshop takeaways](dream-workshop-takeaways.md). A first scaffold is in [`edge_model/`](../../edge_model/README.md). No policy has been trained on sim data and nothing has run on the Orin Nano.
+**Owner: FADI, working on the Mac Mini from this repo** (with whichever agents run there). Written Saturday night, Nov 7, from FADI's voice notes at 8:39 and 8:43 PM, the [training brief](small-model-training.md), the [Jetson brief](jetson-end-to-end.md) and the [Dream workshop takeaways](dream-workshop-takeaways.md). **Status (Nov 8, early morning): scaffold → pipeline + bench scores.** [`edge_model/`](../../edge_model/README.md) now collects, trains and scores end to end (`python -m edge_model run-all`); a policy has been trained on our own bench-expert data and scored in simulation (kinematic bench, plus a MuJoCo physics-sim grasp check). Nothing has run on the Orin Nano or a physical arm, and no result here is a physical one.
 
 ## What changed
 
@@ -16,15 +16,18 @@
 
 Both run on the Orin Nano next to the arm, so they don't depend on the network.
 
-## What's in the scaffold (`edge_model/`)
+## What's in `edge_model/`
 
 | File | What it does | Tested |
 | --- | --- | --- |
 | `kinematics.py` | Pinned Maker Arm FK from `DreamSim/compiled_fk.py`, numpy-only IK, Unreal-to-arm-base frame conversion | In the cloud, x86 |
 | `bench.py` | A **kinematic** stand-in for one cup table: seeded layouts from `DreamSim/fleet_planning.cup_layout`, a friction-proxy grasp, palm/jaw/table contacts, recorder-shaped cup evidence. Not physics. | In the cloud |
-| `expert.py` | State-based scripted expert: pregrasp, 20° pitched side approach, close, 12.5 cm lift at 4 cm/s, hold. Plans from a cup *estimate*, so its misses are honest | Passed the gate on **108 of 108** bench episodes (12 seeds × 9 tables) |
+| `expert.py` | State-based scripted expert: pregrasp, 20° pitched side approach, close, 12.5 cm lift at 4 cm/s, hold. Plans from a cup *estimate*, so its misses are honest | Passed the gate on **108 of 108** bench episodes (12 seeds × 9 tables) in the cloud; on Nov 8 with 3 mm cup-estimate noise, 2,576 of 2,700 collection episodes and 167 of 180 held-out attempts |
 | `gate.py` | The positive gate with the exporter's thresholds (10 cm clearance, 5 s hold, ≤15° tilt, ≤10 cm/s, both jaws, nothing else touching). Bench data is never Dream-export eligible | Via the expert run above |
-| `model.py` | ~19k-parameter MLP: 14 inputs (joints, grip, tool xyz, cup offset, cup height) to a joint step and grip. Numpy inference; numpy or PyTorch trainer, one `.npz` | Numpy trainer on synthetic data only; the PyTorch trainer has not run |
+| `model.py` | 19,335-parameter MLP: 14 inputs (joints, grip, tool xyz, cup offset, cup height) to a joint step and grip. Numpy inference; numpy or PyTorch trainer, one `.npz` | Numpy trainer on bench-expert data (Nov 8, Mac mini); the PyTorch trainer has not run |
+| `collect.py`, `dataset.py`, `train.py` | Expert runs over seeds × 9 tables, gate-passing episodes as demonstrations, failures in a separate eval set, split by scene seed; `.npz` + manifest (`source: bench-expert`, sha256); training provenance in the checkpoint | Full run Nov 8: 2,700 episodes, 2,576 gate-passing |
+| `scenarios.py`, `evaluate.py`, `telemetry_log.py` | The three scenarios below on held-out seeds, with and without the model, one control-center session per attempt | 1,260 sessions, all pass `python3 -m control_center validate` |
+| `physics_bench.py` | Optional MuJoCo cup table from the same URDF and meshes (built like `Capture/contact_sim.py`), expert or trained policy | 54 physics-sim attempts (18 tables × 3 runs: expert and model with elliptic cones, expert with default cones), see results |
 
 ## Steps
 
@@ -37,6 +40,23 @@ Both run on the Orin Nano next to the arm, so they don't depend on the network.
    - *Assist:* a simulated operator with a few centimetres of aim error, alone versus with assist blending in near the cup.
 5. **Write telemetry** for every attempt in the control center's schema, so each attempt can be replayed there.
 6. **Deploy on the Orin Nano** behind the arm server's controller and hold, never straight to the motors, with the operator on the e-stop.
+
+Steps 1–5 are done for the bench expert (not for Dream runs from the Unreal fleet). Step 6 is not started.
+
+## Bench results (Nov 8)
+
+Simulation only. Full numbers, commands and protocol: [edge-model-bench-2026-11-08.json](../validation/edge-model-bench-2026-11-08.json) and the [edge_model README](../../edge_model/README.md#results-nov-8-mac-mini-full-run). 180 attempts per row (20 held-out scene seeds × 9 tables), kinematic bench:
+
+| Scenario | Without the model | With the model |
+| --- | --- | --- |
+| Autonomous (gate passes) | expert 167; untrained net 0 | trained model **172** |
+| Lag (gate passes; mean seconds frozen; median time to hold) | hold on late: 170; 1.30 s; 9.4 s | model bridges: **173; 0.27 s; 8.6 s** |
+| Assist, operator aiming 2–4 cm off (gate passes) | alone: 18 (145 attempts with a collision) | with assist: **162** |
+
+- No wrong cup and no drops in any row. Every lag chunk was played from its first action (0 skipped); peak commanded tool speed in the lag rows was 0.19 m/s against the 0.85 m/s clamp, and the clamp never fired in any row (highest 0.48 m/s). Inference: 0.008 ms median per numpy forward pass on the Mac mini (not measured on the Orin).
+- Most of the lag rows' frozen-time gap is the wait for the very first reply. Hold on late freezes 0.90 s on average before the first chunk lands, while the bridge starts moving at t = 0. After that the frozen time is 0.40 s (hold) versus 0.27 s (bridge), and net of the first wait the time to the hold is the same. The success gaps are within noise when paired by table and seed: trained model versus expert 172 to 167 (p = 0.125), bridge versus hold 173 to 170 (p = 0.25). Assist versus operator alone (162 to 18) is a real gap.
+- The lag teacher is the scripted expert with a modelled Dream-like round trip (median 712 ms, 22.6 % over 850 ms, 2.7 % failed), not Dream. The bridge only moves an open, empty gripper, drops any reply planned before the arm moved, and is capped at 4 s in a row.
+- MuJoCo physics sim, 18 tables per setting, true cup position: with elliptic friction cones (impratio 10) the expert's grasp and lift held the gate's 10 cm for 5 s on 18 / 18 and the bench-trained model on 17 / 18; with MuJoCo's default friction cones it did not hold on any (0 / 18; the cup creeps down through the jaws after about 4 s). Cup mass, friction, servo gains and gravity compensation are assumptions and arm-table contact is not modelled, so this says the contact model matters, not that the real arm will hold the cup.
 
 ## What done looks like
 

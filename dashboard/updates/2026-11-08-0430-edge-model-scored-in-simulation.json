@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T04:30:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "The small edge model was trained and scored end to end in simulation: it learned the cup grasp from our own scripted expert and was tested on 180 simulated tables it never saw",
+  "why": "The small model has to run on the Jetson next to the arm, keep the arm moving sensibly when Dream's replies are late, and help a person finish a slightly-off grasp. This tests those ideas in simulation before the arms connect.",
+  "where": [
+    "edge_model/",
+    "docs/validation/edge-model-bench-2026-11-08.json",
+    "docs/handoffs/edge-model.md"
+  ],
+  "details": "All simulation, nothing physical. Kinematic bench, 180 held-out attempts per row: model alone 172 cup holds vs 167 for the scripted expert it learned from (a tie within noise). Late Dream-like replies: 173 holds with the model filling gaps vs 170 when the arm waits; frozen time 0.27 s vs 1.30 s per attempt, but most of that is moving before the first reply arrives, which is a product and safety choice rather than a measured win; no part of a reply was ever skipped and speed stayed far under 0.85 m/s. Assist: a simulated operator aiming 2-4 cm off held the cup 18 times alone and 162 times with assist (the clear win). MuJoCo physics sim: the lifted cup stayed up on 18 of 18 tables with grasp-friendly contact settings and 0 of 18 with the defaults, so the real gripper still decides. Trained only on our own scripted-expert data, never Dream outputs. Not yet run on the Orin Nano or a physical arm. Rerun: `arm/.venv/bin/python -m edge_model run-all` (about 4.5 minutes)."
+}
