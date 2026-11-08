@@ -6,10 +6,12 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 from fleet_planning import build_plan
 from prompt_routing import parse_target
+from interaction_store import InteractionStore
 
 class Store:
     def __init__(self,path):
         self.path=path;path.mkdir(parents=True,exist_ok=True)
+        self.interaction=InteractionStore(path)
         key=path/'worker-token'
         if not key.exists():key.write_text(secrets.token_urlsafe(32))
         self.token=key.read_text().strip();self.events=deque(maxlen=200);self.command=None;self.voice=None;self.worker_at=0;self.preview=deque(maxlen=300);self.preview_request=None;self.live_frame=None;self.recording=None;self.lock=threading.RLock()
@@ -86,6 +88,26 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError,ConnectionResetError):pass
 
     def worker(self):return secrets.compare_digest(self.headers.get('Authorization',''),'Bearer '+self.server.store.token)
+    def interaction_get(self, route):
+        relay=self.server.store.interaction
+        with self.server.store.lock:
+            if route.path=='/api/interaction/status':return self.send(200,relay.public())
+            if route.path=='/api/interaction/controller/contact':
+                if not relay.authorized('controller',self.headers.get('Authorization')):return self.send(401,{'error':'Controller authentication required'})
+                try:return self.send(200,relay.next_contact(parse_qs(route.query).get('session_id',[''])[0]))
+                except ValueError as error:return self.send(400,{'error':str(error)})
+        return self.send(404,{'error':'Not found'})
+    def interaction_post(self, data):
+        if not isinstance(data,dict):return self.send(400,{'error':'Expected JSON object'})
+        relay=self.server.store.interaction
+        with self.server.store.lock:
+            if self.path=='/api/interaction/stop':return self.send(200,relay.stop())
+            role='controller' if self.path.startswith('/api/interaction/controller/') else 'producer'
+            if not relay.authorized(role,self.headers.get('Authorization')):return self.send(401,{'error':'Interaction role authentication required'})
+            if self.path=='/api/interaction/controller/session':return self.send(200,relay.begin(data))
+            if self.path=='/api/interaction/controller/state':return self.send(200,relay.heartbeat(data))
+            if self.path=='/api/interaction/contact':return self.send(200,relay.publish(data))
+        return self.send(404,{'error':'Not found'})
     def fleet_get(self,route):
         s=self.server.store;f=s.fleet
         if route.path=='/api/fleet':
@@ -210,6 +232,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         s=self.server.store
         if self.path=='/':return self.send(200,(Path(__file__).parent/'web/index.html').read_bytes(),'text/html; charset=utf-8')
+        if self.path.startswith('/api/interaction/'):return self.interaction_get(urlsplit(self.path))
         if self.path.startswith('/api/fleet'):return self.fleet_get(urlsplit(self.path))
         if self.path=='/api/live':
             with s.lock:return self.send(200,{'frame':s.live_frame,'count':len(s.preview),'server_time':time.time()})
@@ -247,6 +270,7 @@ class Handler(BaseHTTPRequestHandler):
             origin=self.headers.get('Origin')
             if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):return self.send(403,{'error':'Cross-origin request refused'})
             data=json.loads(self.rfile.read(length))
+            if self.path.startswith('/api/interaction/'):return self.interaction_post(data)
             if self.path=='/api/route':return self.send(200,parse_target(data.get('prompt','')))
             if self.path.startswith('/api/fleet/'):return self.fleet_post(data)
             if self.path=='/api/worker/video':

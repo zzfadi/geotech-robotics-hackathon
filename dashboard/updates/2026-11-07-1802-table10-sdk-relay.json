@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T18:02:16-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added Table 10 SDK telemetry panel and authenticated expiring contact relay.",
+  "why": "Prepare virtual-to-real human/object interaction; user will select the physical SDK host tomorrow.",
+  "where": [
+    "DreamSim/interaction_store.py",
+    "docs/table10-sdk-connection.md"
+  ],
+  "details": [
+    "Separate producer/controller credentials, arm-side identity, session nonce and sequence validation.",
+    "No motor enable in the browser; physical integration and calibration remain unverified."
+  ]
+}

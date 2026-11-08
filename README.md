@@ -8,6 +8,10 @@ Our final hackathon demo goal is **Hold My Beer**: a Maker Arm grasps a drinking
 
 The cup scene is saved in checkpoint `7fd63b1`; cup pickup and hold validation remain in progress. Initial trials use empty cups; liquid containment, spill prevention and trained-policy success are not yet demonstrated. See the [demo goal and acceptance criteria](docs/hold-my-beer.md). Previous block trials remain historical evidence, not proof of cup performance.
 
+## Table 10 — human interaction
+
+A separate interaction bay prepares measured-position mirroring from the physical Maker Arm SDK and virtual-contact experiments. The [Luna2 panel](https://luna2.tail6864ac.ts.net/) shows controller presence and feedback. The SDK host is not selected yet; physical motion and force coupling are **not verified**. See the [connection plan](docs/table10-sdk-connection.md) and [offline bridge](Interaction/README.md).
+
 ## Dashboard
 
 Track the team's progress at **https://zzfadi.github.io/geotech-robotics-hackathon/**. To post an update, see [dashboard/README.md](dashboard/README.md).
