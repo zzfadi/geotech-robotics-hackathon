@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T18:32:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Nine-table non-Flash cup trial returned actions and recordings, but no successful pickup.",
+  "why": "Distinguish provider capacity failures from actual grasp/control failures before the next run.",
+  "where": [
+    "docs/validation/nine-cup-trial-361a2252.json"
+  ],
+  "details": "All nine overhead recordings uploaded. Eight tables executed16 cycles; table6 stopped at cycle15 on tabletop penetration validation after its cup fell. Custom free text had no structured lift objective or arm lock; these results do not verify the required10cm five-second upright hold. IK followed policy targets accurately; policy approach and premature closure require further diagnosis."
+}

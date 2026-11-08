@@ -1,0 +1,221 @@
+{
+  "request_id": "361a22526f63422ea774e0bb3793b970",
+  "checkpoint": "dreamlabs/dream-1-beta",
+  "scope": "Nine-table live Unreal cup trial; returned actions but no successful target-cup pickup",
+  "recorded_tables": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "results": {
+    "T00": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 0.07947052830467151,
+        "upright_hold_s": null,
+        "height_cm": 0.027871963346143502,
+        "max_height_cm": 0.041534929674739374,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    },
+    "T01": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 0.07947190072976577,
+        "upright_hold_s": null,
+        "height_cm": 0.02787200866106332,
+        "max_height_cm": 0.04153489344055572,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    },
+    "T02": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 1.8784158271066096,
+        "upright_hold_s": null,
+        "height_cm": -0.09995605910111749,
+        "max_height_cm": 0.10280733631384464,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    },
+    "T03": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 3.205952115647097,
+        "upright_hold_s": null,
+        "height_cm": -0.8268141828376656,
+        "max_height_cm": 0.0,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    },
+    "T04": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 0.07975298550147437,
+        "upright_hold_s": null,
+        "height_cm": 0.027886387573502702,
+        "max_height_cm": 0.041534870027803095,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    },
+    "T05": {
+      "calls": 19,
+      "returned_actions": 15,
+      "cycles_run": 14,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 92.87951655502435,
+        "upright_hold_s": null,
+        "height_cm": -83.57785421711621,
+        "max_height_cm": 0.8112899590526581,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": null,
+      "moving": false
+    },
+    "T06": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 0.0789702899687866,
+        "upright_hold_s": null,
+        "height_cm": 0.028092835621862378,
+        "max_height_cm": 0.08723807113504733,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    },
+    "T07": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 4.0143269553361645,
+        "upright_hold_s": null,
+        "height_cm": -0.11511750583133562,
+        "max_height_cm": 0.0,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    },
+    "T08": {
+      "calls": 16,
+      "returned_actions": 16,
+      "cycles_run": 16,
+      "cycles_planned": 16,
+      "lift": {
+        "measured": true,
+        "tilt_degrees": 0.07947055254712808,
+        "upright_hold_s": null,
+        "height_cm": 0.027871960449346034,
+        "max_height_cm": 0.04153487660160238,
+        "held_slow_above_10cm_s": 0.0,
+        "max_held_slow_above_10cm_s": 0.0,
+        "physics_simulated": true,
+        "attached_to": null,
+        "gravity_enabled": true,
+        "lift_held": false
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted",
+      "moving": false
+    }
+  },
+  "limitations": [
+    "Custom free-text plan had no structured objective; upright five-second hold was not configured.",
+    "Right arm was not locked during custom prompt execution.",
+    "Table 6 target cup fell; contact cause remains under investigation."
+  ]
+}
