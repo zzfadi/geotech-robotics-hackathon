@@ -8,19 +8,25 @@ No microSD is available. The earlier JetPack 6 microSD plan is retained below on
 
 - User-provided photos show UEFI firmware **`36.4.2-gcid-38685322`**, dated **2024-12-12**. This satisfies NVIDIA's firmware prerequisite for the USB route; it does not establish an installed OS. [NVIDIA firmware check](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html#firmware-gate).
 - The photographed **`Start HTTP Boot over IPv4`** screen is a network-boot attempt, not proof of Ubuntu or SSH. A direct **DisplayPort monitor is now available** for the local boot menu and installer.
-- The new USB ISO download/preparation is **in progress**. Download completion, image verification, USB writing and USB validation are not yet recorded here. The older 6.2.1 SD ZIP is not this installer and must not be written to this 16 GB stick.
+- The **JetPack 7.2.1 USB is ready**: the 5,035,601,920-byte ISO was downloaded from NVIDIA, its local SHA-256 recorded, and balenaEtcher 2.1.9 completed flashing and validation with one successful target. The SanDisk was then safely ejected. See [USB preparation evidence](../validation/jetson-usb-prep-2026-11-08.json). Booting this installer on the Jetson remains pending. The older 6.2.1 SD ZIP is not this USB installer.
 - The SSD's contents, partitions, model/serial and bootability remain unconfirmed. Its reported 1 TB capacity alone does not identify a safe erase target.
 - JetPack 7.2.1 uses **Ubuntu 24.04**, while the archived JetPack 6 route uses Ubuntu 22.04. Do not apply the old `r36.5` repository edits or 6.x APT-upgrade commands on the new 7.x system. [NVIDIA release information](https://developer.nvidia.com/embedded/jetpack/downloads).
 
 ## Prepare the authorized USB
 
-Use the Jetson ISO linked from [NVIDIA's current downloads](https://developer.nvidia.com/embedded/jetpack/downloads). Preparation files are staged under `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`; inspect the actual new ISO and its verification record before writing. Earlier entries in `START-HERE.txt` and [the November 7 preparation evidence](../validation/jetson-prep-2026-11-07.json) describe the older SD downloads, not completion of this ISO.
+The completed Jetson ISO is linked from [NVIDIA's current downloads](https://developer.nvidia.com/embedded/jetpack/downloads). Preparation files are staged under `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`; `USB-PREPARATION.json` and `jetpack-7.2.1-usb-write-verification.json` record the current route. `START-HERE.txt` now describes USB installation; the earlier SD entrypoint is retained as `START-HERE-2026-11-07-SD-plan.txt`. The [November 7 evidence](../validation/jetson-prep-2026-11-07.json) is historical SD/runtime preparation.
 
 Re-identify the **SanDisk Cruzer Blade, 16 GB**, previously mounted as `UBUNTU 18_0`, immediately before flashing; macOS disk numbers change. Write and validate using installed balenaEtcher, or a guarded raw-device writer that checks the exact device and verifies the entire written image by readback. The authorization covers erasing this USB stick only. Retain the completed ISO filename, size, SHA-256 and write-validation outcome. A locally calculated hash alone is not comparison with a vendor-published checksum.
 
 ## Connections
 
-Use the direct DisplayPort monitor plus a USB keyboard for this installation. Connect Ethernet and the included 19 V power supply. Keep robot CAN adapters disconnected during OS setup; check the heatsink and fan before workloads.
+Use the direct DisplayPort monitor for this installation. Keep the included 19 V power supply connected and provide a verified keyboard path. Keep robot CAN adapters disconnected during OS setup; check the heatsink and fan before workloads.
+
+Current user-reported wiring: Mac Ethernet → GL-RM1; Mac USB-C → KVM power; KVM USB-C device/HID → Jetson USB-A. The KVM's HDMI input and USB-A host port are empty; the latter is not needed for keyboard control. The Mac can reach the KVM's local GLKVM login page over its direct Ethernet link. Login and actual HID delivery remain unverified. This Ethernet cable no longer provides a Jetson network path; arrange the Jetson's networking during first boot.
+
+The user requested a factory reset and fresh GLKVM remote-service account setup. The device returned on a new link-local address after reboot; fresh administrator setup still needs verification. The Mac Internet Sharing dialog is set to **Wi-Fi → Ethernet only**, but enabling it is waiting for the user's local macOS authentication; internet delivery to the KVM is not yet established. The free Standard cloud route is selected; account creation, binding and remote control are not yet complete. Keep passwords, tokens and verification codes out of Git.
+
+The user-authorized **Logitech C270** on the Mac can observe the DisplayPort monitor. A 1280×720 capture from AVFoundation video device 1 showed an idle **UEFI Interactive Shell `Shell>` prompt**. The view is angled but usable for boot-state inspection; confirm small installer labels before acting. Camera device indices can change, so re-identify the C270 before future captures.
 
 The **GL.iNet Comet GL-RM1** remains an optional console: **Jetson DisplayPort → DP-to-HDMI adapter/cable → Comet HD IN**; separately connect **Jetson USB host → Comet USB-Device**, plus Comet power/network. The available DisplayPort/USB-C cable is not a video connection to this KVM. [GL.iNet connection guide](https://docs.gl-inet.com/kvm/en/user_guide/gl-rm1/quick_setup_guide/). Jetson USB-C does not output video; NVIDIA supports passive or active DP-to-HDMI adapters. [NVIDIA hardware layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html).
 
@@ -47,11 +53,13 @@ After installation has been authorized and completed:
 
 ## Cached runtime and project
 
-The staging folder contains `jetson-runtime-ready.tar.gz`: Linux ARM64 uv 0.13.7, Python 3.12.15, pinned Maker Arm SDK source, 15 base dependency wheels and two build-tool wheels. It also contains `geotech-robotics-hackathon-4070db1.bundle`, a Git snapshot at that main commit. These previously prepared artifacts are separate from the new ISO download. The runtime includes its source/hash manifest and offline instructions; its ARM64 code has not been validated on this Jetson.
+The staging folder contains `jetson-runtime-ready.tar.gz`: Linux ARM64 uv 0.13.7, Python 3.12.15, pinned Maker Arm SDK source, 15 base dependency wheels and two build-tool wheels. The refreshed `geotech-robotics-hackathon-119d38b.bundle` contains complete Git history at that main commit and passes `git bundle verify`; the earlier snapshot is retained. All 15 pinned base packages and the SDK commit still match the cache at `119d38b`. These artifacts are separate from the new ISO download. The runtime includes its source/hash manifest and offline instructions; its ARM64 code has not been validated on this Jetson.
 
 Transfer after SSH works. Follow the archive instructions, clone the bundle or current repository, restore the GitHub remote, synchronize `main` without discarding work, and enter the checkout before using relative `arm/...` commands. `ARMCTL_PYTHON` can select the cached environment. Compare current requirements against this frozen cache first.
 
 Keep the arm environment on **Python 3.12**: the pinned NumPy/SciPy require it, and the pickup client imports SciPy at startup. Verify the interpreter rather than assuming Ubuntu's version; keep system Python intact. No local training, PyTorch or CUDA application stack is required for the controller. OS libraries and firmware are not supplied by the Python bundle.
+
+The separate `vision/run.py` preview uses OpenCV camera capture, but `vision/README.md` currently documents a JetPack 6 Torch setup. Verify a JetPack 7.2.1-compatible vision environment before using it here. The base arm cache does not contain that vision stack, and the preview does not establish the three-camera snapshot contract required by the pickup workflow.
 
 ## Board facts — update from observed results
 
@@ -60,10 +68,10 @@ Keep the arm environment on **Python 3.12**: the pinned NumPy/SciPy require it, 
 | Model / RAM | Orin Nano reported; exact module/RAM still unverified |
 | Firmware before | Photo verified: `36.4.2-gcid-38685322`, build date `2024-12-12` |
 | Firmware after installer | Not yet verified |
-| Current boot observation | Photo shows HTTP boot over IPv4; installed OS not established |
+| Current boot observation | Initial photos show HTTP boot; later Logitech webcam capture shows UEFI `Shell>`; installed OS not established |
 | Target JetPack / L4T / Ubuntu | Prepared route: 7.2.1 / 39.2.1 / 24.04; installation pending |
-| Console | Direct DisplayPort monitor available; Comet route still needs correct HDMI path |
-| Installer media | 16 GB SanDisk Cruzer Blade erase authorized; ISO download/write validation pending |
+| Console | Direct DisplayPort monitor visible through Logitech C270 webcam; GL-RM1 login reachable, HID not yet verified, HDMI empty |
+| Installer media | 16 GB SanDisk Cruzer Blade flashed and validated by Etcher 2.1.9; safely ejected for transfer to Jetson |
 | OS target | Attached 1 TB NVMe proposed; identity/content confirmation and erase authorization pending |
 | System Python / arm environment Python | Device results pending; isolated arm Python 3.12 planned |
 | Hostname / username / LAN or Tailscale address | Not yet verified |

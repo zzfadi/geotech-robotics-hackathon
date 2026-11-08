@@ -1,0 +1,68 @@
+{
+  "recorded_at": "2026-11-08T00:36:24-08:00",
+  "scope": "Installer USB prepared and verified on Mac; Jetson OS installation and SSH pending",
+  "firmware_before": {
+    "version": "36.4.2-gcid-38685322",
+    "build_date": "2024-12-12",
+    "evidence": "User-provided DisplayPort monitor photos",
+    "passes_documented_usb_prerequisite": true,
+    "reference": "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html"
+  },
+  "iso": {
+    "file": "jetsoninstaller-r39.2.1-2026-08-07-18-30-47-arm64.iso",
+    "size_bytes": 5035601920,
+    "sha256": "f31cf35023cd072707dfc46ef23ed71318449516333055fe3bb9455a615395d0",
+    "source_url": "https://developer.nvidia.com/downloads/embedded/l4t/r39_release_v2.1/iso/jetsoninstaller-r39.2.1-2026-08-07-18-30-47-arm64.iso",
+    "http_length_matches": true,
+    "format": "Bootable ISO 9660 with DOS/MBR boot sector",
+    "publisher_digest_verified": false,
+    "hash_scope": "Locally calculated; no published NVIDIA ISO digest found"
+  },
+  "usb": {
+    "device": "SanDisk Cruzer Blade 16 GB",
+    "size_bytes": 16008609792,
+    "erase_authorized": true,
+    "writer": "balenaEtcher 2.1.9 ARM64",
+    "write_completed": true,
+    "validation_completed": true,
+    "observed_ui_result": "Flash Completed! 1 Successful target",
+    "validation_scope": "Etcher validation completed; no separate raw-device SHA-256 readback was obtained",
+    "safely_ejected": true,
+    "eject_result": "Disk /dev/disk6 ejected",
+    "device_number_scope": "At this write only; re-identify before any future operation"
+  },
+  "project_bundle": {
+    "file": "geotech-robotics-hackathon-119d38b.bundle",
+    "commit": "119d38be9a91feae23fdfc1d4d39ede8fd7a697a",
+    "size_bytes": 187678678,
+    "sha256": "0f04f5c09baddd5089bb41c35aca78f929f088529a1da7bf425cd4d720503db4",
+    "git_bundle_verify": "passed; complete history"
+  },
+  "runtime_cache": {
+    "file": "jetson-runtime-ready.tar.gz",
+    "sha256": "ab7c3c02e743e07442394dd916dd9fb3605ebc22809ffe6797a6cea53ee59c85",
+    "all_15_base_pins_and_sdk_commit_match_at": "119d38b",
+    "jetson_execution_verified": false,
+    "vision_stack_included": false
+  },
+  "console": {
+    "camera": "Logitech C270 HD WEBCAM",
+    "capture": "1280x720 AVFoundation still",
+    "observation": "UEFI Interactive Shell with idle Shell prompt",
+    "kvm": "GL.iNet GL-RM1",
+    "local_web_reachable": true,
+    "hdmi_connected": false,
+    "hid_delivery_verified": false,
+    "factory_reset": "User requested physical reset; device returned with new link-local address, fresh admin setup not yet verified",
+    "internet_sharing": "Wi-Fi to built-in Ethernet selected; enabling awaits local macOS authentication",
+    "cloud": "Free Standard route selected; registration, binding and remote-control verification pending"
+  },
+  "pending": [
+    "Move verified USB to Jetson and select it in UEFI Boot Manager",
+    "Complete documented QSPI update with Y within 30-second prompt and allow both capsule passes",
+    "Identify intended NVMe and obtain its erase confirmation before installing",
+    "Complete Jetson initial setup/network/SSH and verify installed versions/root device",
+    "Finish KVM internet, local admin and cloud setup; verify HID with webcam observation",
+    "Run cached arm environment and offline checks on actual Jetson"
+  ]
+}

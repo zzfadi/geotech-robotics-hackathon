@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T00:36:24-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Jetson monitor is readable through the Logitech webcam; GL-RM1 reset and remote-service setup in progress",
+  "why": "The KVM has no HDMI input cable yet. Webcam observation could support initial setup once KVM keyboard delivery is verified.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "Captured the Jetson UEFI Shell through Logitech C270. Mac Ethernet now connects to the GL-RM1, whose local page is reachable after the user-requested reset. Wi-Fi-to-Ethernet sharing is prepared but still needs local macOS authentication. Free Standard remote service selected; local admin setup, cloud registration/binding and actual HID delivery remain unverified."
+}
