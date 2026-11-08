@@ -4,7 +4,7 @@
 
 ## Goal
 
-An NVIDIA **Jetson Orin Nano** (user reported; exact module/RAM still to verify) becomes the station's robot server. FADI selected a fresh **microSD** OS installation. A 1 TB NVMe SSD is attached; its contents, format and bootability are unknown, and this setup does not erase it. The Jetson owns both Maker Arms' CAN adapters, runs the SDK and holding controller, reads the robot cameras, and reports measured arm state. Codex and the Dream API send moves through the same controller and guards.
+An NVIDIA **Jetson Orin Nano** (user reported; exact module/RAM still to verify) becomes the station's robot server. The current preparation route is a **JetPack 7.2.1 USB installer**, because no microSD is available. The user authorized erasing the old 16 GB SanDisk USB; photo-verified firmware 36.4.2 passes the installer prerequisite. The attached 1 TB NVMe is the proposed OS target, with its identity, contents and erase confirmation still pending. The Jetson owns both Maker Arms' CAN adapters, runs the SDK and holding controller, reads the robot cameras, and reports measured arm state. Codex and the Dream API send moves through the same controller and guards.
 
 End to end means: command in → Jetson controller → arm moves → measured state out to Luna2/Unreal, with a working hold (pause) and a verified return to rest.
 
@@ -31,8 +31,8 @@ Credentials: relay bearer tokens live in ignored files on Luna2 (`Saved/DreamDeb
 
 ## Steps
 
-0. **Flash and open SSH.** Follow [orin-nano-setup.md](orin-nano-setup.md): JetPack 6.2.1 microSD, conditional older-firmware bridge, then supported APT update to 6.2.3. Verify boot/root device and SSH before continuing. Preserve the SSD; keep default power mode until cooling and temperatures are checked.
-1. **Identify the board.** Fill the [setup board-facts table](orin-nano-setup.md#board-facts--fill-from-the-device) with actual model/RAM, firmware, JetPack/L4T, Ubuntu, root device, Python versions, free disk and network identity. No Jetson result is established by the existing macOS bench evidence.
+0. **Install and open SSH.** Follow [orin-nano-setup.md](orin-nano-setup.md): validate the JetPack 7.2.1 USB, boot it through the local DisplayPort console, complete the documented firmware update, and confirm the intended NVMe before authorizing its erasure. Verify the installed 39.2.1/Ubuntu 24.04 system, root device and SSH before continuing. Keep default power mode until cooling and temperatures are checked. The older JetPack 6 microSD route is archival only.
+1. **Identify the board.** Fill the [setup board-facts table](orin-nano-setup.md#board-facts--update-from-observed-results) with actual model/RAM, firmware, JetPack/L4T, Ubuntu, root device, Python versions, free disk and network identity. No Jetson result is established by the existing macOS bench evidence.
 2. **Checkout and base environment.** Install Linux `git` and `libusb-1.0-0`, then clone `https://github.com/zzfadi/geotech-robotics-hackathon.git` and `cd geotech-robotics-hackathon`. Verify `git branch --show-current` is `main`, record `git rev-parse HEAD`, and read `AGENTS.md`. If a checkout already exists, preserve its work and synchronize clean `main` with `git pull --ff-only origin main`. Obtain `uv`; create `arm/.venv` with **Python 3.12** and install `arm/requirements.txt`. The SDK declares 3.10+, but NumPy 2.5.4 requires 3.12+; do not replace system Python. The pickup client imports SciPy, so ensure the requirements include it. OpenCV is separate camera/vision work: verify an aarch64 wheel before using `arm/requirements-vision.txt`. Ubuntu/JetPack OpenCV built for Python 3.10 is not automatically usable from the isolated 3.12 environment. No PyTorch, local model or GPU stack installation is required for the controller.
 3. **USB access.** Add a udev rule for the gs_usb VID/PID so the adapters open without running the tools as root. Do not use `sudo` to paper over a USB error.
 4. **Offline checks first.** `bash arm/tools/arm --help`, `bash arm/tools/arm test`, and `arm/.venv/bin/python arm/tools/pickup_client.py --help`. These don't touch hardware; record actual results before attaching CAN adapters.
@@ -56,7 +56,7 @@ Powered steps (5, 7, 9, 10) only with the station attended and the operator on t
 
 ## Open questions
 
-- Exact module/RAM, current firmware, card capacity and KVM compatibility await device inspection; Orin Nano and the microSD choice are user confirmed.
+- Exact module/RAM and SSD identity/content remain unverified. Photos establish firmware 36.4.2 and a direct DisplayPort console; USB installation and SSH remain pending. The GL-RM1 KVM needs a DP-to-HDMI video path if used later.
 - Does the Jetson stay at the station all day Sunday, and who powers the arms for the first read-only test?
 - Should the left arm be in scope? Its Saturday attempt missed high with different claw offsets.
 - Does the hold interlock stay in the MVP? See the plan's open questions.
@@ -64,5 +64,5 @@ Powered steps (5, 7, 9, 10) only with the station attended and the operator on t
 ## What needs the Mac or hardware
 
 - The Jetson itself, both arms, both CAN adapters, the USB hub and cameras, and the station operator.
-- The Mac and microSD reader to write and validate the selected SD image, then SSH and run Codex. Prepared downloads belong under `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`; check completion and integrity before use. The [setup handoff](orin-nano-setup.md) contains official image, firmware, KVM, upgrade and power references.
+- The Mac and authorized 16 GB SanDisk USB to write and validate the current ISO, a DisplayPort monitor and USB keyboard for installation, then SSH and Codex. Prepared downloads belong under `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07`; check completion and integrity before use. The [setup handoff](orin-nano-setup.md) contains official image, firmware, KVM and power references.
 - Tailscale access to Luna2 for telemetry.

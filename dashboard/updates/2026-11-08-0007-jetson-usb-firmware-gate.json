@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T00:07:08-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Photo-verified Jetson 36.4.2 firmware passes the USB installer prerequisite; preparing JetPack 7.2.1 media.",
+  "why": "No microSD is available. The authorized 16 GB SanDisk USB and available DisplayPort monitor enable the direct installer route.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html"
+  ],
+  "details": "Photos show 36.4.2-gcid-38685322 (2024-12-12) and HTTP boot over IPv4, not a running OS. USB ISO download/preparation is in progress; completion and write validation remain unverified. The proposed 1 TB NVMe must be identified and its erasure separately confirmed before installation. JetPack 6 microSD/5.1.3 bridge instructions are retained only as archival fallback. No OS, SSH or hardware milestone is marked complete."
+}
