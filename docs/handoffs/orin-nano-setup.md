@@ -4,6 +4,15 @@
 
 This plan was checked against NVIDIA's resources below. No first boot, firmware update, Jetson dependency installation or hardware test has been verified on this board. Continue with [the robot-server handoff](jetson-end-to-end.md) after SSH works.
 
+## At-home update — November 8
+
+- No microSD is currently available. The user authorized erasing and reusing the old **16 GB SanDisk Cruzer Blade**, previously mounted as `UBUNTU 18_0`, for the Jetson installer. Re-identify that physical device before writing; its macOS disk number can change. No erase or flash has been performed.
+- The KVM is **GL.iNet Comet GL-RM1**. Its video input is **HD IN (HDMI)**; its USB-C ports provide USB device/control connectivity and power, not DisplayPort video input. The available DisplayPort/USB-C cable therefore cannot deliver video into this KVM. See [GL.iNet's connection guide](https://docs.gl-inet.com/kvm/en/user_guide/gl-rm1/quick_setup_guide/).
+- Required video path: **Jetson DisplayPort → DisplayPort-to-HDMI cable/adapter → Comet HD IN**. NVIDIA supports passive and active DP-to-HDMI adapters. USB control is separate: **Jetson USB host port → Comet USB-Device**, with Comet power and network connected. A directly attached DisplayPort monitor and keyboard are another way to inspect first boot.
+- A USB-to-TTL serial adapter can provide a text console, but none has been confirmed available. [NVIDIA's headless setup](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) describes the board-header connection; [GL.iNet also documents a serial-adapter route](https://docs.gl-inet.com/kvm/en/tutorials/how_to_access_serial_console_via_usb_ttl/).
+- **USB installation remains conditional on firmware.** NVIDIA's [JetPack 7.2.1 USB ISO route](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) accepts a 16 GB-or-larger USB stick and NVMe target, but requires compatible JetPack 6-generation QSPI first. Firmware is still unknown. The downloaded 6.2.1 SD ZIP is not that USB installer; its expanded image is larger than this stick.
+- Direct Ethernet has one responding IPv6 peer, but SSH/web probes timed out; no NVIDIA USB recovery/device-mode function or USB serial console was detected. Those observations do not establish a running OS. Resolve console/firmware access before selecting installation media or modifying the SSD.
+
 ## Selected images and preparation
 
 - **Boot image:** JetPack **6.2.1 / Jetson Linux 36.4.4**, then NVIDIA's supported APT update to **6.2.3 / 36.5.2**. Both use Ubuntu 22.04. This is NVIDIA's documented JetPack 6 microSD route.

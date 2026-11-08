@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T00:02:04-08:00",
+  "workstream": "arm-station",
+  "status": "note",
+  "what": "Jetson USB installer media authorized; GL-RM1 needs a DisplayPort-to-HDMI video path",
+  "why": "No microSD is available. The existing KVM and cable cannot currently show the firmware screen needed to choose the supported USB installation route.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "https://docs.gl-inet.com/kvm/en/user_guide/gl-rm1/quick_setup_guide/"
+  ],
+  "details": "User authorized erasing the old 16 GB SanDisk Cruzer Blade for installer use when needed; no erase or flash performed. GL-RM1 captures HDMI video and uses USB-C for USB control/power, so the available DP/USB-C cable does not feed its video input. NVIDIA supports passive or active DP-to-HDMI adapters; a direct DisplayPort monitor or separately available USB-TTL console is an alternative. JetPack 7.2.1 USB-to-NVMe installation remains conditional on confirming compatible QSPI firmware. No SSD or network settings changed."
+}
