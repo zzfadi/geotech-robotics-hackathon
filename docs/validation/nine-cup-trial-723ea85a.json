@@ -1,0 +1,619 @@
+{
+  "request_id": "723ea85a029540b5a8a5d5964786ee72",
+  "scope": "Nine-table live Unreal cup trial with Dream API; no actions returned",
+  "status": "provider_capacity_failure",
+  "recorded_tables": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "results": [
+    {
+      "table": "T00",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104720.819354,
+          "observation_unix": 1794104720.735405,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104720.93262
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104725.15692,
+          "observation_unix": 1794104725.072356,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104725.2185578
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104731.417938,
+          "observation_unix": 1794104731.3419552,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104731.839224
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104742.166373,
+          "observation_unix": 1794104742.021132,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104742.474897
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104752.778063,
+          "observation_unix": 1794104752.657964,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104753.0160792
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104763.337545,
+          "observation_unix": 1794104763.198009,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104763.488381
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104773.791297,
+          "observation_unix": 1794104773.6962209,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104773.918237
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104782.985543,
+          "observation_unix": 1794104782.9138298,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104783.1334898
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T01",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104720.923059,
+          "observation_unix": 1794104720.802306,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104721.0221062
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104725.372214,
+          "observation_unix": 1794104725.289483,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104725.473353
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104731.903213,
+          "observation_unix": 1794104731.789867,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104732.0768
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104742.42641,
+          "observation_unix": 1794104742.354516,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104742.615696
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104753.024508,
+          "observation_unix": 1794104752.8749492,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104753.220494
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104763.630801,
+          "observation_unix": 1794104763.52459,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104763.7432268
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104774.0773818,
+          "observation_unix": 1794104774.013342,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104774.1915169
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104783.260166,
+          "observation_unix": 1794104783.149568,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104783.38357
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T02",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104720.92215,
+          "observation_unix": 1794104720.850681,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104720.992587
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104725.5318751,
+          "observation_unix": 1794104725.4061298,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104725.5761962
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104731.982183,
+          "observation_unix": 1794104731.895712,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104732.1617432
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104742.703222,
+          "observation_unix": 1794104742.5548952,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104743.081685
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104753.625582,
+          "observation_unix": 1794104753.514283,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104753.807009
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104764.356077,
+          "observation_unix": 1794104764.2109492,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104764.462566
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104774.870729,
+          "observation_unix": 1794104774.812257,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104774.9752462
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104783.11813,
+          "observation_unix": 1794104783.029587,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104783.243128
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T03",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104721.0282612,
+          "observation_unix": 1794104720.900735,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104721.109979
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104725.761079,
+          "observation_unix": 1794104725.639605,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104725.846816
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104732.437942,
+          "observation_unix": 1794104732.3400278,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104732.726072
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104743.363837,
+          "observation_unix": 1794104743.237927,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104743.61886
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104754.279291,
+          "observation_unix": 1794104754.163775,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104754.526718
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104765.17785,
+          "observation_unix": 1794104765.077308,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104765.358609
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104775.861738,
+          "observation_unix": 1794104775.795845,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104775.950024
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104785.648797,
+          "observation_unix": 1794104785.516652,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104785.748995
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T04",
+      "calls": 7,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104721.0346491,
+          "observation_unix": 1794104720.950939,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104721.107758
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104729.959421,
+          "observation_unix": 1794104729.806937,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104730.252018
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104737.29509,
+          "observation_unix": 1794104737.196747,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104737.4275122
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104748.5109918,
+          "observation_unix": 1794104748.390618,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104748.671278
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104759.5558028,
+          "observation_unix": 1794104759.429984,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104759.720704
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104770.458266,
+          "observation_unix": 1794104770.361098,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104770.678797
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104781.408711,
+          "observation_unix": 1794104781.279637,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104781.5229561
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T05",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104721.1292522,
+          "observation_unix": 1794104721.001573,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104721.199442
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104727.8733451,
+          "observation_unix": 1794104727.740129,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104728.035701
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104734.86852,
+          "observation_unix": 1794104734.741955,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104735.247335
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104746.095208,
+          "observation_unix": 1794104745.981024,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104746.3313842
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104757.133579,
+          "observation_unix": 1794104756.996785,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104757.2701728
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104768.010605,
+          "observation_unix": 1794104767.944125,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104768.1213791
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104778.930641,
+          "observation_unix": 1794104778.830192,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104779.0666502
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104783.808825,
+          "observation_unix": 1794104783.681895,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104783.897641
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T06",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104721.132006,
+          "observation_unix": 1794104721.0513449,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104721.199868
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104727.3820102,
+          "observation_unix": 1794104727.306581,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104727.691087
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104734.616147,
+          "observation_unix": 1794104734.510613,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104735.113736
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104745.956901,
+          "observation_unix": 1794104745.8647099,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104746.2421172
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104757.173963,
+          "observation_unix": 1794104757.04834,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104757.348493
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104768.293167,
+          "observation_unix": 1794104768.160824,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104768.409086
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104779.2398741,
+          "observation_unix": 1794104779.1793332,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104779.333015
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104785.3105652,
+          "observation_unix": 1794104785.2152262,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104785.420075
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T07",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104721.236165,
+          "observation_unix": 1794104721.100786,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104721.309073
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104727.752036,
+          "observation_unix": 1794104727.639395,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104727.949781
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104734.97191,
+          "observation_unix": 1794104734.842746,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104735.32422
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104746.278069,
+          "observation_unix": 1794104746.225065,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104746.480026
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104757.529703,
+          "observation_unix": 1794104757.414177,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104757.6603332
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104768.577806,
+          "observation_unix": 1794104768.4937038,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104768.702039
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104779.735185,
+          "observation_unix": 1794104779.6124952,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104779.83467
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104786.074356,
+          "observation_unix": 1794104785.981775,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104786.173023
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    },
+    {
+      "table": "T08",
+      "calls": 8,
+      "cycles_run": 0,
+      "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+      "requests": [
+        {
+          "call": 1,
+          "started_unix": 1794104721.238267,
+          "observation_unix": 1794104721.1505332,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104721.322387
+        },
+        {
+          "call": 2,
+          "started_unix": 1794104728.029712,
+          "observation_unix": 1794104727.956512,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104728.301132
+        },
+        {
+          "call": 3,
+          "started_unix": 1794104735.4284,
+          "observation_unix": 1794104735.3029299,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104735.607467
+        },
+        {
+          "call": 4,
+          "started_unix": 1794104746.763009,
+          "observation_unix": 1794104746.640567,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104746.946562
+        },
+        {
+          "call": 5,
+          "started_unix": 1794104758.0806952,
+          "observation_unix": 1794104757.963346,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104758.273099
+        },
+        {
+          "call": 6,
+          "started_unix": 1794104769.3739488,
+          "observation_unix": 1794104769.244413,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104769.512099
+        },
+        {
+          "call": 7,
+          "started_unix": 1794104780.643766,
+          "observation_unix": 1794104780.496168,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104780.738636
+        },
+        {
+          "call": 8,
+          "started_unix": 1794104785.4140558,
+          "observation_unix": 1794104785.315611,
+          "error": "DreamAPI refused the inference request: DA-2000 NO_CAPACITY (pool_warming): dreamlabs/dream-1-beta-flash: no live serve yet",
+          "finished_unix": 1794104785.445099
+        }
+      ],
+      "batch_end_lift": {
+        "measured": false
+      }
+    }
+  ],
+  "diagnostic_non_flash": {
+    "checkpoint": "dreamlabs/dream-1-beta",
+    "returned_action": true,
+    "applied_to_simulation": false
+  }
+}

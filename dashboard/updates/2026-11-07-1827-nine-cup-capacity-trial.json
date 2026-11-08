@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T18:27:32-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Ran all nine cup simulations and captured all nine recordings; Flash inference unavailable.",
+  "why": "Verify the requested pickup-and-hold task using real Dream API actions.",
+  "where": [
+    "docs/validation/nine-cup-trial-723ea85a.json"
+  ],
+  "details": [
+    "71 Flash requests returned pool_warming/no live serve; zero motion chunks executed.",
+    "One diagnostic non-Flash request returned an action, not applied to simulation.",
+    "Investigating stationary Table 6 cup tipping and collision-pad initialization before next trial."
+  ]
+}

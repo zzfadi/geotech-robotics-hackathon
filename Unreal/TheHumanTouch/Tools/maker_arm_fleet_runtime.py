@@ -243,10 +243,11 @@ class Session:
                         pc = proxy.static_mesh_component
                         pc.set_mobility(unreal.ComponentMobility.MOVABLE)
                         pc.set_collision_profile_name('BlockAllDynamic')
-                        pc.set_collision_enabled(unreal.CollisionEnabled.QUERY_AND_PHYSICS)
+                        pc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
                         pc.set_phys_material_override(material)
                         c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
                         table.proxies[name] = proxy
+            self.initialize_contacts(table)
             prefix = tuple(table.name(p) for p in PROP_PREFIXES)
             for name, actor in found.items():
                 if not name.startswith(prefix) or not isinstance(actor, unreal.StaticMeshActor):
@@ -298,6 +299,14 @@ class Session:
             table.next_capture = now + i * self.interval / max(1, len(self.tables))
         self.phase = 'ready'
         self.report(force=True)
+
+    def initialize_contacts(self, table):
+        """Place both jaw proxies at their true contact offsets before any cup simulates."""
+        for side in BASES:
+            self.apply_row(table, side, table.state['q_'+side] +
+                           [table.state['gap_'+side+'_m'] / JAW_MAX_M])
+        for proxy in table.proxies.values():
+            proxy.static_mesh_component.set_collision_enabled(unreal.CollisionEnabled.QUERY_AND_PHYSICS)
 
     # ---- per-table control -----------------------------------------------------
     def launch(self, table, report_path):

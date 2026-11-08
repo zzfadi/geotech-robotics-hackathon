@@ -1,0 +1,456 @@
+{
+  "scope": "Five-second stationary Chaos check; no Dream calls or commanded arm motion; not a grasp proof",
+  "run": "contact-startup-stationary",
+  "task": "t-0244",
+  "phase": "stopped",
+  "termination_reason": "Fleet session duration limit",
+  "elapsed_seconds": 5.117567833978683,
+  "tables": {
+    "T00": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 0.07997390309829008,
+          "table_local_cm": [
+            56.69441392248603,
+            -57.67005506442797,
+            81.02789724079845
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08014901006217745,
+          "table_local_cm": [
+            64.58825571630585,
+            62.66580516010221,
+            81.02790630999088
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.07997534089893331,
+          "table_local_cm": [
+            52.802718576110365,
+            -30.99549392167755,
+            81.02789730849196
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015258068171766,
+          "table_local_cm": [
+            56.50489190923584,
+            28.197454447028825,
+            81.02790650105608
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T01": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 0.07997591986824065,
+          "table_local_cm": [
+            54.71829614014877,
+            -59.32753343697266,
+            81.02789736480925
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08015270813789199,
+          "table_local_cm": [
+            48.49741938574386,
+            59.96087856494819,
+            81.02790649202674
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.0799747109161395,
+          "table_local_cm": [
+            55.400606534122005,
+            -29.92481012477856,
+            81.02789730862861
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015093996662348,
+          "table_local_cm": [
+            51.963679059096705,
+            30.444706511273466,
+            81.0279064034754
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_05": {
+          "tilt_degrees": 0.080152362791667,
+          "table_local_cm": [
+            65.8636625375385,
+            -2.3349423392213566,
+            81.02790649759163
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T02": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 1.2429194526495178,
+          "table_local_cm": [
+            63.63787535713376,
+            -61.9480990532486,
+            80.9716008256863
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08014986891377349,
+          "table_local_cm": [
+            55.45446211471329,
+            62.74706599950923,
+            81.02790633831307
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.07997527728929849,
+          "table_local_cm": [
+            48.67242453579785,
+            -30.50064720662249,
+            81.02789729453119
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015139592527276,
+          "table_local_cm": [
+            64.70637306188578,
+            32.58700185530688,
+            81.0279064557975
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T03": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 1.2197708707088672,
+          "table_local_cm": [
+            61.66991280309048,
+            -58.45821449282264,
+            80.90752953913416
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08015012297510869,
+          "table_local_cm": [
+            65.06788530859546,
+            59.410820289267086,
+            81.02790637813136
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.07997588064000671,
+          "table_local_cm": [
+            53.97667713579301,
+            -32.42010548623734,
+            81.02789732272655
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015151098766868,
+          "table_local_cm": [
+            52.17208961188646,
+            31.19552497379478,
+            81.02790643453727
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_05": {
+          "tilt_degrees": 0.08015246934496854,
+          "table_local_cm": [
+            61.124260427800664,
+            1.4611015688437134,
+            81.02790649052024
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T04": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 0.07997489870200711,
+          "table_local_cm": [
+            55.99537811754931,
+            -60.58087412491261,
+            81.0278973069738
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08014980613838617,
+          "table_local_cm": [
+            55.824762398190614,
+            60.43679057088775,
+            81.02790632229659
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.07997718147772238,
+          "table_local_cm": [
+            63.85771579317043,
+            -27.861475165913248,
+            81.02789743089299
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015197156754414,
+          "table_local_cm": [
+            59.04055369029629,
+            27.009550110285545,
+            81.02790648278197
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T05": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 1.756270735658125,
+          "table_local_cm": [
+            63.296921181646894,
+            -62.09632211606004,
+            81.02026603399464
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08015284061843493,
+          "table_local_cm": [
+            65.7651339767931,
+            58.45831491115996,
+            81.027906507167
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.08015079429139899,
+          "table_local_cm": [
+            65.63857119423801,
+            -42.50452168351694,
+            81.02790641061397
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015296860620849,
+          "table_local_cm": [
+            57.1197914165931,
+            32.70104971969977,
+            81.02790652974625
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_05": {
+          "tilt_degrees": 0.0801509533673121,
+          "table_local_cm": [
+            63.332954374275346,
+            2.819860160632288,
+            81.02790640428177
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T06": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 0.07997508549395772,
+          "table_local_cm": [
+            48.78043380252848,
+            -58.97582999373344,
+            81.02789726719425
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.0801511222194345,
+          "table_local_cm": [
+            58.473307350813,
+            58.589835536468506,
+            81.02790642627885
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.07997766729154805,
+          "table_local_cm": [
+            63.9876274746407,
+            -29.942773046113025,
+            81.02789741397802
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015161415899126,
+          "table_local_cm": [
+            49.054008936527,
+            30.81274466810122,
+            81.02790644368797
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T07": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 4.021299616165516,
+          "table_local_cm": [
+            61.213421911962314,
+            -59.34009211547493,
+            80.88371992499488
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08015139904465542,
+          "table_local_cm": [
+            57.4305708806578,
+            59.87615300652567,
+            81.0279064277296
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.0799753109443523,
+          "table_local_cm": [
+            53.21464446978848,
+            -28.0385146333914,
+            81.02789732487616
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015088707776236,
+          "table_local_cm": [
+            50.894532848771405,
+            30.005520601415128,
+            81.02790640631208
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_05": {
+          "tilt_degrees": 0.08015179396388511,
+          "table_local_cm": [
+            65.69605469169142,
+            -0.688498971823833,
+            81.02790646242283
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    },
+    "T08": {
+      "command_seq": 0,
+      "props": {
+        "MakerStation_Prop_Cup": {
+          "tilt_degrees": 0.0799753968660734,
+          "table_local_cm": [
+            54.18178141816247,
+            -57.11896609022597,
+            81.02789729003908
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_02": {
+          "tilt_degrees": 0.08015232684188889,
+          "table_local_cm": [
+            65.34964725782174,
+            59.65263447655434,
+            81.02790651320359
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_03": {
+          "tilt_degrees": 0.07997483109531747,
+          "table_local_cm": [
+            53.25835155054233,
+            -31.69303279867063,
+            81.02789729390068
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        },
+        "MakerStation_Prop_Cup_04": {
+          "tilt_degrees": 0.08015093319579625,
+          "table_local_cm": [
+            53.09215727411561,
+            29.641687991151684,
+            81.02790638574965
+          ],
+          "physics_simulated": true,
+          "attached_to": null
+        }
+      }
+    }
+  },
+  "limitations": "Single short trial; earlier T05 cup tipping root cause not conclusively isolated. Contact geometry and physical coefficients remain approximate."
+}

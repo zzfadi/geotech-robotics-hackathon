@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T18:28:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Initialize runtime jaw contact pads before enabling collisions and cup dynamics.",
+  "why": "Flat pads previously remained at raw jaw origins until the first action, instead of their offset contact surfaces.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py",
+    "Unreal/TheHumanTouch/Tools/test_maker_arm_contact_startup.py",
+    "docs/validation/cup-contact-startup-2026-11-07.json"
+  ],
+  "details": "Two startup tests and five CAD model tests passed. Five-second stationary SIE across nine tables had zero API calls and zero arm commands; all40 cups remained within4.03 degrees upright, T05 within1.76 degrees. No persistent scene edits. Short trial does not conclusively explain earlier T05 tipping or verify pickup."
+}
