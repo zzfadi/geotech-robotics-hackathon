@@ -489,8 +489,13 @@ class Session:
                 table.proxies[name].set_actor_location_and_rotation(unreal.Vector(*pp), unreal.Quat(*pq).rotator(), False, False)
 
     def follow_grips(self, table, now):
+        # Handover: when both grippers hold the same cup, the newer grip drives it.
+        newest = {}
         for side, grip in table.grips.items():
-            if not grip.active:
+            if grip.active and (grip.label not in newest or getattr(grip, 'since', 0) > getattr(table.grips[newest[grip.label]], 'since', 0)):
+                newest[grip.label] = side
+        for side, grip in table.grips.items():
+            if not grip.active or newest.get(grip.label) != side:
                 continue
             frames = mounted_frames(table.state['q_'+side], table.state['gap_'+side+'_m'], yaw=MOUNT_YAW[side])
             lp, lq = ue_pose(frames['link_007'])

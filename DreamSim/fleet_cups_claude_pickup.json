@@ -1,0 +1,987 @@
+{
+ "description": "Claude cup experiments: Dream from a pregrasp start (open jaws around the target cup), tabletop guard, optional grip latch; live editor cup layout; per-table lift heights.",
+ "defaults": {
+  "checkpoint": "dreamlabs/dream-1-beta",
+  "position_ik": true,
+  "pad_contacts": true,
+  "tcp_back": 0,
+  "action_rows": 12,
+  "cycles": 24,
+  "assist": {
+   "table_guard": true,
+   "layout": "live",
+   "grip_latch": true,
+   "hold_vertical": true,
+   "hold_monotonic": true,
+   "phase_prompts": {
+    "grasp": "Close the left gripper around the cup and hold it firmly. Keep the right arm still.",
+    "lift": "Lift the cup up 5 more centimeters. Keep the right arm still.",
+    "lift_variants": [
+     "Lift the cup up 5 more centimeters. Keep the right arm still.",
+     "Lift the cup straight up, higher. Keep it upright. Keep the right arm still.",
+     "Lift the cup up 10 more centimeters. Keep the right arm still."
+    ],
+    "hold": "Hold the cup still and upright in the air. Keep the right arm still."
+   },
+   "approach": "scripted",
+   "lift_step_cm": 0.15,
+   "grasp_still": true,
+   "grasp_depth_cm": 0.0,
+   "regrasp": 3,
+   "pitch_deg": "auto",
+   "hold_margin_cm": 1.5,
+   "hold_start_cm": 0.0,
+   "lift_up_gain": 2.5,
+   "capacity_wait_s": 180,
+   "stall_threshold_m": 0.005,
+   "grasp_still_cycles": 5,
+   "lift_up_gain_max": 6.0,
+   "lift_nudge_cm": 1.0
+  }
+ },
+ "tables": [
+  {
+   "index": 0,
+   "name": "T1 25cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 25,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      58.535819834969374,
+      -59.45451955797898,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      51.6868082079789,
+      61.48786340653707,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      63.64494022277172,
+      -40.75709821687124,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      49.90815678070158,
+      28.083603156920205,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 25 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 1,
+   "name": "T2 26cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 26,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      63.601019506700716,
+      -57.954385141113335,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      63.13969055598252,
+      61.546530254949744,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      51.8225693714007,
+      -31.15314194078894,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      62.09900920499707,
+      28.61701640208196,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_05",
+     "location_cm": [
+      60.67556429334649,
+      0.45345381104311855,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 26 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 2,
+   "name": "T3 20cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 20,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      51.39873919340573,
+      -60.898282729399625,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      62.10321770759595,
+      58.879305616565716,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      65.65597814670413,
+      -28.23599744818125,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      61.93744829245786,
+      27.581724801932523,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 20 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 3,
+   "name": "T4 22cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 22,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      65.55580276867806,
+      -60.175220448270885,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      63.960422251670366,
+      61.166952677650826,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      51.65993855187378,
+      -29.179616775191736,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      64.17359409723986,
+      30.863652779126625,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_05",
+     "location_cm": [
+      52.72411951973254,
+      -1.553479707931035,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 22 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 4,
+   "name": "T5 16cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 16,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      51.03826057219567,
+      -57.08903189372961,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      64.76505424980064,
+      61.65594038663551,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      61.744145758390346,
+      -32.79410319482486,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      65.47584179899616,
+      28.891977298032884,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 16 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 5,
+   "name": "T6 19cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 19,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      57.90911503088125,
+      -59.72120637256717,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      54.743285155749845,
+      60.88394208774821,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      63.65430208076407,
+      -27.592734315261396,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      50.957034873318094,
+      30.574473911204223,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_05",
+     "location_cm": [
+      57.018152778160584,
+      -1.7905797862640611,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 19 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 6,
+   "name": "T7 19cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 19,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      50.671310007957345,
+      -62.047901025173395,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      54.224081935498816,
+      57.80180561704407,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      50.53778139209976,
+      -32.79522113939785,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      53.074099203575315,
+      29.05136357750742,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 19 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 7,
+   "name": "T8 27cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 27,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      57.60332052099875,
+      -61.89276009465095,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      49.206743578572514,
+      62.3400102439565,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      54.44206558823521,
+      -27.09698542728006,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      64.10969788017997,
+      28.05062299003714,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_05",
+     "location_cm": [
+      59.94509204740416,
+      -0.5888379890226361,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 27 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  },
+  {
+   "index": 8,
+   "name": "T9 16cm Dream + friction grip",
+   "objective": {
+    "kind": "lift_hold",
+    "target": "MakerStation_Prop_Cup",
+    "side": "left",
+    "height_cm": 16,
+    "hold_seconds": 5,
+    "max_tilt_deg": 15
+   },
+   "initial_state": {
+    "q_left": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "q_right": [
+     -8.341015791761527e-08,
+     -1.3267562769368857,
+     1.5947274948757348,
+     -1.4680311465744582,
+     1.6235197063895467e-08,
+     -8.180590968960631e-08
+    ],
+    "gap_left_m": 0.1,
+    "gap_right_m": 0.1
+   },
+   "target": {
+    "label": "MakerStation_Prop_Cup"
+   },
+   "objects": [
+    {
+     "label": "MakerStation_Prop_Cup",
+     "location_cm": [
+      60.507221984250464,
+      -61.00004961797549,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_02",
+     "location_cm": [
+      56.02383955716232,
+      57.15900362882576,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_03",
+     "location_cm": [
+      64.46418026435185,
+      -31.69230777177677,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    },
+    {
+     "label": "MakerStation_Prop_Cup_04",
+     "location_cm": [
+      63.03371590345705,
+      31.519494281367997,
+      81.0
+     ],
+     "yaw_deg": 0.0,
+     "rotation_deg": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "clearance_radius_cm": 4.0
+    }
+   ],
+   "prompt": "Grab the cup and lift it 16 cm straight up, then hold it upright for 5 seconds. Keep the right arm still."
+  }
+ ],
+ "height_seed": 1794154098
+}

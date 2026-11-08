@@ -242,6 +242,8 @@ class TableRun:
     def prompt_now(self):
         """Opt-in language subgoals: grasp until the jaws hold the cup, lift until the
         table's height is reached, then hold. Dream produces every action for each."""
+        if getattr(self, 'prompt_override', None):
+            return self.prompt_override
         phases = self.v.get('assist', {}).get('phase_prompts')
         if not phases:
             return self.v['prompt']
@@ -319,6 +321,10 @@ class TableRun:
                 time.sleep(.1)
 
     def execute(self):
+        if self.v.get('assist', {}).get('task') == 'handover':
+            from handover import Handover
+            Handover(self).run()
+            return
         objective = self.v.get('objective') or {}
         hold_seconds = float(objective.get('hold_seconds', 5.))
         max_tilt = objective.get('max_tilt_deg')
@@ -664,6 +670,8 @@ class TableRun:
             self.result['outcome'] = 'unverified'
         else:
             self.result['outcome'] = verification['outcome']
+            if self.v.get('assist', {}).get('task') == 'handover':
+                self.result['threshold_hold'] = self.result.get('handover_hold')
             held = self.result.get('threshold_hold')
             if held is not None:
                 self.result['outcome'] = 'passed' if held['passed'] else 'failed'
@@ -1212,7 +1220,7 @@ def serve(args, config):
             status = 'stopped' if stop['flag'] else 'done'
             server.event('fleet.finished', request_id, ('Measured held lift on ' + ', '.join(held) + ' (review videos)') if held
                          else 'No table measured a held 10 cm lift')
-            summary = [{k: r.get(k) for k in ('lift_nudges', 'batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason', 'threshold_hold', 'assist')} for r in results]
+            summary = [{k: r.get(k) for k in ('handover_phase', 'handover_hold', 'handover_counts', 'lift_nudges', 'batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason', 'threshold_hold', 'assist')} for r in results]
         except Exception as error:
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))

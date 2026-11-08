@@ -255,3 +255,21 @@ subgoal; per-table grasp angle from the lift ceiling (45–80°); re-grasp if a 
 
 Tally since the friction grip and phase fixes (batches 26–41, excluding the checkpoint-disturbed 29/30):
 9/9 four times (28, 33, 37, 41), 8/9 eight times, 7/9 twice.
+- Batch 42 (`b5915bc9cf2d4e3b961b98ea3fa4e4c5`): **9/9** again (second consecutive).
+
+## Left-to-right handover (user request, 2026-11-08)
+
+`DreamSim/handover.py`: planned left reach → Dream grasp (arm still) → Dream lift (vertical only) to 12 cm →
+Dream-led carry toward a handover zone (x 35, y 0 cm; Dream's horizontal motion projected toward the zone,
+labelled nudges when it stalls) → planned right reach to the lower part of the held cup (tries 45/60/55/50/30°)
+→ Dream right grasp (arm still) → Dream release of the left gripper (labelled nudge if it keeps the jaws
+closed) + planned left retreat → Dream hold with the right. Runtime: when both grippers hold the cup the
+newer grip drives it. Success = cup held by the right gripper only, ≥ 8 cm up, upright, 5 s.
+
+- Handover 1 (`7a2dd8b23acb47e5b69194f5d0e57571`): left grasp 9/9; five tables completed the transfer but the
+  300 s simulation limit ended them during the final hold. Session limit raised to 600 s.
+- Handover 2 (`20261108-08xx`): four tables refused by the Dream pool (`pool_full`); four reached the hold but the
+  check never counted — the left grip never released because opening jaws track the command. Release now
+  triggers when the jaws open 5 mm past the width they gripped at.
+- **Handover 3: 6/9 complete handovers** — right gripper alone held the cup 14.2–17.7 cm up for 5 s. Misses: a
+  scaled lift overshot to ~19 cm, out of the right arm's reach; two camera-observation timeouts at start.
