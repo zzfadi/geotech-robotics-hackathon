@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T23:19:00-08:00",
+  "workstream": "demo",
+  "status": "in-progress",
+  "what": "Published the Emmy identity, five museum exhibits, local motion studies and a 30-second review reel.",
+  "why": "The pitch can rehearse its museum sequence before feature lock and on-site filming. Higgsfield character generation remains blocked by the workspace plan and credit balance.",
+  "where": [
+    "demo/pitch/asset-contact-sheet.jpg",
+    "demo/pitch/museum-reel.mp4",
+    "brand-kit-final/identity/brand-guide.pdf",
+    "brand-kit-final/emmy/character-sheet.jpg"
+  ]
+}

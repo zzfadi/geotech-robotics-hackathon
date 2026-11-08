@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T23:23:00-08:00",
+  "workstream": "demo",
+  "status": "in-progress",
+  "what": "Added wall-mounted motion reference plates and a matched solo/with-person rehearsal comparison.",
+  "why": "Frame boundaries and the human cue can be reviewed before selecting exhibit animation takes.",
+  "where": [
+    "demo/pitch/gallery-references.jpg",
+    "demo/pitch/assets/problem-comparison.jpg"
+  ]
+}
