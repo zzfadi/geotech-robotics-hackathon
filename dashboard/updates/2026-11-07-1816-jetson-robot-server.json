@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T18:16:22-08:00",
+  "workstream": "vrxr",
+  "status": "decision",
+  "what": "Jetson Nano selected as the planned physical robot SDK server.",
+  "why": "User will start the server later; keep Table 10 ready and disconnected until then.",
+  "where": [
+    "docs/table10-sdk-connection.md"
+  ],
+  "details": [
+    "Luna2 remains web/relay host.",
+    "No Jetson installation, connection, or hardware motion attempted.",
+    "Exact Jetson platform, address, Python compatibility and adapter assignments await inspection."
+  ]
+}

@@ -4,7 +4,7 @@
 
 The requested end state is a virtual human hand or moving object touching a Maker Arm in Unreal and producing a bounded response on the real arm, with measured hardware state returned to Unreal. Table 10 is separate from the nine Dream cup stations.
 
-The user confirmed on November 7 that the SDK host computer has not yet been selected; that decision is planned for November 8. No physical connection or powered test is claimed. The current work prepares the scene, authenticated telemetry relay, and offline control calculations. It is not an operational force-coupled digital twin.
+On November 7, the user selected a Jetson Nano as the planned robot server: both arms will connect to that machine, which will own the SDK connection and local motor lifecycle. The server is not started or connected yet; its network address, exact Jetson model, Linux/JetPack version and adapter assignments remain unverified. The user asked us to be ready when they start it. No physical connection or powered test is claimed. The current work prepares the scene, authenticated telemetry relay, and offline control calculations. It is not an operational force-coupled digital twin.
 
 Table 10 is saved in Unreal checkpoint `adf8fee`. The measured-feedback conversion in `Interaction/feedback_pose.py` accepts fresh encoder positions with validated arm identity and SDK-to-URDF calibration; it ignores requested targets and leaves jaw gap unknown. It is not yet a live Unreal polling/mirroring loop.
 
@@ -27,7 +27,7 @@ Contacts expire after 100 ms, old sequences and session nonces are rejected, and
 
 ## Remaining end-to-end work
 
-1. Select the SDK host and confirm physical arm/adapter identity. Inspect fresh feedback using the existing bench tools without competing CAN clients.
+1. Connect to the user-started Jetson Nano server and confirm its exact platform, Python version, physical arm/adapter identity. Inspect fresh feedback using the existing bench tools without competing CAN clients.
 2. Establish and validate UE-world-to-base and SDK-motor-to-URDF mappings. The existing handoff explicitly describes those mappings as provisional.
 3. Connect real UE hand/object contact measurements, including the correct arm side, to the producer. Moving a visual mesh is not a measured contact force.
 4. Integrate the bounded control proposal into the existing SDK return-or-hold lifecycle with an operator-held local enable. Do not replace it with an unconditional torque release or replay arbitrary remote motor targets.
@@ -35,3 +35,9 @@ Contacts expire after 100 ms, old sequences and session nonces are rejected, and
 6. With the station attended and a physical cutoff available, perform a bounded powered interaction and record synchronized UE contact, controller targets and actual encoder motion. Verify real feedback drives the matching virtual arm.
 
 The physical objective remains incomplete until the last step is demonstrated. Nine-table Dream recordings or an offline test cannot prove Table 10 hardware interaction.
+
+## Jetson readiness
+
+Keep Luna2 as the web/relay host and Unreal on the existing Mac/Luna2 editors. Do not start a second SDK/CAN owner automatically. The pinned [MakerMods SDK metadata](https://github.com/makermods-robotics/maker-arm-sdk/blob/0245316c05cb3e8d900f35e70c08e2e18e36731e/pyproject.toml) requires Python 3.10 or newer; verify the Jetson environment before choosing an installation route. No Jetson software installation, device connection, or motor command has been attempted.
+
+When the user starts the server, obtain its reachable hostname/address and authorized access, inspect the environment, then begin with measured-feedback-only mirroring. The current relay supports one explicitly selected arm per session; simultaneous two-arm telemetry/control still requires extending that contract. Do not claim that both physical arms are already connected or mirrored.
