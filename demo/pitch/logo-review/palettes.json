@@ -1,0 +1,23 @@
+[
+  {
+    "id": "patina",
+    "name": "Patina & Fired Clay",
+    "first": "#12665D",
+    "second": "#B64F32",
+    "portrait_field": "#153F3C"
+  },
+  {
+    "id": "lapis",
+    "name": "Lapis & Apricot",
+    "first": "#254AA7",
+    "second": "#E58346",
+    "portrait_field": "#192C66"
+  },
+  {
+    "id": "botanical",
+    "name": "Aubergine & Chartreuse",
+    "first": "#4B315D",
+    "second": "#A5AE38",
+    "portrait_field": "#372741"
+  }
+]
