@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T18:34:58-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Removed unintended number-sticker collisions that tipped stationary drinking cups.",
+  "why": "SIE restored the saved BlockAll profile even though the editor enabled-flag was NoCollision. Exact runtime overlap identified the thin sticker collider.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_grid_scene.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py",
+    "docs/validation/cup-sticker-collision-regression-2026-11-07.json"
+  ],
+  "details": "Persistent NoCollision profile and runtime guard preserve all visual numbers. Beforefix two cups tipped roughly89degrees with no actions; repeated30-second stationary regression kept all40cups within0.081degrees upright. Seven source tests pass; no CAD/placement changes or Dream calls."
+}

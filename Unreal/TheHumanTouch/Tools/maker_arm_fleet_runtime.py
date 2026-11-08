@@ -224,6 +224,12 @@ class Session:
         material.set_editor_property('restitution', 0.)
         self.material = material
         for table in self.tables:
+            # SIE can restore the saved BlockAll profile despite an editor-only
+            # enabled-flag override. Printed tabletop labels are not obstacles.
+            sticker = found.get('MakerFleet_T%02d__NumberSticker' % table.index)
+            if sticker is not None:
+                sticker.static_mesh_component.set_collision_profile_name('NoCollision')
+                sticker.static_mesh_component.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
             for side in BASES:
                 for link in VISUAL_LINKS:
                     name = table.name('MakerArm_'+side+'_'+link)

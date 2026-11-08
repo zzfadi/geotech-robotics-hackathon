@@ -44,6 +44,7 @@ def number_sticker(index, local=False):
             c = a.static_mesh_component
             c.set_static_mesh(unreal.load_asset('/Engine/BasicShapes/Cube.Cube'))
             c.set_material(0, unreal.load_asset('/Engine/BasicShapes/BasicShapeMaterial'))
+            c.set_collision_profile_name('NoCollision')
             c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
             c.set_cast_shadow(False)
             a.set_actor_scale3d(unreal.Vector(.20, .20, .001))

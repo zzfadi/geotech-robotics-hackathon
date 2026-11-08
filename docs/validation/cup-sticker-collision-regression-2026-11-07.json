@@ -1,0 +1,836 @@
+{
+  "cause": "NumberSticker runtime clone was BlockAll/QUERY_AND_PHYSICS despite editor NO_COLLISION/Custom; exact component collision overlap detected sticker on affected primary cups.",
+  "fix": "Persist NoCollision collision profile on10printed stickers and explicitly enforce it for selected runtime table stickers before cup simulation. No geometric or placement changes.",
+  "task": "t-0251",
+  "trials": {
+    "before": {
+      "run": "contact-stationary-30s",
+      "samples": 149,
+      "elapsed_seconds": 30.147447582974564,
+      "phase": "stopped",
+      "termination": "Expected bounded duration limit",
+      "tables": {
+        "T00": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.27751877988014506,
+              "final_tilt_deg": 0.0795939036840178,
+              "final_position_cm": [
+                56.695727073047514,
+                -57.670491347875796,
+                81.02787804375059
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.27754834936240863,
+              "final_tilt_deg": 0.07976468266328175,
+              "final_position_cm": [
+                64.589559858422,
+                62.66535383009871,
+                81.02788690209618
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.2775166634297212,
+              "final_tilt_deg": 0.07959430277968552,
+              "final_position_cm": [
+                52.80403193785409,
+                -30.99593215243071,
+                81.0278780466108
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.2775655907991425,
+              "final_tilt_deg": 0.07976366813694412,
+              "final_position_cm": [
+                56.50621123703594,
+                28.197018840291822,
+                81.02788681700315
+              ]
+            }
+          }
+        },
+        "T01": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.27751819604165184,
+              "final_tilt_deg": 0.0795941538190654,
+              "final_position_cm": [
+                54.7196093379153,
+                -59.327970067911565,
+                81.02787804634572
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.27755103081328175,
+              "final_tilt_deg": 0.07976456170141454,
+              "final_position_cm": [
+                48.49872333460121,
+                59.960429082598125,
+                81.02788688481108
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.2775206067319415,
+              "final_tilt_deg": 0.07959509766356884,
+              "final_position_cm": [
+                55.40191996254091,
+                -29.925248450192157,
+                81.02787805349726
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.27754781576873044,
+              "final_tilt_deg": 0.07976550159675384,
+              "final_position_cm": [
+                51.96500334127474,
+                30.444246362008244,
+                81.02788695480538
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.2775921737719224,
+              "final_tilt_deg": 0.07976382583277634,
+              "final_position_cm": [
+                65.86498788534217,
+                -2.3353884839510783,
+                81.02788682361877
+              ]
+            }
+          }
+        },
+        "T02": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 88.92012894380093,
+              "final_tilt_deg": 85.85805314216148,
+              "final_position_cm": [
+                65.55844159172989,
+                -70.65181281159789,
+                76.35829037788858
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.27755041782629114,
+              "final_tilt_deg": 0.0797639423955303,
+              "final_position_cm": [
+                55.45576599622924,
+                62.74661452623582,
+                81.02788684067671
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.2775190783135619,
+              "final_tilt_deg": 0.07959473151327028,
+              "final_position_cm": [
+                48.67373830668684,
+                -30.50108615514182,
+                81.02787808721973
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.27759539840974734,
+              "final_tilt_deg": 0.07976321072039766,
+              "final_position_cm": [
+                64.70768284724262,
+                32.58656411484753,
+                81.02788679495221
+              ]
+            }
+          }
+        },
+        "T03": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 5.554029191412702,
+              "final_tilt_deg": 3.101385993928135,
+              "final_position_cm": [
+                61.84732402108102,
+                -57.055992338377116,
+                80.49605464415424
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.2775492502128952,
+              "final_tilt_deg": 0.07976353697482483,
+              "final_position_cm": [
+                65.06918883006131,
+                59.41036953940119,
+                81.02788684486629
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.2775196943391423,
+              "final_tilt_deg": 0.07959490710425995,
+              "final_position_cm": [
+                53.977990753337394,
+                -32.42054366808023,
+                81.02787807768365
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.277550768989426,
+              "final_tilt_deg": 0.07976556547419814,
+              "final_position_cm": [
+                52.17341443249677,
+                31.195063629404896,
+                81.02788693950926
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.2775938714968489,
+              "final_tilt_deg": 0.0797632461327367,
+              "final_position_cm": [
+                61.125585786619126,
+                1.460655836548717,
+                81.02788680976441
+              ]
+            }
+          }
+        },
+        "T04": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.27751871177751525,
+              "final_tilt_deg": 0.0795941561177436,
+              "final_position_cm": [
+                55.99669073048733,
+                -60.58131663935501,
+                81.0278780413458
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.2775508219488117,
+              "final_tilt_deg": 0.0797649124597102,
+              "final_position_cm": [
+                55.82606617991712,
+                60.436339938835886,
+                81.02788690557017
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.277591863930029,
+              "final_tilt_deg": 0.07959698413307074,
+              "final_position_cm": [
+                63.85902642325436,
+                -27.86191483238929,
+                81.02787819500587
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.2775905675173252,
+              "final_tilt_deg": 0.07976382581906845,
+              "final_position_cm": [
+                59.04186382797661,
+                27.009111929060964,
+                81.02788684425903
+              ]
+            }
+          }
+        },
+        "T05": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 89.62126861174166,
+              "final_tilt_deg": 89.57982752984779,
+              "final_position_cm": [
+                68.26064020673346,
+                -69.87638836562564,
+                77.10383593062207
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.27754766137065773,
+              "final_tilt_deg": 0.07976349842349309,
+              "final_position_cm": [
+                65.76643744056014,
+                58.4578661202645,
+                81.02788683187231
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.27759402563288926,
+              "final_tilt_deg": 0.07976361399061549,
+              "final_position_cm": [
+                65.6398965118808,
+                -42.5049688939082,
+                81.02788682592335
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.2775675918238685,
+              "final_tilt_deg": 0.07976457958091789,
+              "final_position_cm": [
+                57.121111513004166,
+                32.70060490338551,
+                81.0278869007002
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.2775916911776748,
+              "final_tilt_deg": 0.0797636110753944,
+              "final_position_cm": [
+                63.334279690114386,
+                2.819414089847214,
+                81.02788680504098
+              ]
+            }
+          }
+        },
+        "T06": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.2775177166926478,
+              "final_tilt_deg": 0.07959412556638183,
+              "final_position_cm": [
+                48.78174704199159,
+                -58.97627401527615,
+                81.02787801436313
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.27754651394749535,
+              "final_tilt_deg": 0.07976374516174674,
+              "final_position_cm": [
+                58.474610851031684,
+                58.589385154514,
+                81.02788685030234
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.277592947664836,
+              "final_tilt_deg": 0.07959629771974838,
+              "final_position_cm": [
+                63.988937814648125,
+                -29.943213015122897,
+                81.02787814931713
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.2775507001067544,
+              "final_tilt_deg": 0.07976444710891852,
+              "final_position_cm": [
+                49.05533281068756,
+                30.812284779421095,
+                81.0278868849637
+              ]
+            }
+          }
+        },
+        "T07": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 4.2638626614798625,
+              "final_tilt_deg": 4.0327085083096055,
+              "final_position_cm": [
+                61.21521294185163,
+                -59.329002577818756,
+                80.88299379242933
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.2775493272769017,
+              "final_tilt_deg": 0.07976455317974848,
+              "final_position_cm": [
+                57.4318743501658,
+                59.87570535921486,
+                81.0278868739124
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.2775200396352582,
+              "final_tilt_deg": 0.07959616862623814,
+              "final_position_cm": [
+                53.2159573308802,
+                -28.038953664442147,
+                81.02787814185895
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.27754991108142524,
+              "final_tilt_deg": 0.07976572895544434,
+              "final_position_cm": [
+                50.89585789545572,
+                30.005060237900466,
+                81.02788695072375
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.27759561208148475,
+              "final_tilt_deg": 0.0797629519722401,
+              "final_position_cm": [
+                65.69738040327866,
+                -0.6889450841066491,
+                81.02788679149396
+              ]
+            }
+          }
+        },
+        "T08": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.2775154830835272,
+              "final_tilt_deg": 0.0795946876188966,
+              "final_position_cm": [
+                54.18309442739951,
+                -57.11940933797564,
+                81.02787807747916
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.2775466637317246,
+              "final_tilt_deg": 0.07976503055156857,
+              "final_position_cm": [
+                65.35094985921455,
+                59.65218718124879,
+                81.02788689644271
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.27751978176802344,
+              "final_tilt_deg": 0.07959497421858994,
+              "final_position_cm": [
+                53.25966579231658,
+                -31.69347185622655,
+                81.02787808340095
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.27754871011423615,
+              "final_tilt_deg": 0.07976603407171681,
+              "final_position_cm": [
+                53.093482362637815,
+                29.641226560733458,
+                81.02788693416343
+              ]
+            }
+          }
+        }
+      }
+    },
+    "after": {
+      "run": "contact-stickers-fixed-30s",
+      "samples": 149,
+      "elapsed_seconds": 30.167449833010323,
+      "phase": "stopped",
+      "termination": "Expected bounded duration limit",
+      "tables": {
+        "T00": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09953960390754234,
+              "final_tilt_deg": 0.07995535390999013,
+              "final_position_cm": [
+                56.694491244529445,
+                -57.670279955278765,
+                81.02789663666255
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09962429316631846,
+              "final_tilt_deg": 0.07995631606341043,
+              "final_position_cm": [
+                64.58831320125076,
+                62.6655689828635,
+                81.02789670962875
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09954017240239663,
+              "final_tilt_deg": 0.07995684412699214,
+              "final_position_cm": [
+                52.80279659274705,
+                -30.995719629916763,
+                81.02789670772778
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09954110813456846,
+              "final_tilt_deg": 0.08010393756448433,
+              "final_position_cm": [
+                56.504975291220255,
+                28.197235135515587,
+                81.02790432785045
+              ]
+            }
+          }
+        },
+        "T01": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.0995401300389998,
+              "final_tilt_deg": 0.07995581806307776,
+              "final_position_cm": [
+                54.7183732998695,
+                -59.327757792300304,
+                81.02789667864762
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09962498046640353,
+              "final_tilt_deg": 0.07995691994920978,
+              "final_position_cm": [
+                48.4974764642148,
+                59.960644492463075,
+                81.0278967582417
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.0995409629652482,
+              "final_tilt_deg": 0.0799567688927199,
+              "final_position_cm": [
+                55.400684432124606,
+                -29.925035153008025,
+                81.02789670378722
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09952531086827138,
+              "final_tilt_deg": 0.08006280228396905,
+              "final_position_cm": [
+                51.96376712958523,
+                30.4444598208554,
+                81.02790225056894
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.09954884109725365,
+              "final_tilt_deg": 0.08011278186180618,
+              "final_position_cm": [
+                65.86374811276552,
+                -2.335178587825226,
+                81.0279048057898
+              ]
+            }
+          }
+        },
+        "T02": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09954069362448444,
+              "final_tilt_deg": 0.07995544551006895,
+              "final_position_cm": [
+                63.708426675814884,
+                -62.45845909794957,
+                81.02789665625697
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09962471384779947,
+              "final_tilt_deg": 0.0799578010661155,
+              "final_position_cm": [
+                55.45451965442277,
+                62.74683040640002,
+                81.02789674707279
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09954020170159968,
+              "final_tilt_deg": 0.0799567395009656,
+              "final_position_cm": [
+                48.67250275542182,
+                -30.500873353764064,
+                81.02789670949986
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09954837731055816,
+              "final_tilt_deg": 0.08010412368244316,
+              "final_position_cm": [
+                64.7064567089588,
+                32.58678356072801,
+                81.0279043523275
+              ]
+            }
+          }
+        },
+        "T03": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09954090832165685,
+              "final_tilt_deg": 0.07995581169053509,
+              "final_position_cm": [
+                62.15625723652113,
+                -58.69324409796081,
+                81.02789667571044
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09952519758689982,
+              "final_tilt_deg": 0.08006485974567423,
+              "final_position_cm": [
+                65.06796202786222,
+                59.41058575785286,
+                81.02790234557081
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09954050402259045,
+              "final_tilt_deg": 0.07995579260025396,
+              "final_position_cm": [
+                53.97675522758641,
+                -32.420330285415275,
+                81.02789667775552
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09952493359034088,
+              "final_tilt_deg": 0.0800619650458484,
+              "final_position_cm": [
+                52.17217828461969,
+                31.19527675962505,
+                81.02790219974294
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.09954805711023343,
+              "final_tilt_deg": 0.08011272229653094,
+              "final_position_cm": [
+                61.12434552825664,
+                1.4608666016666119,
+                81.02790481181589
+              ]
+            }
+          }
+        },
+        "T04": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09954113733829839,
+              "final_tilt_deg": 0.07995730655752968,
+              "final_position_cm": [
+                55.99545592569348,
+                -60.581105425930105,
+                81.02789673459188
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09962470534572766,
+              "final_tilt_deg": 0.07995747727266657,
+              "final_position_cm": [
+                55.8248197240398,
+                60.43655488858576,
+                81.02789672716635
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09954702782202597,
+              "final_tilt_deg": 0.07996607632313127,
+              "final_position_cm": [
+                63.85779163295183,
+                -27.861703131549802,
+                81.02789725029584
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09954865483156192,
+              "final_tilt_deg": 0.08010361441634448,
+              "final_position_cm": [
+                59.04063740907918,
+                27.009331063908576,
+                81.02790432658294
+              ]
+            }
+          }
+        },
+        "T05": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09954292911134015,
+              "final_tilt_deg": 0.07995653876338205,
+              "final_position_cm": [
+                63.4033573437863,
+                -62.39953668948556,
+                81.02789669600094
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09952785721886913,
+              "final_tilt_deg": 0.08006250691153678,
+              "final_position_cm": [
+                65.76521090867698,
+                58.45808166764209,
+                81.02790222330874
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09954803909348854,
+              "final_tilt_deg": 0.08011035752432756,
+              "final_position_cm": [
+                65.63865983463074,
+                -42.504754764689324,
+                81.02790471016401
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09954117722246586,
+              "final_tilt_deg": 0.08006156006904765,
+              "final_position_cm": [
+                57.119867635883224,
+                32.70081901946992,
+                81.0279021761904
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.09954917472417206,
+              "final_tilt_deg": 0.08011216255001778,
+              "final_position_cm": [
+                63.33303950189054,
+                2.819625260674684,
+                81.02790474804341
+              ]
+            }
+          }
+        },
+        "T06": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09954177660345671,
+              "final_tilt_deg": 0.07995825684527956,
+              "final_position_cm": [
+                48.78051143745347,
+                -58.976063743412105,
+                81.02789679617077
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09952629396162041,
+              "final_tilt_deg": 0.07995642190705543,
+              "final_position_cm": [
+                58.4733642913875,
+                58.58960064571175,
+                81.02789668151776
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09955012833684003,
+              "final_tilt_deg": 0.07996565894671165,
+              "final_position_cm": [
+                63.987702108761596,
+                -29.94300124320546,
+                81.02789721056615
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09952389434747795,
+              "final_tilt_deg": 0.08006324977670437,
+              "final_position_cm": [
+                49.05409729049552,
+                30.81249780251314,
+                81.02790225105193
+              ]
+            }
+          }
+        },
+        "T07": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09954185599779819,
+              "final_tilt_deg": 0.07995682771722053,
+              "final_position_cm": [
+                61.51515961649193,
+                -59.573659280707375,
+                81.02789670222325
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.09952500100858822,
+              "final_tilt_deg": 0.07995728804650247,
+              "final_position_cm": [
+                57.43062794587877,
+                59.87591818376188,
+                81.02789675768389
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09954050197582683,
+              "final_tilt_deg": 0.07995687301274025,
+              "final_position_cm": [
+                53.214722748445865,
+                -28.038741291770748,
+                81.02789670313445
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09952468868337722,
+              "final_tilt_deg": 0.08006277690524463,
+              "final_position_cm": [
+                50.89462109418946,
+                30.005273562573734,
+                81.02790221584547
+              ]
+            },
+            "MakerStation_Prop_Cup_05": {
+              "max_sampled_tilt_deg": 0.09954741003209151,
+              "final_tilt_deg": 0.08011260877981566,
+              "final_position_cm": [
+                65.69613999633407,
+                -0.6887339152597178,
+                81.02790477556405
+              ]
+            }
+          }
+        },
+        "T08": {
+          "command_seq": 0,
+          "props": {
+            "MakerStation_Prop_Cup": {
+              "max_sampled_tilt_deg": 0.09953829826435945,
+              "final_tilt_deg": 0.07995542435020934,
+              "final_position_cm": [
+                54.18185827046295,
+                -57.119196349416825,
+                81.02789666700042
+              ]
+            },
+            "MakerStation_Prop_Cup_02": {
+              "max_sampled_tilt_deg": 0.0995249532298926,
+              "final_tilt_deg": 0.08006254033872824,
+              "final_position_cm": [
+                65.34972380899649,
+                59.652402199411654,
+                81.02790219653548
+              ]
+            },
+            "MakerStation_Prop_Cup_03": {
+              "max_sampled_tilt_deg": 0.09954059426322176,
+              "final_tilt_deg": 0.07995695971550464,
+              "final_position_cm": [
+                53.258429742771796,
+                -31.69325935142001,
+                81.02789674246529
+              ]
+            },
+            "MakerStation_Prop_Cup_04": {
+              "max_sampled_tilt_deg": 0.09952432121010864,
+              "final_tilt_deg": 0.08006400451614001,
+              "final_position_cm": [
+                53.09224512414721,
+                29.64143947889397,
+                81.02790229029964
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "limitations": "Stationary stability regression, not pickup/grasp calibration. Runtime-only contact approximations unchanged. No Dream calls in either diagnostic."
+}
