@@ -41,11 +41,11 @@ def main():
     parser.add_argument('--name', required=True)
     parser.add_argument('--engine', type=Path, default=Path('C:/Program Files/Epic Games/UE_5.8/Engine') if platform.system()=='Windows' else Path('/Users/Shared/Epic Games/UE_5.8/Engine'))
     parser.add_argument('--capture-tools', action='store_true',
-                        help='Load the locally built HumanTouchPose plugin for preview and diagnostics')
+                        help='Explicitly enable HumanTouchPose (already enabled for project editors)')
     parser.add_argument('--capture-hub', metavar='IP:PORT',
                         help='Add the reachable Live Link Hub UDP Messaging endpoint alongside Concert')
     parser.add_argument('--performers', choices=('mannequins', 'metahumans'),
-                        help='Enable capture and select the local performer cast (default with capture: mannequins)')
+                        help='Override the station editor cast for this launch (default: mannequins)')
     parser.add_argument('--passthrough', action=argparse.BooleanOptionalAction, default=None,
                         help='Start the headset with the room or opaque VR background; enables the Capture Performers widget')
     args = parser.parse_args()
