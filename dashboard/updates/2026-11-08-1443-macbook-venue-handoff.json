@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-08T14:43:00-08:00",
+  "workstream": "planning",
+  "status": "note",
+  "what": "MacBook handoff prepared for the venue after the travel-router reset",
+  "why": "The physically connected kit needs its network rediscovered, while preserving the Jetson software and the station's current arm-control owner.",
+  "where": [
+    "docs/handoffs/macbook-venue-resume-2026-11-08.md",
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "a0f4353"
+  ],
+  "details": "Reviewed 47 main commits after the overnight summary. Handoff covers Beryl WAN-to-LAN recovery, fresh device leases, MacBook SSH enrollment, two preserved Jetson checkouts and TensorRT environments, overnight evidence, and the newer one-service-per-arm Table 10 result. Home addresses are historical after the user-reported router reset. No venue network, KVM video, camera interaction or motor test was performed for this review. Submission route/owner and actual live can-handoff acceptance remain open."
+}
