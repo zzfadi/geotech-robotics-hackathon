@@ -378,6 +378,12 @@ class TableRun:
                 active = [active_side] if active_side else None
                 try:
                     action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12, active_sides=active, allow_prefix=True)
+                except ValueError as error:
+                    if 'unreachable' not in str(error):
+                        raise
+                    # Dream's first target is out of reach: hold this cycle and ask again.
+                    self.log('policy target unreachable (%s); holding pose this cycle' % error)
+                    action, ik = hold_action(packet['state'], 2), {'_execution': {'truncated': False, 'unreachable': str(error)}}
                 except np.linalg.LinAlgError as error:
                     # Numerical failure inside the solver: hold this cycle and replan.
                     self.log('IK numerical failure (%s); holding pose this cycle' % error)
@@ -423,7 +429,8 @@ class TableRun:
                 action, vertical = vertical_only(action, packet['state'], latch_side, floor_z=floor,
                                                  allow_down_cm=0. if assist.get('hold_monotonic') else .5,
                                                  max_step_cm=float(assist.get('lift_step_cm', .25)),
-                                                 back_per_up=float(assist.get('lift_back_per_up', 0.)))
+                                                 back_per_up=float(assist.get('lift_back_per_up', 0.)),
+                                                 up_gain=float(assist.get('lift_up_gain', 1.)))
                 self.log('holding: applied only vertical motion (dz %+.1f cm over %d rows)' %
                          ((vertical['dz_cm'] or [0])[-1], vertical['rows']))
             if self.v.get('assist', {}).get('grip_latch') and self.grip_latch is not None and not self.args.dry_run:

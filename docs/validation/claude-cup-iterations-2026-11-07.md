@@ -189,3 +189,12 @@ status reports `friction_grip` per table. **Results with it are "friction-grip m
 - **Batch 22 (`8b2993843b1543b5bb50830b90bcd29d`): 5/9 passed** — T1 20 cm (peak 23.3), T3 16 cm (18.6),
   **T7 29 cm (30.0)**, T8 19 cm (19.5), T9 21 cm (21.8), each a continuous 5 s hold, tilt ≤ 9.4°. Near misses
   hovered just under target (23.1/23, 26.8/27): batch 23 keeps lifting to target + 1.5 cm before holding.
+- **Batch 23 (`f0c128f2bff54e05b0b38ab19e9f3eb3`): 7/9** — 25, 16, 15, 18, 23, 19, 27 cm held 5 s. Misses at 27 cm
+  were the 60° grasp's reach ceiling.
+- Batch 24 (`2fe9f1bf1f46431a9b4cdeb92b750b21`): 6/9, including a **30 cm hold** with a 68° grasp.
+- Batch 25 (`905dc316ccc44c5986ed5605cf301948`): 5/9 with automatic grasp-angle choice (shallowest angle whose
+  straight-lift ceiling clears target + 2 cm, 45–80°). Dream's lift faded near 20 cm; one table ended on an
+  unreachable first target (now a held cycle).
+- **Batch 26 (`a4b4718986604153bbec3edcbaad2f78`): 8/9** — 17, 19, 16, **27**, 16, 17, 22, 18 cm held 5 s
+  (peaks up to 30.1 cm, tilt ≤ 4.9°) with Dream's upward steps scaled 2.5× while holding. Miss: T8 reached
+  21.8 cm (target 25) and held it 65 s.

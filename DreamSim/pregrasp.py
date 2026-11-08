@@ -157,6 +157,9 @@ def prepare_run_config(run_config, base_config):
         table['target'] = target
         table['objects'] = [o for o in table.get('objects') or [] if o.get('label') != target.get('label')]
         side = (table.get('objective') or {}).get('side') or 'left'
+        if assist.get('pitch_deg') == 'auto':
+            pitch, ceiling = choose_pitch({**table, 'target': target}, float((table.get('objective') or {}).get('height_cm', 15)), side)
+            assist = {**assist, 'pitch_deg': pitch, 'lift_ceiling_cm': ceiling}
         options = {k: assist[k] for k in START_OPTIONS if k in assist}
         if assist.get('approach') == 'scripted':
             # Every run starts from idle; the reach is the first, recorded motion.
@@ -231,6 +234,36 @@ def apply_live_layout(config, world_cups):
     return prepare_run_config(out, out)
 
 
+def lift_ceiling_cm(table, side='left', pitch_deg=45., step_cm=1., limit_cm=40.):
+    """How far the cup can be lifted straight up holding this grasp orientation."""
+    try:
+        q = pregrasp_state(table, side, pitch_deg=pitch_deg)['q_'+side]
+    except ValueError:
+        return 0.
+    fk = _fk()
+    f = fk.pose(q)
+    up, previous = 0., q
+    while up+step_cm <= limit_cm:
+        try:
+            previous = solve_pose(f[:3, 3]+np.array([0, 0, (up+step_cm)/100]), f[:3, :3], previous, .003, .05)
+        except ValueError:
+            break
+        up += step_cm
+    return up
+
+
+def choose_pitch(table, required_cm, side='left', pitches=(45., 55., 60., 65., 68., 72., 76., 80.), margin_cm=2.):
+    """Shallowest grasp whose straight-lift ceiling clears the target (shallow grips hold best)."""
+    best = (0., pitches[0])
+    for pitch in pitches:
+        # pregrasp_state may fall back to a shallower angle; measure what is actually reachable.
+        ceiling = lift_ceiling_cm(table, side, pitch)
+        if ceiling >= required_cm+margin_cm:
+            return pitch, ceiling
+        best = max(best, (ceiling, pitch))
+    return best[1], best[0]
+
+
 def table_clearance(q, gap_m, side):
     # Dream may request slightly more than fully open; the runtime clamps it, so do the same.
     frames = mounted_frames(list(q), min(max(float(gap_m), 0.), JAW_MAX_M), yaw=MOUNT_YAW)
@@ -275,7 +308,7 @@ def tool_height(q):
     return float(fk.pose(np.clip(np.array(q, dtype=float), fk.low+1e-7, fk.high-1e-7))[2, 3])
 
 
-def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25, back_per_up=0.):
+def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25, back_per_up=0., up_gain=1.):
     """While an object is held: keep the measured tool x/y and orientation, apply only
     Dream's vertical motion, never below floor_z (the height where the jaws closed)
     minus allow_down_cm; without floor_z the current height is the floor."""
@@ -295,7 +328,10 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
     rows, heights = [], []
     for row in action[key]:
         q = np.clip(np.array(row[:6], dtype=float), fk.low+1e-7, fk.high-1e-7)
-        z = max(float(fk.pose(q)[2, 3]), floor)
+        z = float(fk.pose(q)[2, 3])
+        if z > start[2, 3]:  # up_gain scales only Dream's upward motion while holding
+            z = start[2, 3]+(z-start[2, 3])*up_gain
+        z = max(z, floor)
         target = point(z)
         try:
             solved = solve_pose(target, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
