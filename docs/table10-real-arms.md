@@ -127,3 +127,16 @@ Tested 2026-11-08:
 - Put-down: the cup was set down upright and both arms returned to idle.
 
 Reach: along the centre line (y = 0) each arm reaches x 30–50 cm only. Off-centre, each arm covers most of its half.
+
+### Beer can, and a duplicate-instance bug (2026-11-08, 13:5x)
+
+Table 10 now hands over `MakerInteraction_T09__HandoverCan`, an Engine cylinder 6.6 × 12.2 cm, spawned by the VR
+session. The runtime looks up the can or the cup by label on every tick and handles the can's straight wall.
+Test: the left arm held the can 10.6 cm up at 1.4° tilt; put-down passed.
+
+**Bug found and fixed.** Every editor reload-then-start of the link or of the Table 10 runtime left the old
+instance ticking. One sweep found 5 link instances and 2 runtimes running together.
+- Each link kept its own arm state and published `ue_state.json` in turn. In drive, the bridge would have received
+  alternating joint targets: a plausible contributor to the motor dropouts under torque.
+- Both modules' `start()` now stops stray instances of themselves, including ones orphaned by a reload.
+- Re-test the real arms with a single link before concluding it is only hardware.

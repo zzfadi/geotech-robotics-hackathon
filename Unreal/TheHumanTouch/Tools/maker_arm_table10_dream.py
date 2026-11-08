@@ -32,11 +32,15 @@ from maker_arm_station import MOUNT_YAW, VISUAL_LINKS
 from yam_kinematics import ue_pose
 
 PREFIX = 'MakerInteraction_T09__'
-CUP = PREFIX + 'HandoverCup'
+# The object to hand over: a beer can (Engine cylinder, 6.6 x 12.2 cm) or the drinking cup. Looked up by
+# label each tick, so the VR session can swap it without restarting this runtime.
+OBJECTS = {
+    PREFIX + 'HandoverCan': {'noun': 'can', 'radius_cm': (3.3, 3.3), 'half_height_cm': 6.1, 'rest_z': 81.1},
+    PREFIX + 'HandoverCup': {'noun': 'cup', 'radius_cm': (3.0, 4.0), 'half_height_cm': 6.0, 'rest_z': 81.0},
+}
 CAMERAS = {'overhead': PREFIX + 'MakerCamera_Overview', 'wrist_l': PREFIX + 'MakerCamera_LeftWrist',
            'wrist_r': PREFIX + 'MakerCamera_RightWrist'}
 OFFSET = (2460.0, 0.0, 0.0)          # Table 10 grid offset (maker_arm_grid.offset(9))
-TABLE_TOP_CUP_Z = 81.0               # cup centre when standing on the table (12 cm cup, centred origin)
 ACTION_HZ = 20.0
 SIDES = ('left', 'right')
 _rt = None
@@ -48,10 +52,12 @@ def _write(path, value):
     tmp.replace(path)
 
 
-def _cup_width_m(z_local_cm):
-    """SM_DrinkingCup: radius 3 cm at the bottom (z -6) to 4 cm at the rim (z +6)."""
-    z = max(-6.0, min(6.0, z_local_cm))
-    return 2 * (3.0 + (z + 6.0) / 12.0) / 100.0
+def _width_m(spec, z_local_cm):
+    """Outer width at a height on the object (centred pivot): a straight can, or the cup's 3 -> 4 cm taper."""
+    h = spec['half_height_cm']
+    z = max(-h, min(h, z_local_cm))
+    bottom, top = spec['radius_cm']
+    return 2 * (bottom + (top - bottom) * (z + h) / (2 * h)) / 100.0
 
 
 class Runtime:
@@ -61,7 +67,8 @@ class Runtime:
         self.world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
         found = {a.get_actor_label(): a for a in unreal.GameplayStatics.get_all_actors_of_class(self.world, unreal.Actor)}
         self.arms = {(s, l): found[ARM_PREFIX + s + '_' + l] for s in SIDES for l in VISUAL_LINKS}
-        self.cup = found.get(CUP)
+        self.cup, self.spec, self.label = None, None, None
+        self._find_object(found)
         self.sources = {role: found[label] for role, label in CAMERAS.items()}
         self.q, self.gap = {}, {}
         for side in SIDES:
@@ -74,6 +81,19 @@ class Runtime:
         if call_camera._locally(self._create_cameras) is None:
             raise RuntimeError('Start the Table 10 Dream runtime outside a transaction')
         self.callback = unreal.register_slate_post_tick_callback(self._tick)
+
+    def _find_object(self, found=None):
+        if self.cup is not None and unreal.SystemLibrary.is_valid(self.cup):
+            return
+        if found is None:
+            found = {a.get_actor_label(): a for a in unreal.GameplayStatics.get_all_actors_of_class(self.world, unreal.StaticMeshActor)
+                     if a.get_actor_label() in OBJECTS}
+        self.cup = self.spec = self.label = None
+        self.held = None
+        for label, spec in OBJECTS.items():  # can first
+            if label in found:
+                self.cup, self.spec, self.label = found[label], spec, label
+                return
 
     @staticmethod
     def _pose(actor):
@@ -115,9 +135,10 @@ class Runtime:
         c = self.cup.get_actor_location()
         horizontal = math.hypot(gc[0] - c.x, gc[1] - c.y)
         z_local = gc[2] - c.z
-        if horizontal > 2.5 or not -5.5 < z_local < 5.5:
+        h = self.spec['half_height_cm']
+        if horizontal > 2.5 or not -(h - .5) < z_local < h - .5:
             return requested
-        return max(requested, _cup_width_m(z_local) - .002)  # one 2 mm wall of squeeze, like the fleet limiter
+        return max(requested, _width_m(self.spec, z_local) - .002)  # 2 mm of squeeze, like the fleet limiter
 
     def _update_cup(self, side, requested, gap):
         if self.cup is None:
@@ -126,7 +147,7 @@ class Runtime:
         if self.held == side:
             if requested > self.grip_gap + .005:  # jaws opened past the grip: set the cup down upright below
                 loc = self.cup.get_actor_location()
-                self.cup.set_actor_location_and_rotation(unreal.Vector(loc.x, loc.y, TABLE_TOP_CUP_Z), unreal.Rotator(0, 0, 0), False, True)
+                self.cup.set_actor_location_and_rotation(unreal.Vector(loc.x, loc.y, self.spec['rest_z']), unreal.Rotator(0, 0, 0), False, True)
                 self.held, self.rel = None, None
             else:
                 t = unreal.MathLibrary.compose_transforms(self.rel, link.get_actor_transform())
@@ -192,16 +213,18 @@ class Runtime:
 
     def _cup_status(self):
         if self.cup is None:
-            return {'present': False}
+            return {'present': False, 'unix': time.time()}
         loc = self.cup.get_actor_location()
         up = self.cup.get_actor_up_vector()
-        return {'present': True, 'table_local_cm': [loc.x - OFFSET[0], loc.y - OFFSET[1], loc.z - OFFSET[2]],
-                'height_above_table_cm': round(loc.z - TABLE_TOP_CUP_Z, 2), 'held_by': self.held,
+        return {'present': True, 'label': self.label, 'noun': self.spec['noun'], 'rest_z_cm': self.spec['rest_z'],
+                'table_local_cm': [loc.x - OFFSET[0], loc.y - OFFSET[1], loc.z - OFFSET[2]],
+                'height_above_table_cm': round(loc.z - self.spec['rest_z'], 2), 'held_by': self.held,
                 'tilt_degrees': round(math.degrees(math.acos(max(-1, min(1, up.z)))), 1), 'unix': time.time(),
                 'scope': 'editor-world kinematic carry'}
 
     def _tick(self, delta):
         try:
+            self._find_object()
             if (self.dir / 'need_observation').exists():
                 (self.dir / 'need_observation').unlink()
                 self._observe()
@@ -228,9 +251,22 @@ class Runtime:
                 'cup': self._cup_status()}
 
 
+def _stop_strays():
+    """Stop every running Runtime from this module, including ones orphaned by an importlib.reload
+    (a reload resets the module handle, and the old instance's tick callback would keep running)."""
+    import gc
+    for o in gc.get_objects():
+        try:
+            if type(o).__name__ == 'Runtime' and type(o).__module__ == __name__ and getattr(o, 'callback', None) is not None:
+                o.stop()
+        except Exception:
+            pass
+
+
 def start(directory):
     global _rt
     stop()
+    _stop_strays()
     _rt = Runtime(directory)
     return _rt.status()
 

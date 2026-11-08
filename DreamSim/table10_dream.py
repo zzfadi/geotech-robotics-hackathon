@@ -33,8 +33,8 @@ JAW = .104825
 REQUEST_FRESH_S = 30.
 LIFT_TARGET_CM = 10.
 PROMPTS = {
-    'grasp': 'Close the {side} gripper around the cup and hold it firmly. Keep the {other} arm still.',
-    'lift': 'Lift the cup up 5 more centimeters. Keep the {other} arm still.',
+    'grasp': 'Close the {side} gripper around the {noun} and hold it firmly. Keep the {other} arm still.',
+    'lift': 'Lift the {noun} up 5 more centimeters. Keep the {other} arm still.',
 }
 START_EDITOR = '''import sys, importlib, json
 T = r"%s"
@@ -163,15 +163,16 @@ class Runner:
         from pregrasp import approach_action, vertical_only, tool_height
         cup = read(DIR / 'cup.json') or {}
         if not cup.get('present'):
-            raise RuntimeError('no MakerInteraction_T09__HandoverCup on Table 10')
+            raise RuntimeError('no handover object (MakerInteraction_T09__HandoverCan or __HandoverCup) on Table 10')
         x, y, z = cup['table_local_cm']
+        noun, rest_z = cup.get('noun', 'cup'), cup.get('rest_z_cm', 81.0)
         hold = lambda st, s, n: [list(st['q_' + s]) + [st['gap_%s_m' % s] / JAW] for _ in range(n)]
         # 1. planned reach to the cup where Denys placed it, with whichever arm can reach it (nearest first)
         packet = self.observe()
         action = side = None
         for side in sorted(('left', 'right'), key=lambda s: abs(y - (-40 if s == 'left' else 40))):
             for pitch in (45., 55., 60., 50.):
-                variant = {'target': {'label': 'HandoverCup', 'location_cm': [x, y, 81.0]}, 'objective': {'side': side},
+                variant = {'target': {'label': cup.get('label', 'HandoverCup'), 'location_cm': [x, y, rest_z]}, 'objective': {'side': side},
                            'assist': {'pitch_deg': pitch, 'gap_m': .1}}
                 try:
                     action, info = approach_action(packet['state'], variant)
@@ -181,17 +182,17 @@ class Runner:
             if action is not None:
                 break
         if action is None:
-            raise RuntimeError('cup at (%.0f, %.0f) cm is out of both arms\' reach; place it nearer an arm '
-                               '(centre line: x 30-50 cm from the arm bases)' % (x, y))
+            raise RuntimeError('%s at (%.0f, %.0f) cm is out of both arms\' reach; place it nearer an arm '
+                               '(centre line: x 30-50 cm from the arm bases)' % (noun, x, y))
         other = 'right' if side == 'left' else 'left'
         key, okey = ('q_l_chunk', 'q_r_chunk') if side == 'left' else ('q_r_chunk', 'q_l_chunk')
-        self.status('running', 'reaching for the cup with the %s arm (planned reach)' % side)
+        self.status('running', 'reaching for the %s with the %s arm (planned reach)' % (noun, side))
         self.play(action, 'planned reach (%s, no Dream call)' % side)
         # 2. Dream grasp, arm held still
         for cycle in range(6):
             packet = self.observe()
-            self.status('running', 'Dream: grasping the cup (%s arm)' % side)
-            action, packet = self.dream(packet, PROMPTS['grasp'].format(side=side, other=other), side)
+            self.status('running', 'Dream: grasping the %s (%s arm)' % (noun, side))
+            action, packet = self.dream(packet, PROMPTS['grasp'].format(side=side, other=other, noun=noun), side)
             still = list(packet['state']['q_' + side])
             g0 = packet['state']['gap_%s_m' % side] / JAW
             g1 = min(min(r[6] for r in action[key]), g0)
@@ -202,7 +203,7 @@ class Runner:
             if (read(DIR / 'cup.json') or {}).get('held_by') == side:
                 break
         else:
-            raise RuntimeError('the %s jaws never closed on the cup' % side)
+            raise RuntimeError('the %s jaws never closed on the %s' % (side, noun))
         # Grip latch: 6 mm tighter than where the jaws stopped on the cup (as in the fleet pickups)
         latch = max((read(DIR / 'playback.json') or {}).get('gap_%s_m' % side, .06) - .006, 0.) / JAW
         # 3. Dream lift: only Dream's upward motion, cup kept level
@@ -212,26 +213,26 @@ class Runner:
             floor = floor or tool_height(packet['state']['q_' + side])
             cup = read(DIR / 'cup.json') or {}
             if cup.get('held_by') != side:
-                raise RuntimeError('the cup slipped out of the %s gripper' % side)
+                raise RuntimeError('the %s slipped out of the %s gripper' % (noun, side))
             if cup.get('height_above_table_cm', 0) >= LIFT_TARGET_CM:
                 break
-            self.status('running', 'Dream: lifting the cup (%.1f / %.0f cm)' % (cup.get('height_above_table_cm', 0), LIFT_TARGET_CM))
-            action, packet = self.dream(packet, PROMPTS['lift'].format(other=other), side)
+            self.status('running', 'Dream: lifting the %s (%.1f / %.0f cm)' % (noun, cup.get('height_above_table_cm', 0), LIFT_TARGET_CM))
+            action, packet = self.dream(packet, PROMPTS['lift'].format(other=other, noun=noun), side)
             action, info = vertical_only(action, packet['state'], side, floor_z=floor, allow_down_cm=0., max_step_cm=.15,
                                          up_gain=2.5, min_rise_cm=1.)
             action[key] = [r[:6] + [latch] for r in action[key]]
             action[okey] = hold(packet['state'], other, len(action[key]))
             self.play(action, 'Dream lift, vertical only (%s)' % side)
         cup = read(DIR / 'cup.json') or {}
-        return '%s arm holding the cup %.1f cm above the table (Dream grasp and lift; editor-world kinematic carry)' % (
-            side, cup.get('height_above_table_cm', 0))
+        return '%s arm holding the %s %.1f cm above the table (Dream grasp and lift; editor-world kinematic carry)' % (
+            side, noun, cup.get('height_above_table_cm', 0))
 
     def put_down(self):
         """Open both grippers (the cup is set down upright on the table), then both arms go to idle (planned)."""
         from fleet_reset import HOME_Q
         packet = self.observe()
         st = packet['state']
-        self.status('running', 'opening the gripper: setting the cup down')
+        self.status('running', 'opening the gripper: setting the %s down' % (read(DIR / 'cup.json') or {}).get('noun', 'cup'))
         rows = {s: [list(st['q_' + s]) + [st['gap_%s_m' % s] / JAW + (.95 - st['gap_%s_m' % s] / JAW) * k / 14] for k in range(15)]
                 for s in ('left', 'right')}
         self.play({'q_l_chunk': rows['left'], 'q_r_chunk': rows['right']}, 'planned release (no Dream call)')
@@ -241,7 +242,7 @@ class Runner:
         home = {s: [list(np.array(st['q_' + s]) * (1 - e) + np.array(HOME_Q) * e) + [.95] for e in ease] for s in ('left', 'right')}
         self.status('running', 'arms returning to idle')
         self.play({'q_l_chunk': home['left'], 'q_r_chunk': home['right']}, 'planned return to idle (no Dream call)')
-        return 'cup set down; arms at idle'
+        return '%s set down; arms at idle' % (read(DIR / 'cup.json') or {}).get('noun', 'cup')
 
     def run(self):
         print('Table 10 Dream runner: watching %s' % (DIR / 'request.json'), flush=True)

@@ -399,9 +399,22 @@ class Link:
                 "source": self.source, "ik_error": self.ik_error, "test": self.test}
 
 
+def _stop_strays():
+    """Stop every running Link from this module, including ones orphaned by an importlib.reload
+    (a reload resets the module handle, and the old instance's tick callback would keep running)."""
+    import gc
+    for o in gc.get_objects():
+        try:
+            if type(o).__name__ == 'Link' and type(o).__module__ == __name__ and getattr(o, 'callback', None) is not None:
+                o.stop()
+        except Exception:
+            pass
+
+
 def start(directory=None):
     global _link
     stop()
+    _stop_strays()
     _link = Link(directory)
     return _link.status()
 
