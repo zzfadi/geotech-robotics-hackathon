@@ -336,7 +336,10 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         try:
             solved = solve_pose(target, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.05)
         except ValueError:
-            break  # higher than reachable: stop the chunk at the last feasible row
+            try:  # near a joint limit: accept up to ~6 degrees of hand tilt (cup rule is 15)
+                solved = solve_pose(target, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.1)
+            except ValueError:
+                break  # higher than reachable: stop the chunk at the last feasible row
         # Split large vertical steps (<= max_step_cm per row) so a held cup rises at
         # about 3 cm/s, like the verified mechanical lift; targets are unchanged.
         last_z = start[2, 3] if not heights else start[2, 3]+heights[-1]/100

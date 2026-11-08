@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T00:45:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "All nine tables held their cups at random 16-29 cm targets for 5 s with Dream driving (friction-grip model).",
+  "why": "User goal: every robot picks up the cup and holds it 15-30 cm above the table, using Dream for robot logic.",
+  "where": ["docs/validation/claude-cup-iterations-2026-11-07.md", "DreamSim/fleet_worker.py", "DreamSim/pregrasp.py", "Unreal/TheHumanTouch/Tools/maker_arm_friction_grip.py"],
+  "details": ["Batch 28 35e4813528234cd4b3b58fad25b03d22: 9/9 passed, peaks 18.8-31.8 cm, tilt <= 6.4 degrees; idle start, cups reset each run.", "Assists are labelled per result: planned reach, still-arm grasp, grip latch, friction-grip model, vertical-only monotonic lift with 2.5x upward gain, per-table grasp angle, re-grasp.", "Simulation only; friction-grip model is not a calibrated hardware grasp."]
+}

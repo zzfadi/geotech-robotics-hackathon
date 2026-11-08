@@ -198,3 +198,17 @@ status reports `friction_grip` per table. **Results with it are "friction-grip m
 - **Batch 26 (`a4b4718986604153bbec3edcbaad2f78`): 8/9** — 17, 19, 16, **27**, 16, 17, 22, 18 cm held 5 s
   (peaks up to 30.1 cm, tilt ≤ 4.9°) with Dream's upward steps scaled 2.5× while holding. Miss: T8 reached
   21.8 cm (target 25) and held it 65 s.
+- Batch 27 (`e7465397bbe74b918e3295a92c687821`): 6/9. Misses at 25–30 cm: one lift ran a wrist joint into its
+  limit (now allows ≤ ~6° of hand tilt when the strict solve fails), one stalled because Dream stopped asking
+  to go up (lift subgoal gained explicit "5 more centimeters" wordings).
+- **Batch 28 (`35e4813528234cd4b3b58fad25b03d22`, run dir `20261107-234228-d7e5db`): 9/9 PASSED.** Every table
+  started from idle with cups reset; Dream drove every action through grasp/lift/hold subgoals with the
+  friction-grip model. Targets/peaks: 24/27.6, 16/24.0, 20/21.4, 18/24.0, 18/23.2, 20/22.0, 21/23.3,
+  16/18.8, **29/31.8 cm**, each a continuous 5 s hold, tilt 0.1–6.4°. The web page showed nine "Goal reached"
+  banners; Table 9's overhead video shows the target cup carried up in the jaws.
+
+### What it took (all labelled in each result's `assist`)
+Planned reach from idle (no Dream call) → Dream grasp subgoal with the arm held still → grip latched just past
+the runtime compliance → friction-grip model while both pads squeeze → only Dream's vertical motion applied,
+never lowering a held cup, upward steps scaled 2.5×, ≈3 cm/s → lift subgoal until target + 1.5 cm → hold
+subgoal; per-table grasp angle from the lift ceiling (45–80°); re-grasp if a cup drops upright.
