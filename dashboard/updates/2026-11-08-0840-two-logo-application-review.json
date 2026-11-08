@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-08T08:40:00-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Compared Dovetail and Interval in three two-color systems on the Judges title slide and a brass gallery plaque.",
+  "why": "The side-by-side proofs, editable marks and native deck let the team choose a direction and continue in a cloud thread.",
+  "where": [
+    "demo/pitch/logo-review/README.md",
+    "demo/pitch/logo-review/comparisons/patina.jpg"
+  ]
+}

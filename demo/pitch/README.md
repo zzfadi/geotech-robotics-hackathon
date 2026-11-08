@@ -2,7 +2,7 @@
 
 [Open the native Keynote presentation](deck/The%20Human%20Touch%20%E2%80%94%20Judges.key) · [Slide proof](deck/The%20Human%20Touch%20%E2%80%94%20Judges.pdf) · [Timed outline and notes](deck/judges-script.md)
 
-[Review the asset library](asset-contact-sheet.jpg) · [Play the Higgsfield museum sequence](films/higgsfield/museum-sequence.mp4) · [Opening and ending concepts](keyframes/pairs.jpg) · [Brand guide](../../brand-kit-final/identity/brand-guide.pdf) · [Emmy turnaround](../../brand-kit-final/emmy/README.md)
+[Review the asset library](asset-contact-sheet.jpg) · [Play the Higgsfield museum sequence](films/higgsfield/museum-sequence.mp4) · [Opening and ending concepts](keyframes/pairs.jpg) · [Brand guide](https://github.com/zzfadi/geotech-robotics-hackathon/blob/5a20417c10b8d51316eb96e7139d78c7fd5dac5a/brand-kit-final/identity/brand-guide.pdf) · [Emmy turnaround](https://github.com/zzfadi/geotech-robotics-hackathon/blob/5a20417c10b8d51316eb96e7139d78c7fd5dac5a/brand-kit-final/emmy/README.md)
 
 ## Media cues
 
@@ -36,7 +36,7 @@ Use the platform names linkedin (square), x (landscape) and ig (vertical). The p
 
 ## Asset sources
 
-The limestone gallery is an Imagegen original. The new Vermeer study uses [The Milkmaid](https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg) as its source. The [earlier exhibit library](../../brand-kit-scratchpad/parian-hero-v1/exhibits/README.md) records the underlying artworks. All framed views use the same gallery photograph. The source sponsor artwork is under [partners](assets/partners/).
+The limestone gallery is an Imagegen original. The new Vermeer study uses [The Milkmaid](https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg) as its source. The [earlier exhibit library](https://github.com/zzfadi/geotech-robotics-hackathon/blob/5a20417c10b8d51316eb96e7139d78c7fd5dac5a/brand-kit-scratchpad/parian-hero-v1/exhibits/README.md) records the underlying artworks. All framed views use the same gallery photograph. The source sponsor artwork is under [partners](assets/partners/).
 
 - [MakerMods](https://www.makermods.ai/assets/Logos/makermods-lockup-black.svg) — official horizontal lockup.
 - [Dream Labs](https://dreamlabs.ai/brand/icon-cloud.svg) — official cloud mark.

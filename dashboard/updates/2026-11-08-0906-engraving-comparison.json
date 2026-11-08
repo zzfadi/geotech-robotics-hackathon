@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-08T09:06:57-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Published a near-touch engraved emblem and a side-by-side title and brass plaque comparison with Shared Vessel.",
+  "why": "The team can compare the opening fresco gesture with everyday cooperation in the same layouts and continue from editable source files.",
+  "where": [
+    "demo/pitch/HANDOFF.md",
+    "demo/pitch/logo-redesign/almost-touch/README.md"
+  ]
+}
