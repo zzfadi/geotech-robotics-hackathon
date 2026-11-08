@@ -1,8 +1,8 @@
 # Jetson Orin Nano setup: USB installer, NVMe, SSH
 
-**Current status, November 8, 2026: installation blocked.** At approximately **01:17 Pacific / 09:17 UTC**, the user-started JetPack 7.2.1 / Jetson Linux 39.2.1 installer stopped with **“An error occurred. Press enter to start a shell.”** Its late-command trace reported **“No matching -nv DTB found for running board”** and wrote an `install_fail.crash` report under `/var/crash/`. This identifies the observed failure, not its established root cause. Read-only board/installer diagnostics are underway; no reboot, firmware change or DTB override has been performed as part of that diagnosis.
+**Current status, November 8, 2026: firmware recovery in progress; installation remains incomplete.** The failed installer's logs have been saved privately, and its DTB model/compatible mismatch is now identified. Temporary key-based recovery SSH worked at **`root@192.168.8.136`** before the Jetson was rebooted into firmware setup. UEFI Boot Manager explicitly selected the SanDisk USB, and **Y was accepted with 19 seconds remaining** at the firmware prompt before GRUB. Capsule updating is now in progress; **both-pass completion, the resulting firmware and a successful installed-system boot remain unverified**. The separate Beryl AX router now reports **v4.11.0**, with internet retained after the user-started upgrade.
 
-The agent sent **Enter through the KVM**, and the webcam directly confirmed a root diagnostic shell. This is the first independently verified agent-to-Jetson keypress. The shell belongs to the failed installer, not a successfully booted installed OS. A read-only `bios_version` check still reports **`36.4.2-gcid-38685322`**, confirming the starting firmware remains in place and the firmware-update stage has not advanced it. The exact cause of the DTB-match failure remains unresolved. Prior NVMe partitioning, extraction and package progress remain recorded below.
+At approximately **01:17 Pacific / 09:17 UTC**, the user-started JetPack 7.2.1 / Jetson Linux 39.2.1 installer stopped with **“An error occurred. Press enter to start a shell.”** An agent-sent **Enter through the KVM** opened the diagnostic shell, directly verifying local keyboard delivery. The last read-only `bios_version` check returned **`36.4.2-gcid-38685322`**, unchanged from the starting firmware. Prior NVMe partitioning, extraction and package progress remain recorded below; recovery SSH was access to this failed installer, not the final OS.
 
 No microSD is available. The earlier JetPack 6 microSD plan is retained below only as an archival fallback. It is not the current setup sequence.
 
@@ -11,7 +11,7 @@ No microSD is available. The earlier JetPack 6 microSD plan is retained below on
 - User-provided photos show UEFI firmware **`36.4.2-gcid-38685322`**, dated **2024-12-12**. This satisfies NVIDIA's firmware prerequisite for the USB route; it does not establish an installed OS. [NVIDIA firmware check](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html#firmware-gate).
 - The photographed **`Start HTTP Boot over IPv4`** screen is a network-boot attempt, not proof of Ubuntu or SSH. A direct **DisplayPort monitor is now available** for the local boot menu and installer.
 - The **JetPack 7.2.1 USB is ready**: the 5,035,601,920-byte ISO was downloaded from NVIDIA, its local SHA-256 recorded, and balenaEtcher 2.1.9 completed flashing and validation with one successful target. The SanDisk was then safely ejected, and the user has since confirmed inserting it into the Jetson. See [USB preparation evidence](../validation/jetson-usb-prep-2026-11-08.json). The user selected the install entry; installation progressed on the webcam before the late-stage failure at 01:17 Pacific. The older 6.2.1 SD ZIP is not this USB installer.
-- Earlier captures showed `nvme0n1` partitions 1–15 configured, partitioning/extraction finished, and NVIDIA/Ubuntu package installation underway. Later captures show a failure in the late/run/command23 board-model/compatible DTB-matching step. The exact root cause, NVMe model/capacity, prior contents and a bootable installed system remain unverified. The diagnostic shell confirms current firmware is still the starting `36.4.2-gcid-38685322`.
+- Earlier captures showed `nvme0n1` partitions 1–15 configured, partitioning/extraction finished, and NVIDIA/Ubuntu package installation underway. The failure in late/run/command_27 is now narrowed to the model/compatible mismatch detailed below. Read-only `lsblk` verified **`/dev/nvme0n1`**, **931.5G**, model **`SHPP41-1000GM`**, with partitions 1–15 and the target root mounted at **`/target`**. Prior contents and a successful installed-system boot remain unverified. The last diagnostic-shell firmware result is the starting `36.4.2-gcid-38685322`.
 - JetPack 7.2.1 uses **Ubuntu 24.04**, while the archived JetPack 6 route uses Ubuntu 22.04. Do not apply the old `r36.5` repository edits or 6.x APT-upgrade commands on the new 7.x system. [NVIDIA release information](https://developer.nvidia.com/embedded/jetpack/downloads).
 
 ## Prepare the authorized USB
@@ -24,7 +24,7 @@ Re-identify the **SanDisk Cruzer Blade, 16 GB**, previously mounted as `UBUNTU 1
 
 Use the direct DisplayPort monitor for this installation. Keep the included 19 V power supply connected and provide a verified keyboard path. Keep robot CAN adapters disconnected during OS setup; check the heatsink and fan before workloads.
 
-Latest user-reported wiring: Mac Ethernet → GL-RM1; Mac USB-C → KVM power; the KVM data/HID cable was reconnected **USB-C → USB-C** to the Jetson, after which keyboard interaction worked. The earlier USB-C → Jetson USB-A connection was not working. The KVM's HDMI input and USB-A host port are empty; the latter is not needed for keyboard control. This Ethernet cable serves the KVM, not the Jetson. A diagnostic-shell `ip -br -4 addr` query showed only loopback `127.0.0.1`, with no non-loopback IPv4 address. The user has confirmed connecting **Jetson Ethernet → the separate Beryl AX LAN port**, preserving the existing **KVM → Mac Ethernet** connection. A new Jetson IPv4 address has not yet been read after that connection.
+Latest wiring: Mac Ethernet → GL-RM1; Mac USB-C → KVM power; KVM data/HID **USB-C → USB-C** to the Jetson. The earlier USB-C → Jetson USB-A connection was not working. The KVM's HDMI input and USB-A host port are empty; the latter is not needed for keyboard control. Separately, **Jetson Ethernet → Beryl AX LAN** provided temporary recovery SSH at **`192.168.8.136`**, independently verified with a dedicated key before reboot. The earlier loopback-only query predates that working connection. The KVM remains on the Mac's shared Ethernet network; the complete kit is not yet independent of Mac Internet Sharing.
 
 **KVM setup verified on November 8:** Mac Internet Sharing **Wi-Fi → Ethernet** is active on `bridge100` at `192.168.2.1`; the KVM received DHCP address **`192.168.2.2`**. Fresh local administrator setup completed after the requested reset. The local UI reports firmware **V1.9.2 release1 (RM1)**. Its generated administrator password is stored in the Mac login Keychain; no credential value is recorded here.
 
@@ -38,25 +38,30 @@ The user-authorized **Logitech C270** on the Mac can observe the DisplayPort mon
 
 The **GL.iNet Comet GL-RM1** remains an optional console: **Jetson DisplayPort → DP-to-HDMI adapter/cable → Comet HD IN**; separately connect **Jetson USB host → Comet USB-Device**, plus Comet power/network. The available DisplayPort/USB-C cable is not a video connection to this KVM. [GL.iNet connection guide](https://docs.gl-inet.com/kvm/en/user_guide/gl-rm1/quick_setup_guide/). Jetson USB-C does not output video; NVIDIA supports passive or active DP-to-HDMI adapters. [NVIDIA hardware layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html).
 
-## Failed installer — preserve evidence and diagnose
+## Failed installer evidence and firmware recovery
 
-The installer reached late/run/command23, which inspects board model/compatible data and tries to select a matching `-nv` DTB. The screen then reported **“No matching -nv DTB found for running board”**, an installation failure and a crash file under `/var/crash/`. The root cause is under investigation: do not infer that the board is unsupported, the USB is corrupt or a particular firmware change is required from this message alone.
+The saved log identifies **late/run/command_27**, which inspects board model/compatible data and tries to select a matching `-nv` DTB. This corrects the earlier screen-based command23 transcription. It reported **“No matching -nv DTB found for running board”** and the verified crash file **`/var/crash/1751465839.266846180.install_fail.crash`**. Read-only comparisons now establish the immediate mismatch:
 
-The prompted shell is open. Current work is limited to read-only board, storage and installer-log queries. Keep the diagnostic state available; do not reboot, restart installation, change QSPI firmware or substitute DTBs before the evidence and recovery choice are reviewed. Record the complete crash filename and relevant logs. The SSD has already been partitioned, so a future recovery/reinstall action must account for those writes.
+- Running model: **`NVIDIA Jetson Orin Nano Developer Kit`**.
+- Running compatible values: **`nvidia,p3768-0000+p3767-0005-super`**, **`nvidia,p3767-0005`**, **`nvidia,tegra234`**.
+- The Super DTB model is **`NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super`**, which differs from the running model.
+- The standard DTB has the same model as the running board, but its compatible value lacks **`-super`**. Neither candidate satisfies both fields for the running board.
 
-Read-only diagnostics now directly show `cat /sys/class/dmi/id/bios_version` returning **`36.4.2-gcid-38685322`**, unchanged from the starting firmware. This confirms the firmware-update stage has not advanced the running firmware; it does not by itself establish the exact cause of the DTB-match error. `nvbootctrl` was not found in this live installer, so it provided no slot-status result. `ip -br -4 addr` showed only loopback `127.0.0.1`; Jetson IPv4 networking is not yet established. The combined webcam evidence is `/private/tmp/jetson-network-bios-result.png`.
+This explains why the matching step rejected the candidates; it does not establish that the board is unsupported or justify substituting a DTB. No DTB override has been applied. `cat /sys/class/dmi/id/bios_version` returned **`36.4.2-gcid-38685322`**; `nvbootctrl` was unavailable in the installer, so no slot-status result was obtained.
 
-[NVIDIA's startup reference](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) describes the QSPI confirmation and capsule-update passes. Their completion was not observed in this run, and the current firmware check confirms no version advance. Preserve logs and review the recovery route before attempting those updates.
+Temporary SSH to **`root@192.168.8.136`** with a dedicated key enabled evidence collection. `/var/log/installer` and crash evidence are preserved in the private archive **`/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/failed-installer-evidence.tar.gz`**, SHA-256 **`3a0f81d9499911ef5871481e5c1d379bbe9721ba2ec692c0df016d4696c4cc98`**. The local hash was independently rechecked, and the verified crash file is included. Installer log timestamps show **2025-07-02 because its clock was stale**; they are not the wall time of this November 8 recovery. Raw logs, keys and credentials remain outside Git; this record contains only the selected diagnostic facts.
+
+After preservation, the Jetson was rebooted into firmware setup. [NVIDIA's startup reference](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html) directs explicit USB selection in Boot Manager, **Y within the 30-second QSPI prompt**, and waiting for **both capsule-update passes**, including expected reboots. UEFI Boot Manager explicitly selected the SanDisk USB. At the timed prompt before GRUB, **Y was sent with 19 seconds remaining**; `/private/tmp/jetson-firmware-recovery-06.png` confirms **“User confirmed. Proceeding with capsule update.”** Updating is in progress; neither completion of both passes nor the resulting firmware version is yet verified. Do not treat the previous temporary SSH session as current reachability after reboot.
 
 For any later reinstall, treat an **Install/autoinstall menu selection as potentially destructive** and confirm its target before selecting it. Suggested hostname after a successful recovery remains `orin-arm`; the failed installer's root prompt does not establish the final hostname, account, root device or SSH.
 
 ## Proposed portable LAN — separate travel router
 
-The user wants a portable Jetson/KVM kit whose local network does not depend on Mac Internet Sharing. The separate travel router is now identified from the user's photo as **GL.iNet GL-MT3000 Beryl AX**, and the user confirms it already has internet. The proposed final arrangement places the Jetson and KVM on that travel LAN, with the Mac joining for control. Router configuration and the final wiring remain pending; the reported internet connection is not a verified Jetson connection. Do not record the photo's Wi-Fi credentials or hardware identifiers.
+The user wants a portable Jetson/KVM kit whose local network does not depend on Mac Internet Sharing. The separate router is **GL.iNet GL-MT3000 Beryl AX**. After recovering the administrator password, the user started the authorized upgrade; download progress was seen at 38%, and the later admin UI directly confirms **v4.11.0**. An HTTP success check confirms internet remains available. The local screenshot is `/private/tmp/jetson-beryl-upgrade-check.png`; do not publish it or copy its Wi-Fi identifiers into Git.
 
-**Preserve the home GL-MT6000.** It previously occupied `192.168.8.1` on the Mac's home Wi-Fi. The Mac has now joined the Beryl AX Wi-Fi and received **`192.168.8.174`**; the gateway at **`192.168.8.1` is now the GL-MT3000**, verified by its changed gateway hardware identity and the admin-page model label. Identify the router by model and network, not IP alone. Internet and the existing KVM at `192.168.2.2` remain reachable. Beryl admin authentication is pending; no router settings have been changed.
+**Preserve the home GL-MT6000.** It previously occupied `192.168.8.1` on the Mac's home Wi-Fi. The Mac joined Beryl Wi-Fi and received **`192.168.8.174`**; the gateway at **`192.168.8.1` is now the GL-MT3000**, verified by its network identity and admin-page model label. Identify the router by model and network, not IP alone. Beryl admin access and its upgrade are verified; the home router remains unchanged.
 
-The immediate requested wiring is **Jetson Ethernet → Beryl AX LAN**, while preserving **KVM → Mac Ethernet** during diagnosis; the user confirms the Jetson cable is connected, while its DHCP address remains unverified. Confirm the Beryl LAN/uplink plan and addressing, check for subnet conflicts, and verify Jetson connectivity before transitioning the KVM to the portable topology. Then verify local access to both devices without Mac sharing. Off-site access through the selected cloud/VPN route needs its own end-to-end test. Existing KVM cloud online status does not prove the proposed portable topology or remote Jetson access.
+The working recovery wiring was **Jetson Ethernet → Beryl AX LAN**, with **KVM → Mac Ethernet** preserved. Temporary installer SSH verified the Jetson LAN path. The final portable arrangement still needs the KVM moved onto a suitable travel-LAN path and both devices tested without Mac sharing. Off-site access through the selected cloud/VPN route needs a separate end-to-end test. Neither the router upgrade nor temporary recovery SSH establishes the final installed host or off-site access.
 
 ## Verify the installed system and SSH
 
@@ -71,7 +76,7 @@ After the failure is resolved and a successful installed-system boot is verified
 
 The staging folder contains `jetson-runtime-ready.tar.gz`: Linux ARM64 uv 0.13.7, Python 3.12.15, pinned Maker Arm SDK source, 15 base dependency wheels and two build-tool wheels. The refreshed `geotech-robotics-hackathon-119d38b.bundle` contains complete Git history at that main commit and passes `git bundle verify`; the earlier snapshot is retained. All 15 pinned base packages and the SDK commit still match the cache at `119d38b`. These artifacts are separate from the new ISO download. The runtime includes its source/hash manifest and offline instructions; its ARM64 code has not been validated on this Jetson.
 
-Transfer after SSH works. Follow the archive instructions, clone the bundle or current repository, restore the GitHub remote, synchronize `main` without discarding work, and enter the checkout before using relative `arm/...` commands. `ARMCTL_PYTHON` can select the cached environment. Compare current requirements against this frozen cache first.
+Transfer after the installed OS and its persistent SSH access are verified. The temporary failed-installer SSH session is not the deployment target. Follow the archive instructions, clone the bundle or current repository, restore the GitHub remote, synchronize `main` without discarding work, and enter the checkout before using relative `arm/...` commands. `ARMCTL_PYTHON` can select the cached environment. Compare current requirements against this frozen cache first.
 
 Keep the arm environment on **Python 3.12**: the pinned NumPy/SciPy require it, and the pickup client imports SciPy at startup. Verify the interpreter rather than assuming Ubuntu's version; keep system Python intact. No local training, PyTorch or CUDA application stack is required for the controller. OS libraries and firmware are not supplied by the Python bundle.
 
@@ -81,22 +86,23 @@ The separate `vision/run.py` preview uses OpenCV camera capture, but `vision/REA
 
 | Field | Value |
 | --- | --- |
-| Model / RAM | Orin Nano reported; exact module/RAM still unverified |
+| Model / RAM | Running device-tree model: NVIDIA Jetson Orin Nano Developer Kit; compatible includes p3768-0000+p3767-0005-super; RAM not yet recorded |
 | Firmware before | Photo verified: `36.4.2-gcid-38685322`, build date `2024-12-12` |
 | Firmware in failed installer | Read-only `bios_version`: `36.4.2-gcid-38685322`, unchanged from starting firmware; firmware-update stage has not advanced it |
-| Current boot observation | Installer failed at 01:17 Pacific; agent-sent Enter opened its root diagnostic shell, directly webcam-verified |
+| Current boot observation | Explicit SanDisk USB boot; timed firmware Y accepted, capsule update in progress; both-pass completion and resulting firmware unverified |
 | Target JetPack / L4T / Ubuntu | Attempted route: 7.2.1 / 39.2.1 / 24.04; installation failed, successful final OS boot unverified |
 | Console | DisplayPort/C270 view; KVM USB configured/high-speed; agent Enter directly opened diagnostic shell, HDMI empty |
 | KVM local / cloud | Admin initialized; V1.9.2 release1 (RM1); GL-RM1-569 bound and online at 192.168.2.2; actual remote-control session unverified |
 | KVM network | Mac Wi-Fi → Ethernet Internet Sharing active; bridge100 192.168.2.1, KVM DHCP 192.168.2.2 |
-| Portable LAN proposal | Separate GL-MT3000 Beryl AX photo-identified; internet works per user; Jetson → Beryl LAN requested, KVM → Mac preserved; router configuration pending, home GL-MT6000 unchanged |
-| Jetson IPv4 | Diagnostic `ip -br -4 addr` shows only loopback `127.0.0.1`; no non-loopback IPv4 address yet |
+| Travel router | GL-MT3000 Beryl AX admin UI v4.11.0 after user-started upgrade; internet HTTP check passed; home GL-MT6000 unchanged |
+| Portable LAN status | Jetson → Beryl LAN recovery path verified; KVM → Mac preserved, full independence from Mac sharing still pending |
+| Jetson IPv4 | Temporary installer at 192.168.8.136 before reboot; installed-OS address not yet verified |
 | Installer media | 16 GB SanDisk Cruzer Blade flashed/validated by Etcher 2.1.9; installer booted but failed late |
-| OS target | Installer has configured `nvme0n1` partitions 1–15; exact model/capacity and prior contents not independently verified |
+| OS target | Read-only `lsblk`: /dev/nvme0n1, 931.5G, SHPP41-1000GM, partitions 1–15, target root mounted at /target; prior contents and successful installed boot unverified |
 | System Python / arm environment Python | Device results pending; isolated arm Python 3.12 planned |
-| Hostname / username / LAN or Tailscale address | Not yet verified |
+| Hostname / username / Tailscale | Final account/hostname and Tailscale unverified; recovery used installer root account only |
 | Power mode / fan / temperatures | Not yet verified |
-| SSH key login / offline arm tests | Not yet verified |
+| SSH key login / offline arm tests | Dedicated-key recovery SSH verified before reboot; persistent installed-OS SSH and arm tests unverified |
 
 Never put passwords, private keys or API tokens in this table or Git.
 

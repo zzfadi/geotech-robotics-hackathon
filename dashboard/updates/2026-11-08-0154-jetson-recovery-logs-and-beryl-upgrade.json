@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T01:54:45-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Beryl AX upgrade and recovery SSH verified; installer logs saved privately and Jetson capsule update started.",
+  "why": "Preserve the failed installation evidence and restore the supported firmware path before deploying the arm runtime.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "User-started Beryl upgrade now shows v4.11.0 and internet HTTP check passes; home GL-MT6000 unchanged. Dedicated-key root SSH to temporary installer 192.168.8.136 verified before reboot, with installer/crash logs saved outside Git and archive SHA-256 rechecked. Read-only lsblk verified NVMe SHPP41-1000GM, 931.5G, partitions 1\u201315 and target root mounted at /target; that is not an installed boot. The exact crash is archived; its July 2025 timestamp reflects a stale installer clock. Saved logs correct the failure stage to late/run/command_27; running model/compatible values match neither candidate DTB in both fields. Explicit SanDisk USB boot reached the firmware prompt; Y at 19 seconds remaining was accepted and capsule updating is in progress. Both-pass completion, resulting firmware, installed OS and persistent SSH remain unverified. KVM still depends on Mac sharing; full portable and off-site access remain pending."
+}

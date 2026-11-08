@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Installer failed; read-only diagnostics confirm unchanged starting firmware and no non-loopback IPv4 address; local KVM HID verified; separate Beryl AX identified, portable network configuration pending",
+  "scope": "Beryl AX v4.11.0 and retained internet verified; temporary installer key-based SSH and private log archive verified; DTB model/compatible mismatch identified; explicit USB boot and timed Y accepted, capsule update in progress",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -54,7 +54,7 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "Explicit installer error followed by root diagnostic shell after agent-sent Enter; successful installed OS boot not established",
+    "observation": "Explicit SanDisk USB boot and timed Y accepted; capsule update in progress, completion unverified",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
@@ -62,7 +62,7 @@
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
     "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
     "cloud": "Approved Google sign-in and Bind completed; GL-RM1-569 green online; actual remote-control session unverified",
-    "updated_at": "2026-11-08T01:21:56-08:00",
+    "updated_at": "2026-11-08T01:54:45-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
@@ -95,7 +95,7 @@
       "status": "Local KVM-to-Jetson HID independently verified by agent Enter opening the failed installer diagnostic shell",
       "tooltip_source": "Public KVM client JavaScript inspection",
       "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
-      "next_check": "Off-site/cloud remote-control verification remains separate; current shell used for read-only diagnosis",
+      "next_check": "Observe capsule update; final installed-system and off-site/cloud control remain separate verification tasks",
       "physical_cable_check_completed": true,
       "usb_gadget_diagnostic": {
         "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
@@ -133,14 +133,14 @@
     "hid_delivery_user_confirmed": true
   },
   "pending": [
-    "Collect exact installer crash filename/logs and remaining read-only board/storage facts; exact DTB-match root cause unresolved despite confirmed unchanged starting firmware",
-    "Review recovery choice before any reboot, firmware operation, DTB override or reinstall",
-    "Verify requested Jetson Ethernet to separate Beryl AX LAN and non-loopback IPv4 address while preserving KVM Ethernet to Mac",
-    "After recovery, verify successful installed OS boot, root device, final firmware and versions",
-    "Complete Jetson account/network/SSH and actual arm-environment offline checks",
-    "Prepare and verify portable Jetson/KVM LAN on separate GL-MT3000, independent of Mac sharing; preserve home GL-MT6000 gateway 192.168.8.1 and test off-site access separately"
+    "Observe both capsule-update passes and expected reboots, then verify resulting firmware version",
+    "After firmware recovery, confirm intended storage before any reinstall and verify successful installed OS boot/root device/versions",
+    "Establish persistent installed-OS account and key-based SSH; previous root SSH was temporary installer recovery only",
+    "Record RAM; retain verified NVMe identity and prior-content uncertainty, then verify actual installed root after recovery",
+    "Run cached arm environment and offline checks on the installed Jetson",
+    "Complete and test Jetson/KVM portable LAN independent of Mac sharing, then test off-site access separately; preserve home GL-MT6000"
   ],
-  "updated_at": "2026-11-08T01:24:56-08:00",
+  "updated_at": "2026-11-08T01:55:56-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -267,32 +267,61 @@
     "visible_target_device": "nvme0n1",
     "partitioning_stage_finished": true,
     "extract_stage_finished": true,
-    "latest_stage": "Failed late/run/command23 board model/compatible DTB matching; prompted diagnostic shell open",
-    "target_model_capacity_independently_verified": false,
+    "latest_stage": "Original installation failed at late/run/command_27; logs preserved, rebooted via explicit SanDisk USB, Y accepted, capsule update in progress",
+    "target_model_capacity_independently_verified": true,
     "target_prior_contents_independently_verified": false,
     "final_firmware_verified": false,
     "completion_verified": false,
     "installed_os_boot_verified": false,
     "ssh_verified": false,
-    "current_instruction": "Preserve failed-installer state and crash/log evidence; read-only diagnosis, no reboot/firmware changes/DTB overrides",
-    "updated_at": "2026-11-08T01:24:56-08:00",
+    "current_instruction": "Observe capsule update through both passes and expected reboots; verify resulting firmware before claiming recovery complete",
+    "updated_at": "2026-11-08T01:55:56-08:00",
     "status": "failed",
     "failure": {
       "observed_at": "2026-11-08T01:17:00-08:00",
       "directly_verified": true,
       "prompt": "An error occurred. Press enter to start a shell",
-      "trace_stage": "late/run/command23",
+      "trace_stage": "late/run/command_27",
       "trace_message": "No matching -nv DTB found for running board",
       "crash_location_pattern": "/var/crash/...install_fail.crash",
-      "exact_crash_filename_verified": false,
+      "exact_crash_filename_verified": true,
       "root_cause_confirmed": false,
-      "diagnosis_status": "Starting firmware remains 36.4.2-gcid-38685322; firmware-update stage has not advanced it; exact DTB-match root cause remains unresolved",
-      "reboot_performed_for_diagnosis": false,
-      "firmware_changed_for_diagnosis": false,
+      "diagnosis_status": "Immediate DTB model/compatible mismatch identified; capsule update in progress, outcome not yet verified",
+      "reboot_performed_for_diagnosis": true,
+      "firmware_changed_for_diagnosis": null,
       "dtb_override_applied": false,
-      "firmware_update_not_completed": true
+      "firmware_update_not_completed": true,
+      "trace_stage_evidence": "Preserved installer log; corrects earlier screen-based command23 transcription",
+      "dtb_mismatch_confirmed": true,
+      "root_cause_scope": "Immediate matching failure identified; cause of the mixed running identity and successful recovery remain unproven",
+      "reboot_scope": "After private log preservation, rebooted for official USB/QSPI recovery",
+      "firmware_change_status": "Capsule update started; resulting firmware version not yet verified",
+      "dtb_mismatch": {
+        "evidence": "Read-only running device-tree and candidate DTB comparison during temporary installer SSH",
+        "running_model": "NVIDIA Jetson Orin Nano Developer Kit",
+        "running_compatible": [
+          "nvidia,p3768-0000+p3767-0005-super",
+          "nvidia,p3767-0005",
+          "nvidia,tegra234"
+        ],
+        "super_dtb_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+        "super_dtb_model_matches_running": false,
+        "standard_dtb_model": "NVIDIA Jetson Orin Nano Developer Kit",
+        "standard_dtb_model_matches_running": true,
+        "standard_dtb_compatible_matches_running": false,
+        "standard_dtb_difference": "Board compatible value lacks -super",
+        "result": "Neither candidate satisfies both model and compatible matching",
+        "dtb_override_applied": false
+      },
+      "crash_path": "/var/crash/1751465839.266846180.install_fail.crash",
+      "crash_in_private_archive_verified": true,
+      "installer_clock": {
+        "log_date": "2025-07-02",
+        "stale": true,
+        "interpretation": "Installer log/crash timestamps are not the wall time of the November 8 recovery; preserve both clocks without conflating them"
+      }
     },
-    "diagnostic_shell_open": true,
+    "diagnostic_shell_open": false,
     "read_only_diagnostics": {
       "recorded_at": "2026-11-08T01:24:56-08:00",
       "local_screenshot": "/private/tmp/jetson-network-bios-result.png",
@@ -301,7 +330,7 @@
         "value": "36.4.2-gcid-38685322",
         "directly_verified": true,
         "matches_starting_firmware": true,
-        "interpretation": "Running firmware has not advanced through the expected firmware-update stage; exact DTB-match error cause remains unresolved"
+        "interpretation": "Last pre-recovery firmware observation; unchanged starting version. Later capsule update is in progress and needs fresh verification."
       },
       "boot_slots": {
         "command": "nvbootctrl dump-slots-info",
@@ -311,18 +340,82 @@
       "ipv4": {
         "command": "ip -br -4 addr",
         "result": "Only lo 127.0.0.1/8",
-        "non_loopback_ipv4_observed": false
+        "non_loopback_ipv4_observed": false,
+        "scope": "Historical pre-network observation; superseded by successful temporary installer SSH before recovery reboot"
       }
+    },
+    "ssh_verification_scope": "ssh_verified remains false for installed OS; temporary installer recovery SSH is recorded separately",
+    "recovery_ssh": {
+      "recorded_at": "2026-11-08T01:54:45-08:00",
+      "host": "192.168.8.136",
+      "username": "root",
+      "authentication": "Dedicated SSH key; no key material recorded",
+      "independently_verified": true,
+      "environment": "Temporary failed installer",
+      "purpose": "Read-only diagnosis and private log preservation",
+      "verified_before_recovery_reboot": true,
+      "current_reachability_after_reboot_verified": false,
+      "installed_os_ssh_verified": false
+    },
+    "private_evidence_archive": {
+      "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/failed-installer-evidence.tar.gz",
+      "sha256": "3a0f81d9499911ef5871481e5c1d379bbe9721ba2ec692c0df016d4696c4cc98",
+      "sha256_independently_rechecked": true,
+      "contents_scope": "/var/log/installer and crash evidence",
+      "raw_logs_committed": false,
+      "privacy": "Private archive retained outside repository; only selected diagnostic facts recorded here",
+      "verified_crash_path": "/var/crash/1751465839.266846180.install_fail.crash"
+    },
+    "firmware_recovery": {
+      "recorded_at": "2026-11-08T01:54:45-08:00",
+      "status": "capsule update in progress",
+      "rebooted_after_log_preservation": true,
+      "boot_manager_selected_usb": "SanDisk installer USB",
+      "prompt_before_grub": true,
+      "confirmation_key": "Y",
+      "seconds_remaining_when_sent": 19,
+      "confirmation_observed": "User confirmed. Proceeding with capsule update.",
+      "local_screenshot": "/private/tmp/jetson-firmware-recovery-06.png",
+      "both_capsule_passes_complete": false,
+      "resulting_firmware_version_verified": false,
+      "installed_os_boot_verified": false,
+      "official_reference": "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html"
+    },
+    "target_storage": {
+      "evidence": "Read-only lsblk through independently verified temporary installer SSH",
+      "device": "/dev/nvme0n1",
+      "lsblk_size": "931.5G",
+      "model": "SHPP41-1000GM",
+      "partitions_observed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "target_root_mountpoint": "/target",
+      "installed_os_boot_verified": false,
+      "prior_contents_independently_verified": false
     }
   },
   "portable_lan_proposal": {
     "recorded_at": "2026-11-08T01:21:56-08:00",
-    "status": "Separate router identified; internet user-confirmed; Jetson LAN cable connection requested; configuration pending",
+    "status": "Travel router upgraded and Jetson recovery LAN path verified; KVM still uses Mac sharing, final portable topology pending",
     "goal": "Portable Jetson/KVM LAN independent of Mac Internet Sharing",
     "intended_router": "Separate GL.iNet GL-MT3000 Beryl AX",
     "separate_model_confirmed": true,
-    "separate_wiring_confirmed": false,
-    "configuration_performed": false,
+    "separate_wiring_confirmed": true,
+    "configuration_performed": true,
     "local_topology_verified": false,
     "remote_access_verified": false,
     "home_gateway": {
@@ -331,13 +424,14 @@
       "must_remain_unchanged": true
     },
     "current_kvm_lan": "Mac Internet Sharing bridge100 192.168.2.1, KVM 192.168.2.2",
-    "next_step": "Verify requested Jetson-to-Beryl LAN cable and address while preserving KVM-to-Mac; then prepare portable LAN plan and verify local and remote access separately",
-    "updated_at": "2026-11-08T01:24:56-08:00",
+    "next_step": "After firmware recovery, verify installed Jetson networking; complete KVM travel-LAN path and independently test local/off-site access",
+    "updated_at": "2026-11-08T01:54:45-08:00",
     "model_evidence": "User-provided photo identifies GL-MT3000 Beryl AX; no Wi-Fi credentials or hardware addresses retained",
     "internet_available_user_confirmed": true,
-    "internet_independently_verified": false,
+    "internet_independently_verified": true,
     "immediate_wiring_requested": "Jetson Ethernet to Beryl AX LAN; preserve KVM Ethernet to Mac",
-    "immediate_wiring_verified": false
+    "immediate_wiring_verified": true,
+    "configuration_scope": "User-authorized Beryl firmware upgrade; final KVM LAN migration not performed"
   },
   "portable_network_current": {
     "router_model": "GL-MT3000 Beryl AX",
@@ -349,9 +443,22 @@
     "kvm_local_reachable_after_wifi_change": true,
     "kvm_ipv4": "192.168.2.2",
     "jetson_ethernet_to_beryl_lan_user_confirmed": true,
-    "jetson_ipv4_after_cable_unverified": true,
-    "router_admin_login": "Awaiting user authentication in browser",
-    "router_settings_changed": false,
-    "home_router_unchanged": true
+    "jetson_ipv4_after_cable_unverified": false,
+    "router_admin_login": "User recovered password; authenticated admin UI verified",
+    "router_settings_changed": true,
+    "home_router_unchanged": true,
+    "updated_at": "2026-11-08T01:54:45-08:00",
+    "router_change_scope": "User-started authorized firmware upgrade; home GL-MT6000 unchanged",
+    "router_firmware_version": "4.11.0",
+    "router_firmware_verified": true,
+    "router_firmware_evidence": "/private/tmp/jetson-beryl-upgrade-check.png",
+    "upgrade_download_38_percent_previously_observed": true,
+    "internet_http_check_after_upgrade": "HTTP success response verified",
+    "jetson_recovery_ipv4": "192.168.8.136",
+    "jetson_recovery_ssh_verified_before_reboot": true,
+    "jetson_current_ipv4_after_reboot_verified": false,
+    "mac_sharing_still_required_for_kvm": true,
+    "portable_topology_independent_of_mac_verified": false,
+    "offsite_access_verified": false
   }
 }
