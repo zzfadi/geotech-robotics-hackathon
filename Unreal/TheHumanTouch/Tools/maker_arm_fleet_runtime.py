@@ -22,6 +22,7 @@ import inspect
 import os
 import json
 import math
+import sys
 import time
 import traceback
 from pathlib import Path
@@ -49,6 +50,8 @@ PAD_FRICTION = .8
 # Squeeze-activated friction grip for the kinematic pads (user-requested realistic side
 # grasp: pads squeeze the paper cup a little and the arm can still take it).
 FRICTION_GRIP = True
+MIRROR_HZ = .5
+MAX_SESSION_S = 600  # was a fixed 170 s; a two-arm handover needs longer
 WAKE_PROPS_DURING_MOTION = False  # tested: awake cups were ejected by the kinematic pads (0/9 carried)
 WAKE_AFTER_MOTION_S = 3.
 CUP_MASS_KG = .05  # uncalibrated; 15 g (empty paper cup) tipped far more often in batch 17
@@ -162,7 +165,7 @@ class Session:
         importlib.reload(maker_arm_passive_preview)
         self.passive_preview = maker_arm_passive_preview.PassivePreview([t.index for t in self.tables], self.root)
         self.interval = 1. / fps  # overhead review frames per live table
-        self.max_seconds = min(max_seconds, 170)
+        self.max_seconds = min(max_seconds, MAX_SESSION_S)
         self.captures_per_tick = captures_per_tick
         self.phase = 'starting'
         self.error = None
@@ -336,7 +339,13 @@ class Session:
         from maker_arm_runtime_mirror import RuntimeMirror
         mirror_labels = [name for table in self.tables for name in table.actors]
         mirror_labels += [table.name(name) for table in self.tables for name in table.props]
-        self.mirror = RuntimeMirror(world, mirror_labels, max_seconds=180, hz=2, editor_world=self.editor_world)
+        # Shared-session mirror: every arm link and cup on every table per sample. 0.5 Hz keeps
+        # viewers updated while cutting editor stalls and Multi-User transaction growth 4x.
+        self.mirror = RuntimeMirror(world, mirror_labels, max_seconds=int(self.max_seconds)+30, hz=MIRROR_HZ,
+                                    editor_world=self.editor_world)
+        if sys.platform == 'darwin':
+            # Retina editor viewports render 4x the pixels; standard resolution is plenty here.
+            unreal.SystemLibrary.execute_console_command(None, 'r.Editor.Viewport.HighDPI 0')
         # Stagger first captures so the per-tick render cost stays bounded.
         now = time.monotonic()
         for i, table in enumerate(self.tables):
@@ -430,7 +439,12 @@ class Session:
         requested = row[6]*JAW_MAX_M
         frames = mounted_frames(row[:6], requested, yaw=MOUNT_YAW[side])
         previous = table.state['gap_'+side+'_m']
-        if requested < previous:
+        grip = table.grips.get(side) if FRICTION_GRIP else None
+        if requested < previous and grip is not None and grip.active and grip.label in table.props:
+            # Already gripping: the jaws stay at their stop width; skip the per-tick contact sweep
+            # over the 128-segment cup model (largest per-tick Python cost during holds).
+            gap, contacts = previous, [grip.label]
+        elif requested < previous:
             # Contact limiting only matters while a jaw closes (contact_gap
             # returns early otherwise); skip the per-prop bound transforms.
             boxes = actor_boxes(table.props, frames['link_007'], base)

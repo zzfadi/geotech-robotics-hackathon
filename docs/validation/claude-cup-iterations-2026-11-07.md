@@ -273,3 +273,20 @@ newer grip drives it. Success = cup held by the right gripper only, ≥ 8 cm up,
   triggers when the jaws open 5 mm past the width they gripped at.
 - **Handover 3: 6/9 complete handovers** — right gripper alone held the cup 14.2–17.7 cm up for 5 s. Misses: a
   scaled lift overshot to ~19 cm, out of the right arm's reach; two camera-observation timeouts at start.
+
+## Handover, then place back on the table (user request, 2026-11-08)
+
+After the right gripper holds the cup alone for 3 s: Dream place (only Dream's downward motion is applied,
+cup kept upright, never driven into the table; labelled nudge when Dream's descent is < 0.3 cm) → Dream
+release of the right gripper (arm still) → planned retreat. Success = cup resting on the table (−1…1.5 cm from
+its start height), within 10° of upright, still, held by neither gripper, for 3 s.
+
+- Place 1 (`20261108-100932-73feb4`): 0/9. Four tables placed and released the cup, but the right arm's
+  joint-space return home swept through it and knocked it flat. One table stalled: its cup rested at 0.74 cm,
+  above the 0.6 cm release line. Two left grips slipped during the carry; one Dream session was replaced twice
+  in one cycle; one observation timed out. Fixes:
+  - retreat goes straight up 14 cm, back 10 cm, then home;
+  - release once the cup is within 1 cm or stops descending;
+  - the carry keeps the tool's own pitch and roll, turning only about vertical;
+  - repeated session replacement is retried;
+  - a cup/grip trace is added to each result.

@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T10:22:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Extended the Dream handover: after the left-to-right transfer, the right arm places the cup back on the table and releases it.",
+  "why": "User request: first hand takes the cup, gives it to the second hand, and the second hand places it back on the table, using the Dream API.",
+  "where": ["DreamSim/handover.py", "DreamSim/fleet_worker.py", "DreamSim/fleet_cups_claude.json", "Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py", "docs/validation/claude-cup-iterations-2026-11-07.md"],
+  "details": ["First place batch 0/9: placed cups were knocked over by the right arm's return sweep; retreat now lifts clear first.", "Simulation session limit raised to 600 s; mirror at 0.5 Hz; contact sweep skipped while a friction grip holds the cup (controller 13.6 -> 10.8 ms).", "Success needs the cup upright on the table, released by both grippers, still for 3 s."]
+}

@@ -21,6 +21,8 @@ PROMPTS = {
     'grasp_right': 'Close the right gripper around the cup and hold it firmly.'+K_RIGHT,
     'release_left': 'Open the left gripper and let go of the cup.'+K_RIGHT,
     'hold_right': 'Hold the cup still and upright with the right gripper.'+K_RIGHT,
+    'place_right': 'Put the cup down on the table gently, keeping it upright.'+K_RIGHT,
+    'release_right': 'Open the right gripper and let go of the cup.'+K_RIGHT,
 }
 KEY = {'left': 'q_l_chunk', 'right': 'q_r_chunk'}
 
@@ -54,11 +56,14 @@ def planar_toward(action, state, side, goal_xy_m, pitch_deg, base_xy_m, step_cm=
     progress = min(distance, max_cm/100, progress*gain if not nudged else nudge_cm/100)
     steps = max(1, int(math.ceil(progress*100/(step_cm/4))))
     out, previous = [list(state['q_'+side])+[rows[0][6]]], list(state['q_'+side])
+    # Keep the tool's current pitch and roll exactly (re-imposing a nominal orientation each
+    # step jostled the held cup); only turn about vertical to follow the arm's line of sight.
+    yaw0 = math.atan2(here[1]-base_xy_m[1], here[0]-base_xy_m[0])
     for k in range(1, steps+1):
         point = here.copy()
         point[:2] += direction*progress*k/steps
         yaw = math.atan2(point[1]-base_xy_m[1], point[0]-base_xy_m[0])
-        rot = Rotation.from_euler('z', yaw).as_matrix()@Rotation.from_euler('y', -pitch_deg, degrees=True).as_matrix()
+        rot = Rotation.from_euler('z', yaw-yaw0).as_matrix()@start[:3, :3]
         try:
             previous = solve_pose(point, rot, previous, tolerance_m=.003, tolerance_rad=.1)
         except ValueError:
@@ -66,6 +71,61 @@ def planar_toward(action, state, side, goal_xy_m, pitch_deg, base_xy_m, step_cm=
         out.append(list(previous)+[rows[0][6]])
     achieved = progress*(len(out)-1)/steps
     return out, {'progress_cm': round(achieved*100, 2), 'nudged': nudged, 'remaining_cm': round(distance*100, 2)}
+
+
+def vertical_down(action, state, side, step_cm=.15, gain=2., nudge_cm=1.5, max_cm=6.):
+    """Place: apply only Dream's downward motion (scaled), cup kept upright; labelled nudge
+    when Dream's own descent is < 0.3 cm. Stops at the first unreachable row."""
+    from pregrasp import _fk, solve_pose
+    fk = _fk()
+    start = fk.pose(np.clip(np.array(state['q_'+side], dtype=float), fk.low+1e-7, fk.high-1e-7))
+    rows = action[KEY[side]]
+    end = fk.pose(np.clip(np.array(rows[-1][:6], dtype=float), fk.low+1e-7, fk.high-1e-7))[2, 3]
+    descent = max(0., float(start[2, 3]-end))*gain
+    nudged = descent < .003
+    descent = min(max_cm/100, nudge_cm/100 if nudged else descent)
+    steps = max(1, int(math.ceil(descent*100/step_cm)))
+    out, previous = [list(state['q_'+side])+[rows[0][6]]], list(state['q_'+side])
+    for k in range(1, steps+1):
+        point = start[:3, 3]-np.array([0, 0, descent*k/steps])
+        try:
+            previous = solve_pose(point, start[:3, :3], previous, tolerance_m=.003, tolerance_rad=.1)
+        except ValueError:
+            break
+        out.append(list(previous)+[rows[0][6]])
+    return out, {'descent_cm': round(descent*100*(len(out)-1)/steps, 2), 'nudged': nudged}
+
+
+def retreat_rows(q, up_cm=14., back_cm=10., home_rows=30):
+    """Empty-gripper retreat that cannot sweep a placed cup: straight up until the open jaws are
+    above the cup, back toward the arm base at that height, then a joint move to the start pose."""
+    from pregrasp import _fk, solve_pose
+    from fleet_reset import HOME_Q
+    fk = _fk()
+    q = list(q)
+    f = fk.pose(np.clip(q, fk.low+1e-7, fk.high-1e-7))
+    rows = [q+[.95]]
+    top = f[:3, 3].copy()
+    for k in range(1, 29):
+        point = f[:3, 3]+np.array([0, 0, up_cm/100*k/28])
+        try:
+            q = solve_pose(point, f[:3, :3], q, .003, .1)
+        except ValueError:
+            break
+        rows.append(list(q)+[.95])
+        top = point
+    back = -top[:2]/max(1e-6, float(np.linalg.norm(top[:2])))
+    for k in range(1, 21):
+        point = top.copy()
+        point[:2] += back*back_cm/100*k/20
+        try:
+            q = solve_pose(point, f[:3, :3], q, .003, .1)
+        except ValueError:
+            break
+        rows.append(list(q)+[.95])
+    q0 = np.array(rows[-1][:6]); q1 = np.array(HOME_Q)
+    rows += [list(q0*(1-t)+q1*t)+[.95] for t in (.5-.5*np.cos(np.pi*np.linspace(0, 1, home_rows)))[1:]]
+    return rows
 
 
 class Handover:
@@ -81,8 +141,13 @@ class Handover:
         self.grasp_cycles = 0
         self.release_cycles = 0
         self.carry_stalls = 0
-        self.counts = {'lift_nudges': 0, 'carry_nudges': 0, 'release_nudges': 0}
+        self.lift_ceiling = None
+        self.place = a.get('task_place', False)
+        self.counts = {'lift_nudges': 0, 'carry_nudges': 0, 'release_nudges': 0, 'place_nudges': 0}
         self.seq = 0
+        self.trace = []
+        self.events_after = time.time()
+        self.place_heights = []
 
     # ---- plumbing ---------------------------------------------------------------------
     def play(self, packet, action, label, extra=None):
@@ -101,7 +166,7 @@ class Handover:
         while True:
             if tr.stopped():
                 raise RuntimeError('Stopped during motion')
-            tr.status()
+            self.sample(tr.status() or {})
             playback = read_json(tr.dir/'playback.json')
             if playback and playback.get('seq') == self.seq and playback.get('done'):
                 if playback.get('error'):
@@ -127,6 +192,23 @@ class Handover:
         from fleet_worker import constrain_motion_side
         action = constrain_motion_side(action, packet['state'], side)
         return action, packet
+
+    def sample(self, status, every_s=.25):
+        """Compact cup/grip trace (height, tilt, holders) for diagnosing drops; kept in the result."""
+        now = time.time()
+        if self.trace and now-self.trace[-1]['t'] < every_s:
+            return
+        p = status.get('props', {}).get(self.tr.v['target']['label'], {})
+        grip = status.get('friction_grip') or {}
+        self.trace.append({'t': round(now, 2), 'seq': self.seq, 'phase': self.phase, 'h': round(p.get('height_above_start_cm', 0), 2),
+                           'tilt': round(p.get('tilt_degrees', 0), 1),
+                           'held': ''.join(k[0] for k, v in (grip.get('holding') or {}).items() if v == self.tr.v['target']['label'])})
+        events = [e for e in grip.get('events') or [] if e.get('t', 0) > self.events_after]
+        if events:
+            self.events_after = max(e['t'] for e in events)
+            self.trace[-1]['events'] = events
+        del self.trace[:-240]
+        self.tr.result['handover_trace'] = self.trace
 
     def cup(self):
         return (self.tr.status() or {}).get('props', {}).get(self.tr.v['target']['label'], {})
@@ -182,8 +264,12 @@ class Handover:
                     return
             elif self.phase == 'lift_left':
                 action, packet = self.dream(packet, 'left')
+                if self.lift_ceiling is None:
+                    from pregrasp import tool_height
+                    # Hand height at which the cup is `rise` cm up (+1 cm), so the right arm can still reach it.
+                    self.lift_ceiling = tool_height(packet['state']['q_left'])+(self.rise+1-self.cup().get('height_above_start_cm', 0))/100
                 action, info = vertical_only(action, packet['state'], 'left', floor_z=self.floor['left'], allow_down_cm=0.,
-                                             max_step_cm=.15, up_gain=2.5, min_rise_cm=1.)
+                                             max_step_cm=.15, up_gain=2.5, min_rise_cm=1., ceiling_z=self.lift_ceiling)
                 if info.get('nudged'):
                     self.counts['lift_nudges'] += 1
                 action[KEY['left']] = [r[:6]+[self.latch['left']] for r in action[KEY['left']]]
@@ -263,16 +349,91 @@ class Handover:
                 action[KEY['right']] = [r[:6]+[self.latch['right']] for r in action[KEY['right']]]
                 action[KEY['left']] = hold_rows(packet['state'], 'left', len(action[KEY['right']]))
                 playback = self.play(packet, action, 'Dream hold (right), vertical only', info)
-                held = self.verify()
+                held = self.verify(hold_s=3. if self.place else 5.)
                 tr.result['handover_hold'] = held
                 if held['passed']:
-                    tr.result['stopped_reason'] = 'handover complete: right gripper held the cup %.1f cm up for %.1f s' % (held['min_height_cm'], held['held_s'])
-                    tr.log(tr.result['stopped_reason'])
+                    tr.log('handover: right gripper held the cup %.1f cm up for %.1f s' % (held['min_height_cm'], held['held_s']))
+                    if not self.place:
+                        tr.result['stopped_reason'] = 'handover complete: right gripper held the cup %.1f cm up for %.1f s' % (held['min_height_cm'], held['held_s'])
+                        tr.result['goal_text'] = 'Handover complete · right gripper held the cup %.1f cm up for %.1f s' % (held['min_height_cm'], held['held_s'])
+                        tr.result['goal_passed'] = True
+                        return
+                    self.phase = 'place_right'
+            elif self.phase == 'place_right':
+                action, packet = self.dream(packet, 'right')
+                # Never drive the cup into the table: descend at most to just above contact.
+                rows, info = vertical_down(action, packet['state'], 'right', max_cm=max(.4, self.cup().get('height_above_start_cm', 6)-.2))
+                if info.get('nudged'):
+                    self.counts['place_nudges'] = self.counts.get('place_nudges', 0)+1
+                action = {KEY['right']: [r[:6]+[self.latch['right']] for r in rows],
+                          KEY['left']: hold_rows(packet['state'], 'left', len(rows))}
+                from pregrasp import guard_table
+                action, _ = guard_table(action, packet['state'], 'right')
+                playback = self.play(packet, action, 'Dream place, downward only (right)', info)
+                h = self.cup().get('height_above_start_cm', 99)
+                self.place_heights.append(h)
+                # Resting height varies with the grasp (0.7 cm seen on T04): release once the cup is
+                # within 1 cm of its start, or has stopped descending while low (it is on the table).
+                resting = len(self.place_heights) >= 2 and self.place_heights[-2]-h < .15 and h < 2.5
+                if h <= 1. or resting or (len(rows) < 2 and h < 3):
+                    self.phase = 'release_right'
+            elif self.phase == 'release_right':
+                action, packet = self.dream(packet, 'right')
+                g_dream = max(r[6] for r in action[KEY['right']])
+                self.release_cycles_right = getattr(self, 'release_cycles_right', 0)+1
+                g_open = g_dream if g_dream > .9 or self.release_cycles_right < 3 else .95
+                if g_open != g_dream:
+                    self.counts['release_nudges'] += 1
+                still = list(packet['state']['q_right'])
+                g0 = packet['state']['gap_right_m']/JAW_MAX_M
+                action = {KEY['right']: [still+[g0+(max(g0, g_open)-g0)*k/19] for k in range(20)],
+                          KEY['left']: hold_rows(packet['state'], 'left', 20)}
+                self.latch['right'] = None
+                playback = self.play(packet, action, 'Dream release (right), arm held still', {'dream_grip': g_dream})
+                if playback.get('gap_right_m', 0) > .09:
+                    packet = tr.fresh(time.time())
+                    tr.result['after_release'] = dict(self.trace[-1]) if self.trace else None
+                    rows = retreat_rows(packet['state']['q_right'])
+                    action = {KEY['right']: rows, KEY['left']: hold_rows(packet['state'], 'left', len(rows))}
+                    playback = self.play(packet, action, 'planned retreat (right, up clear of the cup, then home; no Dream call)')
+                    placed = self.verify_placed()
+                    tr.result['place_check'] = placed
+                    tr.result['handover_hold'] = {**placed, 'max_height_cm': placed.get('height_cm')}
+                    if placed['passed']:
+                        tr.result['stopped_reason'] = 'handover and place complete: cup upright on the table, released, for %.1f s' % placed['held_s']
+                        tr.result['goal_text'] = 'Handed over and placed · cup upright on the table for %.1f s' % placed['held_s']
+                        tr.result['goal_passed'] = True
+                        tr.log(tr.result['stopped_reason'])
+                    else:
+                        tr.result['stopped_reason'] = 'cup not resting upright after placing (%s)' % placed.get('reason')
                     return
             after = playback.get('finished_unix') or time.time()
             tr.result['cycles_run'] = self.seq
             tr.result['handover_counts'] = dict(self.counts)
         tr.result['stopped_reason'] = 'handover steps exhausted in %s' % self.phase
+
+    def verify_placed(self, hold_s=3.):
+        """Cup back on the table: near its start height, upright, held by neither gripper, still."""
+        tr = self.tr
+        start, best, last = None, 0., {}
+        until = time.monotonic()+hold_s+1.
+        while time.monotonic() < until:
+            status = tr.status() or {}
+            p = status.get('props', {}).get(tr.v['target']['label'], {})
+            holders = (status.get('friction_grip') or {}).get('holding') or {}
+            ok = (-1. <= p.get('height_above_start_cm', 99) <= 1.5 and 0 <= p.get('tilt_degrees', 180) <= 10
+                  and p.get('speed_cm_s', 99) <= 2 and tr.v['target']['label'] not in holders.values())
+            now = time.monotonic()
+            start = (start or now) if ok else None
+            best = max(best, now-start) if start else best
+            last = {'height_cm': round(p.get('height_above_start_cm', 0), 2), 'tilt_degrees': round(p.get('tilt_degrees', 0), 1),
+                    'held_by': [k for k, v in holders.items() if v == tr.v['target']['label']]}
+            if best >= hold_s:
+                break
+            time.sleep(.1)
+        return {'passed': best >= hold_s, 'held_s': round(best, 2), **last,
+                'reason': None if best >= hold_s else 'height %s cm, tilt %s deg, held by %s' % (last.get('height_cm'), last.get('tilt_degrees'), last.get('held_by')),
+                'scope': 'cup resting on the table, upright, released, gravity on'}
 
     def verify(self, hold_s=5.):
         tr = self.tr

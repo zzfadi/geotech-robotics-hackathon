@@ -332,7 +332,7 @@ def _lift_solve(target, rotation, previous, horizontal):
 
 
 def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, max_step_cm=.25, back_per_up=0., up_gain=1.,
-                  min_rise_cm=0.):
+                  min_rise_cm=0., ceiling_z=None):
     """While an object is held: keep the measured tool x/y and orientation, apply only
     Dream's vertical motion, never below floor_z (the height where the jaws closed)
     minus allow_down_cm; without floor_z the current height is the floor."""
@@ -356,6 +356,8 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         if z > start[2, 3]:  # up_gain scales only Dream's upward motion while holding
             z = start[2, 3]+(z-start[2, 3])*up_gain
         z = max(z, floor)
+        if ceiling_z is not None:
+            z = min(z, max(ceiling_z, float(start[2, 3])))
         target = point(z)
         solved = _lift_solve(target, start[:3, :3], previous, horizontal)
         if solved is None:
@@ -375,6 +377,8 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
         heights.append(round((z-start[2, 3])*100, 2))
         previous = solved
     nudged = False
+    if ceiling_z is not None and start[2, 3] >= ceiling_z-.002:
+        min_rise_cm = 0.
     if min_rise_cm > 0 and (not heights or heights[-1] < min_rise_cm*.3):
         # Labelled lift nudge: Dream's own step was (near) zero while a held cup is below its
         # target; add a small straight rise so the lift can finish.

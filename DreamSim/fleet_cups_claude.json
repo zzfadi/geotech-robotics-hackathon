@@ -44,13 +44,15 @@
    ],
    "handover_rise_cm": 12.0,
    "handover_min_rise_cm": 8.0,
-   "handover_steps": 60
+   "handover_steps": 60,
+   "observation_timeout_s": 40,
+   "task_place": true
   }
  },
  "tables": [
   {
    "index": 0,
-   "name": "T1 handover left -> right",
+   "name": "T1 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -144,11 +146,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 1,
-   "name": "T2 handover left -> right",
+   "name": "T2 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -257,11 +259,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 2,
-   "name": "T3 handover left -> right",
+   "name": "T3 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -355,11 +357,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 3,
-   "name": "T4 handover left -> right",
+   "name": "T4 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -468,11 +470,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 4,
-   "name": "T5 handover left -> right",
+   "name": "T5 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -566,11 +568,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 5,
-   "name": "T6 handover left -> right",
+   "name": "T6 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -679,11 +681,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 6,
-   "name": "T7 handover left -> right",
+   "name": "T7 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -777,11 +779,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 7,
-   "name": "T8 handover left -> right",
+   "name": "T8 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -890,11 +892,11 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   },
   {
    "index": 8,
-   "name": "T9 handover left -> right",
+   "name": "T9 handover + place",
    "objective": {
     "kind": "lift_hold",
     "target": "MakerStation_Prop_Cup",
@@ -988,7 +990,7 @@
      "clearance_radius_cm": 4.0
     }
    ],
-   "prompt": "Pick up the cup with the left arm and hand it to the right arm."
+   "prompt": "Pick up the cup with the left arm, hand it to the right arm, and place it back on the table."
   }
  ],
  "height_seed": 1794154098

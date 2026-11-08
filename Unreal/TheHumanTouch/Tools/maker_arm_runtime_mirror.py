@@ -50,8 +50,8 @@ class RuntimeMirror:
         labels = list(labels)
         if not labels or len(set(labels)) != len(labels):
             raise ValueError('Provide nonempty unique labels')
-        if not 0 < max_seconds <= 180 or not 0 < hz <= 20:
-            raise ValueError('Mirror bound: <=180 seconds, <=20 Hz')
+        if not 0 < max_seconds <= 660 or not 0 < hz <= 20:  # fleet sessions run up to 600 s
+            raise ValueError('Mirror bound: <=660 seconds, <=20 Hz')
         if (_active and not _active.closed) or animation.is_running():
             raise RuntimeError('Another animation/mirror is active')
         self.editor = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)

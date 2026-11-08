@@ -208,7 +208,7 @@ class TableRun:
 
     def fresh(self, after):
         started = time.monotonic()
-        deadline = started + 15
+        deadline = started + float(self.v.get('assist', {}).get('observation_timeout_s', 15))
         asked = False
         while time.monotonic() < deadline:
             if not asked and time.monotonic() - started > 2:
@@ -231,6 +231,10 @@ class TableRun:
         if not objective:
             return None
         held = self.result.get('threshold_hold') or {}
+        if self.v.get('assist', {}).get('task') == 'handover':
+            return {'text': self.result.get('goal_text') or 'Handover · %s' % self.result.get('handover_phase', 'starting').replace('_', ' '),
+                    'achieved': bool(self.result.get('goal_passed')), 'phase': self.result.get('handover_phase'),
+                    'required_height_cm': objective.get('height_cm'), 'rise_cm': 0., 'held_s': 0.}
         rise = float((lift or {}).get('height_cm', self.cup_rise) or 0.)
         phase = ('reach' if self.result['cycles_run'] == 0 and self.v.get('assist', {}).get('approach') == 'scripted'
                  else 'grasp' if self.grip_latch is None else
@@ -307,10 +311,14 @@ class TableRun:
                     # phrasing (logged) instead of ending the table.
                     self.lift_stalls += 1
                     self.result.setdefault('refused_prompts', []).append(str(error)[-120:])
-                if (('NO_CAPACITY' not in str(error) and not numerical and not refused) or attempt == 13
+                # A second gateway session replacement inside one control cycle (long planned
+                # moves between calls) is retried like capacity, from fresh Unreal feedback.
+                replaced = isinstance(error, DreamSessionExpired)
+                if (('NO_CAPACITY' not in str(error) and not numerical and not refused and not replaced) or attempt == 13
                         or time.monotonic() >= capacity_deadline):
                     raise
                 self.log(('Dream client IK numerical failure; retry %d/13' if numerical else
+                          'Dream session replaced again; retry %d/13' if replaced else
                           'Dream capacity busy; bounded retry %d/13') % (attempt+1))
             finally:
                 _INFERENCE_SLOTS.release()
@@ -671,7 +679,8 @@ class TableRun:
         else:
             self.result['outcome'] = verification['outcome']
             if self.v.get('assist', {}).get('task') == 'handover':
-                self.result['threshold_hold'] = self.result.get('handover_hold')
+                self.result['threshold_hold'] = {**(self.result.get('handover_hold') or {}),
+                                                 'passed': bool(self.result.get('goal_passed'))}
             held = self.result.get('threshold_hold')
             if held is not None:
                 self.result['outcome'] = 'passed' if held['passed'] else 'failed'
@@ -1220,7 +1229,7 @@ def serve(args, config):
             status = 'stopped' if stop['flag'] else 'done'
             server.event('fleet.finished', request_id, ('Measured held lift on ' + ', '.join(held) + ' (review videos)') if held
                          else 'No table measured a held 10 cm lift')
-            summary = [{k: r.get(k) for k in ('handover_phase', 'handover_hold', 'handover_counts', 'lift_nudges', 'batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason', 'threshold_hold', 'assist')} for r in results]
+            summary = [{k: r.get(k) for k in ('goal_text', 'goal_passed', 'place_check', 'handover_phase', 'handover_hold', 'handover_counts', 'lift_nudges', 'batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason', 'threshold_hold', 'assist')} for r in results]
         except Exception as error:
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))
