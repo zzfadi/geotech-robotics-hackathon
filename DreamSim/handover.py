@@ -182,6 +182,7 @@ class Handover:
         self.events_after = time.time()
         self.place_heights = []
         self.recoveries = 0
+        self.right_reaches = 0
 
     # ---- plumbing ---------------------------------------------------------------------
     def play(self, packet, action, label, extra=None):
@@ -311,13 +312,30 @@ class Handover:
                 playback = self.play(packet, action, 'Dream grip, arm held still (%s)' % side, {'dream_grip': g1})
                 self.grasp_cycles += 1
                 observed = playback.get('gap_'+side+'_m', 1.)
-                if observed < .095 and observed-g1*JAW_MAX_M > .005 and observed > .055:
+                # The right grasp counts only once the friction grip formed, so the left never
+                # lets go of a cup the right jaws merely touch.
+                gripped = side == 'left' or self.grip_holders().get('right') == target
+                if observed < .095 and observed-g1*JAW_MAX_M > .005 and observed > .055 and gripped:
                     self.latch[side] = max(observed-.006, 0.)/JAW_MAX_M
                     from pregrasp import tool_height
                     self.floor[side] = tool_height(playback['q_'+side])
                     tr.log('%s: jaws closed on the cup at %.1f cm' % (self.phase, observed*100))
                     self.grasp_cycles = 0
                     self.phase = 'lift_left' if side == 'left' else 'release_left'
+                elif side == 'right' and self.grasp_cycles >= 2 and observed <= .055 and self.right_reaches < 2:
+                    # Jaws closed past the cup or on a narrow off-centre chord (place 6, T05: 5.2 cm):
+                    # open, slide back out, and reach again from the live cup position with a
+                    # different depth/offset.
+                    self.right_reaches += 1
+                    self.counts['right_reaches'] = self.right_reaches
+                    tr.log('grasp_right: jaws stopped at %.1f cm (not the cup body); re-reaching (%d)' % (observed*100, self.right_reaches))
+                    q = list(packet['state']['q_right'])
+                    g0 = packet['state']['gap_right_m']/JAW_MAX_M
+                    rows = [q+[g0+(.95-g0)*k/14] for k in range(15)]+back_off_rows(q, 8.)[1:]
+                    action = {KEY['right']: rows, KEY['left']: [r[:6]+[self.latch['left']] for r in hold_rows(packet['state'], 'left', len(rows))]}
+                    playback = self.play(packet, action, 'planned re-reach: open and slide out (right, no Dream call)')
+                    self.grasp_cycles = 0
+                    self.phase = 'reach_right'
                 elif self.grasp_cycles >= 6:
                     tr.result['stopped_reason'] = '%s: jaws never closed on the cup' % self.phase
                     return
@@ -365,13 +383,14 @@ class Handover:
                 # closed on nothing 4 times in 16 (place 3-4).
                 for mode in ('side', 'above'):
                     for pitch in (60., 55., 45., 50., 30.):
-                        for offset in (-3., -2.5, -3.5):
+                        for offset in ((-3., -2.5, -3.5), (-2.5, -3., -3.5), (-3.5, -3., -2.5))[self.right_reaches % 3]:
                             variant = {**tr.v, 'objective': {**(tr.v.get('objective') or {}), 'side': 'right'},
                                        'target': {**tr.v['target'], 'location_cm': list(c['table_local_cm'])},
                                        'assist': {**(tr.v.get('assist') or {}), 'pitch_deg': pitch, 'grasp_offset_cm': offset, 'gap_m': .1,
                                                   # Cup axis 2 cm inside the pad corridor (flange -17..-10 cm), not at the
                                                   # fingertip edge: at depth 0 the jaws closed past the cup 4/25 times.
-                                                  'grasp_depth_cm': float((tr.v.get('assist') or {}).get('handover_grasp_depth_cm', 2.))}}
+                                                  'grasp_depth_cm': float((tr.v.get('assist') or {}).get('handover_grasp_depth_cm', 2.))
+                                                                    + (0., 1., -.5)[self.right_reaches % 3]}}
                             try:
                                 action, info = approach_action(state, variant, mode=mode)
                                 info = {**info, 'pitch_deg': pitch, 'grasp_offset_cm': offset, 'cup_cm': [round(v, 2) for v in c['table_local_cm']],

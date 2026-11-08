@@ -314,3 +314,10 @@ friction-grip model, so the links do not need Chaos collision. The runtime now s
 jaws stay no-collision as before, and cups and tables stay physical. Measured mid-run: **11.2 → 65–67 FPS**,
 hitches 6.5/s → 0, and 58 FPS from run start. Trade-off: arm links no longer push cups physically
 (`LINK_PHYSICS_COLLISION = True` restores it). No Maker Arm assets changed.
+- Place 6 (`20261108-104418-283141`): **8/9** (tilt 0.0–0.1°). The miss: the right jaws stopped at 5.2/4.9 cm on
+  an off-centre chord (below the 5.5 cm cup-body rule), with the same planned geometry as tables that gripped.
+  The right grasp now counts only when the friction grip formed. Otherwise the arm opens, slides out and
+  re-reaches from the live cup position with a different depth/offset (up to 2 times).
+- **Place 7 (`20261108-104941-0fc4de`): 9/9 handed over and placed** — every cup taken by the left arm, passed
+  to the right arm, put back on the table and released, upright (0.0°) and still for 3 s; 144 s for all nine.
+  T02 used both re-reaches.

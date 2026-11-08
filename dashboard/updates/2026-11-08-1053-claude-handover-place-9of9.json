@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T10:53:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "All nine tables completed the Dream two-arm task: left arm picks up the cup, hands it to the right arm, right arm places it back on the table upright.",
+  "why": "User request: first hand takes the cup, gives it to the second hand, which places it back on the table, using the Dream API.",
+  "where": ["DreamSim/handover.py", "docs/validation/claude-cup-iterations-2026-11-07.md", "Unreal/TheHumanTouch/Tools/maker_arm_friction_grip.py"],
+  "details": ["Batch 20261108-104941-0fc4de: 9/9, cups upright (0.0 deg), released by both grippers and still for 3 s; 144 s for all nine.", "Dream drives every grasp, lift, carry, release and place step under phase prompts; planned reaches, retreats and re-grasps are labelled per result.", "Simulation only, friction-grip model; not a calibrated hardware grasp."]
+}
