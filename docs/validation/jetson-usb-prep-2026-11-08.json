@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Second-install bootloader package repaired with backed-up board-name correction and exact ISO dpkg install exit 0; remaining OEM late commands/first SSD boot pending; Tailscale cache prepared only",
+  "scope": "OEM finalization/postchecks complete and graphical first boot observed at02:25:35 Pacific; time-zone/account setup ongoing, ping/TCP22 reachable but SSH identity/login and running root unverified",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -54,7 +54,7 @@
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
     "capture": "1280x720 AVFoundation still",
-    "observation": "Temporary installer recovery: bootloader package repair verified, remaining OEM late commands and first SSD boot pending",
+    "observation": "Ubuntu graphical first-boot setup; driver license accepted, local account still pending",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
@@ -62,7 +62,7 @@
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
     "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
     "cloud": "Authenticated console launched via glkvm.com Remote Control; settled P2P/no HDMI from this Mac, off-site/relay/keyboard path unverified",
-    "updated_at": "2026-11-08T02:21:19-08:00",
+    "updated_at": "2026-11-08T02:28:51-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
@@ -155,16 +155,15 @@
     }
   },
   "pending": [
-    "Complete and verify remaining OEM late commands and installer outcome; bootloader package repair is verified but full installation is not",
-    "Verify successful installed OS boot, actual root device and final OS versions",
-    "Establish persistent installed-OS account and key-based SSH; previous root SSH was temporary failed-installer recovery only",
+    "Complete graphical time-zone/account setup; record final username/hostname without secrets",
+    "Verify running root with findmnt, expected NVMe and actual OS versions",
+    "Verify SSH host identity and persistent authenticated/key-based login; ping/TCP22 alone is insufficient",
     "Record RAM and run cached arm environment/offline checks after installed-host verification",
-    "Await KVM cable move to Beryl Port 1, then verify reserved 192.168.8.166 is leased and accessible through that port",
+    "Await KVM cable move to Beryl Port 1, then verify reserved192.168.8.166 is leased and accessible",
     "Verify complete portable LAN without Mac sharing and off-site access separately; preserve home GL-MT6000",
-    "When appropriate after recovery, verify cloud-route keyboard/video and off-site access separately; current cloud-console proof is same-Mac P2P only",
-    "After installed-host verification, prepare Tailscale dependencies/install and intended tailnet authentication; cache preparation alone does not establish remote access"
+    "After installed-host verification, prepare Tailscale dependencies/install and intended tailnet authentication; cache preparation is not remote access"
   ],
-  "updated_at": "2026-11-08T02:21:55-08:00",
+  "updated_at": "2026-11-08T02:28:51-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -511,7 +510,14 @@
       "jetson_ipv4": "192.168.8.136",
       "scope": "Router reservations only; not proof of current leases, physical port access or installed-system reachability"
     },
-    "kvm_reserved_beryl_ipv4": "192.168.8.166"
+    "kvm_reserved_beryl_ipv4": "192.168.8.166",
+    "post_reboot_ping_and_tcp22": {
+      "address": "192.168.8.136",
+      "ping": true,
+      "tcp22": true,
+      "ssh_host_identity_verified": false,
+      "authenticated_login_verified": false
+    }
   },
   "current_attempt": "reinstallation",
   "firmware_after": {
@@ -534,18 +540,18 @@
     ],
     "agent_triggered_install_or_erase": true,
     "separate_erase_confirmation_observed_before_partitioning": false,
-    "status": "repair-in-progress",
+    "status": "oobe-in-progress",
     "active_directly_verified": false,
     "target_device": "/dev/nvme0n1",
     "target_model_previously_verified": "SHPP41-1000GM",
     "target_lsblk_size_previously_verified": "931.5G",
-    "latest_stage": "Bootloader package repair succeeded; remaining OEM late commands and first SSD boot pending",
+    "latest_stage": "OEM finalization complete; graphical Welcome observed, time-zone/account setup ongoing",
     "progress_observed_at": "2026-11-08T02:03:50-08:00",
     "completion_verified": false,
-    "installed_os_boot_verified": false,
+    "installed_os_boot_verified": true,
     "persistent_ssh_verified": false,
-    "current_instruction": "Complete and verify remaining OEM late commands and installer outcome, then verify first SSD boot before runtime provisioning",
-    "updated_at": "2026-11-08T02:21:19-08:00",
+    "current_instruction": "Complete first-boot account setup; verify running root/versions and SSH host identity/login before runtime provisioning",
+    "updated_at": "2026-11-08T02:28:51-08:00",
     "partitioning_observation": {
       "observed_at": "2026-11-08T02:01:41-08:00",
       "local_screenshot": "/private/tmp/jetson-retry-watch-hand-observation-03.png"
@@ -617,9 +623,9 @@
       "capsule_log_result": "No need to trigger capsule update",
       "target_log": "/target/root/jetson-installer-repair-20261108/reinstall-dpkg.log",
       "repair_log_private_preservation_verified": true,
-      "remaining_oem_late_commands_verified": false,
+      "remaining_oem_late_commands_verified": true,
       "installation_completion_verified": false,
-      "installed_os_boot_verified": false,
+      "installed_os_boot_verified": true,
       "package_status": "install ok installed",
       "dpkg_audit_output_empty": true,
       "private_evidence_archive": {
@@ -628,8 +634,10 @@
         "sha256": "d15872aa5b974a88a2f5c6d3d25036f1441095444e85ec39d8915cd3becb565a",
         "both_copies_hash_verified": true,
         "raw_logs_committed": false
-      }
-    }
+      },
+      "installed_os_boot_verification_scope": "Graphical first-boot screen after NVMe-first reboot; running root/versions not yet inspected"
+    },
+    "installed_os_boot_verification_scope": "Graphical first-boot screen after NVMe-first reboot; running root/versions not yet inspected"
   },
   "tailscale_package_cache": {
     "prepared_at": "2026-11-08T10:11:56.866552+00:00",
@@ -681,5 +689,68 @@
       "https://pkgs.tailscale.com/stable/#ubuntu-noble",
       "https://tailscale.com/docs/install/linux"
     ]
+  },
+  "pre_firstboot_finalization": {
+    "recorded_at": "2026-11-08T02:25:30-08:00",
+    "completed_at": "2026-11-08T02:22:49-08:00",
+    "oem_late_commands_applied": 26,
+    "postchecks_verified": true,
+    "scope": "Applicable true branch only; absent tuned helper omitted",
+    "missing_marker_directory_created": "/etc/nv",
+    "boot_entry_removed": {
+      "name": "Ubuntu",
+      "number": "0009"
+    },
+    "boot_order_verified": {
+      "first": "NVMe 0008",
+      "last": "USB 0001"
+    },
+    "persistent_network": {
+      "manager": "NetworkManager",
+      "interface": "enP8p1s0",
+      "ipv4": "DHCP",
+      "netplan_generated": true
+    },
+    "reboot_issued_at_approximate": "2026-11-08T02:24:00-08:00",
+    "first_ssd_boot_verified": true,
+    "installed_os_account_verified": false,
+    "persistent_ssh_verified": false,
+    "private_evidence_archive": {
+      "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/pre-firstboot-finalization.tar.gz",
+      "working_copy": "/private/tmp/jetson-install-recovery-20261108/pre-firstboot-finalization.tar.gz",
+      "sha256": "cf3c64540f8dbd54fc4d22f5e10130554f4b5bbedf0328336a1995aeaafca871",
+      "both_copies_hash_verified": true,
+      "raw_logs_public": false
+    },
+    "first_ssd_boot_verification_scope": "Graphical Ubuntu Welcome/OOBE observed after NVMe-first reboot; actual root mount not yet inspected"
+  },
+  "first_boot": {
+    "observed_at": "2026-11-08T02:25:35-08:00",
+    "graphical_first_boot_verified": true,
+    "visible_screen": "Ubuntu Welcome / English",
+    "local_screenshot": "/private/tmp/jetson-ssd-firstboot-watch-04.png",
+    "boot_context": "After finalized installation, verified NVMe-first order and reboot",
+    "running_root_mount_verified": false,
+    "running_os_versions_verified": false,
+    "setup_progress": [
+      "Welcome / English",
+      "US keyboard selection",
+      "NVIDIA license screen",
+      "NVIDIA license accepted",
+      "Wi-Fi skipped; wired network retained",
+      "Time-zone picker; account setup pending"
+    ],
+    "license_acceptance_verified": true,
+    "account_created_verified": false,
+    "setup_completion_verified": false,
+    "network_observation": {
+      "observed_after": "2026-11-08T02:26:00-08:00",
+      "address": "192.168.8.136",
+      "ping_reachable": true,
+      "tcp_port_22_reachable": true,
+      "ssh_host_identity_verified": false,
+      "authenticated_ssh_login_verified": false,
+      "address_identity_scope": "Reserved address responds; installed-host identity still needs authenticated verification"
+    }
   }
 }

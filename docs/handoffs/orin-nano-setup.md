@@ -1,6 +1,6 @@
 # Jetson Orin Nano setup: USB installer, NVMe, SSH
 
-**Current status, November 8, 2026: bootloader package repaired; remaining installation steps and first SSD boot pending.** UEFI **`39.2.1-gcid-46758480`** is verified. The retry passed partitioning and reached package installation, but `nvidia-l4t-bootloader` rejected the generated boot-control board name. Its private evidence archive is saved and hashed. The boot-control board names were corrected after backup, and installing the exact ISO bootloader package with `dpkg --install` succeeded with exit 0. Remaining OEM late commands, completed installation, installed-system boot and persistent SSH remain unverified. Tailscale packages are prepared separately for the eventual installed host; they have not been installed or activated.
+**Current status, November 8, 2026: graphical first boot observed; account setup in progress.** After the bootloader repair and OEM finalization, the Jetson reached Ubuntu **Welcome / English** at **02:25:35 Pacific**. US keyboard selection and NVIDIA license acceptance are complete; account creation and setup completion are pending. The reserved address **`192.168.8.136`** responds to ping and TCP port 22 after 02:26, but SSH host identity/login, the actual running root mount and runtime checks are unverified. UEFI `39.2.1-gcid-46758480` remains the verified firmware result.
 
 At approximately **01:17 Pacific / 09:17 UTC**, the user-started JetPack 7.2.1 / Jetson Linux 39.2.1 installer stopped with **“An error occurred. Press enter to start a shell.”** An agent-sent **Enter through the KVM** opened the diagnostic shell, directly verifying local keyboard delivery. The pre-recovery read-only `bios_version` check returned **`36.4.2-gcid-38685322`**, unchanged from the starting firmware. Prior NVMe partitioning, extraction and package progress remain recorded below; recovery SSH was access to this failed installer, not the final OS.
 
@@ -63,7 +63,13 @@ Evidence is preserved privately at **`/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-
 
 After backing up the original configuration, the two board-name fields were corrected to `jetson-orin-nano-devkit`; the remaining board identifiers were preserved. With the required `/proc`, `/sys` and EFI-variable mounts available in the target, APT reinstall attempts by package name and local Debian package returned **“Internal Error, No file name.”** Installing the exact ISO **`nvidia-l4t-bootloader` version `39.2.1-20260806224157`** using `dpkg --install` then completed with **exit 0**.
 
-The vendor scripts normalized **CompatibleSpec** to **`jetson-orin-nano-devkit-super`**, while TNSPEC retained **`jetson-orin-nano-devkit`**. The log reports matching current/package QSPI values **2556417** and **“No need to trigger capsule update.”** This establishes successful package repair, not completed OEM setup or a bootable installed system. The package now reports **`install ok installed`**, and **`dpkg --audit` is empty**. The repair log `/target/root/jetson-installer-repair-20261108/reinstall-dpkg.log` and supporting evidence are preserved privately in **`/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/bootloader-repair-evidence.tar.gz`**, SHA-256 **`d15872aa5b974a88a2f5c6d3d25036f1441095444e85ec39d8915cd3becb565a`**. Both archive copies were independently hash-checked. Remaining OEM late commands and first SSD boot still need verification before deploying the arm runtime.
+The vendor scripts normalized **CompatibleSpec** to **`jetson-orin-nano-devkit-super`**, while TNSPEC retained **`jetson-orin-nano-devkit`**. The log reports matching current/package QSPI values **2556417** and **“No need to trigger capsule update.”** This establishes successful package repair; subsequent OEM finalization and graphical first-boot evidence are recorded below. The package now reports **`install ok installed`**, and **`dpkg --audit` is empty**. The repair log `/target/root/jetson-installer-repair-20261108/reinstall-dpkg.log` and supporting evidence are preserved privately in **`/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/bootloader-repair-evidence.tar.gz`**, SHA-256 **`d15872aa5b974a88a2f5c6d3d25036f1441095444e85ec39d8915cd3becb565a`**. Both archive copies were independently hash-checked. Subsequent OEM finalization and graphical first boot are verified below; account completion, running root and authenticated SSH still need verification before deploying the arm runtime.
+
+## OEM finalization and graphical first boot
+
+At **02:22:49 Pacific**, 26 applicable OEM late commands and postchecks completed. The missing `/etc/nv` marker directory was created; only the applicable true branch ran, and the absent tuned helper was omitted. The exact Ubuntu boot entry **`0009`** was removed; **NVMe `0008` first** and **USB `0001` last** were verified. Persistent NetworkManager DHCP netplan for **`enP8p1s0`** was generated. Finalization evidence is private: `/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/pre-firstboot-finalization.tar.gz`, SHA-256 **`cf3c64540f8dbd54fc4d22f5e10130554f4b5bbedf0328336a1995aeaafca871`**; both archive copies were independently hash-checked.
+
+Reboot was issued at approximately **02:24 Pacific**. `/private/tmp/jetson-ssd-firstboot-watch-04.png` directly shows Ubuntu **Welcome / English** at **02:25:35 Pacific**. This verifies graphical first-boot progress after the NVMe-first reboot; it does not replace checking `findmnt /` and actual OS versions. US keyboard selection and NVIDIA license acceptance are complete; time-zone/local-account setup is ongoing. Account/setup completion remains pending. After 02:26, **`192.168.8.136`** answered ping and accepted TCP port 22; host identity and authenticated SSH login are not yet verified. Keep this distinction when handing over access.
 
 ## Proposed portable LAN — separate travel router
 
@@ -75,7 +81,7 @@ The working recovery wiring was **Jetson Ethernet → Beryl AX LAN**, with **KVM
 
 ## Verify the installed system and SSH
 
-After the failure is resolved and a successful installed-system boot is verified:
+Complete graphical first-boot setup, then verify the installed system before runtime provisioning:
 
 1. Record `uname -a`, `cat /etc/nv_tegra_release`, `cat /etc/os-release`, `sudo nvbootctrl dump-slots-info`, `python3 --version`, `findmnt /`, `lsblk -f` and `df -h /`. Confirm the root filesystem belongs to the intended NVMe before changing packages. Compare actual L4T/Ubuntu versions with the selected 39.2.1/24.04 route.
 2. Install `openssh-server`, enable it with `sudo systemctl enable --now ssh`, and record `hostname -I`. Connect from the Mac with the actual username/IP; verify the host key against the local console, install the intended public SSH key, and verify another key-based login.
@@ -106,18 +112,18 @@ This is a prepared package cache: **nothing has been installed, started, authent
 | Firmware before | Photo verified: `36.4.2-gcid-38685322`, build date `2024-12-12` |
 | Firmware in failed installer | Historical pre-recovery `bios_version`: `36.4.2-gcid-38685322` |
 | Firmware after recovery | UEFI directly verified: `39.2.1-gcid-46758480`; no 100% update frame captured |
-| Current boot observation | Second-install bootloader package repaired with dpkg exit 0; remaining OEM late commands and first SSD boot pending |
-| Target JetPack / L4T / Ubuntu | Route: 7.2.1 / 39.2.1 / 24.04; bootloader repair verified, installation completion and final OS boot pending |
+| Current boot observation | Graphical Ubuntu Welcome at 02:25:35 Pacific after OEM finalization/reboot; time-zone and account setup in progress |
+| Target JetPack / L4T / Ubuntu | Route 7.2.1 / 39.2.1 / 24.04; graphical first boot observed, actual running versions/root and account completion pending |
 | Console | DisplayPort/C270 view; KVM USB configured/high-speed; agent Enter directly opened diagnostic shell, HDMI empty |
 | KVM local / cloud | Authenticated cloud console from this Mac; settled P2P, no HDMI signal; cloud-route keyboard and off-site access unverified |
 | KVM network | Mac Wi-Fi → Ethernet Internet Sharing active; bridge100 192.168.2.1, KVM DHCP 192.168.2.2 |
 | Travel router | GL-MT3000 Beryl AX admin UI v4.11.0 after user-started upgrade; internet HTTP check passed; home GL-MT6000 unchanged |
 | Portable LAN status | Port 1 saved as LAN; reserved KVM 192.168.8.166 / Jetson 192.168.8.136; KVM still on Mac 192.168.2.2, cable move/access pending |
-| Jetson IPv4 | Temporary installer at 192.168.8.136 before reboot; installed-OS address not yet verified |
+| Network after reboot | 192.168.8.136 answers ping and TCP22; SSH host identity/login and installed-host identity not yet verified |
 | Installer media | Validated 16 GB SanDisk Cruzer Blade; reused for verified firmware update and second NVMe install attempt |
-| OS target | Pre-reinstall lsblk: /dev/nvme0n1, 931.5G, SHPP41-1000GM, partitions 1–15 and /target mount; bootloader package repaired after second failure, successful installed boot unverified |
+| OS target | Pre-reinstall lsblk: /dev/nvme0n1, 931.5G, SHPP41-1000GM, partitions 1–15 and /target mount; graphical first boot observed after repair/finalization; actual running root mount unverified |
 | System Python / arm environment Python | Device results pending; isolated arm Python 3.12 planned |
-| Hostname / username / Tailscale | Final account/hostname unverified; Tailscale 1.104.5 cache prepared only, not installed or activated |
+| Hostname / username / Tailscale | Graphical account setup pending; Tailscale 1.104.5 cache prepared only, not installed or activated |
 | Power mode / fan / temperatures | Not yet verified |
 | SSH key login / offline arm tests | Dedicated-key recovery SSH verified before reboot; persistent installed-OS SSH and arm tests unverified |
 
