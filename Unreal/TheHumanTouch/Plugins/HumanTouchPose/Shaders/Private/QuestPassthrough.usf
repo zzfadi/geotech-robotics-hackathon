@@ -1,0 +1,29 @@
+#include "/Engine/Public/Platform.ush"
+#include "/Engine/Private/Common.ush"
+
+Texture2D SceneColorInput;
+SamplerState ColorSampler;
+Texture2D SceneDepthInput;
+float4 OutputRect; // origin.xy, inverse size.zw
+float GuardBlackKey;
+
+void MainPS(noperspective float4 UVAndScreenPos : TEXCOORD0, float4 Position : SV_Position,
+            out float4 Result : SV_Target0)
+{
+    float2 EyeUV = saturate((Position.xy - OutputRect.xy) * OutputRect.zw);
+    uint2 DepthPixel = View.ViewRectMinAndSize.xy +
+        min(uint2(EyeUV * View.ViewRectMinAndSize.zw), View.ViewRectMinAndSize.zw - 1);
+    float Depth = SceneDepthInput.Load(int3(DepthPixel, 0)).r;
+    float3 Color = SceneColorInput.SampleLevel(ColorSampler, UVAndScreenPos.xy, 0).rgb;
+    // Unreal clears reversed Z to zero. No virtual geometry at that pixel is room video.
+    if (Depth <= 0.0)
+    {
+        Result = 0;
+        return;
+    }
+    // OXRSys H.265 has no alpha plane. Reserve black for empty pixels and
+    // keep even an unlit black part above its receiver's 0.10 key threshold.
+    if (GuardBlackKey > 0)
+        Color += max(0.14 - max(Color.r, max(Color.g, Color.b)), 0.0);
+    Result = float4(Color, 1);
+}

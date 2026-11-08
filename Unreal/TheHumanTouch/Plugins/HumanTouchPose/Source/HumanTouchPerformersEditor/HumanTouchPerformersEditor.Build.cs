@@ -7,7 +7,7 @@ public class HumanTouchPerformersEditor : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
         PrivateDependencyModuleNames.AddRange(new[] {
             "Core", "CoreUObject", "Engine", "UnrealEd", "AnimGraph", "AnimGraphRuntime", "HumanTouchPose", "LiveLinkAnimationCore",
-            "Blutility", "UMG", "Slate", "SlateCore", "ToolMenus", "LevelEditor",
+            "HumanTouchXR", "Blutility", "UMG", "Slate", "SlateCore", "ToolMenus", "LevelEditor",
             "IKRig", "IKRigEditor", "AnimationCore", "PerformanceCaptureCore", "DataflowEngine", "ChaosOutfitAssetEngine", "ChaosClothAssetEngine", "HairStrandsCore",
             "MetaHumanCharacter", "MetaHumanCharacterEditor", "MetaHumanCharacterPaletteEditor"
         });

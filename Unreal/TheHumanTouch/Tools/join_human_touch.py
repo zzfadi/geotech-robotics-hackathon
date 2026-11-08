@@ -46,6 +46,8 @@ def main():
                         help='Add the reachable Live Link Hub UDP Messaging endpoint alongside Concert')
     parser.add_argument('--performers', choices=('mannequins', 'metahumans'),
                         help='Enable capture and select the local performer cast (default with capture: mannequins)')
+    parser.add_argument('--passthrough', action=argparse.BooleanOptionalAction, default=None,
+                        help='Start the headset with the room or opaque VR background; enables the Capture Performers widget')
     args = parser.parse_args()
     if args.capture_hub:
         host, sep, port = args.capture_hub.rpartition(':')
@@ -68,7 +70,14 @@ def main():
         command = [arg + ',' + args.capture_hub if arg.startswith('-UDPMESSAGING_TRANSPORT_STATIC=') else arg for arg in command]
     if args.performers:
         command.append('-HumanTouchPerformers=' + args.performers)
-    if args.capture_tools or args.performers:
+    if args.passthrough is not None:
+        if platform.system() == 'Darwin':
+            from quest_passthrough_config import prepare_runtime
+            prepare_runtime(Path.home()/'Library/Application Support/OXRSys/oxrsys-runtime.toml')
+            command.append('-HumanTouchVideoKey')
+        if args.passthrough:
+            command.append('-HumanTouchPassthrough')
+    if args.capture_tools or args.performers or args.passthrough is not None:
         # XR stations may already enable tracking plugins on this same launch.
         for index, arg in enumerate(command):
             if arg.lower().startswith('-enableplugins='):

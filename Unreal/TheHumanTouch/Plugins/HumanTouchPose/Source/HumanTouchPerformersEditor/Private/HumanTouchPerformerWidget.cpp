@@ -1,4 +1,5 @@
 #include "HumanTouchPerformerWidget.h"
+#include "HumanTouchPassthrough.h"
 #include "HumanTouchPerformerMode.h"
 #include "Styling/AppStyle.h"
 #include "Widgets/Input/SCheckBox.h"
@@ -32,5 +33,17 @@ TSharedRef<SWidget> UHumanTouchPerformerWidget::RebuildWidget()
               NSLOCTEXT("HumanTouch", "Mannequins", "Mannequins (Manny and Quinn)"));
     AddChoice(EHumanTouchCast::MetaHumans,
               NSLOCTEXT("HumanTouch", "MetaHumans", "MetaHumans (Victor, Bruce and Ada)"));
+    Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 8)
+        [SNew(SCheckBox)
+             .IsChecked_Lambda([] { return HumanTouchPassthrough::IsRequested() ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
+             .OnCheckStateChanged_Lambda([](ECheckBoxState State) { HumanTouchPassthrough::Request(State == ECheckBoxState::Checked); })
+             [SNew(STextBlock).Text(NSLOCTEXT("HumanTouch", "RoomPassthrough", "Show room behind scene objects"))]];
+    Box->AddSlot().AutoHeight().Padding(10, 0, 10, 5)
+        [SNew(STextBlock).AutoWrapText(true).Text_Lambda([]
+        {
+            if (HumanTouchPassthrough::IsRequested() && !HumanTouchPassthrough::IsActive())
+                return NSLOCTEXT("HumanTouch", "WaitingForAlpha", "Waiting for an XR runtime with alpha-blend support. On the Quest Mac, launch with --passthrough.");
+            return FText::GetEmpty();
+        })];
     return Box;
 }
