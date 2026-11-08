@@ -1,0 +1,81 @@
+{
+  "current_active_collision": "Restored20-hull baseline after candidate failed dynamics; no binary hot-copy",
+  "experimental_candidate": {
+    "source": "maker_arm_cup_collision.py:apply_experimental",
+    "hulls": 33,
+    "wall_sectors": 32,
+    "base": "One continuous64-sided convex plate",
+    "visual_mesh_changed": false,
+    "maximum_inner_chord_error_mm": 0.1829803864565167,
+    "offline_tests_passed": 5,
+    "UE_static_sweeps": {
+      "experimental33": {
+        "inside_down": false,
+        "wall_outward": true,
+        "rim_crossing": true,
+        "bottom_down": true
+      },
+      "restored20": {
+        "inside_down": {
+          "hit": true,
+          "details": "<Struct 'HitResult' (0x7ec191e5500) {}>"
+        },
+        "wall_outward": {
+          "hit": true,
+          "details": "<Struct 'HitResult' (0x7ec191ec800) {}>"
+        },
+        "rim_crossing": {
+          "hit": true,
+          "details": "<Struct 'HitResult' (0x7ec191eab40) {}>"
+        },
+        "bottom_down": {
+          "hit": true,
+          "details": "<Struct 'HitResult' (0x7ec191eeb00) {}>"
+        }
+      }
+    },
+    "dynamic_gate": "FAILED: untouched cups settled5.33degrees tilted; firstcontrolledgrasp aborted, correctedrunnercompletedwithoutlift. Candidate not production."
+  },
+  "baseline_audit": {
+    "hulls": 20,
+    "vertices": 183,
+    "triangles": 286,
+    "hull_volume_sum_cm3": 97.13047678506766,
+    "visual_shell_volume_cm3": 61.514,
+    "bottom_z_cm": -6.023715019226074,
+    "base": "Four fragmented convex pieces with coverage seams/holes",
+    "sampled_base_disk_coverage": {
+      "z_minus5_99": 0.8763811399190461,
+      "z_minus5_85": 0.954818947598731,
+      "z_minus5_71": 0.8973854064106772
+    },
+    "cavity_center_open": true,
+    "limitation": "Full-depth finger-size sweep reaches irregular baselinebottom earlier than ideal innerfloor; not exact thinwall collision."
+  },
+  "dynamics": {
+    "runtime_configured_mass_kg": 0.05,
+    "runtime_configured_friction": 0.8,
+    "runtime_configured_restitution": 0,
+    "editor_linear_damping": 0.01,
+    "editor_angular_damping": 0,
+    "editor_ccd": false,
+    "calibrated": false
+  },
+  "wake_AB": "Originalwake replay ejected at576.39cm/s; no-wake replay all15cycles stationary exactly81.02771694cm withzero velocity. No nativeimpulse evidence; separatemechanicalregression required androotreportedpass beforegeometrychange.",
+  "MU": {
+    "candidate33_verified_Luna_cups": 40,
+    "candidate33_all_same_mesh": true,
+    "restore20_shared_bytes": 96000,
+    "restored20_remote_verification": {
+      "hulls": 20,
+      "cups": 40,
+      "all_same_mesh": true
+    }
+  },
+  "scoped_tasks": [
+    "t-0314",
+    "t-0315",
+    "t-0316",
+    "t-0320"
+  ]
+}

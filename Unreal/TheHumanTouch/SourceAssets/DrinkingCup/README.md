@@ -10,3 +10,9 @@ Procedurally generated project-owned OBJ by `Tools/maker_arm_cups.py`, 2026-11-0
 - Runtime assumptions: mass0.05kg, friction0.8, no liquid; these are uncalibrated simulation parameters.
 - Canonical actors `MakerStation_Prop_Cup`, `MakerStation_Prop_Cup_02`, `_03`, `_04`, and optional `_05`; replicas use `MakerFleet_T01__`…`T08__` prefixes. Tables contain `4 + index % 2` cups (40 total), with seed20261107 positions recorded in `DreamSim/cup_scene_layout.json`. Each independent RNG is seeded by string`seed:index`; X48–66cm, Yslots−60,+60,−30,+30,0 with±3cm jitter, centerZ81cm, identityrotation. Centers are separated by more than25cm.
 - Removed both unrelated tabletop boxes (`MakerStation_UnverifiedControlProxy`, `Dreamlabs_YAM_ControlComputerProxy`) on every table. Robot mounts, camera hardware, numeric stickers and all room geometry remain.
+
+## Collision validation, 2026-11-07
+
+The active shared asset retains the20-hull baseline. An experimental33-hull hollow shell passed actualUE finger-size cavity/wall/rim/bottom sweeps but failed resting/grasp dynamics and was restored throughGeometryScript, without copying binary assets into a running editor. `Tools/maker_arm_cup_collision.py` is explicitly experimental and is not invoked by normal setup. See `docs/validation/cup-collision-audit-2026-11-07/review.json`.
+
+Removing unconditional per-frame wake from prop measurement eliminated the observed stationary-cup ejection in one controlled saved-action A/B. Natural collision wake remains available. Mass/friction/damping remain uncalibrated assumptions; no liquid is simulated.

@@ -1,0 +1,38 @@
+{
+  "195247": {
+    "run": "/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/geotech-robotics-hackathon/Unreal/TheHumanTouch/Saved/DreamFleet/diagnostic-t04-ejection-20261107-195247",
+    "ticks": 3045,
+    "duration_seconds": 47.021021334046964,
+    "min_z_cm": 78.50153107021971,
+    "max_z_cm": 153.07483605563823,
+    "max_speed_cm_s": 576.3877513287049,
+    "robot_overlap_samples": 0,
+    "final_sequence": 15,
+    "timing": {
+      "mean_callback_gap_seconds": 0.015502838574063907,
+      "max_callback_gap_seconds": 0.3160004169913009,
+      "max_collection_duration_ms": 3.0032090144231915,
+      "mean_collection_duration_ms": 1.451635544516348,
+      "scope": "Instrumentation overhead measured; identical replay physics timing is not assumed"
+    },
+    "native_events_observable": false
+  },
+  "195555": {
+    "run": "/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/geotech-robotics-hackathon/Unreal/TheHumanTouch/Saved/DreamFleet/diagnostic-t04-ejection-20261107-195555",
+    "ticks": 2764,
+    "duration_seconds": 47.24261520802975,
+    "min_z_cm": 81.0277169370726,
+    "max_z_cm": 81.0277169370726,
+    "max_speed_cm_s": 0,
+    "robot_overlap_samples": 0,
+    "final_sequence": 15,
+    "timing": {
+      "mean_callback_gap_seconds": 0.017185995417141473,
+      "max_callback_gap_seconds": 0.2591287909890525,
+      "max_collection_duration_ms": 3.8033330347388983,
+      "mean_collection_duration_ms": 1.8911745495729986,
+      "scope": "Instrumentation overhead measured; identical replay physics timing is not assumed"
+    },
+    "native_events_observable": false
+  }
+}

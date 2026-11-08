@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T20:08:23-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Recorded cup wake A/B and rejected experimental hollow collision after dynamics regression.",
+  "why": "Static cavity clearance alone did not prove stable free-body physics.",
+  "where": [
+    "docs/validation/cup-collision-audit-2026-11-07/review.json",
+    "Unreal/TheHumanTouch/Tools/maker_arm_cup_collision.py"
+  ],
+  "details": "Wake-only replay stayed stationary through15cycles.33-hull candidate passed finger sweeps but failed dynamics;20-hull baseline restored and shared. No Dream success or calibrated collision claim."
+}
