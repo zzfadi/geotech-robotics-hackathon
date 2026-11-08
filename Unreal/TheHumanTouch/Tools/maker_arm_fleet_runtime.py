@@ -455,7 +455,7 @@ class Session:
     def measure_props(self, table, now):
         for name, actor in table.props.items():
             c = actor.static_mesh_component
-            c.wake_all_rigid_bodies()
+            # Observation must not keep resting free bodies artificially awake.
             p = actor.get_actor_location()
             v = c.get_physics_linear_velocity()
             d = maker_arm_fleet.offset(table.index)
