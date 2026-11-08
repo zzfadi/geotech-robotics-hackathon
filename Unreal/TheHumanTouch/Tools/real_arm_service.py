@@ -37,6 +37,8 @@ import real_arm_bridge as rb
 
 DEADMAN_S = 2.0
 UE_LOST_S = 5.0
+ENGAGE_WINDOW_S = 10.0  # retry a refused engage (e.g. Table 10 still easing back after a preview)
+ENGAGE_RETRY_S = 1.5
 
 
 class LastLine(io.TextIOBase):
@@ -67,6 +69,8 @@ class Service:
         self.control = {}
         self.release_seq = None
         self.drive_seq = None
+        self.engage_since = None
+        self.engage_last = 0.
         self.ue_seen = time.monotonic()
         self.stopping = False
         self.out = sys.stdout if isinstance(sys.stdout, LastLine) else None
@@ -107,8 +111,17 @@ class Service:
                 if self.bridge.mode == 'mirror':
                     if c.get('drive') and fresh and c.get('drive_seq') != self.drive_seq:
                         self.drive_seq = c.get('drive_seq')
+                        self.engage_since, self.engage_last = started, 0.
                         print(f"drive requested from {c.get('source', 'web')}")
-                        self.bridge.engage()
+                    if (c.get('drive') and fresh and self.engage_since is not None
+                            and started - self.engage_last >= ENGAGE_RETRY_S):
+                        if started - self.engage_since > ENGAGE_WINDOW_S:
+                            print(f'drive not engaged within {ENGAGE_WINDOW_S:.0f} s; staying in mirror')
+                            self.engage_since = None
+                        else:
+                            self.engage_last = started
+                            if self.bridge.engage():
+                                self.engage_since = None
                     self.bridge.mirror_step()
                     period = 1.0 / rb.MIRROR_HZ
                 else:

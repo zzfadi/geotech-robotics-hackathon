@@ -224,6 +224,15 @@ def main():
             write_json(LINK_DIR/'control.json', {'unix': time.time(), 'source': 'web',
                                                   'drive': bool(drive.get('on')) and now-server_ok < SERVER_LOST_S,
                                                   'drive_seq': drive.get('seq'), 'release_seq': release_seq})
+            # A drive request the service could not engage within its window: clear it so the
+            # page shows the refusal and Enable drive can be pressed again.
+            if drive.get('on') and status.get('mode') == 'mirror' and drive.get('since') and time.time()-drive['since'] > 13:
+                try:
+                    server.post('/api/table10/test', {'action': 'drive_off', 'source': 'engage failed'})
+                    print('drive request cleared: not engaged (%s)' % status.get('message'), flush=True)
+                    drive = {**drive, 'on': False}
+                except (OSError, ValueError) as error:
+                    print('drive clear: %s' % error, flush=True)
             service.supervise(now)
             # Restart the link or camera when they stop advancing (e.g. after an editor restart).
             if ue_age > 3 and now-restarted['link'] > RESTART_EVERY_S:
