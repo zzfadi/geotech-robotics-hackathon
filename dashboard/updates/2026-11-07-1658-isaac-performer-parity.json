@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T16:58:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Confirmed all 4,369 first-applied spoof poses from three Unreal Live Link subjects matched in Luna2 Isaac Sim, including readback of the USD joint positions.",
+  "why": "The robot simulation can use the same evaluated pose as the Unreal editor, with measured timing at the physics callback.",
+  "where": [
+    "docs/validation/isaac-performer-bridge-2026-11-07.json",
+    "Capture/isaac/bridge_trial.py"
+  ],
+  "details": "1,454 physics ticks applied new poses for all three performers. Unreal evaluation to Isaac application was 107.6 ms median and 121.9 ms p95, including a configured 100 ms playout delay."
+}

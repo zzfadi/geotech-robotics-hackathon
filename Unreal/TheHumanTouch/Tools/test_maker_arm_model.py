@@ -3,6 +3,27 @@ import unittest
 from maker_arm_model import frames, mounted_frames
 
 class MakerArmModelTest(unittest.TestCase):
+    def test_private_fk_cache_refreshes_and_public_model_stays_fresh(self):
+        import tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+        import maker_arm_model as m
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'robot.urdf'
+            path.write_bytes(m.MODEL.read_bytes())
+            with patch.object(m, 'MODEL', path):
+                m._frames_model.cache_clear()
+                first = m.frames([0]*6)
+                m.frames([0]*6)
+                self.assertEqual(m._frames_model.cache_info().hits, 1)
+                public = m.model()
+                public.set('name', 'caller mutation')
+                self.assertNotEqual(m.model().get('name'), 'caller mutation')
+                path.write_bytes(path.read_bytes() + b'\n')
+                self.assertEqual(first, m.frames([0]*6))
+                self.assertEqual(m._frames_model.cache_info().misses, 2)
+        m._frames_model.cache_clear()
+
     def test_independent_closed_pose_geometry(self):
         f = frames([0]*6, 0)
         self.assertEqual(len(f), 10)

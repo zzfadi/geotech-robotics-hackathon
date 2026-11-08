@@ -16,7 +16,8 @@ def orientation_reference(q, bounds, epsilon=1e-4):
     q=np.asarray(q,dtype=float)
     low,high=bounds
     if not np.isfinite(q).all() or np.any(q<low-epsilon) or np.any(q>high+epsilon):
-        raise ValueError('Policy orientation reference outside model limits')
+        violations=np.maximum(low-q,q-high)
+        raise ValueError('Policy orientation reference outside model limits: max excess %.9g rad; q=%s' % (float(np.max(violations)),q.tolist()))
     return np.clip(q,low,high)
 
 

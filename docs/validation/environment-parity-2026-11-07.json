@@ -1,0 +1,242 @@
+{
+  "mac": {
+    "at": 1794099337.947426,
+    "floor_positions": [
+      [
+        45.0,
+        0.0,
+        -2.0
+      ],
+      [
+        45.0,
+        820.0,
+        -2.0
+      ],
+      [
+        45.0,
+        1640.0,
+        -2.0
+      ],
+      [
+        865.0,
+        0.0,
+        -2.0
+      ],
+      [
+        865.0,
+        820.0,
+        -2.0
+      ],
+      [
+        865.0,
+        1640.0,
+        -2.0
+      ],
+      [
+        1685.0,
+        0.0,
+        -2.0
+      ],
+      [
+        1685.0,
+        820.0,
+        -2.0
+      ],
+      [
+        1685.0,
+        1640.0,
+        -2.0
+      ],
+      [
+        2505.0,
+        0.0,
+        -2.0
+      ],
+      [
+        2505.0,
+        820.0,
+        -2.0
+      ]
+    ],
+    "roof_count": 0,
+    "wall_scale_z": [
+      8.0
+    ],
+    "light_settings": [
+      [
+        "DirectionalLight",
+        1800.0,
+        false,
+        0.0
+      ],
+      [
+        "PointLight",
+        700.0,
+        false,
+        1800.0
+      ],
+      [
+        "RectLight",
+        1800.0,
+        false,
+        0.0
+      ],
+      [
+        "RectLight",
+        1800.0,
+        false,
+        1500.0
+      ]
+    ],
+    "direct_light_count": 34,
+    "ambient": 2.5,
+    "exposure": -0.5,
+    "decal_count": 33,
+    "decal_domains": [
+      "<MaterialDomain.MD_DEFERRED_DECAL: 1>"
+    ],
+    "decal_blends": [
+      "<BlendMode.BLEND_TRANSLUCENT: 2>"
+    ],
+    "material_refs_match_number": true,
+    "texture_count": 11,
+    "text_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "visible_decal_icons": 0,
+    "number_actor_sprite_scales": [
+      0.0
+    ]
+  },
+  "luna2": {
+    "at": 1794099344.2062912,
+    "floor_positions": [
+      [
+        45.0,
+        0.0,
+        -2.0
+      ],
+      [
+        45.0,
+        820.0,
+        -2.0
+      ],
+      [
+        45.0,
+        1640.0,
+        -2.0
+      ],
+      [
+        865.0,
+        0.0,
+        -2.0
+      ],
+      [
+        865.0,
+        820.0,
+        -2.0
+      ],
+      [
+        865.0,
+        1640.0,
+        -2.0
+      ],
+      [
+        1685.0,
+        0.0,
+        -2.0
+      ],
+      [
+        1685.0,
+        820.0,
+        -2.0
+      ],
+      [
+        1685.0,
+        1640.0,
+        -2.0
+      ],
+      [
+        2505.0,
+        0.0,
+        -2.0
+      ],
+      [
+        2505.0,
+        820.0,
+        -2.0
+      ]
+    ],
+    "roof_count": 0,
+    "wall_scale_z": [
+      8.0
+    ],
+    "light_settings": [
+      [
+        "DirectionalLight",
+        1800.0,
+        false,
+        0.0
+      ],
+      [
+        "PointLight",
+        700.0,
+        false,
+        1800.0
+      ],
+      [
+        "RectLight",
+        1800.0,
+        false,
+        0.0
+      ],
+      [
+        "RectLight",
+        1800.0,
+        false,
+        1500.0
+      ]
+    ],
+    "direct_light_count": 34,
+    "ambient": 2.5,
+    "exposure": -0.5,
+    "decal_count": 33,
+    "decal_domains": [
+      "<MaterialDomain.MD_DEFERRED_DECAL: 1>"
+    ],
+    "decal_blends": [
+      "<BlendMode.BLEND_TRANSLUCENT: 2>"
+    ],
+    "material_refs_match_number": true,
+    "texture_count": 11,
+    "text_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "visible_decal_icons": 0,
+    "number_actor_sprite_scales": [
+      0.0
+    ]
+  },
+  "matching_except_sample_time": true,
+  "visual_limitations": "Wall numeral mirroring and floor visibility remain unresolved; user requested stopping further scene iteration."
+}

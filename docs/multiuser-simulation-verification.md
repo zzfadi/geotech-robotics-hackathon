@@ -83,3 +83,11 @@ Machine-readable results: [runtime MU audit](validation/multiuser-runtime-dream.
 Raw recordings remain in ignored Mac `Saved/MultiUserAudit/runtime-dream-1440`
 as `transforms.jsonl`, `luna-transforms.jsonl`, and `comparison.json`. Brian's
 membership was confirmed after recovery; his scene was not independently sampled.
+
+## Fleet run on November 7
+
+The mirrored fleet run `20261107-164929-13d280` was sampled read-only on Mac (2 Hz) and Luna2 (5 Hz). Seven tables received joint commands and showed multiple intermediate arm poses on Luna2: T02, T04, T05, T06, T08, T09 and T10. T01, T03 and T07 remained at command sequence 0; their robot motion was not demonstrated. Free-prop physics changes were visible remotely across all ten rooms.
+
+The run stopped at its 170-second duration limit. After teardown, all 260 tracked arm/camera/prop actors on Luna2 matched the Mac pre-SIE baseline within 7.3e-9 cm, with quaternion dot agreement at floating-point precision. Independent near-frame sampling showed up to 0.76 cm position differences during movement; these are not latency measurements. Measured authoritative runtime prop positions were separately compared where snapshots were retained. See `validation/fleet-multiuser-proof-2026-11-07.json` for per-table evidence.
+
+This proves visual-transform replication to Luna2 and restoration, not independent physics on peers, successful pickups on every table, or replication to Brian's unavailable editor.

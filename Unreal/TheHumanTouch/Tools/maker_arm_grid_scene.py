@@ -48,6 +48,7 @@ def number_sticker(index, local=False):
             c.set_cast_shadow(False)
             a.set_actor_scale3d(unreal.Vector(.20, .20, .001))
         else:
+            a.set_editor_property('sprite_scale', 0.0)
             a.set_actor_rotation(unreal.Rotator(pitch=90, yaw=0, roll=0), False)
             c = a.text_render
             c.set_text(str(index+1))
@@ -76,7 +77,7 @@ def brighten_global():
     component.set_mobility(unreal.ComponentMobility.MOVABLE)
     component.set_editor_property('source_type', unreal.SkyLightSourceType.SLS_SPECIFIED_CUBEMAP)
     component.set_cubemap(unreal.load_asset('/Engine/MapTemplates/Sky/DaylightAmbientCubemap'))
-    component.set_intensity(2.0)
+    component.set_intensity(2.5)
     component.set_editor_property('lower_hemisphere_is_black', False)
     sun = actors.get('MakerLighting_GlobalDaylight')
     if sun is None:
@@ -88,10 +89,10 @@ def brighten_global():
     light = sun.light_component
     light.modify()
     light.set_mobility(unreal.ComponentMobility.MOVABLE)
-    light.set_intensity(6500.0)
+    light.set_intensity(1800.0)
     light.set_editor_property('light_source_angle', 3.0)
     light.set_editor_property('atmosphere_sun_light', True)
-    light.set_cast_shadows(True)
+    light.set_cast_shadows(False)
     if not any(isinstance(a, unreal.SkyAtmosphere) for a in actors.values()):
         sky = fleet._subsystem().spawn_actor_from_class(unreal.SkyAtmosphere, unreal.Vector(0, 0, 0))
         sky.set_actor_label('MakerLighting_DaylightSky')
@@ -266,3 +267,28 @@ def migrate_table(index):
             raise RuntimeError('Protected mesh scale changed: ' + name)
     return {'table': index, 'offset_cm': grid.offset(index), 'translated_roots': moved,
             'shell_updates': surfaces, 'protected_actors_verified': len(before)}
+
+
+def soften_room_lighting():
+    """Even inexpensive room light: no direct-light shadow maps, mild screen AO."""
+    result = brighten_global()
+    count = 0
+    for actor in fleet._actors().values():
+        name = actor.get_actor_label()
+        if not name.startswith(('MakerLighting_', 'MakerEnvironment_', 'MakerFleet_')):
+            continue
+        if isinstance(actor, (unreal.RectLight, unreal.PointLight)):
+            actor.modify()
+            actor.light_component.modify()
+            actor.light_component.set_cast_shadows(False)
+            count += 1
+    volume = fleet._actors()['MakerLighting_Exposure']
+    volume.modify()
+    settings = volume.settings
+    settings.set_editor_property('override_ambient_occlusion_intensity', True)
+    settings.set_editor_property('ambient_occlusion_intensity', .5)
+    settings.set_editor_property('override_ambient_occlusion_radius', True)
+    settings.set_editor_property('ambient_occlusion_radius', 50.)
+    volume.set_editor_property('settings', settings)
+    result.update({'unshadowed_local_lights': count, 'ambient_occlusion_intensity': .5})
+    return result

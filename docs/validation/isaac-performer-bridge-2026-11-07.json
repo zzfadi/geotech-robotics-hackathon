@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-07",
+  "route": "One Mac with three spoof subjects through Live Link Hub and Unreal Editor to headless Isaac Sim on Luna2 over Tailscale",
+  "trial_wall_seconds": 45,
+  "configured_physics_hz": 60,
+  "configured_playout_ms": 100,
+  "matches": 4369,
+  "mismatches": 0,
+  "ticks_with_all_three_new": 1454,
+  "ticks_with_all_three_new_and_same_unreal_evaluation": 1447,
+  "geometry": "Each confident bone segment endpoint read back from the USD stage agreed with the evaluated pose within 0.00001 metres.",
+  "identity": "SHA-256 of the entire evaluated frame, matched by subject, editor session and editor tick.",
+  "measurement": "Timestamp taken after the Isaac pre-physics callback updates all USD performer curves. Per-subject statistics count each distinct applied evaluation once.",
+  "clock": "One-way ages use the offset from the lowest recent round-trip clock probe. Asymmetry can bias one-way measurements.",
+  "clock_probe_rtt_ms": {
+    "median": 30.98,
+    "p95": 46.93
+  },
+  "subjects": {
+    "Human_Quest_A": {
+      "matched_first_applications": 1457,
+      "station_evaluations_between_first_and_last_applied": 2769,
+      "evaluation_to_apply_ms": {
+        "median": 107.63,
+        "p95": 121.88
+      },
+      "spoof_capture_to_apply_ms": {
+        "median": 144.34,
+        "p95": 240.9
+      }
+    },
+    "Human_Cam_B": {
+      "matched_first_applications": 1458,
+      "station_evaluations_between_first_and_last_applied": 2769,
+      "evaluation_to_apply_ms": {
+        "median": 107.62,
+        "p95": 121.88
+      },
+      "spoof_capture_to_apply_ms": {
+        "median": 144.12,
+        "p95": 240.73
+      }
+    },
+    "Human_Quest_C": {
+      "matched_first_applications": 1454,
+      "station_evaluations_between_first_and_last_applied": 2766,
+      "evaluation_to_apply_ms": {
+        "median": 107.63,
+        "p95": 121.88
+      },
+      "spoof_capture_to_apply_ms": {
+        "median": 144.28,
+        "p95": 240.73
+      }
+    }
+  },
+  "limitations": "Synthetic capture timestamps and a temporary physics world with USD skeleton curves. Physical sensor latency and robot collision response were outside this trial.",
+  "raw_file_sha256": {
+    "unreal": "6000f30735962b82e8a285cd775da8fdd872c9a2a94e7068db366efdc6114a04",
+    "isaac": "aea0314e4e6816d88f482188fa185c89095f62a1a086c7386f5e11ba59f448ef"
+  },
+  "maximum_unreal_timestamp_spread_ms_when_all_three_first_applied": 18.78
+}
