@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T17:21:49-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Checkpointed the station editor input settings and tested a vertical adjustment after snapping the original table in XR.",
+  "why": "The XR station can retain its input mappings across checkouts. Independent height correction lets the wearer compare the two tabletop planes at the existing world scale.",
+  "where": [
+    "Unreal/TheHumanTouch/Config/DefaultInput.ini",
+    "dc55b5c",
+    "bf71881"
+  ],
+  "details": "The local headset trial preserved horizontal position, heading and 100 Unreal units per metre. The wearer reported a height or size mismatch before correction. Physical alignment still needs confirmation."
+}
