@@ -43,13 +43,14 @@ from pathlib import Path
 
 import real_arm_bridge as rb
 from maker_arm.arm import ArmState
+from maker_arm import protocol
 
 DEADMAN_S = 2.0          # drive needs a control heartbeat at least this fresh
 UE_LOST_S = 5.0          # drive needs Unreal state within this
 POWER_LOST_S = 2.0       # no motor answered for this long -> arms are unpowered -> 'off'
 RECONNECT_S = 3.0
 PREFLIGHT_READS = 8
-DRIVE_HZ = 25.0
+DRIVE_HZ = 50.0          # the bridge's rate; 25 Hz left fewer replies inside the SDK's fixed 0.25 s feedback window
 ENGAGE_WINDOW_S = 10.0   # retry a refused engage (e.g. Table 10 still easing back after a preview)
 ENGAGE_RETRY_S = 1.5
 ACTIVE = (ArmState.ENABLED, ArmState.FAULT)
@@ -150,8 +151,15 @@ class Service:
                 oldest = max(ages)
             except Exception:
                 oldest = float('inf')
+            motor_faults = {}
+            try:
+                for joint, word in zip(side.arm.config.joints, side.arm.get_faults()):
+                    if word:
+                        motor_faults[joint.label] = protocol.fault_text(word)
+            except Exception:
+                pass
             out[side.name] = {'error_frames': getattr(backend, 'error_frames', None), 'echo_frames': getattr(backend, 'echo_frames', None),
-                              'oldest_ms': None if oldest == float('inf') else int(1000 * oldest)}
+                              'oldest_ms': None if oldest == float('inf') else int(1000 * oldest), 'motor_faults': motor_faults}
         return out
 
     @staticmethod

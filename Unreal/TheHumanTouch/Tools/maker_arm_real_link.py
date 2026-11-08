@@ -235,8 +235,8 @@ class Link:
 
     def _who(self, motion):
         if motion["preview"]:
-            return ("virtual preview: the real arms are in mirror (torque off) and stay still; "
-                    "press d in the bridge terminal to make them follow")
+            return ("virtual preview: the real arms are off (torque off) and stay still; "
+                    "press Turn arms ON to make them follow")
         return "real arms follow" if motion["real"] else "virtual only (no bridge)"
 
     def _step_test(self, real):

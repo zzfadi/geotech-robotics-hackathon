@@ -82,3 +82,23 @@ Added for unattended use:
     - drive can be switched on per arm (Left / Right) to isolate a weak arm.
 - **No phantom moves.** While an arm is faulted or holding, test buttons are refused instead of moving only the
   virtual Table 10.
+
+### Hardware finding (2026-11-08, 13:0x)
+
+With torque off, both arms answer cleanly: 0 CAN error frames at about 246 frames/s per arm.
+
+The test plan was right arm alone, then left, then both. Each time torque came on, motors dropped out within
+about 0.3 s:
+- **Right arm (at 25 and at 50 Hz):** elbow_flex, then wrist_flex.
+- **Left arm (earlier):** every motor.
+
+The pattern:
+- no CAN errors during drive;
+- a burst of error frames right after release (motors rejoining the bus);
+- no latched fault bits.
+
+This looks like a power connection that holds at idle current and sags under motor load, at the right elbow chain
+and the left base cable or supply.
+
+The software now handles it safely: the faulted arm is released at its start pose and the page returns to ready.
+Driving needs the power and CAN chain of both arms checked first.
