@@ -1,12 +1,16 @@
-"""Table 10 test-motion requests (web page -> Mac table10_agent -> editor real-arm link).
+"""Table 10 controls (web page / VR -> Mac table10_agent -> editor link and real-arm service).
 
-Never enables hardware: the real arms follow only while real_arm_bridge.py is in drive mode,
-which the operator switches on at the bridge terminal (with a hand on the E-stop).
+Test motions (move_up, idle, stop) move Table 10; the real arms follow only in drive. Drive is
+a request with an expiry (DRIVE_S): the agent turns it into a heartbeat for the headless
+real-arm service, which drops back to mirror (torque off) if the heartbeat stops. The server
+refuses drive_on from public (Funnel) visitors; drive_off and release are always accepted.
 """
 import time
 import uuid
 
 ACTIONS = ('move_up', 'idle', 'stop')
+DRIVE_ACTIONS = ('drive_on', 'drive_off', 'release')
+DRIVE_S = 900.
 ACTIVE = ('queued', 'sent', 'running')
 AGENT_FRESH_S = 5.
 FINAL = ('done', 'rejected', 'aborted', 'stopped', 'error')
@@ -33,12 +37,21 @@ class Table10Tests:
         self.command = None
         self.agent = None
         self.agent_at = 0.
+        self.drive = {'on': False, 'seq': 0, 'since': None, 'until': None, 'source': None}
+        self.release_seq = 0
+
+    def drive_state(self):
+        if self.drive['on'] and self.clock() > self.drive['until']:
+            self.drive.update(on=False, ended='expired after %d min' % (DRIVE_S/60))
+        return dict(self.drive)
 
     def online(self):
         return self.clock()-self.agent_at < AGENT_FRESH_S
 
     def request(self, data):
         action = (data or {}).get('action')
+        if action in DRIVE_ACTIONS:
+            return self.drive_request(action, (data or {}).get('source', 'web'))
         if action not in ACTIONS:
             raise ValueError('Unknown Table 10 test action')
         if not self.online():
@@ -50,9 +63,23 @@ class Table10Tests:
                         'progress': 0., 'created_at': self.clock()}
         return dict(self.command)
 
+    def drive_request(self, action, source):
+        if action == 'drive_off':
+            self.drive.update(on=False, ended='switched off from ' + str(source)[:20])
+        elif action == 'release':
+            self.release_seq += 1
+        else:
+            service = (self.agent or {}).get('service') or {}
+            if not self.online() or not service.get('running'):
+                raise ValueError('Real-arm service is not running on the Mac')
+            now = self.clock()
+            self.drive.update(on=True, seq=self.drive['seq']+1, since=now, until=now+DRIVE_S,
+                              source=str(source)[:20], ended=None)
+        return {'drive': self.drive_state(), 'release_seq': self.release_seq}
+
     def agent_update(self, data):
         data = data or {}
-        self.agent = _clip({k: data.get(k) for k in ('link', 'bridge', 'sync_deg', 'camera')})
+        self.agent = _clip({k: data.get(k) for k in ('link', 'bridge', 'sync_deg', 'camera', 'service')})
         self.agent_at = self.clock()
         command = self.command
         if command:
@@ -65,8 +92,8 @@ class Table10Tests:
             elif command['status'] in ACTIVE and self.clock()-command['created_at'] > 60:
                 command.update(status='error', detail='no result from the editor link within 60 s')
         pending = command if command and command['status'] == 'queued' else None
-        return {'command': dict(pending) if pending else None}
+        return {'command': dict(pending) if pending else None, 'drive': self.drive_state(), 'release_seq': self.release_seq}
 
     def public(self):
         return {'command': dict(self.command) if self.command else None, 'agent': self.agent,
-                'agent_online': self.online(), 'server_time': self.clock()}
+                'agent_online': self.online(), 'drive': self.drive_state(), 'server_time': self.clock()}

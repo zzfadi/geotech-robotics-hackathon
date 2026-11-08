@@ -6,7 +6,9 @@
 - Uploads every new Table 10 frame (up to 10 fps) to the web page.
 - Relays the web page's test buttons (move_up / idle / stop) to the link via
   Saved/RealArmLink/command.json and reports link, bridge and sync status back.
-It never powers the real arms: they follow only while real_arm_bridge.py is in drive mode.
+- Starts and supervises the headless real-arm service (Tools/real_arm_service.py, maker-arm-sdk
+  venv) while the editor runs, and turns the web page's drive request into the service's
+  heartbeat (control.json). No heartbeat -> the service returns the arms and releases torque.
 
     python3 DreamSim/table10_agent.py [--server http://100.84.28.59:8786]
 """
@@ -27,6 +29,9 @@ LINK_DIR = PROJECT/'Saved/RealArmLink'
 CAMERA_DIR = PROJECT/'Saved/Table10Stream'
 HEARTBEAT_S = .25
 RESTART_EVERY_S = 30.
+SDK_PYTHON = Path('/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/maker-arm-sdk/.venv/bin/python')
+ADAPTERS = {'left': '003A003F4146570320303038', 'right': '0027002E4146570520313238'}
+SERVER_LOST_S = 2.  # drive heartbeat stops when the web server has not answered for this long
 
 EDITOR_CODE = '''import sys, importlib, json
 T = r"%s"
@@ -76,6 +81,54 @@ def editor(snippet, timeout=60):
     raise RuntimeError((result.stdout+result.stderr)[-600:])
 
 
+def editor_running():
+    return subprocess.run(['pgrep', '-f', 'UnrealEditor.app/Contents/MacOS/UnrealEditor'], capture_output=True).returncode == 0
+
+
+def interactive_bridge_running():
+    return subprocess.run(['pgrep', '-f', 'real_arm_bridge.py'], capture_output=True).returncode == 0
+
+
+class RealArmService:
+    """The headless real-arm service process (holds both USB-CAN adapters while running)."""
+    def __init__(self):
+        self.process = None
+        self.started = 0.
+        self.editor_gone = None
+
+    def running(self):
+        # Also adopts a service left by a previous agent run (it holds the adapters).
+        if self.process is not None and self.process.poll() is None:
+            return True
+        return subprocess.run(['pgrep', '-f', 'real_arm_service.py'], capture_output=True).returncode == 0
+
+    def supervise(self, now):
+        if editor_running():
+            self.editor_gone = None
+            if (not self.running() and now-self.started > RESTART_EVERY_S and SDK_PYTHON.exists()
+                    and not interactive_bridge_running()):
+                self.started = now
+                log = open(LINK_DIR/'service.log', 'a')
+                self.process = subprocess.Popen(
+                    [str(SDK_PYTHON), '-u', 'real_arm_service.py', '--left', ADAPTERS['left'], '--right', ADAPTERS['right'],
+                     '--state-dir', str(LINK_DIR)], cwd=TOOLS, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+                print('started real-arm service (pid %d)' % self.process.pid, flush=True)
+        else:
+            self.editor_gone = self.editor_gone or now
+            if self.running() and now-self.editor_gone > 30:
+                self.stop('editor closed')
+
+    def stop(self, why):
+        if self.running():
+            print('stopping real-arm service: %s' % why, flush=True)
+            subprocess.run(['pkill', '-TERM', '-f', 'real_arm_service.py'])  # verified return + torque off, exit
+            for _ in range(40):
+                if not self.running():
+                    return
+                time.sleep(.5)
+            print('real-arm service did not exit within 20 s (holding?)', flush=True)
+
+
 class Server:
     def __init__(self, url, token_file):
         self.url = url.rstrip('/')
@@ -107,6 +160,10 @@ def main():
     LINK_DIR.mkdir(parents=True, exist_ok=True)
     CAMERA_DIR.mkdir(parents=True, exist_ok=True)
     restarted = {'link': 0., 'camera': 0.}
+    service = RealArmService()
+    drive = {'on': False, 'seq': 0}
+    release_seq = 0
+    server_ok = 0.
     last_frame_seq = None
     camera_advance = time.monotonic()
     claimed = None
@@ -147,8 +204,15 @@ def main():
                 'camera': {'running': bool(info.get('running')), 'sequence': seq, 'error': info.get('error'),
                            'age_s': round(time.time()-info.get('captured_unix', 0), 2) if info else None},
                 'claimed': claimed}
+            status = read_json(LINK_DIR/'service.json') or {}
+            report['service'] = {'running': service.running() and time.time()-status.get('unix', 0) < 3,
+                                 'mode': status.get('mode'), 'message': status.get('message'),
+                                 'interactive_bridge': interactive_bridge_running() if not service.running() else False}
             try:
                 reply = server.post('/api/table10/agent', report)
+                server_ok = now
+                drive = reply.get('drive') or drive
+                release_seq = reply.get('release_seq', release_seq)
                 command = reply.get('command')
                 if command and command.get('id') != claimed:
                     write_json(LINK_DIR/'command.json', {'id': command['id'], 'action': command['action'], 'unix': time.time()})
@@ -156,6 +220,11 @@ def main():
                     print('test command: %s (%s)' % (command['action'], command['id'][:8]), flush=True)
             except (OSError, ValueError) as error:
                 print('heartbeat: %s' % error, flush=True)
+            # Drive heartbeat for the real-arm service: only while the server answers.
+            write_json(LINK_DIR/'control.json', {'unix': time.time(), 'source': 'web',
+                                                  'drive': bool(drive.get('on')) and now-server_ok < SERVER_LOST_S,
+                                                  'drive_seq': drive.get('seq'), 'release_seq': release_seq})
+            service.supervise(now)
             # Restart the link or camera when they stop advancing (e.g. after an editor restart).
             if ue_age > 3 and now-restarted['link'] > RESTART_EVERY_S:
                 restarted['link'] = now

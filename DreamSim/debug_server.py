@@ -80,8 +80,8 @@ class Handler(BaseHTTPRequestHandler):
     def public(self):
         """Request from the public internet through Tailscale Funnel (not a tailnet user)."""
         if self.headers.get('Tailscale-Funnel-Request') is not None:return True
-        # Serve/Funnel reach only the loopback listener; tailnet users there carry identity headers.
-        return self.server.server_address[0]=='127.0.0.1' and not self.headers.get('Tailscale-User-Login')
+        # Serve/Funnel reach only the serve listener; tailnet users there carry identity headers.
+        return getattr(self.server,'serve_listener',False) and not self.headers.get('Tailscale-User-Login')
     def operator(self):
         return not self.public() or secrets.compare_digest(self.headers.get('X-Operator-Code',''),self.server.store.operator_code)
     def send(self,status,data,mime='application/json'):
@@ -346,10 +346,13 @@ class Handler(BaseHTTPRequestHandler):
             origin=self.headers.get('Origin')
             if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):return self.send(403,{'error':'Cross-origin request refused'})
             data=json.loads(self.rfile.read(length))
-            if not self.path.startswith(SELF_AUTHENTICATED+PUBLIC_POSTS) and not self.operator():
+            stopping=self.path=='/api/interaction/stop' or (self.path=='/api/table10/test' and isinstance(data,dict) and data.get('action') in ('drive_off','stop'))
+            if not self.path.startswith(SELF_AUTHENTICATED+PUBLIC_POSTS) and not stopping and not self.operator():
                 return self.send(403,{'error':'View-only public link: enter the operator code to use controls','code':'operator_required'})
             if self.path.startswith('/api/interaction/'):return self.interaction_post(data)
             if self.path=='/api/table10/test':
+                if isinstance(data,dict) and data.get('action')=='drive_on' and self.public():
+                    return self.send(403,{'error':'Drive (torque on) can only be switched on from the tailnet, not the public link'})
                 with s.lock:
                     try:return self.send(202,s.table10.request(data if isinstance(data,dict) else {}))
                     except ValueError as error:return self.send(409,{'error':str(error)})
@@ -445,6 +448,6 @@ class Handler(BaseHTTPRequestHandler):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--bind',default='127.0.0.1');p.add_argument('--port',type=int,default=8786);p.add_argument('--data',type=Path,required=True);p.add_argument('--loopback-port',type=int,default=8788);a=p.parse_args()
     server=ThreadingHTTPServer((a.bind,a.port),Handler);server.store=Store(a.data)
-    local=ThreadingHTTPServer(('127.0.0.1',a.loopback_port),Handler);local.store=server.store
+    local=ThreadingHTTPServer(('127.0.0.1',a.loopback_port),Handler);local.store=server.store;local.serve_listener=True
     threading.Thread(target=local.serve_forever,daemon=True).start()
     print(f'Dream debugger listening on {a.bind}:{a.port}',flush=True);server.serve_forever()

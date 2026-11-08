@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T12:01:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "The real-arm bridge now runs as a headless service that starts automatically with the Unreal editor; drive (torque on) is switched from the Table 10 web panel instead of a terminal.",
+  "why": "User request: no separate app to start; when UE starts the bridge starts, and the real arms are controlled from the web page or VR.",
+  "where": ["Unreal/TheHumanTouch/Tools/real_arm_service.py", "DreamSim/table10_agent.py", "DreamSim/table10_store.py", "DreamSim/debug_server.py", "DreamSim/web/index.html"],
+  "details": ["Service reuses real_arm_bridge.Bridge (engage match within 5 deg, 0.6 rad/s cap, jump rejection, verified return before torque off); starts in mirror.", "Dead-man: drive needs a fresh heartbeat from the agent (which needs the web server); lost heartbeat, drive off or lost Unreal state returns the arms and releases torque. Drive auto-off after 15 min.", "Drive can only be switched on from the tailnet, never from the public link; Torque off works for everyone. Public visitors are view-only unless they have the operator code."]
+}
