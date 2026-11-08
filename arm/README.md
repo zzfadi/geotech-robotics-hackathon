@@ -5,7 +5,8 @@ After the operator resumed supervised testing, both arms and all three USB camer
 were inspected, the laptop camera was captured, and a small right-wrist roll and
 return completed. USB reconnection was verified at 16:42 Pacific; joint-reference
 discrepancies remain unresolved. Whole-arm control and Dream hardware integration
-are not verified.
+are not verified. The later cleared-workspace 8° wrist attempt was rejected before
+enable by velocity feedback; the new encoder-window diagnostic is read-only.
 
 The original gripper-only handoff below records the earlier pause before Dream
 testing. Its historical results remain unchanged. Do not run hardware commands
