@@ -96,36 +96,69 @@ def vertical_down(action, state, side, step_cm=.15, gain=2., nudge_cm=1.5, max_c
     return out, {'descent_cm': round(descent*100*(len(out)-1)/steps, 2), 'nudged': nudged}
 
 
-def retreat_rows(q, up_cm=14., back_cm=10., home_rows=30):
-    """Empty-gripper retreat that cannot sweep a placed cup: straight up until the open jaws are
-    above the cup, back toward the arm base at that height, then a joint move to the start pose."""
+def lift_clear_rows(q, up_cm=10., steps=24, gap=.95):
+    """Straight up with open jaws, tool orientation kept (stops at the first unreachable row)."""
     from pregrasp import _fk, solve_pose
-    from fleet_reset import HOME_Q
     fk = _fk()
     q = list(q)
     f = fk.pose(np.clip(q, fk.low+1e-7, fk.high-1e-7))
-    rows = [q+[.95]]
-    top = f[:3, 3].copy()
-    for k in range(1, 29):
-        point = f[:3, 3]+np.array([0, 0, up_cm/100*k/28])
+    rows = [q+[gap]]
+    for k in range(1, steps+1):
+        try:
+            q = solve_pose(f[:3, 3]+np.array([0, 0, up_cm/100*k/steps]), f[:3, :3], q, .003, .1)
+        except ValueError:
+            break
+        rows.append(list(q)+[gap])
+    return rows
+
+
+def back_off_rows(q, back_cm=10., steps=20, gap=.95):
+    """Horizontal move toward the arm base along its line of sight, orientation kept: the open
+    jaws slide off a cup the same way a side grasp slides on."""
+    from pregrasp import _fk, solve_pose
+    fk = _fk()
+    q = list(q)
+    f = fk.pose(np.clip(q, fk.low+1e-7, fk.high-1e-7))
+    back = -f[:2, 3]/max(1e-6, float(np.linalg.norm(f[:2, 3])))
+    rows = [q+[gap]]
+    for k in range(1, steps+1):
+        point = f[:3, 3].copy()
+        point[:2] += back*back_cm/100*k/steps
         try:
             q = solve_pose(point, f[:3, :3], q, .003, .1)
         except ValueError:
             break
-        rows.append(list(q)+[.95])
-        top = point
-    back = -top[:2]/max(1e-6, float(np.linalg.norm(top[:2])))
-    for k in range(1, 21):
-        point = top.copy()
-        point[:2] += back*back_cm/100*k/20
-        try:
-            q = solve_pose(point, f[:3, :3], q, .003, .1)
-        except ValueError:
-            break
-        rows.append(list(q)+[.95])
+        rows.append(list(q)+[gap])
+    return rows
+
+
+def retreat_rows(q, up_cm=14., back_cm=10., home_rows=45, back_first=False):
+    """Empty-gripper retreat that cannot sweep the cup. Default (after placing): straight up
+    until the open jaws clear the cup, back toward the base, then a joint move home. back_first
+    (after letting go at the handover, the other gripper still holding the cup): slide out
+    first, then up, then home."""
+    from fleet_reset import HOME_Q
+    if back_first:
+        rows = back_off_rows(q, back_cm)
+        rows += lift_clear_rows(rows[-1][:6], up_cm, steps=28)[1:]
+    else:
+        rows = lift_clear_rows(q, up_cm, steps=28)
+        rows += back_off_rows(rows[-1][:6], back_cm)[1:]
     q0 = np.array(rows[-1][:6]); q1 = np.array(HOME_Q)
     rows += [list(q0*(1-t)+q1*t)+[.95] for t in (.5-.5*np.cos(np.pi*np.linspace(0, 1, home_rows)))[1:]]
-    return rows
+    return densify(rows)
+
+
+def densify(rows, max_step=.05):
+    """Insert joint-space rows wherever consecutive rows differ by more than max_step rad
+    (near-folded elbow poses make a 5 mm Cartesian step a 0.26 rad joint jump)."""
+    out = [rows[0]]
+    for row in rows[1:]:
+        a, b = np.array(out[-1], dtype=float), np.array(row, dtype=float)
+        n = int(np.ceil(np.abs(b[:6]-a[:6]).max()/max_step))
+        out += [list(a+(b-a)*k/n) for k in range(1, n)] if n > 1 else []
+        out.append(list(row))
+    return out
 
 
 class Handover:
@@ -148,6 +181,7 @@ class Handover:
         self.trace = []
         self.events_after = time.time()
         self.place_heights = []
+        self.recoveries = 0
 
     # ---- plumbing ---------------------------------------------------------------------
     def play(self, packet, action, label, extra=None):
@@ -201,6 +235,7 @@ class Handover:
         p = status.get('props', {}).get(self.tr.v['target']['label'], {})
         grip = status.get('friction_grip') or {}
         self.trace.append({'t': round(now, 2), 'seq': self.seq, 'phase': self.phase, 'h': round(p.get('height_above_start_cm', 0), 2),
+                           'xyz': [round(v, 1) for v in p.get('table_local_cm') or []],
                            'tilt': round(p.get('tilt_degrees', 0), 1),
                            'held': ''.join(k[0] for k, v in (grip.get('holding') or {}).items() if v == self.tr.v['target']['label'])})
         events = [e for e in grip.get('events') or [] if e.get('t', 0) > self.events_after]
@@ -233,8 +268,32 @@ class Handover:
             if self.phase != 'reach_left' and 0 <= c.get('tilt_degrees', 0) > 60 and c.get('height_above_start_cm', 0) < 2:
                 tr.result['stopped_reason'] = 'cup fell over during %s' % self.phase
                 return
+            if (self.phase in ('lift_left', 'carry_left') and self.grip_holders().get('left') != target
+                    and c.get('height_above_start_cm', 99) < 3 and c.get('tilt_degrees', 90) < 20 and c.get('speed_cm_s', 99) < 3):
+                # The left grip lost the cup and it is standing on the table: open, lift clear, re-grasp.
+                if self.recoveries >= 2:
+                    tr.result['stopped_reason'] = 'left grip lost the cup during %s (after %d re-grasps)' % (self.phase, self.recoveries)
+                    return
+                self.recoveries += 1
+                self.counts['regrasps'] = self.recoveries
+                tr.log('%s: left grip lost the cup; re-grasping where it stands (%d)' % (self.phase, self.recoveries))
+                q = list(state['q_left'])
+                g0 = state['gap_left_m']/JAW_MAX_M
+                rows = [q+[g0+(.95-g0)*k/14] for k in range(15)]+lift_clear_rows(q, 10.)[1:]
+                action = {KEY['left']: rows, KEY['right']: hold_rows(state, 'right', len(rows))}
+                playback = self.play(packet, action, 'planned re-grasp: open and lift clear (left, no Dream call)')
+                self.latch['left'] = None
+                self.lift_ceiling = None
+                self.carry_stalls = 0
+                self.phase = 'reach_left'
+                after = playback.get('finished_unix') or time.time()
+                continue
             if self.phase == 'reach_left':
-                action, info = approach_action(state, tr.v)
+                variant = tr.v
+                if self.recoveries:
+                    # Re-grasp where the dropped cup now stands (live position, not the reset layout).
+                    variant = {**tr.v, 'target': {**tr.v['target'], 'location_cm': list(c['table_local_cm'])}}
+                action, info = approach_action(state, variant)
                 playback = self.play(packet, action, 'planned reach (left, no Dream call)', info)
                 self.phase = 'grasp_left'
             elif self.phase in ('grasp_left', 'grasp_right'):
@@ -300,17 +359,28 @@ class Handover:
             elif self.phase == 'reach_right':
                 c = self.cup()
                 action = info = None
-                for pitch in (45., 60., 55., 50., 30.):
-                    for offset in (-3., -2.5, -3.5):
-                        variant = {**tr.v, 'objective': {**(tr.v.get('objective') or {}), 'side': 'right'},
-                                   'target': {**tr.v['target'], 'location_cm': list(c['table_local_cm'])},
-                                   'assist': {**(tr.v.get('assist') or {}), 'pitch_deg': pitch, 'grasp_offset_cm': offset, 'gap_m': .1}}
-                        try:
-                            action, info = approach_action(state, variant)
-                            info = {**info, 'pitch_deg': pitch, 'grasp_offset_cm': offset}
+                # Slide in from the side first: descending from above passes the left gripper,
+                # which holds the cup from above-left (place 2, T03: the reach knocked it loose).
+                # 60 deg first: every 60 deg right grasp closed on the cup (place 2, 6/6); 45 deg
+                # closed on nothing 4 times in 16 (place 3-4).
+                for mode in ('side', 'above'):
+                    for pitch in (60., 55., 45., 50., 30.):
+                        for offset in (-3., -2.5, -3.5):
+                            variant = {**tr.v, 'objective': {**(tr.v.get('objective') or {}), 'side': 'right'},
+                                       'target': {**tr.v['target'], 'location_cm': list(c['table_local_cm'])},
+                                       'assist': {**(tr.v.get('assist') or {}), 'pitch_deg': pitch, 'grasp_offset_cm': offset, 'gap_m': .1,
+                                                  # Cup axis 2 cm inside the pad corridor (flange -17..-10 cm), not at the
+                                                  # fingertip edge: at depth 0 the jaws closed past the cup 4/25 times.
+                                                  'grasp_depth_cm': float((tr.v.get('assist') or {}).get('handover_grasp_depth_cm', 2.))}}
+                            try:
+                                action, info = approach_action(state, variant, mode=mode)
+                                info = {**info, 'pitch_deg': pitch, 'grasp_offset_cm': offset, 'cup_cm': [round(v, 2) for v in c['table_local_cm']],
+                                        'grasp_depth_cm': variant['assist']['grasp_depth_cm']}
+                                break
+                            except ValueError:
+                                continue
+                        if action is not None:
                             break
-                        except ValueError:
-                            continue
                     if action is not None:
                         break
                 if action is None:
@@ -333,14 +403,12 @@ class Handover:
                 self.latch['left'] = None
                 playback = self.play(packet, action, 'Dream release (left), arm held still', {'dream_grip': g_dream})
                 if playback.get('gap_left_m', 0) > .09:
-                    # Planned retreat of the empty left gripper, back toward its start pose.
-                    from fleet_reset import HOME_Q
-                    q0 = np.array(packet['state']['q_left']); q1 = np.array(HOME_Q)
-                    rows = [list(q0*(1-s)+q1*s)+[.95] for s in (.5-.5*np.cos(np.pi*np.linspace(0, 1, 30)))]
+                    # Planned retreat of the empty left gripper: slide out, up, then home (a direct
+                    # joint move home swept through the cup the right gripper holds; place 3, T03).
                     packet = tr.fresh(time.time())
-                    action = {KEY['left']: rows, KEY['right']: [r[:6]+[self.latch['right']] for r in hold_rows(packet['state'], 'right', 30)]}
-                    action[KEY['left']][0] = list(packet['state']['q_left'])+[packet['state']['gap_left_m']/JAW_MAX_M]
-                    playback = self.play(packet, action, 'planned retreat (left, no Dream call)')
+                    rows = retreat_rows(packet['state']['q_left'], up_cm=8., back_cm=10., back_first=True)
+                    action = {KEY['left']: rows, KEY['right']: [r[:6]+[self.latch['right']] for r in hold_rows(packet['state'], 'right', len(rows))]}
+                    playback = self.play(packet, action, 'planned retreat (left: out, up, home; no Dream call)')
                     self.phase = 'hold_right'
             elif self.phase == 'hold_right':
                 action, packet = self.dream(packet, 'right')
@@ -362,7 +430,9 @@ class Handover:
             elif self.phase == 'place_right':
                 action, packet = self.dream(packet, 'right')
                 # Never drive the cup into the table: descend at most to just above contact.
-                rows, info = vertical_down(action, packet['state'], 'right', max_cm=max(.4, self.cup().get('height_above_start_cm', 6)-.2))
+                # Stop ~0.8 cm above contact: pressing a held cup into the table stored penetration
+                # that popped it over on release (place 4 T03, place 5 T02).
+                rows, info = vertical_down(action, packet['state'], 'right', max_cm=max(0., self.cup().get('height_above_start_cm', 6)-.8))
                 if info.get('nudged'):
                     self.counts['place_nudges'] = self.counts.get('place_nudges', 0)+1
                 action = {KEY['right']: [r[:6]+[self.latch['right']] for r in rows],
@@ -375,7 +445,7 @@ class Handover:
                 # Resting height varies with the grasp (0.7 cm seen on T04): release once the cup is
                 # within 1 cm of its start, or has stopped descending while low (it is on the table).
                 resting = len(self.place_heights) >= 2 and self.place_heights[-2]-h < .15 and h < 2.5
-                if h <= 1. or resting or (len(rows) < 2 and h < 3):
+                if h <= 1.2 or resting or (len(rows) < 2 and h < 3):
                     self.phase = 'release_right'
             elif self.phase == 'release_right':
                 action, packet = self.dream(packet, 'right')

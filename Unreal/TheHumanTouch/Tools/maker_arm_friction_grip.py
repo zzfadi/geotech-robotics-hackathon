@@ -49,6 +49,7 @@ class FrictionGrip:
         self.last_t = None
         self.last_target = None
         self.grip_gap = 1.
+        self.carry = unreal.Vector(0, 0, 0)
 
     @property
     def active(self):
@@ -60,6 +61,13 @@ class FrictionGrip:
             # Opening jaws track the command (gap == requested), so compare with the width at
             # which the grip formed: more than 5 mm wider means the fingers let go.
             if self.label not in props or gap > self.grip_gap+.005:
+                if self.label in props:
+                    # Hand the cup back to physics as the open fingers leave it: moving with the
+                    # hand, not spinning. Without this the last drive velocity (e.g. pressing a
+                    # placed cup into the table) stayed on and tipped released cups (place 4, T03).
+                    c = props[self.label].static_mesh_component
+                    c.set_physics_linear_velocity(self.carry, False)
+                    c.set_physics_angular_velocity_in_degrees(unreal.Vector(0, 0, 0), False)
                 return self.release('jaws opened' if self.label in props else 'cup missing', now)
             return None
         if requested < gap-.002 and contacts and contacts[0] in props and gap >= MIN_GRIP_GAP_M:
@@ -95,6 +103,7 @@ class FrictionGrip:
         # sagging and being pulled back every tick (gravity itself stays enabled).
         dt = min(.05, max(.005, now-self.last_t)) if self.last_t is not None else 1/60.
         carry = (target.translation-self.last_target)*(1./dt) if self.last_target is not None else unreal.Vector(0, 0, 0)
+        self.carry = carry
         self.last_t, self.last_target = now, target.translation
         velocity = carry+error*(1./TAU_S)
         speed = velocity.length()
@@ -111,4 +120,5 @@ class FrictionGrip:
         self.label = None
         self.relative = None
         self.last_t = self.last_target = None
+        self.carry = unreal.Vector(0, 0, 0)
         return 'released: ' + reason

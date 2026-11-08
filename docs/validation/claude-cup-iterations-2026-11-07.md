@@ -290,3 +290,27 @@ its start height), within 10° of upright, still, held by neither gripper, for 3
   - the carry keeps the tool's own pitch and roll, turning only about vertical;
   - repeated session replacement is retried;
   - a cup/grip trace is added to each result.
+- Place 2 (`20261108-102117-9c5a7b`): **6/9 handed over and placed upright** (tilt ≤ 0.4°). Misses: the left
+  grip slipped during the carry and the right arm then reached for the dropped cup; the right reach (descending
+  from above) knocked a held cup loose; one observation timeout. Added: re-grasp when the left grip drops the cup
+  upright on the table (live position), and a side approach for the right reach.
+- Place 3 (`20261108-102737-164b71`): 5/9. The arm-link collision test (below) was switched on mid-run.
+- Place 4 (`20261108-103136-4c6b51`): 4/9. Side reaches at 45° closed on nothing 4 times in 16, while every 60°
+  grasp had closed on the cup. A placed cup pressed into the table popped over on release. The left arm's direct
+  return home was replaced by slide out → up → home.
+- Place 5 (`20261108-103946-59728c`): 6/9 in 128 s (was ~210 s). Side reach now prefers 60°. Released cups get
+  the hand's velocity and zero spin. Remaining: two 60° side grasps closed past the cup, and one cup pressed into
+  the table tipped on release. Root cause of the misses: with grasp depth 0 the cup axis sits at the fingertip edge
+  of the pad contact corridor (flange −17…−10 cm). The right grasp now goes 2 cm deeper, and placing stops ~0.8 cm
+  above contact.
+
+## Editor performance during runs (user request, 2026-11-08)
+
+CSV profile (`CsvProfile Frames=90`) mid-run: frame 83 ms, of which the game thread waited **74.5 ms on
+EndPhysics**; render thread 6.7 ms, GPU 8.1 ms. Earlier toggles had ruled out captures, render resolution and the
+Multi-User mirror (all ±1 FPS). The physics scene held 18 fleet arms × 7 links of kinematic **complex-as-simple
+(per-triangle)** collision moved every tick. Contacts are computed in Python (`contact_gap`) plus the
+friction-grip model, so the links do not need Chaos collision. The runtime now sets fleet arm links to query-only;
+jaws stay no-collision as before, and cups and tables stay physical. Measured mid-run: **11.2 → 65–67 FPS**,
+hitches 6.5/s → 0, and 58 FPS from run start. Trade-off: arm links no longer push cups physically
+(`LINK_PHYSICS_COLLISION = True` restores it). No Maker Arm assets changed.

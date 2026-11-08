@@ -50,6 +50,11 @@ PAD_FRICTION = .8
 # Squeeze-activated friction grip for the kinematic pads (user-requested realistic side
 # grasp: pads squeeze the paper cup a little and the arm can still take it).
 FRICTION_GRIP = True
+# Arm links are kinematic per-triangle (complex-as-simple) meshes. Letting Chaos collide all 140
+# of them every tick cost ~75 ms/frame (EndPhysics wait; 11 FPS during runs). Query-only keeps
+# traces working and the cups, tables and contact pads physical: 11 -> 65 FPS measured mid-run.
+# Trade-off: arm links (not the jaws) no longer push cups. Set True to restore.
+LINK_PHYSICS_COLLISION = False
 MIRROR_HZ = .5
 MAX_SESSION_S = 600  # was a fixed 170 s; a two-arm handover needs longer
 WAKE_PROPS_DURING_MOTION = False  # tested: awake cups were ejected by the kinematic pads (0/9 carried)
@@ -275,7 +280,8 @@ class Session:
                     c.set_mobility(unreal.ComponentMobility.MOVABLE)
                     c.set_simulate_physics(False)
                     c.set_collision_profile_name('BlockAllDynamic')
-                    c.set_collision_enabled(unreal.CollisionEnabled.QUERY_AND_PHYSICS)
+                    c.set_collision_enabled(unreal.CollisionEnabled.QUERY_AND_PHYSICS if LINK_PHYSICS_COLLISION
+                                            else unreal.CollisionEnabled.QUERY_ONLY)
                     if link in GRIPPERS:
                         proxy = found.get(table.name('FleetProxy_MakerArm_'+side+'_'+link))
                         if proxy is None:
@@ -624,7 +630,8 @@ class Session:
         write(self.root/'fleet.json', {
             'phase': self.phase, 'error': self.error, 'sampled_unix': time.time(),
             'elapsed_seconds': now - self.started, 'task_success_verified': False, 'editor_perf': self.perf,
-            'scope': 'authoritative local Chaos physics; shared visual poses mirrored at 2 Hz; approximate contacts',
+            'scope': 'authoritative local Chaos physics; shared visual poses mirrored at 2 Hz; approximate contacts'
+                     + ('' if LINK_PHYSICS_COLLISION else '; arm links query-only (jaw contacts physical)'),
             'tables': {('T%02d' % t.index): {'name': t.v['name'], 'error': t.error, 'frames': t.frames,
                                               'moving': t.motion is not None, 'command_seq': t.command_seq,
                                               'contact_mode': 'approximate flat pads' if t.v['pad_contacts'] else 'approximate convex jaws',

@@ -409,26 +409,36 @@ def vertical_only(action, state, side='left', floor_z=None, allow_down_cm=.5, ma
 START_OPTIONS = ('grasp_offset_cm', 'pitch_deg', 'standoff_cm', 'lift_cm', 'gap_m', 'grasp_depth_cm')
 
 
-def approach_action(state, variant, standoff_lift_cm=8., transfer_rows=36, descend_rows=20):
-    """Planned reach from the measured (idle) pose: joint move to a point standoff_lift_cm
-    above the pregrasp pose, then a straight descent with open jaws. No Dream call."""
+def approach_action(state, variant, standoff_lift_cm=8., transfer_rows=36, descend_rows=20, mode='above', side_cm=10.):
+    """Planned reach from the measured (idle) pose: joint move to a standoff, then a straight
+    final approach with open jaws. No Dream call. mode 'above' stands off standoff_lift_cm above
+    the pregrasp pose and descends; mode 'side' stands off side_cm back along the arm's
+    horizontal line of sight at grasp height and slides in (never passes over the cup, e.g. when
+    the other gripper holds it from above)."""
     assist = variant.get('assist') or {}
     side = (variant.get('objective') or {}).get('side') or 'left'
     options = {k: assist[k] for k in START_OPTIONS if k in assist}
     table = {'target': variant['target'], 'objects': variant.get('objects'), 'initial_state': state}
     goal = pregrasp_state(table, side, **options)
-    above = pregrasp_state(table, side, **{**options, 'lift_cm': options.get('lift_cm', 0)+standoff_lift_cm})
+    fk = _fk()
+    f_goal = fk.pose(goal['q_'+side])
+    if mode == 'side':
+        line = f_goal[:2, 3]/max(1e-6, float(np.linalg.norm(f_goal[:2, 3])))
+        point = f_goal[:3, 3].copy()
+        point[:2] -= line*side_cm/100
+        q1 = np.array(solve_pose(point, f_goal[:3, :3], goal['q_'+side], tolerance_m=.002, tolerance_rad=.02), dtype=float)
+    else:
+        above = pregrasp_state(table, side, **{**options, 'lift_cm': options.get('lift_cm', 0)+standoff_lift_cm})
+        q1 = np.array(above['q_'+side], dtype=float)
     key, other = ('q_l_chunk', 'q_r_chunk') if side == 'left' else ('q_r_chunk', 'q_l_chunk')
     q0 = np.array(state['q_'+side], dtype=float)
-    q1 = np.array(above['q_'+side], dtype=float)
     g0 = state['gap_'+side+'_m']/JAW_MAX_M
     g1 = goal['gap_'+side+'_m']/JAW_MAX_M
     rows = []
     for a in np.linspace(0, 1, transfer_rows):
         s_ = .5-.5*np.cos(np.pi*a)  # ease in/out
         rows.append(list(q0*(1-s_)+q1*s_)+[g0*(1-s_)+g1*s_])
-    fk = _fk()
-    f_above, f_goal = fk.pose(q1), fk.pose(goal['q_'+side])
+    f_above = fk.pose(q1)
     previous = q1.tolist()
     for a in np.linspace(0, 1, descend_rows)[1:]:
         s_ = .5-.5*np.cos(np.pi*a)
@@ -436,5 +446,5 @@ def approach_action(state, variant, standoff_lift_cm=8., transfer_rows=36, desce
         previous = solve_pose(target, f_goal[:3, :3], previous, tolerance_m=.002, tolerance_rad=.02)
         rows.append(list(previous)+[g1])
     hold = list(state['q_'+('right' if side == 'left' else 'left')])+[state['gap_'+('right' if side == 'left' else 'left')+'_m']/JAW_MAX_M]
-    return {key: rows, other: [hold[:] for _ in rows]}, {'side': side, 'rows': len(rows),
-            'pregrasp_q': goal['q_'+side], 'standoff_lift_cm': standoff_lift_cm}
+    return {key: rows, other: [hold[:] for _ in rows]}, {'side': side, 'rows': len(rows), 'mode': mode,
+            'pregrasp_q': goal['q_'+side], 'standoff_lift_cm': standoff_lift_cm if mode == 'above' else 0., 'side_cm': side_cm if mode == 'side' else 0.}

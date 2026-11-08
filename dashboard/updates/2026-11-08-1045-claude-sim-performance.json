@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T10:45:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Fleet simulation runs at ~60 FPS instead of 11: arm links no longer take part in Chaos collision during runs.",
+  "why": "User reported Unreal was slow. A CSV profile showed 74.5 of 83 ms per frame waiting on physics, caused by 126 kinematic per-triangle arm-link colliders moved every tick.",
+  "where": ["Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py", "Unreal/TheHumanTouch/Tools/maker_arm_friction_grip.py", "DreamSim/handover.py", "DreamSim/pregrasp.py", "docs/validation/claude-cup-iterations-2026-11-07.md"],
+  "details": ["Measured mid-run 11.2 -> 65-67 FPS, hitches 6.5/s -> 0; a nine-table handover batch now takes ~130 s instead of ~210 s.", "Jaw contacts stay the Python contact model plus the friction-grip model; cups and tables stay physical. Trade-off: arm links no longer push cups (flag restores it). No Maker Arm assets changed.", "Handover + place reached 6/9 twice; fixes for the remaining right-grasp and release misses are in test."]
+}
