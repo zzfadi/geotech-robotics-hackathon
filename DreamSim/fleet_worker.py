@@ -296,7 +296,13 @@ class TableRun:
                 return request_action(call, refresh, self.stopped, lambda m: self.log(m), DreamSessionExpired)
             except Exception as error:
                 numerical = 'SVD did not converge' in str(error)
-                if (('NO_CAPACITY' not in str(error) and not numerical) or attempt == 8
+                refused = 'unsafe instruction' in str(error) and bool(self.v.get('assist', {}).get('phase_prompts'))
+                if refused:
+                    # Dream's instruction filter refused this wording: rotate to the next subgoal
+                    # phrasing (logged) instead of ending the table.
+                    self.lift_stalls += 1
+                    self.result.setdefault('refused_prompts', []).append(str(error)[-120:])
+                if (('NO_CAPACITY' not in str(error) and not numerical and not refused) or attempt == 8
                         or time.monotonic() >= capacity_deadline):
                     raise
                 self.log(('Dream client IK numerical failure; retry %d/8' if numerical else
@@ -381,6 +387,7 @@ class TableRun:
                 floor = self.hold_peak_z if self.v['assist'].get('hold_monotonic') else self.latch_z
                 assist = self.v['assist']
                 action, vertical = vertical_only(action, packet['state'], latch_side, floor_z=floor,
+                                                 allow_down_cm=0. if assist.get('hold_monotonic') else .5,
                                                  max_step_cm=float(assist.get('lift_step_cm', .25)),
                                                  back_per_up=float(assist.get('lift_back_per_up', 0.)))
                 self.log('holding: applied only vertical motion (dz %+.1f cm over %d rows)' %

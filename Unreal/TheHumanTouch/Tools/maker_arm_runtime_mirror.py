@@ -105,10 +105,16 @@ class RuntimeMirror:
             if not force and now-self.last < self.period:
                 return False
             measured = {}
-            for key, actor in self.runtime.items():
+            for key, actor in list(self.runtime.items()):
                 target = self.targets[key]
                 if not all(unreal.SystemLibrary.is_valid(a) for a in (actor,target)):
-                    raise RuntimeError('Mirror actor disappeared')
+                    # A prop can leave the simulated world (e.g. a cup knocked off the table
+                    # and removed by Chaos). Stop mirroring that one actor instead of
+                    # halting every table's simulation; its editor pose is left untouched.
+                    self.runtime.pop(key); self.targets.pop(key, None); self.expected.pop(key, None)
+                    self.dropped = getattr(self, 'dropped', [])+[key]
+                    unreal.log_warning('Runtime mirror: %s disappeared; no longer mirrored' % key)
+                    continue
                 if not _same(target.get_actor_transform(), self.expected[key]):
                     raise RuntimeError('Concurrent editor transform change: '+key)
                 pose = actor.get_actor_transform()

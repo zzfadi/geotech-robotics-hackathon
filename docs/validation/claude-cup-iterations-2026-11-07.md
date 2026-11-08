@@ -102,3 +102,33 @@ command is 2 cm inside the cup and ejects it (logged gap jumps 7.4 → 5.5 cm).
 Where the gap fell to the 6.9 cm command at the first lift the cup had already left the pads: the tool centre
 sits at the fingertip end of the runtime's pad contact corridor (flange Z −17..−10 cm), so contact is
 marginal. Batch 12 grasps 3.5 cm deeper and re-reaches (up to twice) when a cup drops back upright.
+
+## Batch 12 — 3.5 cm deeper grasp (regression)
+
+`f1718a474c86470d99dde10a53e64320`: the deeper approach brought the gripper body down onto the cup; all nine
+cups were knocked over during the reach. Reverted.
+
+## Batch 13 — re-grasp after drops
+
+`c2ce21b657a64a72867ba28848f3b392`: T9 carried 17.4 cm (target 18) above 10 cm for 15.7 s; T8 15.7 cm
+(target 19). Re-grasp worked (T3 re-reached and re-grasped twice).
+
+## Batch 14 — no descent while holding, ≈1.6 cm/s lift — **first success**
+
+`2055e7500f2a4c0e9d18d15114446867` (run dir `20261107-222405-1cfba8`): **T3 passed — cup held 18.3 cm above
+its start (target 18 cm) for a continuous 5.0 s, tilt 2.7°, gravity on, no attachment.** The overhead video
+shows the white target cup raised between the jaws; the wrist camera stays filled by the cup interior through
+the hold. T7 21.3 cm (target 25) for 51 s; T8 16.4 cm; T1 13.6 cm. Five tables stopped on
+`Mirror actor disappeared`: a cup knocked off a table falls through the open-room floor (Table 1 read
+−3685 cm) and Chaos removes it, and the runtime mirror then halted every table. The mirror now drops that one
+actor and continues (live editor reloaded).
+
+Reach limit: holding the 45° grasp orientation, the arm can lift the cup straight up only ~15–22 cm; 60°
+allows ~28 cm and 75° ~34 cm.
+
+## Batch 15 — 72° grasp (worse)
+
+`01b9ad83323a4a238bee383b5ef03da2`: cups slipped right after grasping (best 4.1 cm) and Dream's targets went
+out of reach (one table stopped on six truncated horizons). Dream refused one subgoal:
+`DA-4000 BAD_REQUEST (malformed): unsafe instruction in this scene, refused: Lift` — now handled by rotating to
+the next subgoal wording. Batch 16 compares 45°, 55° and 60° grasps, three tables each.
