@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-08T04:20:00-08:00",
+  "workstream": "voice-agent",
+  "status": "in-progress",
+  "what": "Scripted voice lines with recorded backup audio are built, and a one-way LiveKit bridge works on a local dev server",
+  "why": "Brian called voice a must-have and LiveKit is a sponsor. Scripted lines need no network, keys, speech recognition or language model, so they can't put the demo or the arm at risk; the room only receives announcements and the voice never triggers motion.",
+  "where": [
+    "voice_agent/",
+    "docs/livekit-fit.md"
+  ],
+  "details": "31 short lines in two personas: Righty (the right arm, which takes the can: 'Beer me.', 'Hold my beer? Held.') and Lefty (the left arm, which only heckles: 'Show-off.'). They are pre-rendered with macOS say and play from a local speaker, de-duplicated and rate-limited. When the team's LiveKit keys are set as env vars, the same process joins a room with a publish-only token and sends each station event as a data message plus the spoken line as audio; arm-command-shaped records are never published. A LOCAL livekit-server test received 36 of 36 messages and the voice track. Not yet run on LiveKit Cloud, not heard on a speaker, and the line text still needs Brian's or FADI's review. Portal teleop is not recommended on the real arm: it would be a second CAN owner and it moves the arm by voice. Next: Takeshi runs the 10-minute setup in docs/livekit-fit.md.",
+  "workstream_update": {
+    "milestones_done": ["scripted-lines"]
+  }
+}
