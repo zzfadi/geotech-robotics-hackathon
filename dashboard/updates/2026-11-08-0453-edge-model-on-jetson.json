@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T04:53:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "The small edge model runs on the Jetson: 0.038 ms per decision on its CPU, and it held the cup on 9 of 9 MuJoCo physics tables there",
+  "why": "The edge model is meant to live on the Jetson next to the arm, so it has to be fast there and behave the same as on the Mac.",
+  "where": [
+    "docs/validation/edge-model-jetson-2026-11-08.json",
+    "docs/jetson-hub-testing.md",
+    "0306c8a"
+  ],
+  "details": "On the Orin's CPU the trained 19,335-parameter policy takes 0.038 ms per decision (p99 0.05 ms) against a 200 ms control step, so speed is not a concern. The full pipeline runs end to end there (135 s for the quick check). In the MuJoCo physics bench both the scripted expert and the trained model held the cup on 9 of 9 tables. One table that narrowly failed on the Mac passed on the Jetson, so physics-sim results vary slightly by chip and are indicative only. Also fixed the three bugs the Jetson run found (0306c8a): DreamSim's provenance file name on Linux (DreamSim now 141 OK on the Jetson), two host-dependent preflight tests, and the outdated CPU-only torch note. Simulation and timing only; no arm, camera or Dream input drove the model."
+}
