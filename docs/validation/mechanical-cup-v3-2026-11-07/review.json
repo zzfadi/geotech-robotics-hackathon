@@ -1,0 +1,262 @@
+{
+  "scope": "ZERO_API mechanical contact feasibility; hand-authored trajectory, NOT Dream policy success",
+  "run": "/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/geotech-robotics-hackathon/Unreal/TheHumanTouch/Saved/DreamFleet/mechanical-cup-v3-20261107-191406",
+  "phases": [
+    {
+      "phase": "phase-01-evidence.json",
+      "cup": {
+        "initial_z_cm": 81.0,
+        "max_z_cm": 81.04153471724875,
+        "final_z_cm": 81.02701550092574,
+        "simulated": true,
+        "position_cm": [
+          63.65137242517146,
+          -30.758282348392996,
+          81.02701550092574
+        ],
+        "velocity_cm_s": [
+          -0.185334712266922,
+          -0.04842235893011093,
+          -0.08549249917268753
+        ],
+        "speed_cm_s": 0.20976808105670233,
+        "height_above_start_cm": 0.02701550092574223,
+        "current_above_10cm_seconds": 0.0,
+        "max_above_10cm_seconds": 0.0,
+        "current_slow_above_10cm_seconds": 0.0,
+        "max_slow_above_10cm_seconds": 0.0,
+        "at_least_1s_slow_above_10cm": false,
+        "grasp_verified": false,
+        "tilt_degrees": 0.06325010079246816,
+        "upright_threshold_deg": 15.0,
+        "current_slow_upright_above_10cm_seconds": 0.0,
+        "table_local_cm": [
+          63.65137242517146,
+          -30.758282348392996,
+          81.02701550092574
+        ],
+        "gravity_enabled": true,
+        "physics_simulated": true,
+        "attached_to": null
+      },
+      "jaw_gap_m": 0.1
+    },
+    {
+      "phase": "phase-02-evidence.json",
+      "cup": {
+        "initial_z_cm": 81.0,
+        "max_z_cm": 81.04153471724875,
+        "final_z_cm": 81.02557309079039,
+        "simulated": true,
+        "position_cm": [
+          63.649247461246205,
+          -30.751951647556663,
+          81.02557309079039
+        ],
+        "velocity_cm_s": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "speed_cm_s": 0.0,
+        "height_above_start_cm": 0.025573090790388164,
+        "current_above_10cm_seconds": 0.0,
+        "max_above_10cm_seconds": 0.0,
+        "current_slow_above_10cm_seconds": 0.0,
+        "max_slow_above_10cm_seconds": 0.0,
+        "at_least_1s_slow_above_10cm": false,
+        "grasp_verified": false,
+        "tilt_degrees": 0.03557789940904972,
+        "upright_threshold_deg": 15.0,
+        "current_slow_upright_above_10cm_seconds": 0.0,
+        "table_local_cm": [
+          63.649247461246205,
+          -30.751951647556663,
+          81.02557309079039
+        ],
+        "gravity_enabled": true,
+        "physics_simulated": true,
+        "attached_to": null
+      },
+      "jaw_gap_m": 0.1
+    },
+    {
+      "phase": "phase-03-evidence.json",
+      "cup": {
+        "initial_z_cm": 81.0,
+        "max_z_cm": 81.04623771420609,
+        "final_z_cm": 81.04110574996726,
+        "simulated": true,
+        "position_cm": [
+          63.690504369012054,
+          -30.750912328243473,
+          81.04110574996726
+        ],
+        "velocity_cm_s": [
+          0.16008347272872925,
+          -0.11400702595710754,
+          0.0755237266421318
+        ],
+        "speed_cm_s": 0.21054252182015357,
+        "height_above_start_cm": 0.04110574996725802,
+        "current_above_10cm_seconds": 0.0,
+        "max_above_10cm_seconds": 0.0,
+        "current_slow_above_10cm_seconds": 0.0,
+        "max_slow_above_10cm_seconds": 0.0,
+        "at_least_1s_slow_above_10cm": false,
+        "grasp_verified": false,
+        "tilt_degrees": 0.3342626533560723,
+        "upright_threshold_deg": 15.0,
+        "current_slow_upright_above_10cm_seconds": 0.0,
+        "table_local_cm": [
+          63.690504369012054,
+          -30.750912328243473,
+          81.04110574996726
+        ],
+        "gravity_enabled": true,
+        "physics_simulated": true,
+        "attached_to": null
+      },
+      "jaw_gap_m": 0.1
+    },
+    {
+      "phase": "phase-04-evidence.json",
+      "cup": {
+        "initial_z_cm": 81.0,
+        "max_z_cm": 81.04623771420609,
+        "final_z_cm": 80.47131776316253,
+        "simulated": true,
+        "position_cm": [
+          63.639578085483656,
+          -30.80369363543814,
+          80.47131776316253
+        ],
+        "velocity_cm_s": [
+          0.006383970379829407,
+          0.05274497717618942,
+          0.03341391682624817
+        ],
+        "speed_cm_s": 0.06276366411227688,
+        "height_above_start_cm": -0.5286822368374686,
+        "current_above_10cm_seconds": 0.0,
+        "max_above_10cm_seconds": 0.0,
+        "current_slow_above_10cm_seconds": 0.0,
+        "max_slow_above_10cm_seconds": 0.0,
+        "at_least_1s_slow_above_10cm": false,
+        "grasp_verified": false,
+        "tilt_degrees": 1.3504256389876197,
+        "upright_threshold_deg": 15.0,
+        "current_slow_upright_above_10cm_seconds": 0.0,
+        "table_local_cm": [
+          63.639578085483656,
+          -30.80369363543814,
+          80.47131776316253
+        ],
+        "gravity_enabled": true,
+        "physics_simulated": true,
+        "attached_to": null
+      },
+      "jaw_gap_m": 0.07255350809571166
+    },
+    {
+      "phase": "phase-05-evidence.json",
+      "cup": {
+        "initial_z_cm": 81.0,
+        "max_z_cm": 91.37643529327387,
+        "final_z_cm": 91.33270201053394,
+        "simulated": true,
+        "position_cm": [
+          55.27941330915078,
+          -30.70544019607272,
+          91.33270201053394
+        ],
+        "velocity_cm_s": [
+          -2.4528727531433105,
+          -0.0281255841255188,
+          0.6898441314697266
+        ],
+        "speed_cm_s": 2.5481877319613773,
+        "height_above_start_cm": 10.332702010533936,
+        "current_above_10cm_seconds": 0.3634437079890631,
+        "max_above_10cm_seconds": 0.3634437079890631,
+        "current_slow_above_10cm_seconds": 0.3634437079890631,
+        "max_slow_above_10cm_seconds": 0.3634437079890631,
+        "at_least_1s_slow_above_10cm": false,
+        "grasp_verified": false,
+        "tilt_degrees": 8.3614920328796,
+        "upright_threshold_deg": 15.0,
+        "current_slow_upright_above_10cm_seconds": 0.3634437079890631,
+        "table_local_cm": [
+          55.27941330915078,
+          -30.70544019607272,
+          91.33270201053394
+        ],
+        "gravity_enabled": true,
+        "physics_simulated": true,
+        "attached_to": null
+      },
+      "jaw_gap_m": 0.07255350809571166
+    },
+    {
+      "phase": "phase-06-evidence.json",
+      "cup": {
+        "initial_z_cm": 81.0,
+        "max_z_cm": 91.39050900692664,
+        "final_z_cm": 91.34853489470993,
+        "simulated": true,
+        "position_cm": [
+          55.34391731720962,
+          -30.73740698677777,
+          91.34853489470993
+        ],
+        "velocity_cm_s": [
+          1.6613699197769165,
+          0.04309161379933357,
+          -0.5473257303237915
+        ],
+        "speed_cm_s": 1.749734937810256,
+        "height_above_start_cm": 10.348534894709928,
+        "current_above_10cm_seconds": 5.549736749962904,
+        "max_above_10cm_seconds": 5.549736749962904,
+        "current_slow_above_10cm_seconds": 5.549736749962904,
+        "max_slow_above_10cm_seconds": 5.549736749962904,
+        "at_least_1s_slow_above_10cm": true,
+        "grasp_verified": false,
+        "tilt_degrees": 7.427622730457803,
+        "upright_threshold_deg": 15.0,
+        "current_slow_upright_above_10cm_seconds": 5.549736749962904,
+        "table_local_cm": [
+          55.34391731720962,
+          -30.73740698677777,
+          91.34853489470993
+        ],
+        "gravity_enabled": true,
+        "physics_simulated": true,
+        "attached_to": null
+      },
+      "jaw_gap_m": 0.07255350809571166
+    }
+  ],
+  "monitor": {
+    "samples": 221,
+    "span_seconds": 25.07193422317505,
+    "monitor_abort_file_exists": false,
+    "lifted_samples": 51,
+    "lifted_overlap_sets": {
+      "FleetProxy_MakerArm_left_gripper_left|FleetProxy_MakerArm_left_gripper_right": 51
+    },
+    "limitations": "10Hz overlap sampling is not a solver impulse ledger and can miss transient contacts."
+  },
+  "independent_review": {
+    "result": "Video and sampled physics support successful free-cup mechanical retention between both jaw pads for this run.",
+    "overhead_video": "53 decoded frames over 25.08 seconds; viewed1,16,23second frames",
+    "wrist_video": "Only7 snapshotframes encoded as7seconds; not continuous real-time wrist video. Lastleftframe shows cup heldbetweenjaws.",
+    "codec": "H264 MP4, yuvj420p,320x176; all3 files decode without errors",
+    "grasp_verified_false_reason": "maker_arm_lift_evidence.update intentionally setsFalse; numeric thresholds alone cannot verifygrasp. Independent evidence recorded here without altering that flag.",
+    "height_scope": "Timer measures cupcenter rise\u226510cm, speed\u226410cm/s and tilt\u226415degrees. Does not establish cup lowestpoint\u226510cm for the full5seconds.",
+    "no_attachment": true,
+    "gravity_enabled": true,
+    "physics_simulated": true
+  },
+  "artifact_video": "/tmp/mechanical-cup-v3-proof/mechanical-cup-v3-overhead.mp4"
+}

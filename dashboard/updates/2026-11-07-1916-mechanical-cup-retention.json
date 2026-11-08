@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T19:16:29-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Verified zero-API mechanical cup retention after circular contact-envelope correction.",
+  "why": "Isolates physical grasp feasibility before additional Dream policy trials.",
+  "where": [
+    "docs/validation/mechanical-cup-v3-2026-11-07/review.json"
+  ],
+  "details": "All6phases complete;51 lifted samples touchbothpadsonly;finalcenterrise10.3485cm, slowuprighthold5.5497seconds,tilt7.43degrees. Gravityenabled,freephysics,noattachment. Video independentlyreviewed. This is NOT Dreamsuccess; cupbottom clearance duration unverified."
+}
