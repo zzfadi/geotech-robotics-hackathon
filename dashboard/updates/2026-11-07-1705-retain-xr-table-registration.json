@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T17:05:58-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Retain the measured headset edge pose when Concert replaces the numbered table or the local avatar within the same XR tracking session.",
+  "why": "A live checkpoint recreated the XR avatar. Reapplying its table-relative alignment avoids making the wearer repeat the same pose at each checkpoint.",
+  "where": [
+    "dc55b5c",
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Source/HumanTouchXR/Private/HumanTouchXRTable.cpp"
+  ],
+  "details": "The native room-transform and table-identity regression passed in the Mac editor. Switching from the original to the next numbered station placed the local origin 820 cm away. Switching back restored the original station at floor height. A physical edge capture is still pending."
+}
