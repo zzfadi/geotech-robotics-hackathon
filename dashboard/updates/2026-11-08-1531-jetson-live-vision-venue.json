@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T15:31:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Jetson at the venue: live person/hand-pose and bottle detection on the real C270 at about 30-37 ms per frame, shown as a watch-only MJPEG view.",
+  "why": "User asked for the Jetson in the demo with real data, not replays. The control center shows decisions, not video, so a live view was added.",
+  "where": ["vision/live_view.py", "demo/submission.md", "scripts/jetson_hub_check.sh"],
+  "details": ["MacBook SSH to orin-arm restored after the Beryl reset; host key matched the recorded fingerprint.", "jetson_hub_check.sh: all six suites green on the Jetson (arm 144, handoff 54 + 22/22 replay, control center 17, vision 49 + replay).", "vision.run on the live camera produced hand_entered / hand_withdrawn moments with the gate holding while a hand was present.", "The three KD-USB arm cameras and the right adapter were read from the Jetson; the arms have since moved to Saleh's laptop. No Jetson-driven or Dream-driven physical handover is claimed.", "Submission sentence on the Jetson updated to the verified live-vision result."]
+}

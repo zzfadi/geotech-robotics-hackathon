@@ -30,7 +30,7 @@ We built a MakerMods Maker Arm control stack, an interactive Unreal environment 
 
 ## Sponsor and technology usage
 
-MakerMods supplied the Maker Arm hardware, SDK and robot description. Dream Labs supplied the API used for simulated arm experiments. Unreal Engine, Quest headsets, webcam capture and Live Link Hub support the interactive environment and human capture. A Jetson Orin Nano ran local vision and simulation tests. LiveKit was explored for voice/events and vision; it is not part of the final demonstrated handover. No Dream-controlled physical grasp or Jetson-hosted physical handover is claimed here.
+MakerMods supplied the Maker Arm hardware, SDK and robot description. Dream Labs supplied the API used for simulated arm experiments. Unreal Engine, Quest headsets, webcam capture and Live Link Hub support the interactive environment and human capture. A Jetson Orin Nano ran live person, hand-pose and bottle detection on a real webcam at about 30–37 ms per frame (TensorRT FP16), alongside local simulation tests; it is a watch-only view and does not drive the arms. LiveKit was explored for voice/events and vision; it is not part of the final demonstrated handover. No Dream-controlled physical grasp or Jetson-hosted physical handover is claimed here.
 
 ## Links
 
