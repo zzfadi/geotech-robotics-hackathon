@@ -220,7 +220,8 @@ the scheduled task `TheHumanTouch-PublicTunnel` (`cloudflared` 2026.10.7 in `%LO
 points at the Tailscale-serve listener, so requests through it are treated as public.
 - **Temporary open demo (user request).** While `Saved/DreamDebugger/public-controls` exists on Luna2, the public
   link needs no operator code for any control.
-- **Exception.** Turning the real arms on (torque on) still works only from the tailnet.
+- **Also allowed (user decision, 15:2x).** Turning the real arms on (torque on) works from the public link while the
+  flag exists. Without the flag, it is tailnet-only.
 - **To close it again,** delete that file: the public link goes back to view-only, with the operator code
   required. The `trycloudflare.com` URL changes whenever the task restarts; find the current one in
 `%LOCALAPPDATA%\cloudflared\public-tunnel.log`.

@@ -84,7 +84,7 @@ class Handler(BaseHTTPRequestHandler):
         return getattr(self.server,'serve_listener',False) and not self.headers.get('Tailscale-User-Login')
     def open_controls(self):
         """Temporary open demo (user request, 2026-11-08): while Saved/DreamDebugger/public-controls exists, the public
-        link needs no operator code. Delete the file to make the public link view-only again."""
+        link needs no operator code and may also turn the real arms on. Delete the file to make it view-only again."""
         return (self.server.store.path/'public-controls').exists()
     def operator(self):
         return (not self.public() or self.open_controls()
@@ -310,7 +310,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         s=self.server.store
         if self.path=='/':return self.send(200,(Path(__file__).parent/'web/index.html').read_bytes(),'text/html; charset=utf-8')
-        if self.path=='/api/access':return self.send(200,{'public':self.public(),'operator':self.operator()})
+        if self.path=='/api/access':return self.send(200,{'public':self.public(),'operator':self.operator(),'open':self.open_controls()})
         if self.path.startswith('/api/interaction/'):return self.interaction_get(urlsplit(self.path))
         if self.path=='/api/table10/test':
             with s.lock:return self.send(200,s.table10.public())
@@ -356,7 +356,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(403,{'error':'View-only public link: enter the operator code to use controls','code':'operator_required'})
             if self.path.startswith('/api/interaction/'):return self.interaction_post(data)
             if self.path=='/api/table10/test':
-                if isinstance(data,dict) and data.get('action')=='drive_on' and self.public():
+                if isinstance(data,dict) and data.get('action')=='drive_on' and self.public() and not self.open_controls():
                     return self.send(403,{'error':'Drive (torque on) can only be switched on from the tailnet, not the public link'})
                 with s.lock:
                     try:return self.send(202,s.table10.request(data if isinstance(data,dict) else {}))
