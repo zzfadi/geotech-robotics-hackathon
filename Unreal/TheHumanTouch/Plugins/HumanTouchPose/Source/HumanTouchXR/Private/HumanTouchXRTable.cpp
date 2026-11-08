@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "HAL/IConsoleManager.h"
 #include "IXRTrackingSystem.h"
+#include "Misc/CoreDelegates.h"
 #include "Misc/FileHelper.h"
 #include "Serialization/JsonSerializer.h"
 #include "SceneInterface.h"
@@ -25,11 +26,22 @@ TAutoConsoleVariable<int32> TableNumber(TEXT("HumanTouch.Table"), 1, TEXT("Print
 TAutoConsoleVariable<int32> HideOtherTables(TEXT("HumanTouch.HideOtherTables"), 1, TEXT("Hide the other numbered stations in stereo eye views."));
 TWeakObjectPtr<AActor> PlacedAvatar;
 TWeakObjectPtr<AStaticMeshActor> PlacedTable;
+FTransform PlacedTableTransform;
+TOptional<FTransform> MeasuredEdgePose;
+EHMDTrackingOrigin::Type MeasuredOrigin = EHMDTrackingOrigin::LocalFloor;
+FDelegateHandle RecenterHandle;
 FTSTicker::FDelegateHandle TickHandle;
 IConsoleObject* AlignCommand = nullptr;
 double CaptureAt = -1;
 FString Message;
 int32 LastMissing = INDEX_NONE;
+
+void ForgetRoom()
+{
+    MeasuredEdgePose.Reset();
+    PlacedAvatar.Reset();
+    CaptureAt = -1;
+}
 
 FString StationLabel(int32 Number, const TCHAR* Base)
 {
@@ -74,13 +86,14 @@ bool HasLiveViewer()
     if (!FPlatformMisc::GetEnvironmentVariable(TEXT("OXRSYS_TRANSPORT")).IsEmpty() ||
         FPlatformMisc::GetEnvironmentVariable(TEXT("XR_RUNTIME_JSON")).Contains(TEXT("oxrsys")))
     {
-        FString Json, State;
+        FString Json, State, Device;
         double Pid = 0, Updated = 0;
         TSharedPtr<FJsonObject> Report;
         const FString Path = FPaths::Combine(FPlatformProcess::UserHomeDir(), TEXT("Library/Application Support/OXRSys/runtime_status.json"));
         if (!FFileHelper::LoadFileToString(Json, *Path) ||
             !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Report) || !Report.IsValid() ||
             !Report->TryGetStringField(TEXT("state"), State) || State != TEXT("streaming") ||
+            !Report->TryGetStringField(TEXT("device_type"), Device) || Device != TEXT("quest") ||
             !Report->TryGetNumberField(TEXT("process_id"), Pid) || Pid != FPlatformProcess::GetCurrentProcessId() ||
             !Report->TryGetNumberField(TEXT("updated_at_unix_ms"), Updated))
             return false;
@@ -151,7 +164,13 @@ bool Tick(float)
     }
     if (!GEditor || !GEngine || !GEngine->XRSystem || !GEngine->StereoRenderingDevice ||
         !GEngine->StereoRenderingDevice->IsStereoEnabled())
+    {
+        ForgetRoom();
         return true;
+    }
+    auto& XR = *GEngine->XRSystem;
+    if (MeasuredEdgePose.IsSet() && XR.GetTrackingOrigin() != MeasuredOrigin)
+        ForgetRoom();
     UWorld* World = GEditor->GetEditorWorldContext().World();
     if (!IsStation(World))
         return true;
@@ -161,7 +180,8 @@ bool Tick(float)
     const bool bCapture = CaptureAt >= 0 && FPlatformTime::Seconds() >= CaptureAt;
     if (!bCapture && PlacedAvatar.IsValid() && PlacedTable.IsValid() &&
         PlacedAvatar->GetWorld() == World &&
-        PlacedTable->GetActorLabel(false) == StationLabel(Number, TEXT("Dreamlabs_YAM_Table")))
+        PlacedTable->GetActorLabel(false) == StationLabel(Number, TEXT("Dreamlabs_YAM_Table")) &&
+        PlacedTable->GetActorTransform().Equals(PlacedTableTransform))
         return true;
     const UClass* AvatarClass = FindObject<UClass>(nullptr, TEXT("/Script/XRCreative.XRCreativeAvatar"));
     if (!AvatarClass)
@@ -192,7 +212,6 @@ bool Tick(float)
         return true;
     }
     LastMissing = INDEX_NONE;
-    auto& XR = *GEngine->XRSystem;
     const auto Origin = XR.GetTrackingOrigin();
     if (Origin != EHMDTrackingOrigin::LocalFloor && Origin != EHMDTrackingOrigin::Stage)
     {
@@ -235,7 +254,15 @@ bool Tick(float)
             UE_LOG(LogHumanTouchTable, Warning, TEXT("%s"), *Message);
             return true;
         }
-        const FTransform Aligned = RoomAtNearEdge(Edge, Room.Z, Yaw, Head, HeadRotation.Rotator().Yaw);
+        MeasuredEdgePose.Emplace(HeadRotation, Head);
+        MeasuredOrigin = XR.GetTrackingOrigin();
+    }
+    // Concert can replace the map and avatar at checkpoints. The measured point
+    // belongs to tracking space and can be reused with the new table geometry.
+    if (MeasuredEdgePose.IsSet())
+    {
+        const FTransform Aligned = RoomAtNearEdge(Edge, Room.Z, Yaw, MeasuredEdgePose->GetTranslation(),
+                                                  MeasuredEdgePose->Rotator().Yaw);
         Room = Aligned.GetTranslation();
         Yaw = Aligned.Rotator().Yaw;
         Message = FString::Printf(TEXT("Table %d aligned to your near edge."), Number);
@@ -246,6 +273,7 @@ bool Tick(float)
     Avatar->SetActorLocationAndRotation(Room, FRotator(0, Yaw, 0), false, nullptr, ETeleportType::TeleportPhysics);
     PlacedAvatar = Avatar;
     PlacedTable = Table;
+    PlacedTableTransform = Table->GetActorTransform();
     UE_LOG(LogHumanTouchTable, Display, TEXT("%s Room origin %s, yaw %.2f"), *Message, *Room.ToString(), Yaw);
     return true;
 }
@@ -269,6 +297,7 @@ void HumanTouchXRTable::Startup()
     int32 Number = 1;
     if (FParse::Value(FCommandLine::Get(), TEXT("HumanTouchTable="), Number))
         TableNumber->Set(Number, ECVF_SetByCommandline);
+    RecenterHandle = FCoreDelegates::VRHeadsetRecenter.AddStatic(&ForgetRoom);
     AlignCommand = IConsoleManager::Get().RegisterConsoleCommand(TEXT("HumanTouch.AlignTable"),
         TEXT("Align the selected table using the current headset pose. Add 'delay' for five seconds."),
         FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
@@ -280,6 +309,7 @@ void HumanTouchXRTable::Startup()
 void HumanTouchXRTable::Shutdown()
 {
     FTSTicker::GetCoreTicker().RemoveTicker(TickHandle);
+    FCoreDelegates::VRHeadsetRecenter.Remove(RecenterHandle);
     if (AlignCommand) IConsoleManager::Get().UnregisterConsoleObject(AlignCommand);
     EyeView.Reset();
 }
