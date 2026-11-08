@@ -13,13 +13,18 @@ python3 -m voice_agent.play --say cold_open       # one line by id (stage fallba
 python3 -m unittest discover -s voice_agent -t . -p 'test_*.py' -v
 ```
 
-At the station, copy `handoff.run`'s event lines (stderr) to a file and follow that file from a second terminal:
+At the station, copy `handoff.run`'s event lines (stderr) to a file and follow that file from a second terminal. Run `python3 -m voice_agent.render` once first on the Mac with the speaker (a line with no WAV falls back to live `say`).
 
 ```sh
 mkdir -p voice_agent/local   # tee needs the folder; render makes it on a Mac
-python3 -m vision.run ... --verbose \
+# Mark mode, the live beat. Only stderr is copied: the g / s / h / q keys still go to this terminal.
+python3 -m handoff.run --mode mark --feed operator --operator-cutoff --trials 10 \
+    2> >(tee -a voice_agent/local/events.log >&2)
+# Hand mode, only if it reached 8 of 10 (detector command in handoff/README.md)
+vision/local/.venv/bin/python -m vision.run ... --verbose \
   | python3 -m handoff.run --mode hand --feed - --operator-cutoff --trials 10 \
       2> >(tee -a voice_agent/local/events.log >&2)
+# Second terminal:
 python3 -m voice_agent.play --follow voice_agent/local/events.log
 ```
 

@@ -113,6 +113,10 @@ def main(argv=None) -> int:
     if a.mode == "hand" and a.feed == "operator":
         print("Hand mode needs a detector feed: it waits for the can between the jaws.", file=sys.stderr)
         return 2
+    if a.mode == "hand" and not cfg.gripper.contact_calibrated and not a.dry_run:
+        print("Not running hand mode on the real arm: the gripper contact band is not measured on the can yet.\n"
+              "Close the jaws on the demo can, then python3 -m handoff.teach --contact.", file=sys.stderr)
+        return 2
     if not cfg.gripper.contact_calibrated:
         print("warning: the gripper contact band is not measured on the can yet "
               "(python3 -m handoff.teach --contact)", file=sys.stderr)

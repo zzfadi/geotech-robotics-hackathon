@@ -1,5 +1,6 @@
 """python3 -m unittest discover -s handoff -t . -p 'test_*.py' -v"""
 import json
+import socket
 import socketserver
 import subprocess
 import sys
@@ -164,7 +165,8 @@ class OcclusionFailSafe(unittest.TestCase):
         return cfg, result, arm.calls
 
     def test_hidden_hand_never_carries_the_can_away(self):
-        for name in ("hand_occluded_while_holding", "hand_lens_covered_while_holding"):
+        for name in ("hand_occluded_while_holding", "hand_lens_covered_while_holding",
+                     "hand_seen_off_then_lens_covered"):
             with self.subTest(name):
                 cfg, result, calls = self._run(scenario(name))
                 self.assertEqual((result.outcome, result.reason), ("failed", "release_not_seen"))
@@ -191,6 +193,36 @@ class OcclusionFailSafe(unittest.TestCase):
         release = next(e["t"] for e in result.events if e["kind"] == "contact" and e["what"] == "release")
         self.assertGreaterEqual(release, 17.0)
 
+    def test_letting_go_during_the_close_counts(self):
+        # Seen off the can during the 3 s close wait, then out of view: released.
+        sc = scenario("hand_let_go_during_close")
+        cfg, result, calls = self._run(sc)
+        self.assertEqual((result.outcome, result.reason), ("success", "held"))
+        close = next(c["t"] for c in calls if c["cmd"] == "grip" and c["deg"] == cfg.gripper.close_deg)
+        self.assertLess(close, 9.5)   # the hand let go after the close started
+
+    def test_a_stale_feed_drops_a_seen_release(self):
+        # Seen off for 0.2 s, then frames stop (feed restart), then the hand is
+        # out of view: the glimpse no longer counts, so no carry.
+        for name, timeline in (
+            ("after the close", [
+                {"from": 0, "to": 8},
+                {"from": 8, "to": 14, "can_in_jaws": True, "hand_on_can": True},
+                {"from": 14, "to": 14.2, "can_in_jaws": True, "hand_on_can": False, "hand_visible": True},
+                {"from": 14.2, "to": 14.7, "missing": True},
+                {"from": 14.7, "to": 80, "missing": False, "hand_visible": False}]),
+            ("during the close", [
+                {"from": 0, "to": 8},
+                {"from": 8, "to": 9.5, "can_in_jaws": True, "hand_on_can": True},
+                {"from": 9.5, "to": 9.8, "can_in_jaws": True, "hand_on_can": False, "hand_visible": True},
+                {"from": 9.8, "to": 10.3, "missing": True},
+                {"from": 10.3, "to": 80, "missing": False, "hand_visible": False}])):
+            with self.subTest(name):
+                _, result, _ = self._run({"operator": [[1.0, "go"]], "timeline": timeline})
+                self.assertEqual((result.outcome, result.reason), ("failed", "release_not_seen"))
+                steps = [e["step"] for e in result.events if e["kind"] == "step"]
+                self.assertNotIn("retreat", steps)
+
     def test_release_predicate(self):
         from handoff.detections import Scene
         released, watch = Routine._release_evidence()
@@ -207,6 +239,12 @@ class OcclusionFailSafe(unittest.TestCase):
         self.assertFalse(released(on))           # back on the can: start over
         self.assertFalse(released(gone))
         self.assertFalse(released(Scene(1.4, False)))
+        covered = Scene(1.5, True, False, False, False, hand_visible=False)
+        self.assertTrue(released(seen_off))
+        self.assertFalse(released(covered))      # no can in view (covered lens): drop the release
+        self.assertEqual(watch, {"seen_off": False, "unseen": True})
+        self.assertFalse(released(gone))         # it must be seen again
+        self.assertFalse(released(Scene(1.6, True, False, None, False, hand_visible=True)))
 
     def test_boxes_and_vision_report_hand_visible(self):
         zones = Zones(jaws=(0.3, 0.3, 0.7, 0.8))
@@ -277,12 +315,48 @@ class SocketArmTests(unittest.TestCase):
 class ConfigAndTools(unittest.TestCase):
     def test_committed_poses_are_untaught_placeholders(self):
         cfg = load()
+        if any(p.taught for p in cfg.poses.values()) or cfg.gripper.contact_calibrated:
+            self.skipTest("handoff/poses.json has been taught at the station; the placeholder check no longer applies")
         self.assertEqual(set(cfg.untaught("hand")), {"ready", "offer", "carry"})
         self.assertFalse(cfg.gripper.contact_calibrated)
 
+    @staticmethod
+    def _live_args(d: str, poses: Path) -> list:
+        # Never the station's poses.json (taught at the station), its trial log or
+        # port 8765: if a refusal ever broke, this must not reach the real arm.
+        s = socket.socket()
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]
+        s.close()
+        return ["--operator-cutoff", "--poses", str(poses), "--port", str(port),
+                "--trial-log", str(Path(d) / "trials.jsonl"), "--telemetry", str(Path(d) / "sessions")]
+
     def test_live_runner_refuses_untaught_poses(self):
         from handoff import run
-        self.assertEqual(run.main(["--mode", "mark", "--feed", "operator", "--operator-cutoff"]), 2)
+        raw = json.loads((ROOT / "handoff/poses.json").read_text())
+        for pose in raw["poses"].values():
+            pose["taught"] = False
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "poses.json"
+            path.write_text(json.dumps(raw))
+            self.assertEqual(run.main(["--mode", "mark", "--feed", "operator"] + self._live_args(d, path)), 2)
+
+    def test_live_runner_refuses_hand_mode_without_a_measured_band(self):
+        import io
+        from contextlib import redirect_stderr
+        from handoff import run
+        raw = json.loads((ROOT / "handoff/poses.json").read_text())
+        for pose in raw["poses"].values():
+            pose["taught"] = True
+        raw["gripper"]["contact_calibrated"] = False
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "poses.json"
+            path.write_text(json.dumps(raw))
+            err = io.StringIO()
+            with redirect_stderr(err):
+                code = run.main(["--mode", "hand", "--feed", "-"] + self._live_args(d, path))
+        self.assertEqual(code, 2)
+        self.assertIn("contact band is not measured", err.getvalue())
 
     def test_gripper_degrees_must_be_ordered(self):
         raw = json.loads((ROOT / "handoff/poses.json").read_text())

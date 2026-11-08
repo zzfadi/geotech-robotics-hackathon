@@ -8,16 +8,17 @@
 It prints one line per check and a verdict:
 
   GO         hand mode and mark mode can both run
-  MARK-ONLY  the taped-mark fallback can run; hand mode cannot (no detector, or
-             a hand-mode pose is not taught)
+  MARK-ONLY  the taped-mark fallback can run; hand mode cannot (no detector, a
+             hand-mode pose is not taught, or the grip band is not measured)
   NO-GO      fix the NO-GO lines first
 
 Exit code 0 for GO, 3 for MARK-ONLY, 1 for NO-GO.
 
 It never touches hardware: it opens no CAN, USB or camera device, sends
-nothing to the arm server and never moves the arm. It reads git, poses.json
-and the process list, test-binds 127.0.0.1:8765 for an instant when it cannot
-see who holds it, and runs only commands that need no hardware.
+nothing to the arm server and never moves the arm. It reads git, poses.json,
+arm/tools/arm_names.json and the process list, test-binds 127.0.0.1:8765 for
+an instant when it cannot see who holds it, and runs only commands that need
+no hardware.
 Standard library only, Python 3.9 or newer.
 """
 from __future__ import annotations
@@ -161,8 +162,42 @@ def can_bind(host: str, port: int) -> bool:
         s.close()
 
 
+ARM_NAMES = ROOT / "arm" / "tools" / "arm_names.json"
+
+
+def _server_arm(cmd: str) -> Optional[str]:
+    """The arm argument on a pickup_server.py command line, or None."""
+    words = cmd.split()
+    for i, w in enumerate(words):
+        if re.search(r"pickup_server(\.py)?$", w):
+            rest = iter(words[i + 1:])
+            for x in rest:
+                if x in ("--port", "--log"):
+                    next(rest, None)       # skip the option's value
+                elif not x.startswith("-"):
+                    return x
+            return None
+    return None
+
+
+def _names_arm(which: Optional[str], arm: str, names: Path = ARM_NAMES) -> bool:
+    """Whether a pickup_server arm argument selects ``arm``: its name, or (as
+    arm/tools/arms.py resolves it) a serial or serial suffix mapped to it."""
+    if not which:
+        return False
+    if which == arm:
+        return True
+    try:
+        mapping = json.loads(names.read_text())
+    except (OSError, ValueError):
+        return False
+    hits = {n for serial, n in mapping.items() if serial == which or serial.endswith(which)}
+    return hits == {arm}
+
+
 def check_port(port: int = ARM_PORT, host: str = "127.0.0.1", runner: Runner = run,
-               bind: Callable[[str, int], bool] = can_bind) -> Check:
+               bind: Callable[[str, int], bool] = can_bind, arm: Optional[str] = None) -> Check:
+    """``arm`` is the arm poses.json is for: a pickup_server for another arm is NO-GO."""
     name = "port %d" % port
     owners = _lsof_owners(port, runner)
     if owners is None:
@@ -170,6 +205,7 @@ def check_port(port: int = ARM_PORT, host: str = "127.0.0.1", runner: Runner = r
     if owners:
         described = []
         foreign = []
+        wrong_arm = []
         for pid, short in owners:
             cmd = _command_line(pid, runner) or short
             # Keep the end of a long command line: the script name is there, not
@@ -178,10 +214,16 @@ def check_port(port: int = ARM_PORT, host: str = "127.0.0.1", runner: Runner = r
             described.append("%s (pid %d)" % (shown, pid) if pid else shown)
             if "pickup_server" not in cmd:
                 foreign.append(described[-1])
-        if not foreign:
-            return Check(name, OK, "held by the arm server: %s" % "; ".join(described))
-        return Check(name, NO_GO, "held by %s; the arm tools need %s:%d, stop it (the control center "
-                                  "now uses 8780)" % ("; ".join(foreign), host, port))
+            elif arm and not _names_arm(_server_arm(cmd), arm):
+                wrong_arm.append(described[-1])
+        if foreign:
+            return Check(name, NO_GO, "held by %s; the arm tools need %s:%d, stop it (the control center "
+                                      "now uses 8780)" % ("; ".join(foreign), host, port))
+        if wrong_arm:
+            return Check(name, NO_GO, "arm server for the wrong arm: %s; poses.json is for the %s arm. "
+                                      "Rest it (pickup_client.py rest), then start pickup_server.py %s"
+                         % ("; ".join(wrong_arm), arm, arm))
+        return Check(name, OK, "held by the arm server: %s" % "; ".join(described))
     if bind(host, port):
         return Check(name, OK, "%s:%d is free for pickup_server" % (host, port))
     return Check(name, WARN, "%s:%d is in use but the owner is not visible (no lsof/ss, or another "
@@ -222,9 +264,11 @@ def check_poses(path: Path = DEFAULT_POSES) -> List[Check]:
         out.append(Check("grip band", OK, "contact band %.1f to %.1f deg, measured on the can"
                          % (g.contact_min_deg, g.contact_max_deg)))
     else:
-        out.append(Check("grip band", WARN, "contact band %.1f to %.1f deg is a wide default; measure it on "
-                                            "the demo can (python3 -m handoff.teach --contact)"
-                         % (g.contact_min_deg, g.contact_max_deg)))
+        # Mark mode only warns on it (run.py too). Hand mode closes beside a person's
+        # fingers, and the wide default band cannot tell fingers from the can.
+        out.append(Check("grip band", MARK_ONLY, "contact band %.1f to %.1f deg is a wide default; measure it "
+                                                 "on the demo can (python3 -m handoff.teach --contact) before "
+                                                 "hand mode" % (g.contact_min_deg, g.contact_max_deg)))
     return out
 
 
@@ -259,12 +303,10 @@ def check_detector(python: str = sys.executable, weights: Sequence[str] = ("yolo
 # ----------------------------------------------------------------- tests
 def check_tests(root: Path = ROOT, runner: Runner = run, python: str = sys.executable) -> List[Check]:
     out = []
-    # The wrapper's fixed list leaves out the pickup_server startup tests; add them.
-    rc, text = runner(["bash", "arm/tools/arm", "test", "arm/tools/test_pickup_server_startup.py"],
-                      cwd=root, timeout=600)
+    rc, text = runner(["bash", "arm/tools/arm", "test"], cwd=root, timeout=600)
     m = re.findall(r"(\d+) passed", text)
     if rc == 0:
-        out.append(Check("arm tests", OK, "bash arm/tools/arm test (+ pickup_server startup): %s passed" % (m[-1] if m else "all")))
+        out.append(Check("arm tests", OK, "bash arm/tools/arm test: %s passed" % (m[-1] if m else "all")))
     else:
         out.append(Check("arm tests", NO_GO, "bash arm/tools/arm test failed: %s" % _tail(text)))
     rc, text = runner([python, "-m", "unittest", "discover", "-s", "handoff", "-t", ".", "-p", "test_*.py"],
@@ -306,7 +348,11 @@ def _tail(text: str) -> str:
 
 # ------------------------------------------------------------------ main
 def gather(a, runner: Runner = run) -> List[Check]:
-    checks = [check_git(ROOT, a.fetch, runner), check_port(a.port, runner=runner), check_arm_venv(ROOT)]
+    try:
+        arm = load(a.poses).arm
+    except (OSError, ValueError):
+        arm = None   # check_poses reports the broken file
+    checks = [check_git(ROOT, a.fetch, runner), check_port(a.port, runner=runner, arm=arm), check_arm_venv(ROOT)]
     checks += check_poses(a.poses)
     checks += check_detector(a.vision_python, (a.detect, a.pose), runner)
     if a.run_tests:

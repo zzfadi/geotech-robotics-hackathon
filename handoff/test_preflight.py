@@ -138,6 +138,30 @@ class PortTest(unittest.TestCase):
             self.assertIn(shown, c.reason)
             self.assertIn("pid 55", c.reason)
 
+    def test_arm_server_must_be_for_the_configured_arm(self):
+        def owner(cmdline):
+            return FakeRunner([(["lsof"], (0, "p4242\ncPython\n")), (["ps"], (0, cmdline + "\n"))])
+        c = preflight.check_port(8765, runner=FakeRunner(LSOF_PICKUP), bind=self.never_bind, arm="right")
+        self.assertEqual(c.level, OK)
+        c = preflight.check_port(8765, runner=owner("python arm/tools/pickup_server.py left --operator-cutoff "
+                                                    "--log x"), bind=self.never_bind, arm="right")
+        self.assertEqual(c.level, NO_GO)
+        self.assertIn("arm server for the wrong arm", c.reason)
+        self.assertIn("pickup_server.py left", c.reason)
+        # The arm argument after options, or as the right arm's serial (or its suffix), is fine.
+        for cmdline in ("python arm/tools/pickup_server.py --port 8765 --log x right --operator-cutoff",
+                        "python arm/tools/pickup_server.py 0027002E4146570520313238 --operator-cutoff --log x",
+                        "python arm/tools/pickup_server.py 4146570520313238 --operator-cutoff --log x"):
+            c = preflight.check_port(8765, runner=owner(cmdline), bind=self.never_bind, arm="right")
+            self.assertEqual(c.level, OK, cmdline)
+        c = preflight.check_port(8765, runner=owner("python arm/tools/pickup_server.py 2077378045465008 "
+                                                    "--operator-cutoff --log x"), bind=self.never_bind, arm="right")
+        self.assertEqual(c.level, NO_GO)
+        # Owner not visible at all: still only a warning, whatever the arm.
+        c = preflight.check_port(8765, runner=FakeRunner([(["lsof"], (1, ""))]), bind=lambda h, p: False,
+                                 arm="right")
+        self.assertEqual(c.level, WARN)
+
     def test_free_port(self):
         r = FakeRunner([(["lsof"], (1, ""))])
         c = preflight.check_port(8765, runner=r, bind=lambda h, p: True)
@@ -183,6 +207,8 @@ class VenvAndPosesTest(unittest.TestCase):
         return {c.name: c.level for c in preflight.check_poses(path)}
 
     def test_untaught_poses_as_committed(self):
+        if any(p.get("taught") for p in json.loads(POSES.read_text()).get("poses", {}).values()):
+            self.skipTest("handoff/poses.json has been taught at the station; the placeholder check no longer applies")
         lv = self.levels(POSES)
         self.assertEqual(lv["mark poses"], NO_GO)
         self.assertEqual(lv["hand poses"], MARK_ONLY)
@@ -192,7 +218,11 @@ class VenvAndPosesTest(unittest.TestCase):
             self.assertEqual(self.levels(taught_poses(tmp)),
                              {"mark poses": OK, "hand poses": OK, "grip band": OK})
             lv = self.levels(taught_poses(tmp, hand=False, calibrated=False))
-            self.assertEqual((lv["mark poses"], lv["hand poses"], lv["grip band"]), (OK, MARK_ONLY, WARN))
+            self.assertEqual((lv["mark poses"], lv["hand poses"], lv["grip band"]), (OK, MARK_ONLY, MARK_ONLY))
+            # Every pose taught but the band unmeasured: the mark only, never hand mode.
+            checks = preflight.check_poses(taught_poses(tmp, calibrated=False))
+            self.assertEqual(preflight.verdict(checks), MARK_ONLY)
+            self.assertIn("handoff.teach --contact", {c.name: c.reason for c in checks}["grip band"])
 
     def test_broken_poses_file_is_no_go(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -231,7 +261,9 @@ class TestsCheckTest(unittest.TestCase):
     ]
 
     def test_all_pass(self):
-        checks = preflight.check_tests(ROOT, FakeRunner(self.PASS))
+        r = FakeRunner(self.PASS)
+        checks = preflight.check_tests(ROOT, r)
+        self.assertEqual(r.calls[0], ["bash", "arm/tools/arm", "test"])   # the wrapper lists every arm test
         self.assertEqual([c.level for c in checks], [OK] * 4)
         self.assertIn("140 passed", checks[0].reason)
         self.assertIn("18 of 18", checks[2].reason)
