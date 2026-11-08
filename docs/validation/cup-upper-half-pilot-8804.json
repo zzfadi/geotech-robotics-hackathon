@@ -1,0 +1,110 @@
+{
+  "request": {
+    "id": "880436b31d7f4b99bf9129e0b9c3ea51",
+    "tables": [
+      0
+    ],
+    "prompt": "Pick up the blue drinking cup with the left gripper. Approach the upper half of the cup from above. Keep both fingertips above the tabletop. Center the open fingers on opposite sides of the cup, close gently around its upper body, then lift the cup straight up 10 centimeters and hold it upright for 5 seconds. Keep the right arm still.",
+    "plan": {
+      "version": 1,
+      "seed": 906366486,
+      "mode": "same",
+      "randomize": false,
+      "tables": [
+        {
+          "index": 0,
+          "display_number": 1,
+          "prompt": "Pick up the blue drinking cup with the left gripper. Approach the upper half of the cup from above. Keep both fingertips above the tabletop. Center the open fingers on opposite sides of the cup, close gently around its upper body, then lift the cup straight up 10 centimeters and hold it upright for 5 seconds. Keep the right arm still.",
+          "objective": null,
+          "motion_side": null,
+          "objects": [],
+          "target": "MakerStation_Prop_Cup"
+        }
+      ]
+    },
+    "status": "done",
+    "stop": false,
+    "created_at": 1794112954.7296915,
+    "claimed_by": "b4bd6d56fc884df48a4eee105019c632"
+  },
+  "outcome": "24 cycles; no error, no lift or hold",
+  "cup_metrics": {
+    "MakerStation_Prop_Cup": {
+      "target": "MakerStation_Prop_Cup",
+      "fresh": true,
+      "height_cm": 0.02462174668511352,
+      "held_slow_above_10cm_s": 0.0,
+      "max_height_cm": 0.03527845348843073,
+      "tilt_degrees": 0.017269782063913133,
+      "speed_cm_s": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "measured": true,
+      "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+      "lift_candidate": false,
+      "lift_held": false,
+      "required_hold_seconds": 5,
+      "grasp_verified": false,
+      "task_completed": false
+    },
+    "MakerStation_Prop_Cup_02": {
+      "target": "MakerStation_Prop_Cup_02",
+      "fresh": true,
+      "height_cm": 0.02462257133511514,
+      "held_slow_above_10cm_s": 0.0,
+      "max_height_cm": 0.035278607390495154,
+      "tilt_degrees": 0.01728457512430209,
+      "speed_cm_s": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "measured": true,
+      "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+      "lift_candidate": false,
+      "lift_held": false,
+      "required_hold_seconds": 5,
+      "grasp_verified": false,
+      "task_completed": false
+    },
+    "MakerStation_Prop_Cup_03": {
+      "target": "MakerStation_Prop_Cup_03",
+      "fresh": true,
+      "height_cm": 0.024567261156249742,
+      "held_slow_above_10cm_s": 0.0,
+      "max_height_cm": 0.03527653772560768,
+      "tilt_degrees": 0.016277568167401522,
+      "speed_cm_s": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "measured": true,
+      "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+      "lift_candidate": false,
+      "lift_held": false,
+      "required_hold_seconds": 5,
+      "grasp_verified": false,
+      "task_completed": false
+    },
+    "MakerStation_Prop_Cup_04": {
+      "target": "MakerStation_Prop_Cup_04",
+      "fresh": true,
+      "height_cm": 0.024622492867806045,
+      "held_slow_above_10cm_s": 0.0,
+      "max_height_cm": 0.03527711016239721,
+      "tilt_degrees": 0.017283483819583716,
+      "speed_cm_s": 0.0,
+      "physics_simulated": true,
+      "gravity_enabled": true,
+      "attached_to": null,
+      "measured": true,
+      "measurement_scope": "cup center rise; not lowest-point clearance or grasp proof",
+      "lift_candidate": false,
+      "lift_held": false,
+      "required_hold_seconds": 5,
+      "grasp_verified": false,
+      "task_completed": false
+    }
+  },
+  "recording_request_id": "880436b31d7f4b99bf9129e0b9c3ea51"
+}
