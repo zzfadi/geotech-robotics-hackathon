@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T18:38:02-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Marked the third drinking cup blue on each of the nine simulation tables.",
+  "why": "Provide Dream with a unique visible target instead of ambiguous leftmost-cup wording.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_cups.py",
+    "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cups/M_Cup_Blue"
+  ],
+  "details": "Helper mark_blue_target changes actor material overrides only. Exact nine Cup_03 material assignments verified live on Luna2, editor appearance checked. Other cups remain ivory; Table10, physics, geometry and placement unchanged. Taskt-0254 shared9KBmaterial."
+}

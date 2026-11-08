@@ -79,3 +79,24 @@ def replace_all(seed=20261107):
             a.set_actor_location_and_rotation(location,unreal.Rotator(),False,True);a.set_actor_scale3d(unreal.Vector(1,1,1))
             c=a.static_mesh_component;c.modify();c.set_mobility(unreal.ComponentMobility.MOVABLE);c.set_static_mesh(mesh);c.set_collision_profile_name('PhysicsActor');c.set_collision_enabled(unreal.CollisionEnabled.QUERY_AND_PHYSICS);c.set_simulate_physics(False)
     return {'removed_obsolete_actors':removed,'created_cups':created,'cup_count':sum(map(len,layouts.values())), 'seed':seed,'layouts':layouts,'convex_hulls':unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem).get_convex_collision_count(mesh),'physics':'Free dynamics enabled only in runtime; uncalibrated .05kg/.8 friction assumptions; no liquid'}
+
+
+def mark_blue_target():
+    """Give Cup_03 a unique visual cue on each Dream table; no physical edits."""
+    import unreal,yam_station
+    if unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_game_world() is not None:
+        raise RuntimeError('Change target material only while simulation idle')
+    actors={a.get_actor_label():a for a in unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()}
+    labels=[('' if i==0 else 'MakerFleet_T%02d__'%i)+LABEL+'_03' for i in range(9)]
+    missing=[name for name in labels if name not in actors]
+    if missing:raise RuntimeError('Missing target cups: '+repr(missing))
+    old=yam_station.ASSETS
+    try:
+        yam_station.ASSETS=ASSETS
+        material=yam_station.material('Cup_Blue',(.02,.22,.8))
+    finally:yam_station.ASSETS=old
+    for name in labels:
+        actor=actors[name];component=actor.static_mesh_component
+        actor.modify();component.modify();component.set_material(0,material)
+    return {'target_label':LABEL+'_03','material':material.get_path_name(),'cups':labels,
+            'scope':'Visual cue only; geometry, placement, collisions and dynamics unchanged'}
