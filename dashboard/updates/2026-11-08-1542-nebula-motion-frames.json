@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-08T15:42:13-08:00",
+  "workstream": "demo",
+  "status": "in-progress",
+  "what": "Prepared the two Higgsfield keyframes from the approved logo.",
+  "why": "Matching hand positions and a locked end frame define the human-first light reveal.",
+  "where": [
+    "demo/pitch/films/logo/"
+  ]
+}
