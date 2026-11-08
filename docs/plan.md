@@ -14,7 +14,7 @@ Drafted overnight on FADI's Mac mini while the arms were disconnected. **Every i
 4. **PROPOSED: the fist bump is one fixed closed-gripper pose.** Teach a `fist` pose and play it by hand with `pickup_client.py joints`; the routine never uses it. Cut it at 11:00 if it isn't locked. It still has no owner.
 5. **PROPOSED: the hold interlock and the Isaac → Unreal stream are out of the MVP** (rows 6 and 7 of the owners table). The operator on the e-stop and the arm server's own guards stay.
 6. **PROPOSED: voice = scripted local lines** from [`voice_agent/`](../voice_agent/README.md), played on a local speaker. The LiveKit room goes on top only if Takeshi's 10-minute setup in [livekit-fit.md](livekit-fit.md#morning-setup-for-takeshi-about-10-minutes) works. The voice never moves the arm. The line text still needs Brian's or FADI's review.
-7. **PROPOSED: Dream stays off the real arm.** That is the code default (`vision/hybrid.py`, `dream_on_real=False`) and a stated limit of the handoff routine ([handoff limits](../handoff/README.md#limits)). Confirm the Dream/Codex split at standup (Needs a decision, item 2).
+7. **Dream stays off the real arm** (pitch v2, Sunday morning: the real arm runs taught poses on the Maker Arm SDK with the local detector for the last centimetre; Dream drives only the sim arms). The router in `vision/hybrid.py` now always picks local on the real arm, and the handoff routine has no Dream path ([handoff limits](../handoff/README.md#limits)).
 8. **PROPOSED: the Jetson is not Sunday's arm host** unless the mark is locked and a read-only arm test passes on it (the "Read-only hardware" step in [the Jetson brief](handoffs/jetson-end-to-end.md): `scan` and `watch` both adapters; the exact command is still to be named). Until then the arm runs on the machine that holds the right arm's CAN adapter (today a laptop over USB, per the same brief).
 
 ### Run of day (PROPOSED)
@@ -52,7 +52,7 @@ Nobody owns these yet, and nothing below assigns them. Settle them first thing S
 
 1. Who owns the beer handoff on the real arm: take a can from a person's hand, then the fist bump. **Answered:** FADI owns the handoff (voice call, about 10 PM Saturday). The routine and the morning checklist are in [handoff/](../handoff/README.md); the fist bump is still unowned.
 2. How Dream-1 and Codex split the real arm: which moves Dream-1 drives and which Codex scripts directly.
-   - Default in code, not yet confirmed: the real arm runs local (`vision/hybrid.py`, `dream_on_real=False`) and the handoff routine has no Dream path ([handoff/README.md limits](../handoff/README.md#limits)); FADI's 10 PM quote in [docs/hybrid-model.md](hybrid-model.md) sends the full movement to Dream when the network is good, so confirm at standup.
+   - Settled by the pitch's v2 on Sunday morning: Dream-1 does not drive the real robot. The real arm runs our own taught-pose routine on the Maker Arm SDK with the local detector for the last centimetre; Dream drives only the sim arms. `vision/hybrid.py` enforces this, and [docs/hybrid-model.md](hybrid-model.md) records the change.
 
 **Also no owner yet**
 

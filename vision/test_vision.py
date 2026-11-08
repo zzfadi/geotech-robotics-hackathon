@@ -202,9 +202,14 @@ class MomentTrackerTests(unittest.TestCase):
 
 
 class RouterTests(unittest.TestCase):
-    def test_real_arm_runs_local_unless_allowed(self):
-        self.assertEqual(ExecutorRouter(target="real").choose().reason, "real_arm_runs_local")
-        self.assertEqual(ExecutorRouter(target="real", dream_on_real=True).choose().executor, "dream")
+    def test_real_arm_always_runs_local(self):
+        router = ExecutorRouter(target="real")
+        for seconds in (0.5, 0.5, 0.5):
+            router.record_round_trip(seconds)
+        plan = router.choose()
+        self.assertEqual((plan.executor, plan.reason), ("local", "real_arm_runs_local"))
+        with self.assertRaises(TypeError):
+            ExecutorRouter(target="real", dream_on_real=True)
 
     def test_median_of_last_five_against_850_ms(self):
         router = ExecutorRouter()

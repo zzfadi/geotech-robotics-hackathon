@@ -59,7 +59,7 @@ GATE_WHY = {
 }
 
 PLAN_WHY = {
-    "real_arm_runs_local": "The real arm runs the local grasp unless Dream is allowed on it",
+    "real_arm_runs_local": "The real arm always runs the local routine; Dream drives only the sim arms",
     "dream_unavailable": "Dream is switched off for this run",
     "dream_failing": "Recent Dream requests failed",
     "dream_slow": "The median of the last Dream round trips is over {late} ms",

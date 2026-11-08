@@ -4,14 +4,14 @@ The local detector decides *when* the arm may act (a steady offered can) and
 *when it must stop* (an extra hand, a jerked can, a detector failure). The
 router decides *who* moves the arm for that turn:
 
-* Dream, for the full movement, when Dream is available on this target and the
-  median of the last five round trips is at or under 850 ms (Dream workshop);
+* Dream, for the full movement of a simulated arm, when Dream is available and
+  the median of the last five round trips is at or under 850 ms (Dream workshop);
 * local, when the network is slow or Dream keeps failing: the scripted grasp,
   later the edge model (``edge_model/``);
 * either way, the last centimetre near the can is the local assist's job.
 
-On the real arm the default is local: the team's call is that Dream-1 is not
-needed on the physical arm and Dream stays in the simulation. Nothing here
+The real arm is always local, with no override: Dream-1 drives only the
+simulated arms (team decision Sunday, Nov 8, reflected in the pitch's v2). Nothing here
 moves an arm or calls Dream; adapters consume the emitted plans.
 """
 
@@ -49,7 +49,6 @@ class ExecutorRouter:
         *,
         target: str = "sim",
         dream_available: bool = True,
-        dream_on_real: bool = False,
         late_ms: float = 850.0,
         window: int = 5,
         max_failures: int = 2,
@@ -61,7 +60,7 @@ class ExecutorRouter:
             raise ValueError("local_mode must be local_scripted or local_edge_model")
         if not finite(late_ms) or late_ms <= 0 or window < 1 or max_failures < 1:
             raise ValueError("router thresholds must be positive")
-        self.target, self.dream_available, self.dream_on_real = target, dream_available, dream_on_real
+        self.target, self.dream_available = target, dream_available
         self.late_ms, self.max_failures, self.local_mode = float(late_ms), max_failures, local_mode
         self._round_trips: Deque[float] = deque(maxlen=window)
         self._failures = 0
@@ -85,7 +84,7 @@ class ExecutorRouter:
         def local(reason: str) -> Plan:
             return Plan("local", self.local_mode, finish, reason, median)
 
-        if self.target == "real" and not self.dream_on_real:
+        if self.target == "real":
             return local("real_arm_runs_local")
         if not self.dream_available:
             return local("dream_unavailable")

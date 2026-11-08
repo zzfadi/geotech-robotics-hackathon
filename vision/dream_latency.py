@@ -55,7 +55,7 @@ REASONS = {
     "dream_slow": "The median of the last {n} is {median} ms, over {late} ms",
     "dream_failing": "{failures} Dream requests in a row failed",
     "dream_unavailable": "Dream is not available on this machine",
-    "real_arm_runs_local": "The real arm runs the local grasp unless Dream is allowed on it",
+    "real_arm_runs_local": "The real arm always runs the local routine; Dream drives only the sim arms",
 }
 
 

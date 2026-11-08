@@ -2,6 +2,8 @@
 
 Written Saturday night, Nov 7, 10:30 PM, from FADI's voice call and the repo as it stood; updated Sunday 3:30 AM after the Mac Ultralytics check and the Dream latency probe, and at 5:20 AM with the Jetson hub results. FADI owns the can handoff on the real arm. Code: [`vision/`](../vision/README.md). Marked **[inferred]** where it is our design guess rather than something measured or decided.
 
+**Sunday, Nov 8 change:** Dream-1 no longer drives the real robot. The pitch's v2 (posted in #geotech-robotics at 8:03 AM) says the real arm runs our own routine on the Maker Arm SDK, with taught poses and this local detector for the last centimetre, and Dream drives only the simulated arms. The router below now applies to the sim only; on the real arm it always picks local, and the `dream_on_real` override is gone. FADI's 10 PM quote is kept as the original plan.
+
 ## FADI's words (voice call, Nov 7, about 10 PM)
 
 > "We will use the loop on the Jetson for moment-to-moment detection. Then we use the local YOLO … One for aim assist. One for that last centimeter interaction … plus when the network is good, to get the full movement, we send to Dream, and if the network is [slower than] 850 milliseconds, we have things handled locally. And I own the handoff."
@@ -22,8 +24,8 @@ camera (30 fps) ─► local detector on the Orin Nano (YOLO26n + pose, TensorRT
                   turn gate (existing, unchanged) ── HOLD / ROBOT, grant ids
                      │  robot_turn_granted
                      ▼
-                  router ── Dream for the full move if median RTT ≤ 850 ms
-                     │      local (scripted grasp, later edge model) otherwise
+                  router ── real arm: always local (taught-pose routine)
+                     │      sim: Dream if median RTT ≤ 850 ms, local otherwise
                      ▼
                   arm adapter ── start_handoff / abort / retreat_with_can
                                  last centimetre always local (assist)
@@ -54,10 +56,10 @@ All thresholds are **[inferred]** first guesses for a webcam at arm's length and
 
 | Condition | Who moves the arm |
 | --- | --- |
-| Real arm (default) | Local scripted grasp. The team's call is that Dream-1 is not needed on the physical arm and stays in the sim; `dream_on_real=True` overrides it. |
-| Dream unavailable, or 2 failed requests in a row | Local |
-| Median of the last 5 round trips over 850 ms | Local (FADI's rule) |
-| Otherwise | Dream, async, for the full movement, with the prompt "Take the can from the person's hand." **[inferred prompt]** |
+| Real arm (always) | Local: the taught-pose handoff routine on the Maker Arm SDK, with the detector for the last centimetre. No override; Dream drives only the sim arms. |
+| Sim, Dream unavailable or 2 failed requests in a row | Local |
+| Sim, median of the last 5 round trips over 850 ms | Local (FADI's rule) |
+| Sim, otherwise | Dream, async, for the full movement, with the prompt "Take the can from the person's hand." **[inferred prompt]** |
 | Every case | The last centimetre near the can is the local assist's job |
 
 Two cautions. Dream's own client switches itself from async to sync above a 700 ms median by default, and the workshop advice was to wait for a late reply and never skip ahead in a chunk. So the router decides per turn, and inside a Dream turn the client's own sync mode applies; the local controller only takes over between turns or when Dream fails. Changing the prompt mid-episode is allowed (it's a field of each observation) but its effect isn't documented, so call `reset_episode()` when the task changes **[inferred]**.

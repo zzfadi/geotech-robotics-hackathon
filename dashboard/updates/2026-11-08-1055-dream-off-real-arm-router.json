@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T10:55:00-08:00",
+  "workstream": "dream1",
+  "status": "decision",
+  "what": "Hybrid router: the real arm always runs local; Dream drives only the sim arms",
+  "why": "The pitch's v2 says Dream-1 no longer drives the real robot, so the code and the hybrid design now say the same thing.",
+  "where": ["vision/hybrid.py", "docs/hybrid-model.md", "docs/plan.md"],
+  "details": "Removed the dream_on_real override from ExecutorRouter; on the real arm it always picks the local taught-pose routine with the detector for the last centimetre. The 850 ms Dream-or-local rule now applies to the sim only. Vision tests pass."
+}
