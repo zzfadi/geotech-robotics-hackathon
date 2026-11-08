@@ -210,7 +210,10 @@ class Handler(BaseHTTPRequestHandler):
             worker_id=data.get('worker_id','')
             if not isinstance(worker_id,str) or not re.fullmatch(r'[0-9a-f]{32}',worker_id):return self.send(409,{'error':'Fleet worker_id required'})
             if self.path=='/api/fleet/worker/hello':
-                if f.get('worker_id') not in (None,worker_id) and (time.time()-f['worker_at']<15 or (command and command['status'] in ('queued','running'))):return self.send(409,{'error':'Another fleet worker owns the lease'})
+                # A claimed or running batch pins its worker. A batch still queued and never
+                # claimed must not pin a dead worker's lease, or no replacement can ever run it.
+                pinned=command and (command['status']=='running' or (command['status']=='queued' and command.get('claimed_by')))
+                if f.get('worker_id') not in (None,worker_id) and (time.time()-f['worker_at']<15 or pinned):return self.send(409,{'error':'Another fleet worker owns the lease'})
                 tables=data.get('tables')
                 if (not isinstance(tables,list) or len(tables)>9 or any(not isinstance(t,dict) or type(t.get('index')) is not int or not 0<=t['index']<=8 for t in tables) or len({t['index'] for t in tables})!=len(tables)):
                     raise ValueError('Expected distinct fleet table IDs')

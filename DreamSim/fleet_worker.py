@@ -119,7 +119,13 @@ class Editor:
         self.project = Path(project)
         self.lock = threading.Lock()
 
+    def tools_path(self):
+        """Editor Python may start without the project's Tools folder (e.g. after a restart)."""
+        return 'import sys\nsys.path.insert(0, %r) if %r not in sys.path else None\n' % ((str(self.project/'Tools'),)*2)
+
     def call(self, tool, args, timeout=60):
+        if tool == 'run_python':
+            args = dict(args, code=self.tools_path()+args['code'])
         env = dict(os.environ, COPRESENCE_UNREAL_MCP_URL='http://127.0.0.1:8041/mcp')
         env.pop('DREAM_API_KEY', None)
         with self.lock:
@@ -215,6 +221,20 @@ class TableRun:
             time.sleep(.1)
         raise TimeoutError('No fresh verified observation for ' + self.key)
 
+    def goal_status(self, lift=None):
+        """Live goal summary for the web panel: target height, measured rise, phase."""
+        objective = self.v.get('objective') or {}
+        if not objective:
+            return None
+        held = self.result.get('threshold_hold') or {}
+        rise = float((lift or {}).get('height_cm', self.cup_rise) or 0.)
+        phase = ('reach' if self.result['cycles_run'] == 0 and self.v.get('assist', {}).get('approach') == 'scripted'
+                 else 'grasp' if self.grip_latch is None else
+                 'lift' if rise < float(objective.get('height_cm', 10.))-.5 else 'hold')
+        return {'required_height_cm': objective.get('height_cm', 10.), 'hold_seconds': objective.get('hold_seconds', 5.),
+                'rise_cm': round(rise, 1), 'phase': phase, 'held_s': held.get('held_s', 0.),
+                'achieved': bool(held.get('passed') or (lift or {}).get('lift_held'))}
+
     def prompt_now(self):
         """Opt-in language subgoals: grasp until the jaws hold the cup, lift until the
         table's height is reached, then hold. Dream produces every action for each."""
@@ -290,7 +310,8 @@ class TableRun:
         target = self.v['target']['label']
         from action_prefix_guard import PrefixGuard
         prefix_guard = PrefixGuard()
-        for cycle in range(self.v['cycles']):
+        reach_pending = self.v.get('assist', {}).get('approach') == 'scripted' and not self.args.dry_run
+        for cycle in range(self.v['cycles']+int(reach_pending)):
             if self.stopped():
                 self.result['stopped_reason'] = 'fleet stopped'
                 return
@@ -301,13 +322,21 @@ class TableRun:
                 return
             packet = self.fresh(after)
             started = time.monotonic()
-            action, used = self.infer(packet)
+            reaching, reach = reach_pending, None
+            if reaching:
+                from pregrasp import approach_action
+                reach_pending = False
+                action, reach = approach_action(packet['state'], self.v)
+                used = None
+                self.log('planned reach from idle to the cup (%d rows, no Dream call)' % reach['rows'])
+            else:
+                action, used = self.infer(packet)
             packet = used or packet
             raw, ik = action, None
             write_json(self.dir/('raw-action-%02d.json' % (cycle+1)),
                        {'state': packet['state'], 'action': raw, 'captured_unix': packet['captured_unix']})
             active_side = self.v.get('motion_side')
-            if self.v['position_ik'] and not self.args.dry_run:
+            if self.v['position_ik'] and not self.args.dry_run and not reaching:
                 from position_ik import adapt
                 active = [active_side] if active_side else None
                 try:
@@ -351,8 +380,10 @@ class TableRun:
             write_json(report, {'state': packet['state'], 'action': action, 'raw_action': raw if ik else None,
                                 'ik_report': ik, 'table_guard': guard, 'vertical_hold': vertical, 'grip_latch': self.grip_latch, 'motion_side': active_side, 'execution_rows': None if self.args.dry_run else execution.get('executed_rows', self.v['action_rows']),
                                 'checkpoint': None if self.args.dry_run else self.v['checkpoint'],
+                                'reach': reach,
                                 'controller_source': 'dry-run hold' if self.args.dry_run else
-                                ('Dream EEF + position IK' if ik else 'Dream joint targets')})
+                                ('planned reach from idle (no Dream call)' if reaching else
+                                 'Dream EEF + position IK' if ik else 'Dream joint targets')})
             inference = time.monotonic() - started
             self.status()  # Runtime may have reached its deadline during IK.
             write_json(self.dir/'command.json', {'seq': cycle+1, 'report': str(report)})
@@ -802,7 +833,8 @@ def table_progress(fleet, runs):
         out[r.key] = {'calls': r.result['calls'], 'returned_actions': sum(bool(q.get('returned_action')) for q in r.result['requests']),
                       'cycles_run': r.result['cycles_run'], 'cycles_planned': r.result['cycles_planned'],
                       'cup_metrics':metrics,'measured_cup':selected,'lift': lift, 'error': r.result['error'] or status.get('error'),
-                      'stopped_reason': r.result['stopped_reason'], 'moving': status.get('moving')}
+                      'stopped_reason': r.result['stopped_reason'], 'moving': status.get('moving'),
+                      'goal': r.goal_status(lift)}
     return out
 
 
@@ -972,6 +1004,10 @@ def serve(args, config):
             if changed:
                 print('Config reload refused: checkpoint changed for tables %s (restart the worker)' % changed, flush=True)
             else:
+                last = read_json(data/'last-reset.json')
+                if last is not None:
+                    from fleet_reset import reset_config
+                    fresh = reset_config(fresh, last['seed'])  # keep the current Reset layout
                 config, config_mtime = fresh, args.config.stat().st_mtime
                 print('Reloaded %s' % args.config, flush=True)
         chosen = [dict(t) for t in config['tables']]

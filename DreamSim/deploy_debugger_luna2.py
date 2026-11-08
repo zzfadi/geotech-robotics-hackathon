@@ -39,7 +39,9 @@ def busy():
     if (status.get('command') or {}).get('status') in ('queued', 'running'):
         return 'main table command is active'
     fleet = json.load(urllib.request.urlopen(URL + '/api/fleet', timeout=5))
-    if (fleet.get('command') or {}).get('status') in ('queued', 'running'):
+    command = fleet.get('command') or {}
+    stale = command.get('status') == 'queued' and not command.get('claimed_by') and not fleet.get('online')
+    if command.get('status') in ('queued', 'running') and not stale:
         return 'replica-table run is active'
     return None
 
