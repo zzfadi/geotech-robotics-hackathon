@@ -2,6 +2,8 @@
 #include "Algo/AllOf.h"
 #include "Dom/JsonObject.h"
 #include "HAL/FileManager.h"
+#include "HAL/PlatformProcess.h"
+#include "HumanTouchBench.h"
 #include "HumanTouchCornerSurvey.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -73,10 +75,26 @@ bool AcceptCandidate(const FJson &C, const FString &Id, int32 Revision, double N
     Out = Candidate;
     return true;
 }
+bool InitialEdgePose(const FTransform &Head, const FTransform &Frame, double ModelFloorZ, FTransform &Out,
+                     FString &Note)
+{
+    // First use has no measured shell-to-tracking-center transform. Preserve floor-level height and seed the edge.
+    const double AboveTop = Head.GetLocation().Z - (Frame.GetLocation().Z - ModelFloorZ);
+    if (AboveTop < 0 || AboveTop > 25 || FMath::Abs(Head.Rotator().Pitch) > 35 || FMath::Abs(Head.Rotator().Roll) > 15)
+    {
+        Note = TEXT(
+            "Headset is outside the expected tabletop rest pose. Check the floor origin or use a measured offset.");
+        return false;
+    }
+    Out = FHumanTouchRelock::YawPose(Head).Inverse() * FTransform(FVector(0, 0, AboveTop)) * Frame;
+    Note = TEXT("Edge seed applied from the tracked floor. Shell offset is provisional until measured or taught.");
+    return true;
+}
 } // namespace
-void FHumanTouchRelock::Enable(bool bOn)
+void FHumanTouchRelock::Enable(bool bOn, bool bAllowCorrections)
 {
     bEnabled = bOn;
+    bWritable = bOn && bAllowCorrections;
     History.Reset();
     NextOutput = 0;
     IFileManager::Get().Delete(*(Dir() / TEXT("state.json")), false, true);
@@ -142,6 +160,8 @@ bool FHumanTouchRelock::Exchange(double Now, int32 Table, const TArray<FVector> 
     State->SetStringField(TEXT("epoch"), Id);
     State->SetNumberField(TEXT("revision"), Revision);
     State->SetNumberField(TEXT("table"), Table);
+    State->SetBoolField(TEXT("allow_correction"), bWritable);
+    State->SetNumberField(TEXT("editor_pid"), FPlatformProcess::GetCurrentProcessId());
     State->SetNumberField(TEXT("utc"), Now);
     State->SetStringField(TEXT("seed"), bDockSeed ? TEXT("dock") : TEXT("probe"));
     PutPose(State, Last);
@@ -163,6 +183,11 @@ bool FHumanTouchRelock::Exchange(double Now, int32 Table, const TArray<FVector> 
     const FString Path = Dir() / TEXT("candidate.json");
     if (!IFileManager::Get().FileExists(*Path))
         return false;
+    if (!bWritable)
+    {
+        IFileManager::Get().Delete(*Path);
+        return false;
+    }
     const FJson C = Read(Path);
     IFileManager::Get().Delete(*Path);
     if (!AcceptCandidate(C, Id, Revision, Now, Last, Model, Out))
@@ -174,15 +199,31 @@ bool FHumanTouchRelock::Exchange(double Now, int32 Table, const TArray<FVector> 
     Note = TEXT("Both optical bases agree; local room corrected.");
     return true;
 }
-FTransform FHumanTouchRelock::DockFrame(const TArray<FVector> &M)
+FTransform FHumanTouchRelock::DockFrame(const TArray<FVector> &M, bool bLongEdge)
 {
     FVector Mid = (M[5] + M[6] + M[9] + M[10]) * .25;
+    if (bLongEdge)
+    {
+        // Use the long edge opposite the mounts; keep heading perpendicular to the edge.
+        const FVector AB = .5 * (M[0] + M[1]), CD = .5 * (M[2] + M[3]);
+        const bool bStartAtCD = FVector::DistSquared2D(Mid, AB) <= FVector::DistSquared2D(Mid, CD);
+        const FVector Facing = bStartAtCD ? AB - CD : CD - AB;
+        return FTransform(FRotator(0, Facing.Rotation().Yaw, 0), bStartAtCD ? CD : AB);
+    }
     Mid.Z = (M[0].Z + M[1].Z + M[2].Z + M[3].Z) * .25;
     return FTransform(FRotator(0, (M[3] - M[0]).Rotation().Yaw, 0), Mid);
 }
-bool FHumanTouchRelock::DockRequest(const TArray<FString> &Args, FString &Note)
+bool FHumanTouchRelock::DockRequest(const TArray<FString> &Input, FString &Note)
 {
     CancelDock();
+    TArray<FString> Args = Input;
+    bEdge = Args.IsEmpty() || Args[0] != TEXT("midpoint");
+    if (!Args.IsEmpty() && (Args[0] == TEXT("edge") || Args[0] == TEXT("midpoint")))
+        Args.RemoveAt(0);
+    bFirstEdge =
+        bEdge && Args.IsEmpty() && !IFileManager::Get().FileExists(*(Dir() / TEXT("dock-edge-v1-quest3.json")));
+    if (Args.IsEmpty())
+        Args = {TEXT("snap"), TEXT("quest3")};
     bManual = false;
     bLearn = false;
     if (Args.Num() == 1 && Args[0] == TEXT("cancel"))
@@ -216,12 +257,16 @@ bool FHumanTouchRelock::DockRequest(const TArray<FString> &Args, FString &Note)
             Note = TEXT("Use a simple headset/cradle profile name.");
             return false;
         }
-        DockProfile = Dir() / (TEXT("dock-") + Args[1] + TEXT(".json"));
+        DockProfile =
+            Dir() / ((bEdge ? FString(TEXT("dock-edge-v1-")) : FString(TEXT("dock-"))) + Args[1] + TEXT(".json"));
         bLearn = Args[0] == TEXT("learn");
-        if (!bLearn)
+        if (!bLearn && !bFirstEdge)
         {
             const FJson P = Read(DockProfile);
-            if (!PoseFields(P, DockOffset) || !P->TryGetNumberField(TEXT("pitch"), RestPitch) ||
+            FString Datum;
+            const bool bTaggedEdge =
+                P && P->TryGetStringField(TEXT("dock_frame"), Datum) && Datum == TEXT("opposite-long-edge-v1");
+            if (bTaggedEdge != bEdge || !PoseFields(P, DockOffset) || !P->TryGetNumberField(TEXT("pitch"), RestPitch) ||
                 !P->TryGetNumberField(TEXT("roll"), RestRoll))
             {
                 Note = TEXT("Dock profile missing. Learn it after probing, or use a measured offset.");
@@ -231,12 +276,14 @@ bool FHumanTouchRelock::DockRequest(const TArray<FString> &Args, FString &Note)
     }
     else
     {
-        Note = TEXT("HumanTouch.Dock learn NAME | snap NAME | offset forward_cm right_cm up_cm yaw_deg | cancel");
+        Note = TEXT("HumanTouch.Dock [edge|midpoint] learn NAME | snap NAME | offset forward_cm right_cm up_cm yaw_deg "
+                    "| cancel");
         return false;
     }
     History.Reset();
     DockAt = FDateTime::UtcNow().ToUnixTimestampDecimal() + 3;
-    Note = TEXT("Set the headset in its cradle at the midpoint, facing across the table. Keep it still.");
+    Note = bEdge ? TEXT("Rest the headset at the long-edge midpoint, rear shell flush, facing the arms. Keep it still.")
+                 : TEXT("Rest the headset in its midpoint cradle facing across the table.");
     return true;
 }
 bool FHumanTouchRelock::DockTick(double Now, int32 Table, const TArray<FVector> &Model, const FTransform *SurveyRoom,
@@ -266,7 +313,7 @@ bool FHumanTouchRelock::DockTick(double Now, int32 Table, const TArray<FVector> 
     if (Span < 1.25)
         return false;
     CancelDock();
-    const FTransform Frame = DockFrame(Model);
+    const FTransform Frame = DockFrame(Model, bEdge);
     if (bLearn)
     {
         if (!SurveyRoom)
@@ -278,16 +325,21 @@ bool FHumanTouchRelock::DockTick(double Now, int32 Table, const TArray<FVector> 
         if (Offset.GetLocation().Size2D() > 22 || Offset.GetLocation().Z <= 0 || Offset.GetLocation().Z > 30 ||
             FMath::Abs(Offset.Rotator().Yaw) > 20)
         {
-            Note = TEXT("Headset is outside the expected center cradle.");
+            Note = TEXT("Headset is outside the expected dock position or heading.");
             return false;
         }
         auto J = MakeShared<FJsonObject>();
         PutPose(J, Offset);
+        J->SetStringField(TEXT("dock_frame"), bEdge ? TEXT("opposite-long-edge-v1") : TEXT("midpoint"));
         J->SetNumberField(TEXT("pitch"), Head.Rotator().Pitch);
         J->SetNumberField(TEXT("roll"), Head.Rotator().Roll);
         Note = Write(DockProfile, J) ? TEXT("Saved this local headset/cradle profile.")
                                      : TEXT("Dock profile write failed.");
         return false;
+    }
+    if (bFirstEdge)
+    {
+        return InitialEdgePose(Head, Frame, Model.Last().Z, Out, Note);
     }
     if (!bManual && (FMath::Abs(FMath::FindDeltaAngleDegrees(Head.Rotator().Pitch, RestPitch)) > 2 ||
                      FMath::Abs(FMath::FindDeltaAngleDegrees(Head.Rotator().Roll, RestRoll)) > 2))
@@ -296,7 +348,8 @@ bool FHumanTouchRelock::DockTick(double Now, int32 Table, const TArray<FVector> 
         return false;
     }
     Out = YawPose(Head).Inverse() * DockOffset * Frame;
-    Note = FString::Printf(TEXT("Static midpoint alignment applied to table %d. Seed is provisional."), Table);
+    Note = FString::Printf(TEXT("Static %s alignment applied to table %d. Seed is provisional."),
+                           bEdge ? TEXT("long-edge") : TEXT("midpoint"), Table);
     return true;
 }
 
@@ -320,12 +373,32 @@ bool FHumanTouchOpticalRehearsalTest::RunTest(const FString &)
     Model[8] = FVector(16, 31, 73);
     TestTrue(TEXT("Physical midpoint projects onto tabletop"),
              FHumanTouchRelock::DockFrame(Model).GetLocation().Equals(FVector(20, 0, 75)));
+    const auto Edge = FHumanTouchRelock::DockFrame(Model, true);
+    TestTrue(TEXT("Shell sits on opposite long edge, centered and facing arms"),
+             Edge.GetLocation().Equals(FVector(80, 0, 75)) &&
+                 Edge.GetRotation().GetForwardVector().Equals(-FVector::ForwardVector, .001));
+    const FVector Lo(-70, -80, -1), Hi(30, 20, 1);
+    const FTransform Original(FRotator(0, 35, 0), FVector(40, 80, 75), FVector(.8, 2, 1.5));
+    const FTransform Bench = HumanTouchBench::Tabletop(Original, Lo, Hi);
+    const FVector Center(-20, -30, 1);
+    TestTrue(TEXT("Measured tabletop shares the authored top center"),
+             Bench.TransformPosition(Center).Equals(Original.TransformPosition(Center), .001));
+    TestTrue(TEXT("28 by 96 inches in rendered and surveyed frame"),
+             FMath::IsNearlyEqual(100 * Bench.GetScale3D().X, 71.12, .001) &&
+                 FMath::IsNearlyEqual(100 * Bench.GetScale3D().Y, 243.84, .001));
     FString Note;
     FTransform Room;
     const FTransform Head(FRotator(6, 64, -3), FVector(62, 84, 96));
+    FTransform Initial;
+    TestTrue(TEXT("First fixed edge placement preserves floor height and uses the actual midpoint"),
+             InitialEdgePose(Head, Edge, 0, Initial, Note) &&
+                 Initial.TransformPosition(Head.GetLocation()).Equals(FVector(80, 0, 96), .001));
+    TestFalse(TEXT("First edge placement refuses a standing headset"),
+              InitialEdgePose(FTransform(FVector(0, 0, 175)), Edge, 0, Initial, Note));
     FHumanTouchRelock R;
+    TestFalse(TEXT("Fresh editor has no optical reads or corrections"), R.Enabled() || R.Writable());
     TestTrue(TEXT("Measured static offset accepted"),
-             R.DockRequest({TEXT("offset"), TEXT("2"), TEXT("1"), TEXT("8"), TEXT("0")}, Note));
+             R.DockRequest({TEXT("midpoint"), TEXT("offset"), TEXT("2"), TEXT("1"), TEXT("8"), TEXT("0")}, Note));
     const double Now = FDateTime::UtcNow().ToUnixTimestampDecimal() + 3.3;
     R.Sample(Now, Head);
     TestFalse(TEXT("One frame cannot dock"), R.DockTick(Now, 1, Model, nullptr, Room, Note));
@@ -336,16 +409,25 @@ bool FHumanTouchOpticalRehearsalTest::RunTest(const FString &)
              Room.TransformPosition(Head.GetTranslation()).Equals(FVector(22, 1, 83), .001));
     TestTrue(TEXT("Rigid unit scale"), Room.GetScale3D().Equals(FVector::OneVector));
     const FString Profile = TEXT("test-") + FGuid::NewGuid().ToString();
-    R.DockRequest({TEXT("learn"), Profile}, Note);
+    R.DockRequest({TEXT("midpoint"), TEXT("learn"), Profile}, Note);
     for (int32 I = 0; I <= 80; ++I)
         R.Sample(Now + .02 * I, Head);
     FTransform Unused;
     TestFalse(TEXT("Learning leaves room unchanged"), R.DockTick(Now + 1.60, 1, Model, &Room, Unused, Note));
-    TestTrue(TEXT("Named cradle read back"), R.DockRequest({TEXT("snap"), Profile}, Note));
+    TestTrue(TEXT("Named cradle read back"), R.DockRequest({TEXT("midpoint"), TEXT("snap"), Profile}, Note));
     for (int32 I = 0; I <= 80; ++I)
         R.Sample(Now + .02 * I, Head);
     TestTrue(TEXT("Named cradle restores identical transform"),
              R.DockTick(Now + 1.60, 1, Model, nullptr, Unused, Note) && Room.Equals(Unused, .001));
+    TestFalse(TEXT("Edge dock cannot reuse an incompatible midpoint profile"),
+              R.DockRequest({TEXT("edge"), TEXT("snap"), Profile}, Note));
+    TestTrue(TEXT("Measured rear-shell edge dock starts without optical updates"),
+             R.DockRequest({TEXT("edge"), TEXT("offset"), TEXT("3"), TEXT("0"), TEXT("8"), TEXT("0")}, Note));
+    for (int I = 0; I <= 80; ++I)
+        R.Sample(Now + .02 * I, Head);
+    TestTrue(TEXT("Rear-shell offset maps eye to edge and faces arms"),
+             R.DockTick(Now + 1.6, 1, Model, nullptr, Unused, Note) &&
+                 Unused.TransformPosition(Head.GetTranslation()).Equals(FVector(77, 0, 83), .001) && !R.Writable());
     IFileManager::Get().Delete(*(Dir() / (TEXT("dock-") + Profile + TEXT(".json"))));
     TestTrue(TEXT("Small translation"),
              FHumanTouchRelock::Bounded(FTransform::Identity, FTransform(FVector(1, 0, 0)), Model));
@@ -364,12 +446,15 @@ bool FHumanTouchOpticalRehearsalTest::RunTest(const FString &)
     TestTrue(TEXT("Candidate for both current bases accepted"),
              AcceptCandidate(Candidate, SessionId, 0, Now + .1, FTransform::Identity, Model, Unused));
     FTransform Held(FVector(0, 2, 0));
-    TestFalse(TEXT("Replayed revision held"), AcceptCandidate(Candidate, SessionId, 1, Now, FTransform::Identity, Model, Held));
+    TestFalse(TEXT("Replayed revision held"),
+              AcceptCandidate(Candidate, SessionId, 1, Now, FTransform::Identity, Model, Held));
     TestFalse(TEXT("Recentered tracking space held"),
               AcceptCandidate(Candidate, TEXT("new"), 0, Now, FTransform::Identity, Model, Held));
-    TestFalse(TEXT("Expired candidate held"), AcceptCandidate(Candidate, SessionId, 0, Now + 2, FTransform::Identity, Model, Held));
+    TestFalse(TEXT("Expired candidate held"),
+              AcceptCandidate(Candidate, SessionId, 0, Now + 2, FTransform::Identity, Model, Held));
     Candidate->SetNumberField(TEXT("right_utc"), Now - 13);
-    TestFalse(TEXT("One stale base is insufficient"), AcceptCandidate(Candidate, SessionId, 0, Now, FTransform::Identity, Model, Held));
+    TestFalse(TEXT("One stale base is insufficient"),
+              AcceptCandidate(Candidate, SessionId, 0, Now, FTransform::Identity, Model, Held));
     TestTrue(TEXT("All rejected updates preserve the output transform"), Held.Equals(FTransform(FVector(0, 2, 0))));
     return true;
 }

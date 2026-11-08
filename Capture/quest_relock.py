@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11,<3.14"
-# dependencies = ["numpy>=1.26,<3", "scipy>=1.12,<2", "opencv-python-headless>=4.9,<5"]
+# dependencies = ["numpy>=1.26,<3", "scipy>=1.12,<2", "opencv-python-headless>=4.9,<5", "psutil>=6"]
 # ///
 """Operator side of the Quest/OXRSys look-to-relock path. No headset images are stored."""
 
@@ -21,12 +21,12 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import psutil
 from plate_vision import (
     Ambiguous,
     Hold,
     Observation,
     calibrate,
-    detect,
     estimate,
     plates,
     room_fields,
@@ -34,6 +34,7 @@ from plate_vision import (
     ue_pose,
 )
 from scipy.spatial.transform import Rotation
+from silver_screws import match_screws
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DIR = ROOT / "Unreal/TheHumanTouch/Saved/Capture/Relock"
@@ -61,7 +62,7 @@ def adb_program():
 
 
 @contextmanager
-def forward(serial):
+def forward(serial, open_camera=False):
     adb = adb_program()
     if serial is None:
         rows = subprocess.check_output([adb, "devices"], text=True).splitlines()[1:]
@@ -70,6 +71,23 @@ def forward(serial):
             raise Hold("select one authorized Quest with --serial")
         serial = devices[0]
     cmd = [adb, "-s", serial]
+    if open_camera:
+        subprocess.run(
+            [
+                *cmd,
+                "shell",
+                "am",
+                "start",
+                "-n",
+                "net.demonixis.oxrsys.android/com.oculus.NativeActivity",
+                "--ez",
+                "oxrsys_relock",
+                "true",
+            ],
+            check=True,
+            timeout=8,
+            capture_output=True,
+        )
     # Wireless ADB may give the same headset a different transport address.
     hardware = subprocess.check_output(
         [*cmd, "shell", "getprop", "ro.serialno"], text=True, timeout=8
@@ -175,12 +193,11 @@ def context_id(s):
     return (s["epoch"], s["revision"], s["table"])
 
 
-def capture(port, path):
+def capture(port, path, profile=None, serial=None):
     before = state(path)
     start = time.time() - 0.14
     image, meta, stamp = read_frame(port)
     end = time.time() + 0.14
-    matches = detect(image)
     # Wait for the editor's post-exposure samples. Never pair old camera pixels
     # with the headset pose at the time the image finished crossing ADB.
     deadline = time.monotonic() + 0.8
@@ -194,10 +211,14 @@ def capture(port, path):
             raise Hold("post-exposure tracking unavailable")
         time.sleep(0.025)
     head = track_pose(after["poses"], start, end)
+    optics = profile_data(profile, serial, meta) if profile is not None else None
+    matches = match_screws(
+        image, room_from_state(after), head, plates(after["marks"]), optics
+    )
     sightings = [
         Observation(side, uv, head, end - 0.14, stamp) for side, uv, _, _ in matches
     ]
-    return after, meta, sightings
+    return after, meta, sightings, matches, optics
 
 
 def profile_data(path, serial, meta):
@@ -233,7 +254,7 @@ def profile_data(path, serial, meta):
     return k, d, lens
 
 
-def run(args):
+def run(args, editor=None, deadline=None):
     source = args.dir / "state.json"
     profile = args.dir / ("lens-" + args.profile + ".json")
     seen = deque(maxlen=100)
@@ -250,25 +271,25 @@ def run(args):
             last_message = message
             last_print = time.monotonic()
 
-    with forward(args.serial) as (serial, port):
+    with forward(args.serial, open_camera=editor is not None) as (serial, port):
         print(
             f"{args.mode}: paired OXRSys camera; {'automatic bounded correction' if args.apply else 'no room writes'}",
             flush=True,
         )
-        end = time.monotonic() + args.seconds
+        end = deadline if deadline is not None else time.monotonic() + args.seconds
         while time.monotonic() < end:
+            if editor and not editor.is_running():
+                return
             try:
-                if args.mode == "contrast":
-                    image, _, _ = read_frame(port)
-                    for side, _, contrast, minor in detect(image):
-                        report(
-                            f"{side} PASS: 6 keyed bores, minimum contrast {contrast:.0f}/255, minimum minor diameter {minor:.1f}px"
-                        )
-                        seen.append(side)
-                    if {"left", "right"} <= set(seen):
-                        return
-                    continue
-                s, meta, sightings = capture(port, source)
+                if args.mode == "watch" and not profile.is_file():
+                    raise Hold("waiting for a qualified lens profile; run enroll once on this headset")
+                s, meta, sightings, matches, optics = capture(
+                    port, source, profile if args.mode == "watch" else None, serial
+                )
+                if editor and s.get("editor_pid") != editor.pid:
+                    raise Hold("waiting for the launched editor")
+                if args.apply and not s.get("allow_correction"):
+                    raise Hold("editor is in initial-calibration or observe-only mode")
                 stamp = sightings[0].sensor_ns
                 identity = context_id(s)
                 if camera != meta or previous != identity:
@@ -276,6 +297,15 @@ def run(args):
                     seen.clear()
                     camera = meta
                     previous = identity
+                if args.mode == "contrast":
+                    for side, _, contrast, minor in matches:
+                        report(
+                            f"{side} PASS: six silver screws, minimum rim contrast {contrast:.0f}/255, minor diameter {minor:.1f}px"
+                        )
+                        seen.append(side)
+                    if {"left", "right"} <= set(seen):
+                        return
+                    continue
                 if stamp in seen:
                     raise Hold("duplicate exposure")
                 seen.append(stamp)
@@ -309,7 +339,11 @@ def run(args):
                         continue
                     try:
                         k, d, lens, quality = calibrate(
-                            observations, layout, room, (1280, 960)
+                            observations,
+                            layout,
+                            room,
+                            (1280, 960),
+                            dock_seed=s["seed"] == "dock",
                         )
                     except Hold:
                         if min(counts) >= 12:
@@ -338,7 +372,7 @@ def run(args):
                     print("Qualified camera profile", profile, quality)
                     return
                 else:
-                    k, d, lens = profile_data(profile, serial, meta)
+                    k, d, lens = optics
                     observations = [
                         x for x in observations if sightings[0].stamp - x.stamp < 11.5
                     ]
@@ -378,6 +412,10 @@ def run(args):
                         + f" two-base correction {quality}"
                     )
                     observations.clear()
+            except ConnectionRefusedError:
+                if editor:
+                    raise
+                report("HOLD: camera connection refused")
             except Ambiguous as e:
                 if args.mode == "watch":
                     observations.clear()
@@ -400,10 +438,13 @@ if __name__ == "__main__":
     p.add_argument("--dir", type=Path, default=DEFAULT_DIR)
     p.add_argument("--seconds", type=float, default=600)
     p.add_argument(
+        "--drift-correction",
         "--apply",
+        dest="apply",
         action="store_true",
         help="apply accepted two-base corrections in watch mode",
     )
+    p.add_argument("--editor-pid", type=int, help=argparse.SUPPRESS)
     a = p.parse_args()
     if (
         not a.profile.replace("-", "").replace("_", "").isalnum()
@@ -413,7 +454,18 @@ if __name__ == "__main__":
     ):
         p.error("invalid profile, duration or apply mode")
     try:
-        run(a)
+        if a.editor_pid:
+            editor = psutil.Process(a.editor_pid)
+            deadline = time.monotonic() + a.seconds
+            while editor.is_running() and time.monotonic() < deadline:
+                try:
+                    run(a, editor, deadline)
+                    break
+                except (Hold, OSError, subprocess.SubprocessError) as err:
+                    print(f"Waiting for the paired Quest: {err}", flush=True)
+                    time.sleep(3)
+        else:
+            run(a)
     except KeyboardInterrupt:
         pass
     except (OSError, ValueError, subprocess.SubprocessError) as e:

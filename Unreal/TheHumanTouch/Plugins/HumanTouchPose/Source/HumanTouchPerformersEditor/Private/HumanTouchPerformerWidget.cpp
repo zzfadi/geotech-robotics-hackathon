@@ -53,10 +53,13 @@ TSharedRef<SWidget> UHumanTouchPerformerWidget::RebuildWidget()
             .OnCheckStateChanged_Lambda([](ECheckBoxState State) { HumanTouchXRTable::HideOthers(State == ECheckBoxState::Checked); })
             [SNew(STextBlock).Text(NSLOCTEXT("HumanTouch", "HideOtherTables", "Hide other tables in XR"))]];
     Box->AddSlot().AutoHeight().Padding(10, 4)
-        [SNew(STextBlock).AutoWrapText(true).Text(NSLOCTEXT("HumanTouch", "TablePose", "Place your headset above the middle of the near long edge and look straight across."))];
+        [SNew(STextBlock).AutoWrapText(true).Text(NSLOCTEXT("HumanTouch", "TablePose", "Rest the headset on the table 48 inches from either end, with the rear shell flush against the long edge opposite the arms."))];
+    Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 2)
+        [SNew(SButton).Text(NSLOCTEXT("HumanTouch", "EdgeDock", "Calibrate from headset on table"))
+            .OnClicked_Lambda([] { HumanTouchXRTable::Dock({TEXT("edge")}); return FReply::Handled(); })];
     Box->AddSlot().AutoHeight().HAlign(HAlign_Left).Padding(10, 4)
         [SNew(SButton)
-            .Text_Lambda([] { return FText::Format(NSLOCTEXT("HumanTouch", "AlignXRTable", "Align table {0} in 5 seconds"), HumanTouchXRTable::Number()); })
+            .Text_Lambda([] { return FText::Format(NSLOCTEXT("HumanTouch", "AlignXRTable", "Standing alignment for table {0} in 5 seconds"), HumanTouchXRTable::Number()); })
             .OnClicked_Lambda([] { HumanTouchXRTable::AlignAfter(5); return FReply::Handled(); })];
     Box->AddSlot().AutoHeight().Padding(10, 4)
         [SNew(STextBlock).AutoWrapText(true).Text_Lambda([] { return FText::FromString(HumanTouchXRTable::Status()); })];

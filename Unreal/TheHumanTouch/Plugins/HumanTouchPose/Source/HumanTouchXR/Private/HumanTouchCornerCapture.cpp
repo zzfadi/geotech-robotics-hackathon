@@ -1,4 +1,5 @@
 #include "HumanTouchCornerCapture.h"
+#include "HumanTouchBench.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/StaticMeshActor.h"
@@ -53,9 +54,11 @@ bool FHumanTouchCornerCapture::Geometry(UWorld *World, const FString &Prefix, TA
         return false;
     }
 
+    const FTransform Bench = HumanTouchBench::Tabletop(Frame, Lo, Hi);
     for (const FVector &Local : {FVector(Lo.X, Lo.Y, Hi.Z), FVector(Lo.X, Hi.Y, Hi.Z), FVector(Hi.X, Hi.Y, Hi.Z),
                                  FVector(Hi.X, Lo.Y, Hi.Z)})
-        Out.Add(Frame.TransformPosition(Local));
+        Out.Add(Bench.TransformPosition(Local));
+    // The six installed silver screw faces are flush with each black flange.
     for (const TCHAR *Side : {TEXT("left"), TEXT("right")})
     {
         const FString Arm = Prefix + TEXT("MakerArm_") + Side + TEXT("_");

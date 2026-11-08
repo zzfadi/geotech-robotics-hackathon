@@ -5,7 +5,11 @@
 class FHumanTouchRelock
 {
   public:
-    void Enable(bool bOn);
+    void Enable(bool bOn, bool bAllowCorrections = false);
+    bool Writable() const
+    {
+        return bWritable;
+    }
     bool Enabled() const
     {
         return bEnabled;
@@ -28,9 +32,9 @@ class FHumanTouchRelock
     {
         DockAt = -1;
     }
-    bool DockTick(double Now, int32 Table, const TArray<FVector> &Model, const FTransform *SurveyRoom,
-                  FTransform &Out, FString &Note);
-    static FTransform DockFrame(const TArray<FVector> &Model);
+    bool DockTick(double Now, int32 Table, const TArray<FVector> &Model, const FTransform *SurveyRoom, FTransform &Out,
+                  FString &Note);
+    static FTransform DockFrame(const TArray<FVector> &Model, bool bLongEdge = false);
     static FTransform YawPose(const FTransform &Pose);
     static bool Bounded(const FTransform &Last, const FTransform &Candidate, const TArray<FVector> &Model);
 
@@ -43,10 +47,10 @@ class FHumanTouchRelock
     TArray<FPose> History;
     FGuid Epoch;
     int32 Revision = 0;
-    bool bEnabled = false, bDockSeed = false;
+    bool bEnabled = false, bWritable = false, bDockSeed = false;
     double NextOutput = 0, DockAt = -1;
     FString DockProfile;
-    bool bLearn = false, bManual = false;
+    bool bLearn = false, bManual = false, bEdge = false, bFirstEdge = false;
     FTransform DockOffset;
     double RestPitch = 0, RestRoll = 0;
 };

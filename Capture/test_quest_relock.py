@@ -17,19 +17,21 @@ from scipy.spatial.transform import Rotation
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from plate_vision import (
+    FLIP,
     HOLES,
     Ambiguous,
     Hold,
     Observation,
     calibrate,
     correction,
-    detect,
     estimate,
     project,
+    room_fields,
     transform,
     xyz,
 )
 from quest_relock import capture, track_pose
+from silver_screws import match_screws
 
 K = np.array([[780.0, 0, 642], [0, 780.0, 478], [0, 0, 1]])
 D = np.array([-0.075, 0.015, 0, 0, 0.0])
@@ -72,16 +74,15 @@ def view(side, i, room=ROOM):
     )
 
 
-def render(side, key=True, dark=12, hide=False, index=2):
+def render(side, silver=180, hide=False, index=2):
     o = view(side, index)
     canvas = np.full((960, 1280, 3), 43, np.uint8)
-    color = (255, 255, 0) if side == "left" else (0, 255, 255)
     for idx, p in enumerate(HOLES):
         if hide and idx == 1:
             continue
         for radius, bgr in [
-            (0.005, (255, 0, 255) if key and idx == 0 else color),
-            (0.00175, (dark,) * 3),
+            (0.0038, (silver,) * 3),
+            (0.0014, (24,) * 3),
         ]:
             a = np.linspace(0, 2 * math.pi, 64)
             rim = (
@@ -103,57 +104,47 @@ def render(side, key=True, dark=12, hide=False, index=2):
 
 
 class RelockTest(unittest.TestCase):
-    def test_image_and_contrast(self):
-        for s in LAYOUT:
-            img, o = render(s)
-            [(side, uv, contrast, diam)] = detect(img)
-            self.assertEqual(side, s)
-            self.assertGreater(contrast, 25)
-            self.assertGreaterEqual(diam, 4)
-            self.assertLess(np.linalg.norm(o.uv - uv, axis=1).max(), 1.0)
-        for img in (
-            render("left", key=False)[0],
-            render("left", hide=True)[0],
-            np.full((960, 1280, 3), 10, np.uint8),
-            render("right", dark=230)[0],
-        ):
-            with self.assertRaises(Hold):
-                detect(img)
+    def test_silver_identity_and_holds(self):
+        img, o = render("left")
 
-    def test_two_distinct_grids_and_ambiguous_duplicates(self):
-        left = render("left")[0]
-        right = render("right")[0]
-        # Each crop retains its complete grid. Either grid passes in isolation.
-        both = np.concatenate([left, right], axis=1)
-        self.assertEqual([m[0] for m in detect(both)], ["left", "right"])
+        def match(img, layout=LAYOUT):
+            return match_screws(img, ROOM, o.head, layout, (K, D, LENS))
+
+        [(side, uv, contrast, minor)] = match(img)
+        self.assertEqual(side, "left")
+        self.assertLess(np.linalg.norm(uv - o.uv, axis=1).max(), 1)
+        self.assertGreaterEqual(contrast, 25)
+        self.assertGreaterEqual(minor, 4)
         with self.assertRaises(Ambiguous):
-            detect(np.concatenate([left, left], axis=1))
-        covered = left.copy()
-        magenta = cv2.inRange(
-            cv2.cvtColor(left, cv2.COLOR_BGR2HSV), (138, 95, 62), (174, 255, 255)
-        )
-        x, y, w, h = cv2.boundingRect(magenta)
-        covered[y - 2 : y + h + 2, x - 2 : x + w + 2] = 43
+            match(img, {"left": LAYOUT["left"], "right": LAYOUT["left"]})
+        extra = np.roll(img, 22, axis=1)
         with self.assertRaises(Ambiguous):
-            detect(np.concatenate([covered, right], axis=1))
+            match(np.maximum(extra, img))
+        for invalid in (render("left", hide=True)[0], render("left", silver=52)[0]):
+            with self.assertRaises(Hold):
+                match(invalid)
 
     def test_subsampled_camera_to_correction(self):
-        def exposure(side, index):
+        def exposure(side, index, seed=ROOM, optics=None):
             image, o = render(side, index=index)
             yuv = cv2.cvtColor(image, cv2.COLOR_BGR2YUV_I420)
-            [(label, o.uv, _, _)] = detect(cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420))
+            [(label, o.uv, _, _)] = match_screws(
+                cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420), seed, o.head, LAYOUT, optics
+            )
             self.assertEqual(label, side)
             return o
 
-        views = [exposure(side, i) for side in LAYOUT for i in range(8)]
+        views = [exposure(side, i) for side in LAYOUT for i in range(12)]
         k, d, lens, quality = calibrate(views, LAYOUT, ROOM, (1280, 960))
         self.assertLess(quality["held_max_px"], 1)
-        fresh = [
-            exposure(side, 34 + i)
-            for i, side in enumerate(["left"] * 4 + ["right"] * 4)
-        ]
         refs = np.array([p[:3, 3] for p in LAYOUT.values()])
         drift = correction(np.array([0.011, -0.008, 0.006, 0.013]), ROOM, refs.mean(0))
+        k2, d2, lens2, _ = calibrate(views, LAYOUT, drift, (1280, 960), dock_seed=True)
+        self.assertLess(np.linalg.norm(lens[:3, 3] - lens2[:3, 3]), 0.005)
+        fresh = [
+            exposure(side, 34 + i, drift, (k2, d2, lens2))
+            for i, side in enumerate(["left"] * 4 + ["right"] * 4)
+        ]
         result, _ = estimate(fresh, LAYOUT, drift, k, d, lens, fresh[-1].stamp + 0.1)
         errors = np.linalg.norm(
             xyz(result, xyz(np.linalg.inv(ROOM), refs)) - refs, axis=1
@@ -211,29 +202,37 @@ class RelockTest(unittest.TestCase):
             listener.settimeout(3)
             utc = time.time()
             state = Path(temp_dir) / "state.json"
+            position = truth.head[:3, 3] @ FLIP * 100
+            quat = Rotation.from_matrix(FLIP @ truth.head[:3, :3] @ FLIP).as_quat()
+            marks = [
+                list(xyz(plate, HOLES[i]) @ FLIP * 100)
+                for plate in LAYOUT.values()
+                for i in (0, 3, 2)
+            ]
             state.write_text(
                 json.dumps(
                     {
                         "utc": utc,
                         "epoch": "test",
+                        **room_fields(ROOM),
+                        "marks": marks,
                         "revision": 1,
                         "table": 10,
                         "poses": [
-                            [utc + i * 0.025, 10, -20, 30, 0, 0, 0, 1]
-                            for i in range(-40, 40)
+                            [utc + i * 0.025, *position, *quat] for i in range(-40, 40)
                         ],
                     }
                 )
             )
             with ThreadPoolExecutor(max_workers=1) as worker:
                 job = worker.submit(serve, listener)
-                measured, meta, [o] = capture(listener.getsockname()[1], state)
+                measured, meta, [o], _, _ = capture(listener.getsockname()[1], state)
                 job.result(timeout=3)
         self.assertEqual(
             (measured["table"], meta["version"], o.side, o.sensor_ns),
             (10, 1, "left", 4321),
         )
-        np.testing.assert_allclose(o.head[:3, 3], [0.10, 0.20, 0.30])
+        np.testing.assert_allclose(o.head, truth.head, atol=1e-10)
         self.assertLess(np.linalg.norm(truth.uv - o.uv, axis=1).max(), 1)
 
     def test_still_bracket(self):

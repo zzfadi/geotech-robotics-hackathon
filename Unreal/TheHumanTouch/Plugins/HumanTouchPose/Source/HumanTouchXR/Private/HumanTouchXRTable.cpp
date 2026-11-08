@@ -1,4 +1,5 @@
 #include "HumanTouchXRTable.h"
+#include "HumanTouchBench.h"
 #include "HumanTouchRelock.h"
 #include "HumanTouchCornerCapture.h"
 
@@ -52,8 +53,43 @@ EHMDTrackingOrigin::Type DockOrigin=EHMDTrackingOrigin::LocalFloor;
 bool bLiveOptical=false;
 double NextLivePoll=0;
 
+// Stereo-only copy owned by the local transient XR avatar. Shared scene actors stay at their authored transforms.
+TWeakObjectPtr<UStaticMeshComponent> BenchVisual;
+TWeakObjectPtr<UStaticMeshComponent> BenchSource;
+
+void ClearBench()
+{
+    if (BenchVisual.IsValid()) BenchVisual->DestroyComponent();
+    BenchVisual.Reset();
+    BenchSource.Reset();
+}
+
+void UpdateBench(AActor* Avatar, UStaticMeshComponent* Source, const FTransform& Frame)
+{
+    if (!BenchVisual.IsValid() || BenchVisual->GetOwner() != Avatar || BenchSource.Get()!=Source ||
+        BenchVisual->GetStaticMesh()!=Source->GetStaticMesh())
+    {
+        ClearBench();
+        UStaticMeshComponent* Copy = NewObject<UStaticMeshComponent>(Avatar, NAME_None, RF_Transient | RF_TextExportTransient);
+        Copy->SetMobility(EComponentMobility::Movable);
+        Copy->SetStaticMesh(Source->GetStaticMesh());
+        for (int32 I=0; I<Source->GetNumMaterials(); ++I) Copy->SetMaterial(I, Source->GetMaterial(I));
+        Copy->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Copy->SetCanEverAffectNavigation(false);
+        Copy->SetGenerateOverlapEvents(false);
+        Copy->SetCastShadow(false);
+        Copy->SetAbsolute(true,true,true);
+        Copy->SetWorldTransform(Frame);
+        Copy->RegisterComponent();
+        BenchVisual=Copy;
+        BenchSource=Source;
+    }
+    else if (!BenchVisual->GetComponentTransform().Equals(Frame)) BenchVisual->SetWorldTransform(Frame);
+}
+
 void ForgetRoom()
 {
+    ClearBench();
     Optical.Invalidate(); Optical.CancelDock();
     if (Survey.IsRunning() || VerifiedRoom.IsSet())
         Survey.Cancel(TEXT("Tracking origin changed. Repeat the corner survey."));
@@ -155,6 +191,11 @@ public:
 
     void SetupView(FSceneViewFamily& Family, FSceneView& View) override
     {
+        if (BenchVisual.IsValid() && BenchSource.IsValid() && Family.Scene && Family.Scene->GetWorld()==BenchVisual->GetWorld())
+        {
+            const bool bLocalEye = IStereoRendering::IsStereoEyeView(View) && !View.bIsSceneCapture;
+            View.HiddenPrimitives.Add((bLocalEye ? BenchSource.Get() : BenchVisual.Get())->GetPrimitiveSceneId());
+        }
         if (!HumanTouchXRTable::IsHidingOthers() || View.bIsSceneCapture ||
             !IStereoRendering::IsStereoEyeView(View) || !Family.Scene)
             return;
@@ -356,7 +397,7 @@ bool Tick(float)
         }
     }
     const bool bCapture = CaptureAt >= 0 && FPlatformTime::Seconds() >= CaptureAt;
-    if (!bCapture && PlacedAvatar.IsValid() && PlacedTable.IsValid() &&
+    if (!bCapture && PlacedAvatar.IsValid() && BenchVisual.IsValid() && PlacedTable.IsValid() &&
         PlacedAvatar->GetWorld() == World &&
         PlacedTable->GetActorLabel(false) == ScenePrefix(World,Number) + TEXT("Dreamlabs_YAM_Table") &&
         PlacedTable->GetActorTransform().Equals(PlacedTableTransform))
@@ -404,7 +445,8 @@ bool Tick(float)
     UStaticMeshComponent* Mesh = Table->GetStaticMeshComponent();
     FVector Min, Max;
     Mesh->GetLocalBounds(Min, Max);
-    const FTransform TableToWorld = Mesh->GetComponentTransform();
+    const FTransform TableToWorld = HumanTouchBench::Tabletop(Mesh->GetComponentTransform(),Min,Max);
+    UpdateBench(Avatar, Mesh, TableToWorld);
     const FVector Center = (Min + Max) * 0.5;
     // The stock tabletop's local +X points across the short dimension.
     const FVector Edge = TableToWorld.TransformPosition(FVector(Min.X, Center.Y, Max.Z));
@@ -444,7 +486,7 @@ bool Tick(float)
     {
         Room = VerifiedRoom->GetTranslation();
         Yaw = VerifiedRoom->Rotator().Yaw;
-        Message = FString::Printf(TEXT("Table %d %s registration at unit scale."), Number, Optical.DockSeed()?TEXT("midpoint dock"):TEXT("factory-hole"));
+        Message = FString::Printf(TEXT("Table %d %s registration at unit scale."), Number, Optical.DockSeed()?TEXT("static dock"):TEXT("factory-screw"));
     }
     else if (MeasuredEdgePose.IsSet())
     {
@@ -455,7 +497,7 @@ bool Tick(float)
         Message = FString::Printf(TEXT("Table %d aligned to your near edge."), Number);
     }
     else
-        Message = FString::Printf(TEXT("Table %d selected. Align at the middle of its near long edge."), Number);
+        Message = FString::Printf(TEXT("Table %d selected. Rest the headset at the center of the long edge opposite the arms."), Number);
 
     Avatar->SetActorLocationAndRotation(Room, FRotator(0, Yaw, 0), false, nullptr, ETeleportType::TeleportPhysics);
     PlacedAvatar = Avatar;
@@ -506,6 +548,25 @@ void HumanTouchXRTable::BeginSurvey(bool bProbe)
     CaptureAt = -1;
     Survey.Begin(Number(), ScenePrefix(World,Number()), World, bProbe);
 }
+void HumanTouchXRTable::Dock(const TArray<FString>& Args)
+{
+    if (!GEngine || !GEngine->XRSystem || !PlacedAvatar.IsValid() || !HasLiveViewer() || Survey.IsRunning())
+    {
+        UE_LOG(LogHumanTouchTable, Warning, TEXT("Dock needs the live XR station with no active probe survey"));
+        return;
+    }
+    DockNumber = HumanTouchXRTable::Number();
+    DockOrigin = GEngine->XRSystem->GetTrackingOrigin();
+    if (DockOrigin != EHMDTrackingOrigin::LocalFloor && DockOrigin != EHMDTrackingOrigin::Stage)
+    {
+        UE_LOG(LogHumanTouchTable, Warning, TEXT("Select a floor-level tracking origin before docking."));
+        return;
+    }
+    Survey.ClearNotice();
+    CaptureAt = -1;
+    Optical.DockRequest(Args, Message);
+    UE_LOG(LogHumanTouchTable, Display, TEXT("%s"), *Message);
+}
 void HumanTouchXRTable::AlignAfter(double Seconds)
 {
     if (Survey.IsRunning()) CancelSurvey();
@@ -552,40 +613,26 @@ void HumanTouchXRTable::Startup()
             if (Args.Num()==1 && Args[0]==TEXT("cancel")) HumanTouchXRTable::CancelSurvey();
             UE_LOG(LogHumanTouchTable,Display,TEXT("%s"),*HumanTouchXRTable::Status());
         }));
+    const bool bLaunchRelock = FParse::Param(FCommandLine::Get(), TEXT("HumanTouchDriftCorrection"));
+    Optical.Enable(bLaunchRelock, bLaunchRelock);
     OpticalCommand = IConsoleManager::Get().RegisterConsoleCommand(
-        TEXT("HumanTouch.Relock"), TEXT("HumanTouch.Relock on|off"),
+        TEXT("HumanTouch.Relock"), TEXT("HumanTouch.Relock on (observe) | apply | off"),
         FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString> &Args) {
-            if (Args.Num() == 1 && (Args[0] == TEXT("on") || Args[0] == TEXT("off")))
-                Optical.Enable(Args[0] == TEXT("on"));
+            if (Args.Num() == 1 && (Args[0] == TEXT("on") || Args[0] == TEXT("off") || Args[0]==TEXT("apply")))
+                Optical.Enable(Args[0] != TEXT("off"),Args[0]==TEXT("apply"));
             UE_LOG(LogHumanTouchTable, Display, TEXT("Look-to-relock %s"),
-                   Optical.Enabled() ? TEXT("enabled") : TEXT("off"));
+                   Optical.Writable() ? TEXT("corrections enabled") : Optical.Enabled() ? TEXT("observation only") : TEXT("off"));
         }));
     DockCommand = IConsoleManager::Get().RegisterConsoleCommand(
         TEXT("HumanTouch.Dock"),
-        TEXT("HumanTouch.Dock learn NAME | snap NAME | offset forward_cm right_cm up_cm yaw_deg | cancel"),
-        FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString> &Args) {
-            if (!GEngine || !GEngine->XRSystem || !PlacedAvatar.IsValid() || !HasLiveViewer() || Survey.IsRunning())
-            {
-                UE_LOG(LogHumanTouchTable, Warning, TEXT("Dock needs the live XR station with no active probe survey"));
-                return;
-            }
-            DockNumber = HumanTouchXRTable::Number();
-            DockOrigin = GEngine->XRSystem->GetTrackingOrigin();
-            if (DockOrigin != EHMDTrackingOrigin::LocalFloor && DockOrigin != EHMDTrackingOrigin::Stage)
-            {
-                UE_LOG(LogHumanTouchTable, Warning, TEXT("Select a floor-level tracking origin before docking."));
-                return;
-            }
-            Survey.ClearNotice();
-            CaptureAt = -1;
-            Optical.DockRequest(Args, Message);
-            UE_LOG(LogHumanTouchTable, Display, TEXT("%s"), *Message);
-        }));
+        TEXT("HumanTouch.Dock [edge|midpoint] learn NAME | snap NAME | offset forward_cm right_cm up_cm yaw_deg | cancel"),
+        FConsoleCommandWithArgsDelegate::CreateStatic(&HumanTouchXRTable::Dock));
     OpticalTicker = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&OpticalTick));
     TickHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&Tick), 0.25f);
 }
 void HumanTouchXRTable::Shutdown()
 {
+    ClearBench();
     Optical.Enable(false);
     FTSTicker::GetCoreTicker().RemoveTicker(OpticalTicker);
     if(OpticalCommand) IConsoleManager::Get().UnregisterConsoleObject(OpticalCommand);

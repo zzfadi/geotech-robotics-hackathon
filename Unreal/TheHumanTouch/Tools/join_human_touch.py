@@ -8,6 +8,7 @@ import ipaddress
 import os
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 import psutil
 
@@ -50,7 +51,14 @@ def main():
                         help='Start the headset with the room or opaque VR background; enables the Capture Performers widget')
     parser.add_argument('--table', type=int, metavar='NUMBER',
                         help='Use the printed table number as the XR room origin (default: 1; 0 also selects the original table)')
+    parser.add_argument('--drift-correction', action='store_true',
+                        help='Opt in to the two-base Quest camera worker. Default: initial calibration only.')
+    parser.add_argument('--quest-serial', help='ADB device for the optional camera worker')
     args = parser.parse_args()
+    if args.quest_serial and not args.drift_correction:
+        parser.error('--quest-serial requires --drift-correction')
+    if args.drift_correction and not shutil.which('uv'):
+        parser.error('--drift-correction requires uv on the operator workstation')
     if args.table is not None and args.table < 0:
         parser.error('--table must be a printed table number, or 0 for the original station')
     if args.capture_hub:
@@ -72,6 +80,8 @@ def main():
     command=arguments(args.engine,args.local_address,args.name)
     if args.table is not None:
         command.append(f'-HumanTouchTable={args.table}')
+    if args.drift_correction:
+        command.append('-HumanTouchDriftCorrection')
     if args.capture_hub:
         command = [arg + ',' + args.capture_hub if arg.startswith('-UDPMESSAGING_TRANSPORT_STATIC=') else arg for arg in command]
     if args.performers:
@@ -98,6 +108,15 @@ def main():
     with (logdir/'shared-editor-launch.log').open('ab') as log:
         kwargs={'creationflags':subprocess.DETACHED_PROCESS} if os.name=='nt' else {'start_new_session':True}
         proc=subprocess.Popen(command,cwd=PROJECT,stdout=log,stderr=log,**kwargs)
+    if args.drift_correction:
+        worker = PROJECT.parents[1]/'Capture/quest_relock.py'
+        camera = ['uv','run','--script',str(worker),'watch','--drift-correction','--editor-pid',str(proc.pid),'--seconds','3600']
+        if args.quest_serial:
+            camera.extend(['--serial',args.quest_serial])
+        path = logdir/'quest-drift.log'
+        with path.open('ab') as log:
+            subprocess.Popen(camera,cwd=PROJECT,stdin=subprocess.DEVNULL,stdout=log,stderr=log,**kwargs)
+        print(f'Optical correction worker started. Status: {path}')
     print(f'Started shared editor PID {proc.pid}; verify session connection in its log.')
 
 if __name__=='__main__':main()

@@ -9,6 +9,7 @@ namespace HumanTouchXRTable
     HUMANTOUCHXR_API int32 Number();
     HUMANTOUCHXR_API bool IsHidingOthers();
     HUMANTOUCHXR_API void HideOthers(bool bHide);
+    HUMANTOUCHXR_API void Dock(const TArray<FString>& Args);
     HUMANTOUCHXR_API void AlignAfter(double Seconds);
     HUMANTOUCHXR_API void BeginSurvey(bool bProbe = true);
     HUMANTOUCHXR_API bool CanCheckSurvey();

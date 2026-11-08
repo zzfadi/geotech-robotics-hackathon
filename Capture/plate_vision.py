@@ -1,8 +1,7 @@
-"""Markerless geometry with removable chromatic bore rims. CV coordinates are right-handed metres."""
+"""Metric registration of two rigid screw patterns in a seeded XR tracking space."""
 
 import math
 from dataclasses import dataclass
-from itertools import permutations
 
 import cv2
 import numpy as np
@@ -15,7 +14,6 @@ HOLES = np.array(
     [(x, y, 0.0) for y in (0.0, -0.18) for x in (0.0, 0.04, 0.08)], np.float64
 )
 FLIP = np.diag([1.0, -1.0, 1.0])
-COLORS = {"left": (78, 104), "right": (18, 37), "key": (138, 174)}
 FIT = [0, 1, 2, 3, 5]  # middle of the second column is an independent image check
 
 
@@ -73,136 +71,6 @@ def plates(marks):
     return result
 
 
-def rings(hsv, gray, hue):
-    mask = cv2.inRange(hsv, (hue[0], 95, 62), (hue[1], 255, 255))
-    # Chroma is sampled at half resolution on the Quest. Use it to find/color
-    # the annulus, then locate the actual bore at full luma resolution.
-    outlines, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    lumamask = np.zeros_like(mask)
-    for outline in outlines:
-        x, y, w, h = cv2.boundingRect(outline)
-        if min(w, h) < 7 or max(w, h) > 145:
-            continue
-        x0, y0 = max(0, x - 3), max(0, y - 3)
-        x1, y1 = min(mask.shape[1], x + w + 3), min(mask.shape[0], y + h + 3)
-        colors = mask[y0:y1, x0:x1]
-        patch = gray[y0:y1, x0:x1]
-        values = patch[colors > 0]
-        if len(values) < 16:
-            continue
-        bright = float(np.percentile(values, 65))
-        threshold = bright - max(18, 0.33 * bright)
-        near = cv2.dilate(colors, np.ones((5, 5), np.uint8))
-        lumamask[y0:y1, x0:x1] |= np.where(
-            (patch > threshold) & (near > 0), 255, 0
-        ).astype(np.uint8)
-    contours, tree = cv2.findContours(lumamask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
-    accepted = []
-    if tree is None:
-        return accepted
-    for i, outer in enumerate(contours):
-        child = tree[0, i, 2]
-        if (
-            tree[0, i, 3] >= 0
-            or child < 0
-            or len(outer) < 12
-            or len(contours[child]) < 5
-        ):
-            continue
-        inner = contours[child]
-        co, ao, _ = cv2.fitEllipse(outer)
-        ci, ai, _ = cv2.fitEllipse(inner)
-        if not (
-            8 <= min(ao)
-            and max(ao) <= 140
-            and min(ao) / max(ao) >= 0.38
-            and min(ai) >= 4
-            and 0.22 <= min(ai) / min(ao) <= 0.66
-            and math.dist(ci, co) <= max(1.5, 0.09 * min(ao))
-        ):
-            continue
-        area = cv2.contourArea(outer)
-        if not 0.78 < area / (math.pi * ao[0] * ao[1] / 4) < 1.18:
-            continue
-        x, y, w, h = cv2.boundingRect(outer)
-        if x < 2 or y < 2 or x + w >= mask.shape[1] - 1 or y + h >= mask.shape[0] - 1:
-            continue
-        inside = np.zeros((h, w), np.uint8)
-        cv2.drawContours(inside, [inner - [x, y]], 0, 255, -1)
-        inside = cv2.erode(inside, np.ones((3, 3), np.uint8))
-        patch = gray[y : y + h, x : x + w]
-        bore = patch[inside > 0]
-        ring = patch[mask[y : y + h, x : x + w] > 0]
-        if len(bore) < 3 or len(ring) < 12:
-            continue
-        contrast = float(np.median(ring)) - float(np.median(bore))
-        if contrast >= 25:
-            accepted.append((ci, contrast, min(ai)))
-    return accepted
-
-
-def order_points(key, others):
-    """Four corners determine H; both column midpoints must also agree uniquely."""
-    points = np.array([key, *others], np.float32)
-    src = HOLES[[0, 3, 5, 2], :2].astype(np.float32)
-    valid = []
-    for perm in permutations(range(1, 6)):
-        obs = points[[0, *perm]]
-        quad = obs[[0, 3, 5, 2]]
-        if (
-            not cv2.isContourConvex(quad)
-            or cv2.contourArea(quad, oriented=True) >= -250
-        ):
-            continue
-        H = cv2.getPerspectiveTransform(src, quad)
-        predicted = cv2.perspectiveTransform(HOLES[None, :, :2].astype(np.float32), H)[
-            0
-        ]
-        if np.max(np.linalg.norm(predicted - obs, axis=1)) <= 1.6:
-            valid.append(obs.astype(np.float64))
-    if len(valid) > 1:
-        raise Ambiguous("multiple valid hole orders")
-    return valid[0] if valid else None
-
-
-def detect(image):
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    dots = {s: rings(hsv, gray, v) for s, v in COLORS.items()}
-    matches = []
-    used_keys = set()
-    for side in ("left", "right"):
-        if len(dots[side]) > 5:
-            raise Ambiguous(f"extra {side} hole rims in view")
-        if len(dots[side]) != 5:
-            continue
-        found = False
-        for key in dots["key"]:
-            ordered = order_points(key[0], [x[0] for x in dots[side]])
-            if ordered is None:
-                continue
-            if found or key[0] in used_keys:
-                raise Ambiguous("ambiguous keyed corner or plate identity")
-            found = True
-            used_keys.add(key[0])
-            candidates = [key, *dots[side]]
-            matches.append(
-                (
-                    side,
-                    ordered,
-                    min(x[1] for x in candidates),
-                    min(x[2] for x in candidates),
-                )
-            )
-        if not found:
-            raise Ambiguous(f"{side} rim set has no verifiable keyed corner")
-    if not matches:
-        raise Hold(
-            "look closer at one plate; need one keyed grid of six distinct high-contrast dark holes"
-        )
-    return matches
-
-
 @dataclass
 class Observation:
     side: str
@@ -225,7 +93,7 @@ def lens_matrix(v):
     return transform(Rotation.from_rotvec(v[:3]).as_matrix(), v[3:])
 
 
-def calibrate(obs, layout, room, size):
+def calibrate(obs, layout, room, size, *, dock_seed=False):
     """Estimate the effective lens from these exact YUV buffers, and its rigid head mount."""
     if len(obs) < 16 or any(sum(o.side == s for o in obs) < 8 for s in layout):
         raise Hold("need at least eight diverse captures of each base")
@@ -288,19 +156,40 @@ def calibrate(obs, layout, room, size):
             "insufficient oblique views, or the physical setup disagrees with the calibration seed"
         )
 
+    center = np.mean([plate[:3, 3] for plate in layout.values()], axis=0)
+
     def residual(v, frames):
-        lens = lens_matrix(v)
+        lens = lens_matrix(v[:6])
+        registration = correction(v[6:], room, center) if dock_seed else room
         return np.concatenate(
             [
-                (project(room, o.head, lens, layout[o.side], K, D) - o.uv).ravel()
+                (
+                    project(registration, o.head, lens, layout[o.side], K, D) - o.uv
+                ).ravel()
                 for o in frames
             ]
         )
 
     opt = least_squares(
-        residual, seeds[0], args=(train,), loss="soft_l1", f_scale=0.8, max_nfev=80
+        residual,
+        np.r_[seeds[0], np.zeros(4)] if dock_seed else seeds[0],
+        args=(train,),
+        loss="soft_l1",
+        f_scale=0.8,
+        max_nfev=80,
     )
-    lens = lens_matrix(opt.x)
+    if dock_seed:
+        covariance = np.linalg.pinv(opt.jac.T @ opt.jac) * 0.5**2
+        if (
+            np.linalg.matrix_rank(opt.jac) < 10
+            or max(np.sqrt(np.diag(covariance)[6:9])) > 0.005
+            or np.linalg.norm(opt.x[6:9]) > 0.10
+            or abs(opt.x[9]) > np.radians(5)
+        ):
+            raise Hold(
+                "dock and camera cannot be separated reliably; vary viewing angles or use a measured dock"
+            )
+    lens = lens_matrix(opt.x[:6])
     errors = np.linalg.norm(residual(opt.x, held).reshape(-1, 2), axis=1)
     if (
         not opt.success

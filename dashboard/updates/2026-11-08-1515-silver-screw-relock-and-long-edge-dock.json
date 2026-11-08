@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T15:15:05-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Calibrate once with the headset resting at the center of the long edge opposite the arms. Optional drift correction uses the flush silver screws on the two black bases.",
+  "why": "Keep the short mixed reality demo steady by default and allow marker-free recovery during longer rehearsals.",
+  "where": [
+    "Capture/silver_screws.py",
+    "Unreal/TheHumanTouch/Tools/join_human_touch.py",
+    "docs/quest-look-to-relock.md"
+  ],
+  "details": "The XR top and corner survey now use 96 by 28 inches. The launcher starts the watcher only with --drift-correction. The initial dock works without the camera; teaching or measuring the headset shell offset makes it repeatable. The image pipeline passed 72 simulated screw views. A real bench test under demo lighting remains open."
+}
