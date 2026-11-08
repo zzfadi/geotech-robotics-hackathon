@@ -1,0 +1,20 @@
+{
+  "when": "2026-11-07T17:40:08-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Placed22 hollow drinking cups at seeded positions across nine tables",
+  "why": "HoldMyBeer pitch now uses drinking cups only",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_cups.py",
+    "Unreal/TheHumanTouch/SourceAssets/DrinkingCup/README.md",
+    "docs/validation/holdmybeer-cup-scene-2026-11-07.json",
+    "DreamSim/cup_scene_layout.json"
+  ],
+  "details": [
+    "Removed72 old block/rod props and18 unrelated equipment boxes",
+    "Nine tables now have2\u20133 cups each;22 total; seeded positions separated by more than40cm",
+    "Mac/Luna parity confirms22 upright cups,9 tables,18 robot bases,27 cameras and9 mountingrails",
+    "Actual overhead camera shows readable ivory plastic; no global lighting or emissive changes",
+    "Open collision cavity verified with traces;20-hull approximation is not calibrated thin-wall physics"
+  ]
+}

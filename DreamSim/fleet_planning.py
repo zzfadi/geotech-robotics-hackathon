@@ -1,12 +1,20 @@
 """Reproducible task/layout plans. Generating a plan never calls Dream or moves UE."""
 import copy
 import random
+import re
 import secrets
 
 PREFIX = 'MakerStation_Prop_'
-OBJECTS = {'Cup': ('drinking cup', 6.0, 4.0)}
-# One upright empty cup, 12 cm high, within the left arm workspace.
-SLOTS = ((48, -42), (60, -40), (65, -30))
+OBJECTS = {name: ('drinking cup', 6.0, 4.0) for name in ('Cup','Cup_02','Cup_03')}
+DEFAULT_SEED = 20261107
+
+
+def cup_layout(index, seed):
+    """Match the scene's existing 2/3 cups; shuffle positions, never invent actors."""
+    rng = random.Random('%d:%d' % (seed, index))
+    return [{'label': PREFIX+name, 'location_cm': [rng.uniform(48,66), y+rng.uniform(-4,4),81],
+             'yaw_deg': 0., 'rotation_deg': [0.,0.,0.], 'clearance_radius_cm': 4.}
+            for name,y in list(zip(OBJECTS,(-50,50,0)))[:2+index%2]]
 
 
 def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
@@ -28,31 +36,23 @@ def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
         raise ValueError('randomize must be true or false')
     tables = []
     for index in sorted(indices):
-        # Selecting a subset does not change that table's generated experiment.
-        rng = random.Random('%d:%d' % (seed, index))
-        names = list(OBJECTS)
-        rng.shuffle(names)
-        objects = []
-        for name, (x, y) in zip(names, rng.sample(SLOTS, len(names))):
-            _, half_height, radius = OBJECTS[name]
-            objects.append({'label': PREFIX+name,
-                            'location_cm': [x+rng.uniform(-1, 1), y+rng.uniform(-1, 1), 75+half_height],
-                            'yaw_deg': rng.uniform(-30, 30), 'clearance_radius_cm': radius})
-        target = rng.choice(objects)
-        default_y = {'Cup': -40}
-        target_y = target['location_cm'][1] if randomize else default_y[target['label'].removeprefix(PREFIX)]
-        side = 'left' if target_y < 0 else 'right'
+        objects = cup_layout(index, seed if randomize else DEFAULT_SEED)
+        target = objects[0]  # Cup is always the leftmost cup, nearest the left arm.
+        side = 'left'
         text = prompt.strip()
         objective = None
-        if mode == 'random':
-            name = target['label'].removeprefix(PREFIX)
-            text = ('Use the %s arm to pick up the %s, lift it straight up by 10 cm, '
-                    'and hold it upright and steady for 5 seconds. Keep the other arm still.' % (side, OBJECTS[name][0]))
-            objective = {'kind': 'lift_hold', 'target': target['label'], 'side': side,
-                         'height_cm': 10.0, 'hold_seconds': 5.0, 'max_tilt_deg': 15.0}
+        standard = re.fullmatch(r'(?:hold my beer|pick up (?:the )?cup|lift (?:the )?cup)[.!]?', text, re.I)
+        if mode == 'random' or (mode == 'same' and standard):
+            text = ('Use the left arm to pick up the leftmost drinking cup in the overhead view, '
+                    'nearest the left arm. Lift it straight up by 10 cm and hold it upright '
+                    'and steady for 5 seconds. Keep the other arm still and leave the other cups on the table.')
+            objective = {'kind':'lift_hold','target':target['label'],'side':side,
+                         'height_cm':10.,'hold_seconds':5.,'max_tilt_deg':15.}
+        elif mode == 'same':
+            text = 'For the leftmost drinking cup in the overhead view, nearest the left arm: '+text
         tables.append({'index': index, 'display_number': index+1, 'prompt': text,
                        'objective': objective, 'objects': objects if randomize else [],
-                       'target': target['label'] if objective else None})
+                       'target': target['label'] if mode != 'configured' else None})
     return {'version': 1, 'seed': seed, 'mode': mode, 'randomize': randomize, 'tables': tables}
 
 

@@ -1,5 +1,5 @@
 {
-  "description": "Hold My Beer cup-only simulation. Nine hollow empty cups. Controlled pregrasp initial pose, not a claim of approach learning or liquid simulation. Official robot geometry unchanged. Cup dynamics approximate.",
+  "description": "Hold My Beer: nine tables with22empty drinking cups,2or3per table, seededrandom positions. Arms start fromfixedhome TCP(35,\u00b140,91), independent oftarget; Dream must approach, grasp, lift andhold. No liquid or modeltrainingclaim. Approximate dynamics.",
   "defaults": {
     "checkpoint": "dreamlabs/dream-1-beta-flash",
     "position_ik": true,
@@ -12,32 +12,32 @@
     {
       "index": 0,
       "name": "Hold My Beer \u2014 Table 1",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          56.68467287663606,
+          -46.893002064093714,
           81
         ],
         "rotation_deg": [
@@ -45,6 +45,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -59,37 +60,52 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            64.57849162339778,
+            53.55480138944715,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 1,
       "name": "Hold My Beer \u2014 Table 2",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          54.70855535735267,
+          -49.1029733627562,
           81
         ],
         "rotation_deg": [
@@ -97,6 +113,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -111,37 +128,66 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            48.487655396974596,
+            49.94823572652486,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            55.390866133587394,
+            0.10065787908020152,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 2,
       "name": "Hold My Beer \u2014 Table 3",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          63.69860876138359,
+          -53.27724106297173,
           81
         ],
         "rotation_deg": [
@@ -149,6 +195,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -163,37 +210,52 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            55.44469802473865,
+            53.66315019541651,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 3,
       "name": "Hold My Beer \u2014 Table 4",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          62.14644005571147,
+          -48.256955477129026,
           81
         ],
         "rotation_deg": [
@@ -201,6 +263,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -215,37 +278,66 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            65.0581211144154,
+            49.21482145885372,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            53.96693699856065,
+            -3.226402088458139,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 4,
       "name": "Hold My Beer \u2014 Table 5",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          55.98563752564149,
+          -50.77410352504697,
           81
         ],
         "rotation_deg": [
@@ -253,6 +345,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -267,37 +360,52 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            55.81499838320596,
+            50.58278396778082,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 5,
       "name": "Hold My Beer \u2014 Table 6",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          63.393538620739555,
+          -53.19867684232151,
           81
         ],
         "rotation_deg": [
@@ -305,6 +413,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -319,37 +428,66 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            65.75537046140731,
+            47.94481451645303,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            55.628816345036284,
+            -3.3389745205733616,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 6,
       "name": "Hold My Beer \u2014 Table 7",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          48.77069304930132,
+          -48.634044506241366,
           81
         ],
         "rotation_deg": [
@@ -357,6 +495,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -371,37 +510,52 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            58.463542663655375,
+            48.12017646298723,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 7,
       "name": "Hold My Beer \u2014 Table 8",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          61.505341618214416,
+          -49.430841672748315,
           81
         ],
         "rotation_deg": [
@@ -409,6 +563,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -423,37 +578,66 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            57.42080692992615,
+            49.835266895307214,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            53.20490452330721,
+            2.61571740699606,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     },
     {
       "index": 8,
       "name": "Hold My Beer \u2014 Table 9",
-      "prompt": "Hold my beer: gently close the left gripper around the empty drinking cup already between its open fingers. Lift the cup straight up by 10 cm, keep it upright, and hold it steadily for at least 5 seconds. Keep the right arm still.",
+      "prompt": "Hold my beer. Use the left arm to approach and pick up the leftmost drinking cup, the one nearest the left arm. Keep the fingers open until they surround the cup, then close gently. Lift the cup 10 cm above its starting height, keep it upright, and hold steadily for 5 seconds. Keep the right arm still.",
       "initial_state": {
         "q_left": [
-          -4.135609899270317e-08,
-          -2.055434359182826,
-          0.4219756762207339,
-          1.6916171860000033,
-          3.9962021349468e-08,
-          -4.754392453282808e-09
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "q_right": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          -8.341015791761527e-08,
+          -1.3267562769368857,
+          1.5947274948757348,
+          -1.4680311465744582,
+          1.6235197063895467e-08,
+          -8.180590968960631e-08
         ],
         "gap_left_m": 0.1,
-        "gap_right_m": 0.04
+        "gap_right_m": 0.1
       },
       "target": {
         "label": "MakerStation_Prop_Cup",
         "location_cm": [
-          60,
-          -40,
+          54.17204042324729,
+          -46.15822358975184,
           81
         ],
         "rotation_deg": [
@@ -461,6 +645,7 @@
           0,
           0
         ],
+        "yaw_deg": 0,
         "scale": [
           1,
           1,
@@ -475,7 +660,22 @@
         "hold_seconds": 5,
         "max_tilt_deg": 15
       },
-      "objects": []
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            65.33988295800617,
+            49.537241837141494,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
     }
   ]
 }
