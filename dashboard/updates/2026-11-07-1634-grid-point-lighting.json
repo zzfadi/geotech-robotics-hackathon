@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T16:34:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Balanced grid exposure and preserved economical point-light culling",
+  "why": "Add local room fill without extra shadow maps or washed-out tabletop highlights",
+  "where": ["Unreal/TheHumanTouch/Tools/maker_arm_grid_scene.py", "docs/maker-arm-environment.md"],
+  "details": ["11 unshadowed 700-lumen point fills with 500 cm range, 1800 cm draw distance and 300 cm fade", "Global lighting setup preserves point-light culling; shared exposure lowered to −0.5 EV", "Eight-second idle Mac sample:45.35 FPS; different camera views prevent a controlled comparison with the earlier36.04 FPS sample"]
+}
