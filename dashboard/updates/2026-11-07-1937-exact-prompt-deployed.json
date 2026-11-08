@@ -1,0 +1,19 @@
+{
+  "when": "2026-11-07T19:37:47-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Deployed exact custom prompts on Luna2 and per-cup evidence worker on Mac.",
+  "why": "Prepare the requested standard-model cup trial without changing the prompt or interrupting a newly queued task.",
+  "where": [
+    "DreamSim/fleet_planning.py",
+    "DreamSim/fleet_worker.py",
+    "DreamSim/cup_metrics.py",
+    "https://luna2.tail6864ac.ts.net/"
+  ],
+  "details": [
+    "Guarded idle lease handoff blocked new submissions before graceful worker shutdown; no active simulation interrupted.",
+    "Live plan endpoint returns Grab a cup unchanged with no invented objective.",
+    "One worker PID4009 from integration main; nine standard Dream sessions ready; nine camera feeds maximum age1.57seconds at verification.",
+    "No inference submitted during deployment."
+  ]
+}
