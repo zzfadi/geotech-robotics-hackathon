@@ -128,7 +128,7 @@ def normalize_variant(variant, index, defaults=None):
         yaw = float(obj.get('yaw_deg', 0))
         if not math.isfinite(yaw):
             raise ValueError('Object yaw must be finite')
-        out['objects'].append({'label':name,'location_cm':loc,'yaw_deg':yaw})
+        out['objects'].append({'label':name,'location_cm':loc,'yaw_deg':yaw,'rotation_deg':_vector(obj.get('rotation_deg'),'objects.rotation_deg')})
     out['target'] = {'label': str(target.get('label') or TARGET),
                      'location_cm': _vector(target.get('location_cm'), 'target.location_cm'),
                      'offset_cm': _vector(target.get('offset_cm') or [0, 0, 0], 'target.offset_cm'),

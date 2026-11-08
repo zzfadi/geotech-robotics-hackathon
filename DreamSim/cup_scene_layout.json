@@ -1,0 +1,359 @@
+{
+  "seed": 20261107,
+  "count_formula": "2 + index % 2",
+  "tables": [
+    {
+      "index": 0,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            56.68467287663606,
+            -46.893002064093714,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            64.57849162339778,
+            53.55480138944715,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            54.70855535735267,
+            -49.1029733627562,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            48.487655396974596,
+            49.94823572652486,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            55.390866133587394,
+            0.10065787908020152,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            63.69860876138359,
+            -53.27724106297173,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            55.44469802473865,
+            53.66315019541651,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            62.14644005571147,
+            -48.256955477129026,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            65.0581211144154,
+            49.21482145885372,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            53.96693699856065,
+            -3.226402088458139,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            55.98563752564149,
+            -50.77410352504697,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            55.81499838320596,
+            50.58278396778082,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            63.393538620739555,
+            -53.19867684232151,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            65.75537046140731,
+            47.94481451645303,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            55.628816345036284,
+            -3.3389745205733616,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            48.77069304930132,
+            -48.634044506241366,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            58.463542663655375,
+            48.12017646298723,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            61.505341618214416,
+            -49.430841672748315,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            57.42080692992615,
+            49.835266895307214,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_03",
+          "location_cm": [
+            53.20490452330721,
+            2.61571740699606,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "objects": [
+        {
+          "label": "MakerStation_Prop_Cup",
+          "location_cm": [
+            54.17204042324729,
+            -46.15822358975184,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        },
+        {
+          "label": "MakerStation_Prop_Cup_02",
+          "location_cm": [
+            65.33988295800617,
+            49.537241837141494,
+            81
+          ],
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "yaw_deg": 0
+        }
+      ]
+    }
+  ]
+}

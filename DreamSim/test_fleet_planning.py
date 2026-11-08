@@ -1,6 +1,8 @@
 import math
+import json
+from pathlib import Path
 import unittest
-from fleet_planning import build_plan, apply_plan
+from fleet_planning import build_plan, apply_plan, cup_layout
 
 
 class Planning(unittest.TestCase):
@@ -10,7 +12,7 @@ class Planning(unittest.TestCase):
         self.assertEqual(full['tables'][5], build_plan([5], mode='random', seed=42, randomize=True)['tables'][0])
         self.assertGreater(len({tuple(t['objects'][0]['location_cm']) for t in full['tables']}), 1)
         self.assertTrue(all(t['target']=='MakerStation_Prop_Cup' for t in full['tables']))
-        self.assertTrue(all(len(t['objects'])==1 for t in full['tables']))
+        self.assertTrue(all(len(t['objects'])==2+t['index']%2 for t in full['tables']))
         self.assertTrue(all(t['objective']['hold_seconds']==5 for t in full['tables']))
 
     def test_objects_have_clearance_and_remain_on_table(self):
@@ -29,7 +31,7 @@ class Planning(unittest.TestCase):
         config = {'defaults': {'cycles': 12}, 'tables': [{'name': 'a'}, {'name': 'b'}]}
         plan = build_plan([0, 1], prompt='Pick up the drinking cup', seed=3)
         result = apply_plan(config, plan)
-        self.assertEqual([t['prompt'] for t in result['tables']], ['Pick up the drinking cup']*2)
+        self.assertTrue(all(t['prompt'].endswith('Pick up the drinking cup') for t in result['tables']))
         self.assertNotIn('prompt', config['tables'][0])
         self.assertIsNone(plan['tables'][0]['objective'])  # Free text is not a verified lift objective.
 
@@ -43,6 +45,8 @@ class Planning(unittest.TestCase):
                 self.assertEqual(task['target'],task['objective']['target'])
                 self.assertEqual(task['target'],variant['target']['label'])
                 self.assertIsNone(variant['target']['scale'])
+                self.assertEqual(task['target'],'MakerStation_Prop_Cup')
+                self.assertEqual(target_min_y := min(o['location_cm'][1] for o in task['objects']), next(o['location_cm'][1] for o in task['objects'] if o['label']==task['target']))
                 self.assertIsNone(variant['target']['location_cm'])
                 target=next(o for o in task['objects'] if o['label']==task['target'])
                 self.assertEqual(task['objective']['side'],'left' if target['location_cm'][1]<0 else 'right')
@@ -60,9 +64,22 @@ class Planning(unittest.TestCase):
         randomized=apply_plan(config,build_plan([1],mode='configured',seed=7,randomize=True))['tables'][0]
         self.assertEqual(randomized['objective'],fixture['objective'])
         self.assertEqual(randomized['target'],fixture['target'])
-        self.assertEqual(len(randomized['objects']),1)
+        self.assertEqual(len(randomized['objects']),3)
         self.assertEqual(randomized['initial_state']['q_left'],[0]*6)
         self.assertEqual(config['tables'][0],fixture)
+
+    def test_cup_layout_matches_scene_and_target_is_unambiguous(self):
+        scene=json.loads(Path(__file__).with_name('cup_scene_layout.json').read_text())
+        for table in scene['tables']:
+            generated=cup_layout(table['index'],scene['seed'])
+            self.assertEqual([(o['label'],o['location_cm']) for o in generated],
+                             [(o['label'],o['location_cm']) for o in table['objects']])
+        task=build_plan([0],mode='same',prompt='Hold my beer',randomize=True,seed=7)['tables'][0]
+        self.assertEqual(task['objective']['target'],'MakerStation_Prop_Cup')
+        self.assertIn('leftmost drinking cup',task['prompt'])
+        self.assertEqual(task['objective']['hold_seconds'],5.)
+        self.assertTrue(all(o['rotation_deg']==[0.,0.,0.] for o in task['objects']))
+        self.assertIsNone(build_plan([0],prompt='wave hello')['tables'][0]['objective'])
 
     def test_input_validation(self):
         for indices in ([True], [-1], [9], [1, 1], []):

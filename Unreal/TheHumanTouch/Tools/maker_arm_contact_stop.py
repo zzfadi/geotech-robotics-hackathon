@@ -92,7 +92,7 @@ def actor_boxes(actors, flange, base):
         c=actor.static_mesh_component
         lo,hi=c.get_local_bounds();t=actor.get_actor_transform();points=[]
         for xyz in local_bounds_points((lo.x,lo.y,lo.z),(hi.x,hi.y,hi.z),
-                                       tapered_cup=label.endswith('MakerStation_Prop_Cup')):
+                                       tapered_cup=label.split('__')[-1] in ('MakerStation_Prop_Cup','MakerStation_Prop_Cup_02','MakerStation_Prop_Cup_03')):
             p=t.transform_location(unreal.Vector(*xyz))
             rh=[(p.x-base[0])*.01,-(p.y-base[1])*.01,(p.z-base[2])*.01]
             d=[rh[i]-flange[i][3] for i in range(3)]

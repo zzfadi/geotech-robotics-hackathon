@@ -8,7 +8,8 @@ class CupConfig(unittest.TestCase):
   self.assertEqual([r['index'] for r in rows],list(range(9)))
   for r in rows:
    self.assertEqual(r['target']['label'],'MakerStation_Prop_Cup')
-   self.assertEqual(r['objects'],[])
+   self.assertEqual(len(r['objects']),1+r['index']%2)
+   self.assertEqual({o['label'] for o in r['objects']}, {'MakerStation_Prop_Cup_02'} | ({'MakerStation_Prop_Cup_03'} if r['index']%2 else set()))
    self.assertEqual(r['objective']['hold_seconds'],5)
    self.assertEqual(r['objective']['max_tilt_deg'],15)
    self.assertEqual(r['initial_state']['gap_left_m'],.1)

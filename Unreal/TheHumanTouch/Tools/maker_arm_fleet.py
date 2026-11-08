@@ -251,7 +251,8 @@ def _apply_variant(variant, existing, local=False):
             raise ValueError('Missing randomized prop: ' + spec['label'])
         actor.modify()
         rotation = actor.get_actor_rotation()
-        actor.set_actor_rotation(unreal.Rotator(pitch=rotation.pitch, yaw=spec['yaw_deg'], roll=rotation.roll), False)
+        pitch, yaw, roll = spec.get('rotation_deg') or [rotation.pitch, spec['yaw_deg'], rotation.roll]
+        actor.set_actor_rotation(unreal.Rotator(pitch=pitch, yaw=yaw, roll=roll), False)
         # Rest on the actual top using actual mesh bounds; variants can differ in height.
         extent = actor.get_actor_bounds(False)[1]
         d = offset(index)
