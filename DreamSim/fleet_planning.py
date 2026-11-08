@@ -17,6 +17,23 @@ def cup_layout(index, seed):
             for name,y in list(zip(OBJECTS,(-60,60,-30,30,0)))[:4+index%2]]
 
 
+def explicit_motion_side(prompt):
+    """Only recognize a complete, unambiguous stationary-arm instruction.
+
+    This constrains actuation, not task success. Unknown prose is not a lift
+    objective and never inherits an unrelated configured execution constraint.
+    """
+    clauses = re.split(r'[.!?;\n]+', prompt.lower())
+    stationary = {m.group(1) for clause in clauses
+                  if (m := re.fullmatch(r'\s*keep (?:the )?(left|right) arm still\s*', clause))}
+    if len(stationary) != 1 or re.search(r'\b(?:both|bimanual|two arms)\b', prompt, re.I):
+        return None
+    held = next(iter(stationary))
+    if re.search(r'\b(?:move|use|lift|raise|lower|rotate|wave)\s+(?:the\s+)?'+held+r'\s+arm\b', prompt, re.I):
+        return None
+    return 'left' if held == 'right' else 'right'
+
+
 def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
     if (not isinstance(indices, list) or not indices or len(indices) > 9
             or any(type(i) is not int or not 0 <= i <= 8 for i in indices)
@@ -51,7 +68,9 @@ def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
         elif mode == 'same':
             text = 'For the leftmost drinking cup in the overhead view, nearest the left arm: '+text
         tables.append({'index': index, 'display_number': index+1, 'prompt': text,
-                       'objective': objective, 'objects': objects if randomize else [],
+                       'objective': objective,
+                       'motion_side': side if objective else explicit_motion_side(prompt),
+                       'objects': objects if randomize else [],
                        'target': target['label'] if mode != 'configured' else None})
     return {'version': 1, 'seed': seed, 'mode': mode, 'randomize': randomize, 'tables': tables}
 
@@ -70,6 +89,7 @@ def apply_plan(config, plan):
             table['prompt'] = task['prompt']
         if plan.get('mode') != 'configured':
             table['objective'] = copy.deepcopy(task['objective'])
+            table['motion_side'] = task.get('motion_side')
             table['objects'] = copy.deepcopy(task['objects'])
         elif task['objects']:
             # Configured fixtures retain their task, target, geometry and pose.

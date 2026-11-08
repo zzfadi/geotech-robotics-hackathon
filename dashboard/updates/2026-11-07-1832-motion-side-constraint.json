@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T18:32:54-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Keep explicit stationary-arm instructions separate from task success verification.",
+  "why": "Custom prompts discarded structured objectives and unintentionally allowed both arms to move.",
+  "where": [
+    "DreamSim/fleet_planning.py",
+    "DreamSim/fleet_worker.py",
+    "DreamSim/test_motion_constraint.py",
+    "Unreal/TheHumanTouch/Tools/maker_arm_fleet_layout.py"
+  ],
+  "details": "Recognizes unambiguous Keep right/left arm still clauses; constrains inactive IK/direct-joint trajectories to observed pose. Unknown tasks remain unverified. Source tests pass; live deployment and pickup verification remain pending."
+}
