@@ -87,7 +87,7 @@ The writer validates every event, flushes each line so the page sees it at once,
 
 ## What is not tested yet
 
-- Everything here has run against the demo stream only, on Linux. Nothing has run on the Orin Nano or the Mac, or with the real arm, the Dream API or real cameras.
+- Tested on the Mac and on the Orin Nano. On the Orin it served demo data and real sessions through an SSH tunnel: the Mac's vision and Dream-mock sessions and four live C270 sessions (nobody in view), all validating with 0 invalid ([Jetson hub testing](../docs/jetson-hub-testing.md)). On the Mac, `validate` passes on the 1,260 edge-model sessions. Not yet with the real arm or the Dream API.
 - The page has been exercised in a scripted test of its logic, not checked by eye in a browser yet.
 - No writer exists yet in the sim loop or the arm server; adding one is part of [edge-model.md](../docs/handoffs/edge-model.md) and [jetson-end-to-end.md](../docs/handoffs/jetson-end-to-end.md).
 - The camera checks are fields in the schema; nothing computes them from real images yet.

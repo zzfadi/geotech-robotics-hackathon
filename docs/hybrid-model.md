@@ -1,6 +1,6 @@
 # Hybrid model: a local detector says when, Dream or a local controller says how
 
-Written Saturday night, Nov 7, 10:30 PM, from FADI's voice call and the repo as it stood; updated Sunday 3:30 AM after the Mac Ultralytics check and the Dream latency probe. FADI owns the can handoff on the real arm. Code: [`vision/`](../vision/README.md). Marked **[inferred]** where it is our design guess rather than something measured or decided.
+Written Saturday night, Nov 7, 10:30 PM, from FADI's voice call and the repo as it stood; updated Sunday 3:30 AM after the Mac Ultralytics check and the Dream latency probe, and at 5:20 AM with the Jetson hub results. FADI owns the can handoff on the real arm. Code: [`vision/`](../vision/README.md). Marked **[inferred]** where it is our design guess rather than something measured or decided.
 
 ## FADI's words (voice call, Nov 7, about 10 PM)
 
@@ -67,8 +67,8 @@ Two cautions. Dream's own client switches itself from async to sync above a 700 
 | Step | Budget | Basis |
 | --- | --- | --- |
 | Camera frame | 33 ms | 30 fps |
-| YOLO26n detect + pose, TensorRT FP16 | about 10 ms | 4.6 ms per model on an Orin Nano Super, inference only (Ultralytics) |
-| Pre/post-processing | 5 to 15 ms | not published; measure |
+| YOLO26n detect + pose, TensorRT FP16 | about 10 ms | 4.6 ms per model on an Orin Nano Super, inference only (Ultralytics); measured 5.3 to 5.7 ms per model on ours ([hub test](jetson-hub-testing.md)) |
+| Pre/post-processing | 5 to 15 ms | not published; on our Orin the whole frame took 26 to 41 ms with both models, so this part runs over budget ([hub test](jetson-hub-testing.md)) |
 | Frame age at the gate | under 250 ms | existing gate limit |
 | Steady offer + gate debounce | 0.4 s + 0.2 s | tracker and coordinator defaults |
 | Dream round trip | about 712 ms median, 850 ms switch | Dream workshop |
@@ -83,7 +83,7 @@ So from "can held still" to the arm starting is about 0.6 s plus the executor's 
 - Later, the edge model ([brief](handoffs/edge-model.md)) as the `local_edge_model` mode.
 - Dream calls go out from whichever machine has `DREAM_API_KEY`; for the sim that is the Mac worker today.
 
-The Orin now runs JetPack 7.2.1 (L4T 39.2.1, Ubuntu 24.04, Python 3.12) and sees the C270 webcam ([Jetson brief](handoffs/jetson-end-to-end.md)). The vision stack (Ultralytics, CUDA PyTorch, TensorRT) is not installed or run on it yet.
+The Orin now runs JetPack 7.2.1 (L4T 39.2.1, Ubuntu 24.04, Python 3.12) and sees the C270 webcam ([Jetson brief](handoffs/jetson-end-to-end.md)). The vision stack (Ultralytics, CUDA PyTorch, TensorRT) runs on it in `~/hub-tests` ([Jetson hub testing](jetson-hub-testing.md)): TensorRT FP16 engines take 26 to 41 ms per frame for detect + pose (5.3 to 5.7 ms inference per model), and the live C270 loop ran camera-bound at 15 fps with no hands in view. Hands and the can on a camera are still untested.
 
 ## Which local model: options and recommendation
 
@@ -98,7 +98,7 @@ The Orin now runs JetPack 7.2.1 (L4T 39.2.1, Ubuntu 24.04, Python 3.12) and sees
 
 COCO-80 has `person`, `bottle` and `cup` but no "can" and no "hand" class, so the tracker treats bottle or cup as the can and builds hand boxes just past each wrist. Check first thing on the real camera whether the can is detected at all; if not, a small labelled set of our own can is the fallback. YOLO26 is the current Ultralytics model; YOLO11 works the same way if the Orin's Ultralytics version is older.
 
-The `.pt` weights run as they are on any host. On the Orin, install Ultralytics in its own environment per the [Ultralytics Jetson guide](https://docs.ultralytics.com/guides/nvidia-jetson/) for JetPack 7 (the verified JetPack 7 steps are pending the Jetson test), then export each model once, on the board:
+The `.pt` weights run as they are on any host. On the Orin, install Ultralytics in its own environment per the [Ultralytics Jetson guide](https://docs.ultralytics.com/guides/nvidia-jetson/) for JetPack 7 (the tested JetPack 7.2.1 install is in [Jetson hub testing](jetson-hub-testing.md): plain PyPI wheels, and the FP16 export needs `tensorrt-cu13>=10.15,<11`, about 8.5 min for detect and 11 min for pose), then export each model once, on the board:
 
 ```sh
 yolo export model=yolo26n.pt format=engine quantize=16
@@ -122,7 +122,7 @@ Base Dream-1 is a two-arm model; single-arm use on our Maker Arm is unconfirmed 
 
 Built and tested (no camera, no arm): the moment tracker, the router, the coordinator that drives the existing turn gate, a replay CLI, an example handoff trace, an optional Ultralytics adapter, a live webcam loop with a preview window, a session summary and recording to replay traces, control center telemetry from any run (`--telemetry`), and a Dream round-trip probe (`vision/dream_latency.py`) that feeds the router. 49 tests pass with plain `python3`.
 
-On Sunday at 3:30 AM the adapter ran with the real YOLO26n and YOLO26n-pose weights on still images on FADI's Mac mini (M4): about 48 to 53 ms per frame for both models on the CPU and 22 to 26 ms on MPS, and its output matched what the tracker expects. In the one photo with clear hands, the pose-built hand boxes landed on the wrist, not over the fingers, so they need tuning on the real camera ([details](validation/vision-ultralytics-mac-2026-11-08.json)). These are Mac numbers, not Orin numbers, and the live camera loop has still not run with a real camera. The Dream probe has run only in mock mode (synthetic latencies, labelled so); a real run needs `DREAM_API_KEY`, which was not on the Mac.
+On Sunday at 3:30 AM the adapter ran with the real YOLO26n and YOLO26n-pose weights on still images on FADI's Mac mini (M4): about 48 to 53 ms per frame for both models on the CPU and 22 to 26 ms on MPS, and its output matched what the tracker expects. In the one photo with clear hands, the pose-built hand boxes landed on the wrist, not over the fingers, so they need tuning on the real camera ([details](validation/vision-ultralytics-mac-2026-11-08.json)). These are Mac numbers. The Orin numbers came later, along with a live C270 loop that ran camera-bound at 15 fps with no hands in view ([Jetson hub testing](jetson-hub-testing.md)); hands and the can on a real camera are still untested. The Dream probe has run only in mock mode (synthetic latencies, labelled so); a real run needs `DREAM_API_KEY`, which was not on the Mac.
 
 The Orin test with a webcam and no arm is step by step in [vision/README.md](../vision/README.md#orin-nano-plus-a-webcam-no-arm).
 
@@ -132,7 +132,7 @@ Open for the 9 AM standup:
 2. Run the detector on the real camera and the real can: is the can detected, and as what?
 3. Tune the zones and thresholds on the table; record a few clips as replay traces. Keep one clip with a different person or can out of tuning and score on it: false starts (`offer_steady` when the can was only carried past, set down or held while talking), missed offers, delay from still to `offer_steady`, and state flicker. A synthetic or sim trace is not a real-camera result. Record people only with their OK; `--record` traces keep labels and boxes, not images, so keep it that way.
 4. Wire `start_handoff` / `abort` / `retreat_with_can` into FADI's arm controller and verify its hold.
-5. Measure detector latency on the Orin, now that it boots (`--telemetry` puts the session on the control center).
+5. **Done, with no hands in view:** detector latency on the Orin. TensorRT FP16 engines take 26 to 41 ms per frame (5.3 to 5.7 ms inference per model), and the live C270 loop is camera-bound at 15 fps ([Jetson hub testing](jetson-hub-testing.md)). Hands and the can in view are item 2.
 6. Measure the real Dream round trip from the machine that will call it: `vision/dream_latency.py` in the Dream client environment ([command](../vision/README.md#dream-latency-probe)), with `DREAM_API_KEY` and a captured observation, at most 10 calls, and read the router's verdict.
 
 ## Sources

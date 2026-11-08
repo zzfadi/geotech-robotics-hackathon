@@ -6,7 +6,7 @@
     "owner": "FADI",
     "status": "in-progress",
     "plain": "The plan, the owners and this dashboard, so everyone aims at the same 3 PM demo.",
-    "next": "9 AM standup: settle the open decisions and name the e-stop person and the submission owner.",
+    "next": "8:30 hardware check: name the e-stop person (proposed). 9 AM standup: settle the open decisions and name the submission owner.",
     "goal": "Pick the stack, split the work, keep everyone pointed at the Sunday demo.",
     "paths": [
       "dashboard/",
@@ -54,9 +54,9 @@
     "short": "Arm station",
     "owner": "FADI",
     "status": "at-risk",
-    "plain": "The real robot arm that takes the can from a person's hand.",
-    "next": "When the station opens (about 8:30): teach the arm's poses, then 10 taped-mark and 10 hand trials before the 11:00 call.",
-    "goal": "The right Maker Arm takes a can from a person's hand, or picks it from a taped mark as the backup, through our guarded controller with the operator on the e-stop.",
+    "plain": "The real robot arm that picks up the can: from a taped mark by default, or from a person's hand if that reaches 8 of 10.",
+    "next": "When the station opens (about 8:30): name the e-stop person before anything is powered, run the preflight, teach the arm's poses, then 10 taped-mark trials, and hand trials only if the preflight says GO, before the 11:00 call.",
+    "goal": "The right Maker Arm picks a can up from a taped mark (the default) or takes it from a person's hand if that reaches 8 of 10, through our guarded controller with the operator on the e-stop.",
     "paths": [
       "portal/",
       "arm/",
@@ -103,7 +103,7 @@
         "done": false
       }
     ],
-    "risk": "The can hand-off has run in replay only; the arm's poses aren't taught yet and the e-stop person isn't named."
+    "risk": "The can hand-off has run in replay only; the arm's poses aren't taught yet and the e-stop person isn't named (proposed: at the 8:30 hardware check)."
   },
   {
     "id": "dream1",
@@ -146,9 +146,9 @@
     "short": "Turn gate",
     "owner": "TBD",
     "status": "not-started",
-    "plain": "A camera check that lets the arm move only when a person is clearly offering the can.",
+    "plain": "A camera check before each arm step: a hand in the arm's path, a jerked can or a camera fault pauses the arm.",
     "next": "Run the detector on the real camera and the real can, and check the can is seen.",
-    "goal": "Watch the camera for a hand offering a can: a steady offer gives the arm its turn; an extra hand, a jerked can or a camera fault makes it wait. Gate logic is in turn_gate/, the detector in vision/.",
+    "goal": "Watch the camera for hands and the can: on the real arm the operator starts the routine with g, and a hand in the arm's path, a jerked can or a camera fault pauses it. Whether a steady offer should request the turn is open for the standup. Gate logic is in turn_gate/, the detector in vision/.",
     "paths": [
       "turn_gate/",
       "turn-gate/",
@@ -198,10 +198,10 @@
     "name": "Voice agent (LiveKit)",
     "short": "Voice",
     "owner": "TBD",
-    "status": "not-started",
-    "plain": "The robot speaks at the right moments, like \"your turn\" or \"I'll wait\".",
-    "next": "Decide at standup whether voice is in; if so, scripted push-to-talk lines with recorded backup audio.",
-    "goal": "The robot says \"your turn\" or \"I'll wait\" at the right moments.",
+    "status": "in-progress",
+    "plain": "The arms crack short scripted lines at each step, like \"Beer me.\" and \"Show-off.\", from a local speaker.",
+    "next": "Hear the lines on the stage speaker; Takeshi tries the 10-minute LiveKit setup (docs/livekit-fit.md).",
+    "goal": "Short scripted lines at the right moments, played locally with no network, and optionally streamed into a LiveKit room. The voice never moves the arm.",
     "paths": [
       "voice/",
       "agent/",

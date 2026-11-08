@@ -63,11 +63,11 @@ Real mode refuses without the key or the observation, prints a cost warning, reu
 
 ### Still-image check
 
-`vision/still_check.py` runs the adapter on still images and reports per-frame latency, labels and the tracker state they lead to. Results on FADI's Mac mini (M4), Nov 8: YOLO26n and YOLO26n-pose resolve by name in Ultralytics 8.4.207; both models together take about 48 to 53 ms per still frame on the CPU and 22 to 26 ms on MPS, excluding capture. These are Mac numbers, not Orin numbers. `vision.run --video` also ran end to end with the real models on a clip made from those stills (p50 24 ms per frame on MPS after a 3 s first-frame warm-up; the recorded trace replays to the same moments; the telemetry session validates). No camera was attached. The pose-built hand boxes land on the wrist rather than over the fingers, so tune `hands_from_pose` on the real camera. Details: [vision-ultralytics-mac-2026-11-08.json](../docs/validation/vision-ultralytics-mac-2026-11-08.json).
+`vision/still_check.py` runs the adapter on still images and reports per-frame latency, labels and the tracker state they lead to. Results on FADI's Mac mini (M4), Nov 8: YOLO26n and YOLO26n-pose resolve by name in Ultralytics 8.4.207; both models together take about 48 to 53 ms per still frame on the CPU and 22 to 26 ms on MPS, excluding capture. These are Mac numbers; on the Orin, TensorRT FP16 engines take 26 to 41 ms per still frame ([Jetson hub testing](../docs/jetson-hub-testing.md)). `vision.run --video` also ran end to end with the real models on a clip made from those stills (p50 24 ms per frame on MPS after a 3 s first-frame warm-up; the recorded trace replays to the same moments; the telemetry session validates). No camera was attached. The pose-built hand boxes land on the wrist rather than over the fingers, so tune `hands_from_pose` on the real camera. Details: [vision-ultralytics-mac-2026-11-08.json](../docs/validation/vision-ultralytics-mac-2026-11-08.json).
 
 ## Orin Nano plus a webcam, no arm
 
-The Orin runs JetPack 7.2.1 (L4T 39.2.1, Ubuntu 24.04, system Python 3.12). The C270 webcam is `/dev/video0` there. Nothing here needs the arm, the Dream key or the network once the models are on the board. The Ultralytics and TensorRT install steps for JetPack 7 have **not been verified yet**; the Jetson test will establish them. Do these after SSH works ([Orin setup](../docs/handoffs/orin-nano-setup.md)).
+The Orin runs JetPack 7.2.1 (L4T 39.2.1, Ubuntu 24.04, system Python 3.12). The C270 webcam is `/dev/video0` there. Nothing here needs the arm, the Dream key or the network once the models are on the board. The Ultralytics and TensorRT install was tested there on Nov 8, in `~/hub-tests` ([Jetson hub testing](../docs/jetson-hub-testing.md)): TensorRT FP16 engines took 26 to 41 ms per frame (5.3 to 5.7 ms inference per model), and the live C270 loop ran camera-bound at 15 fps with no hands in view. Hands and the can on the camera are still untested. Do these after SSH works ([Orin setup](../docs/handoffs/orin-nano-setup.md)).
 
 1. **Repo and offline tests** (no extra packages):
    ```sh
@@ -82,7 +82,7 @@ The Orin runs JetPack 7.2.1 (L4T 39.2.1, Ubuntu 24.04, system Python 3.12). The 
    ```sh
    python3 -m vision.run --camera 0 --detect yolo26n.pt --pose yolo26n-pose.pt --device 0 --target real --show --max-seconds 30
    ```
-5. **Export TensorRT engines** (Orin only, a few minutes each, once per board), then run on them:
+5. **Export TensorRT engines** (Orin only, once per board), then run on them. FP16 export needs `tensorrt-cu13>=10.15,<11` (TensorRT 11 fails without NVIDIA ModelOpt) and took about 8.5 min for detect and 11 min for pose:
    ```sh
    yolo export model=yolo26n.pt format=engine quantize=16
    yolo export model=yolo26n-pose.pt format=engine quantize=16

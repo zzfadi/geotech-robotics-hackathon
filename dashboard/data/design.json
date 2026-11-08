@@ -1,7 +1,7 @@
 {
   "title": "How it works",
   "intro": "Three pictures of what we are building, in plain words. Every box says whether it is working, in progress or planned. Anyone can fix the words in dashboard/data/design.json.",
-  "as_of": "2026-11-08T03:55:00-08:00",
+  "as_of": "2026-11-08T05:20:00-08:00",
   "legend": {
     "working": "Built and shown to work. The box says where, for example only in software or only in the simulation.",
     "in-progress": "Being built, or built but not yet tried for real.",
@@ -30,7 +30,7 @@
           "row": 0,
           "icon": "camera",
           "title": "2. The camera sees the hand and the can",
-          "text": "A small, fast detector, meant to run next to the arm. Tried on recorded data and still photos; not yet on the live camera.",
+          "text": "A small, fast detector, meant to run next to the arm. Tried on recorded data and still photos, and on the Jetson with its live webcam while nobody was in view. Not yet tried with a hand or the can in front of a live camera.",
           "status": "in-progress"
         },
         {
@@ -38,8 +38,8 @@
           "col": 2,
           "row": 0,
           "icon": "brain",
-          "title": "3. The local brain decides it's safe",
-          "text": "Only a steady, offered can gives the arm its turn. An extra hand, a jerk or a camera fault makes it wait.",
+          "title": "3. The operator says go; the camera can pause",
+          "text": "On the real arm the operator starts the routine with 'g'. A hand in the arm's path, a jerk or a camera fault pauses it before its next step. It is a software pause, not a safety stop.",
           "status": "in-progress"
         },
         {
@@ -67,7 +67,7 @@
           "span": 3,
           "icon": "stop",
           "title": "An operator stays on the e-stop the whole time",
-          "text": "The hardware stop button on the arm. Software pauses are extra, never the safety stop. The person is named at the 9 AM standup.",
+          "text": "The hardware stop button on the arm. Software pauses are extra, never the safety stop. The person is named at the 8:30 hardware check, before anything is powered (proposed).",
           "status": "in-progress"
         },
         {
@@ -75,8 +75,8 @@
           "col": 3,
           "row": 1,
           "icon": "mark",
-          "title": "Plan B: the taped mark",
-          "text": "If the hand-off isn't 8 of 10 by 11:00, the arm picks the can up from a taped spot on the table instead.",
+          "title": "Default: the taped mark",
+          "text": "The arm picks the can up from a taped spot on the table. The hand-off replaces it only if it reaches 8 of 10 trials by 11:00.",
           "status": "in-progress"
         }
       ],
@@ -85,7 +85,7 @@
         { "from": "see", "to": "decide" },
         { "from": "decide", "to": "take" },
         { "from": "take", "to": "back" },
-        { "from": "take", "to": "mark", "label": "if needed", "status": "planned" }
+        { "from": "take", "to": "mark", "label": "default, unless 8 of 10", "status": "planned" }
       ],
       "notes": [
         "Today a local routine on the station laptop drives the real arm. Dream's AI drives the simulated arms, not the real one.",
@@ -111,8 +111,8 @@
             { "label": "Two Maker Arms", "status": "working", "text": "The right arm picked up an object on Saturday with our controller. Only the right arm is used in the demo." },
             { "label": "Cameras", "status": "working", "text": "Wrist, overhead and webcam pictures." },
             { "label": "Arm controller on the station laptop", "status": "working", "text": "Guards speed, heat and force, and freezes instead of dropping." },
-            { "label": "Jetson robot server", "status": "in-progress", "text": "Set up overnight; offline arm tests pass. Not on the arms yet, not needed at 3 PM." },
-            { "label": "Operator on the e-stop", "status": "in-progress", "text": "Person to be named at standup." }
+            { "label": "Jetson robot server", "status": "in-progress", "text": "Set up overnight. It ran the offline test suites, the control center, the detector and the edge model, all without the arms. No arm or CAN adapter attached yet; not needed at 3 PM." },
+            { "label": "Operator on the e-stop", "status": "in-progress", "text": "Person to be named at the 8:30 hardware check (proposed)." }
           ]
         },
         {
@@ -123,7 +123,7 @@
           "title": "The hybrid brain",
           "text": "Decides when the arm may move, and who moves it.",
           "items": [
-            { "label": "Local detector (hand + can)", "status": "in-progress", "text": "Meant to run next to the arm. Tried on recorded data and still photos; not yet on the live camera." },
+            { "label": "Local detector (hand + can)", "status": "in-progress", "text": "Runs on the Jetson's GPU at 26 to 41 ms per frame (TensorRT FP16) and kept up with its live webcam (15 fps) while nobody was in view. Not yet tried with a hand or the can in front of a live camera." },
             { "label": "Turn gate", "status": "working", "text": "Lets the arm move only on its turn. Passes its tests in software." },
             { "label": "Can hand-off routine", "status": "in-progress", "text": "Small guarded steps. Replay only so far." },
             { "label": "Dream AI (cloud)", "status": "working", "text": "Drives the simulated arms. Not used on the real arm today." },
@@ -140,7 +140,7 @@
           "items": [
             { "label": "Nine parallel Unreal tables", "status": "working", "text": "3×3 grid with live camera views; Dream drives each arm." },
             { "label": "Simulated cup lift", "status": "in-progress", "text": "Latest batch: 8 of 9 tables held a cup for 5 s, with help: a simplified grip model, a per-table grasp angle, and Dream's lift steps scaled up." },
-            { "label": "Isaac Sim physics for contact", "status": "in-progress", "text": "Matches the Unreal scene and receives captured poses. Hand-to-arm contact test is Sunday." },
+            { "label": "Isaac Sim physics for contact", "status": "in-progress", "text": "Matches the Unreal scene; received spoofed poses in a test world. Hand-to-arm contact test is Sunday." },
             { "label": "MuJoCo physics", "status": "in-progress", "text": "A light contact check for the webcam person, rehearsed in software." }
           ]
         },
@@ -166,7 +166,7 @@
           "title": "Seeing what the arm is doing",
           "text": "So people can follow what it does and why.",
           "items": [
-            { "label": "Control center", "status": "in-progress", "text": "What the arm is doing, is it healthy, and why it chose each step. Runs on demo and replayed data so far, not the live arm." },
+            { "label": "Control center", "status": "in-progress", "text": "What the arm is doing, is it healthy, and why it chose each step. Runs on the Mac and on the Jetson with demo, replayed and live-webcam data so far, not the live arm." },
             { "label": "Emoji \"thinking\" overlay", "status": "planned", "text": "\"Seeing beer\" on screen during the pitch." },
             { "label": "This dashboard", "status": "working", "text": "Every change, decision and blocker." }
           ]
@@ -179,7 +179,7 @@
           "title": "Helpers being built",
           "text": "Nice to have, not needed for the 3 PM demo.",
           "items": [
-            { "label": "Small edge model", "status": "in-progress", "text": "A tiny AI model for the Jetson that fills in when Dream is slow and helps with the last centimetre. It's trained on our own simulated grasps and scored on 180 tables it never saw. With its help, a slightly-off operator held the cup 162 times instead of 18. Simulation only; not on the Jetson or the real arm yet." },
+            { "label": "Small edge model", "status": "in-progress", "text": "A tiny AI model for the Jetson that fills in when Dream is slow and helps with the last centimetre. It's trained on our own simulated grasps and scored on 180 tables it never saw. With its help, a slightly-off operator held the cup 162 times instead of 18. Simulation only: on the Jetson it takes 0.038 ms per decision and held the cup on 9 of 9 physics-sim tables. Never on the real arm." },
             { "label": "Robot voice (LiveKit)", "status": "in-progress", "text": "The arms crack short scripted jokes (\"Beer me.\", \"Show-off.\") at each step, from recorded audio on a local speaker. They can also stream into a LiveKit room. Tested in replay and on a local test server, not yet on stage. The voice never moves the arm." }
           ]
         }
@@ -217,7 +217,7 @@
           "row": 1,
           "icon": "board",
           "title": "Jetson Orin Nano",
-          "text": "Robot server being set up: system, remote login and offline arm tests pass. Not on the arms yet; optional today.",
+          "text": "Robot server being set up, tested overnight as a hub: offline suites pass, the detector runs at 26 to 41 ms per frame (TensorRT FP16) and its live webcam at 15 fps with nobody in view, and the edge model takes 0.038 ms per decision. No arms or CAN attached, so nothing moved an arm; optional today.",
           "owner": "FADI",
           "status": "in-progress"
         },
@@ -278,7 +278,7 @@
     { "term": "Turn gate", "plain": "The rule that lets the arm move only on its turn. Anything unexpected, like an extra hand or an old camera picture, makes it wait." },
     { "term": "Hold", "plain": "Pausing the arm where it is. It stays powered and keeps its pose. A software pause, not a safety stop." },
     { "term": "E-stop", "plain": "The hardware emergency stop button. A person keeps a hand on it whenever the arm can move." },
-    { "term": "Taped mark", "plain": "A spot taped on the table where the can sits. The backup demo picks the can up from there instead of from a hand." },
+    { "term": "Taped mark", "plain": "A spot taped on the table where the can sits. The default demo picks the can up from there; the hand-off replaces it only if it reaches 8 of 10 by 11:00." },
     { "term": "Go/no-go call", "plain": "At 11:00 we count the hand trials: 8 of 10 or better, we demo the hand-off; otherwise the taped mark." },
     { "term": "Unreal", "plain": "Unreal Engine, the 3D engine that draws our simulated tables." },
     { "term": "Isaac Sim", "plain": "NVIDIA's physics simulator. It works out what touches what, such as a hand bumping the arm." },

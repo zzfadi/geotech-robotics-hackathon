@@ -52,7 +52,7 @@ scripts/jetson_hub_check.sh --engines   # TensorRT FP16 engines, about 20 min, o
 scripts/jetson_hub_check.sh --all       # + DreamSim/Capture/Unreal Tools, stills, 30 s live C270, control center via tunnel
 ```
 
-`JETSON_HOST` picks the host (default `orin-arm`), `CAMERA_SECONDS` sets the live run's length and `LOCAL_PORT` sets the Mac end of the tunnel. The script exits 1 if any suite exits non-zero, so `--sim` fails on Linux until the DreamSim filename case is fixed. The live step skips itself when `fuser /dev/video0` says the camera is busy, and the control center step skips itself when port 8780 is already in use on the Jetson. On Ctrl-C it still stops its tunnel and server. It copies the weights and stills from the Mac's git-ignored `vision/local/ultralytics/` when they're there. Logs go to `~/hub-tests/logs/<stamp>/`, results to `~/hub-tests/results/` and telemetry to `~/hub-tests/sessions/`.
+`JETSON_HOST` picks the host (default `orin-arm`), `CAMERA_SECONDS` sets the live run's length and `LOCAL_PORT` sets the Mac end of the tunnel. The script exits 1 if any suite exits non-zero. The live step skips itself when `fuser /dev/video0` says the camera is busy, and the control center step skips itself when port 8780 is already in use on the Jetson. On Ctrl-C it still stops its tunnel and server. It copies the weights and stills from the Mac's git-ignored `vision/local/ultralytics/` when they're there. Logs go to `~/hub-tests/logs/<stamp>/`, results to `~/hub-tests/results/` and telemetry to `~/hub-tests/sessions/`.
 
 By hand on the Jetson, after `--setup`:
 

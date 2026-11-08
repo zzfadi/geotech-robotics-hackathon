@@ -181,5 +181,10 @@
     "The --show preview on the KVM display (all runs were headless).",
     "Any arm, CAN, pickup_server or Dream round trip from the Jetson.",
     "Whether the engine-vs-.pt label differences hold on real camera frames."
+  ],
+  "post_fix": [
+    {"name": "DreamSim", "commit": "0306c8a", "where": "on the Jetson (orin-arm)", "result": "141 run, OK, 3 skipped (the quickjs UI tests)",
+     "meaning": "0306c8a makes DreamSim/model.py and Unreal/TheHumanTouch/Tools/maker_arm_physics.py read the tracked PROVENANCE.json, so the 2 FileNotFoundError errors above no longer occur on Linux. Earlier entries are left as recorded.",
+     "source": "dashboard/updates/2026-11-08-0453-edge-model-on-jetson.json and docs/jetson-hub-testing.md finding 4; the run's exact time was not recorded"}
   ]
 }

@@ -74,4 +74,4 @@ Dataset: 2,700 expert episodes (100 scene seeds × 9 tables × 3 variants), 2,57
 - Training data is the scripted expert's own labels only, never Dream output (see the terms note in the handoff).
 - The lag teacher is the scripted expert with a modelled round trip, not Dream. Frozen time has 0.2 s resolution (the bench runs at 5 Hz).
 - The policy reads a cup estimate; on the real arm that has to come from the overhead camera, which nobody detects yet.
-- Nothing has run on the Orin Nano or a real arm. The PyTorch trainer has not run (no torch on this Mac).
+- On the Orin Nano it has run on the CPU in simulation only: 0.038 ms per decision, and the MuJoCo physics bench held the cup on 9 of 9 tables at one seed ([validation](../docs/validation/edge-model-jetson-2026-11-08.json)). It has never run on a real arm. The PyTorch trainer has not run (no torch on this Mac).

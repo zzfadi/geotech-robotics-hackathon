@@ -1,10 +1,10 @@
 {
   "name": "GeoTech · Physical AI Hacks",
   "headline": "Hold my beer",
-  "summary": "A person holds out a can and a real robot arm takes it from their hand. Behind the demo, webcam and headset capture bring real people into nine simulated robot tables, because robots that work with people need to learn from real people.",
+  "summary": "A real robot arm picks up a can when someone says \"hold my beer\": from a taped mark, or from a person's hand if that passes 8 of 10 by 11:00. Behind the demo, webcam and headset capture bring real people into nine simulated robot tables, because robots that work with people need to learn from real people.",
   "goal": "Hold My Beer: a person hands a MakerMods Maker Arm their drink and it takes it, backed by human interaction captured in Unreal across parallel simulated tables.",
   "track": "Creative track",
-  "stack": "Maker Arm SDK, Dream-1 in Unreal simulation, Isaac Sim physics, XR and webcam capture, LiveKit voice agent",
+  "stack": "Maker Arm SDK, Dream-1 in Unreal simulation, Isaac Sim physics, XR and webcam capture, scripted voice lines, optional LiveKit room",
   "deadline": "2026-11-08T15:00:00-08:00",
   "deadline_label": "Demos due Sunday, Nov 8, 3 PM PT",
   "repo": "https://github.com/zzfadi/geotech-robotics-hackathon",
@@ -32,18 +32,18 @@
     }
   ],
   "today_label": "Sunday, Nov 8 · Pacific time",
-  "today_note": "Proposed means drafted on Saturday night and not yet agreed. Confirm at the 9 AM standup.",
+  "today_note": "Proposed means drafted overnight and not yet agreed. Confirm at the 9 AM standup.",
   "today": [
     {
       "at": "2026-11-08T08:30:00-08:00",
       "what": "Arm station opens",
-      "detail": "Hardware and e-stop check: name the e-stop person before anything is powered. Pull the latest code and run python3 -m handoff.preflight.",
+      "detail": "Hardware and e-stop check: name the e-stop person before anything is powered. Pull the latest code and run python3 -m handoff.preflight; NO-GO for the untaught poses is expected before teaching.",
       "state": "proposed"
     },
     {
       "at": "2026-11-08T09:00:00-08:00",
       "what": "Team standup",
-      "detail": "Settle the decisions below. Name the e-stop person and the submission owner.",
+      "detail": "Settle the decisions below. Name the submission owner.",
       "state": "proposed"
     },
     {
@@ -89,7 +89,7 @@
   "decisions": [
     {
       "q": "Who stands on the e-stop?",
-      "why": "Nothing runs on the real arm without a named person on the stop button.",
+      "why": "Nothing runs on the real arm without a named person on the stop button. Proposed: name them at the 8:30 hardware check, before anything is powered.",
       "source": "handoff/README.md"
     },
     {

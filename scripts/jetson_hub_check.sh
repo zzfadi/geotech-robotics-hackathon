@@ -17,8 +17,7 @@
 # ~/jetson-runtime (its Python is only run, read-only, for the arm tests) or ~/jetson-prep-assets.
 # No sudo, no system settings, no CAN/USB arm access, never starts pickup_server, no credentials.
 # Ultralytics runs with YOLO_OFFLINE=1 and sync=False. Everything it starts ends before it exits.
-# Exit status is 1 when any suite exits non-zero (with --sim, DreamSim does on Linux until the
-# MakerArm provenance.json/PROVENANCE.json case bug is fixed).
+# Exit status is 1 when any suite exits non-zero.
 set -u
 
 HOST="${JETSON_HOST:-orin-arm}"
