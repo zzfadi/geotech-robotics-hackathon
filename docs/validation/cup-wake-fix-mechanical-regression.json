@@ -1,0 +1,51 @@
+{
+  "scope": "Mechanical regression only; zero Dream API calls; not nine-table policy success",
+  "run": "mechanical-cup-v3-20261107-195932",
+  "change": "Remove unconditional measurement wake; original collision and limiter retained",
+  "cup": {
+    "initial_z_cm": 81.0,
+    "max_z_cm": 92.62260452873403,
+    "final_z_cm": 92.61076160567227,
+    "simulated": true,
+    "position_cm": [
+      56.098423346325816,
+      -30.902154381417063,
+      92.61076160567227
+    ],
+    "velocity_cm_s": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "speed_cm_s": 0.0,
+    "height_above_start_cm": 11.610761605672266,
+    "current_above_10cm_seconds": 5.909599833015818,
+    "max_above_10cm_seconds": 5.909599833015818,
+    "current_slow_above_10cm_seconds": 5.909599833015818,
+    "max_slow_above_10cm_seconds": 5.909599833015818,
+    "at_least_1s_slow_above_10cm": true,
+    "grasp_verified": false,
+    "tilt_degrees": 6.954756817588691,
+    "upright_threshold_deg": 15.0,
+    "current_slow_upright_above_10cm_seconds": 5.909599833015818,
+    "table_local_cm": [
+      56.098423346325816,
+      -30.902154381417063,
+      92.61076160567227
+    ],
+    "gravity_enabled": true,
+    "physics_simulated": true,
+    "attached_to": null
+  },
+  "independent_contact_samples": 218,
+  "samples_above_10cm": 57,
+  "forbidden_contacts": 0,
+  "above_10cm_support_sets": [
+    [
+      "FleetProxy_MakerArm_left_gripper_left",
+      "FleetProxy_MakerArm_left_gripper_right"
+    ]
+  ],
+  "height_definition": "Cup center rise from initial center; not lowest-point clearance",
+  "recording": "49 overhead frames at nominal 2fps; /tmp/cup-wake-fix-mechanical-pickup.mp4"
+}
