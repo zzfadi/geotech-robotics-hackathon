@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-08T05:36:00-08:00",
+  "workstream": "planning",
+  "status": "done",
+  "what": "Overnight Mac mini build finished: every track landed on main, was independently reviewed, and the review's fixes landed too",
+  "why": "The morning can go straight to the real arm: the software, checklist, dashboard, submission draft and Jetson are ready, and what still needs people or hardware is listed below.",
+  "where": [
+    "docs/plan.md",
+    "handoff/README.md",
+    "demo/submission.md",
+    "docs/jetson-hub-testing.md",
+    "docs/livekit-fit.md"
+  ],
+  "details": "Landed overnight: station readiness and its review fixes (b66503a, 2224bc8), detector and Dream probe (132ee2e), dashboard redesign (47d7383), scripted voice and LiveKit bridge (bb9326f), edge model scored in simulation (7ac2e28), plan proposals and submission draft (9ceef72), Jetson software test hub and the edge model on the Jetson (0be16ee, 19c5ae4), three Linux/test fixes (0306c8a), and docs brought in line (990dd77). Needs people at 08:30: name the e-stop person before anything is powered; run python3 -m handoff.preflight (NO-GO for untaught mark poses is expected and means start teaching); teach and run the taped mark first, per handoff/README.md. Needs decisions at the 9 AM standup: the proposals in docs/plan.md (submission owner, fist bump, Dream/Codex split, what stays out of the MVP). Needs owners: Takeshi's 10-minute LiveKit setup (docs/livekit-fit.md), Brian or FADI reviewing the voice lines, the submission owner filling demo/submission.md, and confirming whether Saturday's 16 s covers the whole cylinder run. Not done or not possible overnight: anything on the real arm or with hands and the can on a camera, a real Dream latency measurement (no key on the Mac mini), LiveKit Cloud, and Isaac Sim (it runs on Luna2; the MuJoCo physics bench stood in for it)."
+}
