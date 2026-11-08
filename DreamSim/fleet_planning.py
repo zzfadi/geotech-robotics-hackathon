@@ -9,12 +9,34 @@ OBJECTS = {name: ('drinking cup', 6.0, 4.0) for name in ('Cup','Cup_02','Cup_03'
 DEFAULT_SEED = 20261107
 
 
+def central_cup_positions(index, seed):
+    """Random cup centres between the two arms (x 48..62, y -33.5..33.5 cm), at least 13 cm
+    apart. Labels follow y so Cup is always nearest the left arm and Cup_03 is next; with five
+    cups the middle one (Cup_05) stays within x <= 52, the left arm's reliable centre reach."""
+    import itertools, math, random
+    rng = random.Random('%d:%d' % (seed, index))
+    count = 4 + index % 2
+    if seed == 20261107:
+        # The arranged scene (cup_scene_layout.json): Codex's centred slots with small jitter.
+        return [[rng.uniform(48, 52 if ordinal == 4 else 62), y+rng.uniform(-1.5, 1.5)]
+                for ordinal, y in enumerate((-32, 32, -16, 16, 0)[:count])]
+    order = ('Cup', 'Cup_03', 'Cup_05', 'Cup_04', 'Cup_02') if count == 5 else ('Cup', 'Cup_03', 'Cup_04', 'Cup_02')
+    for _ in range(5000):
+        points = sorted(([rng.uniform(48, 62), rng.uniform(-33.5, 33.5)] for _ in range(count)), key=lambda p: p[1])
+        if (all(math.dist(a, b) >= 13 for a, b in itertools.combinations(points, 2)) and points[1][1] < 0
+                and (count == 4 or points[2][0] <= 52)):
+            break
+    else:
+        raise RuntimeError('No central cup layout found')
+    placed = dict(zip(order, points))
+    return [placed[name] for name in ('Cup', 'Cup_02', 'Cup_03', 'Cup_04', 'Cup_05')[:count]]
+
+
 def cup_layout(index, seed):
     """Match the scene's existing 4/5 cups; shuffle positions, never invent actors."""
-    rng = random.Random('%d:%d' % (seed, index))
-    return [{'label': PREFIX+name, 'location_cm': [rng.uniform(48,52 if ordinal==4 else 62), y+rng.uniform(-1.5,1.5),81],
+    return [{'label': PREFIX+name, 'location_cm': [x, y, 81],
              'yaw_deg': 0., 'rotation_deg': [0.,0.,0.], 'clearance_radius_cm': 4.}
-            for ordinal,(name,y) in enumerate(list(zip(OBJECTS,(-32,32,-16,16,0)))[:4+index%2])]
+            for name, (x, y) in zip(OBJECTS, central_cup_positions(index, seed))]
 
 
 def explicit_motion_side(prompt):

@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-07T21:22:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Nine-table Dream cup iterations with opt-in labelled assists; random central cup reset.",
+  "why": "Zero-shot approach from home never found the cup; Dream closes from a pregrasp start but the kinematic grip lets the cup pivot out.",
+  "where": ["DreamSim/pregrasp.py", "DreamSim/fleet_worker.py", "DreamSim/fleet_cups_claude.json", "DreamSim/fleet_planning.py", "Unreal/TheHumanTouch/Tools/maker_arm_cups.py", "docs/validation/claude-cup-iterations-2026-11-07.md"],
+  "details": "Batches 1-3: 0/9 held lifts; best 4.7 cm upright with vertical hold. Assists (pregrasp start, table guard, grip latch, vertical/monotonic hold, live layout) are per-table opt-in and recorded in each result. Per-table lift heights 15/20/25/30 cm with a sampled continuous 5 s hold. Reset randomizes cups between the arms. No grasp success claimed."
+}

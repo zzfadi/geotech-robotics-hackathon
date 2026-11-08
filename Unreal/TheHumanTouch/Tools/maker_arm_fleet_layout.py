@@ -115,6 +115,8 @@ def normalize_variant(variant, index, defaults=None):
     out['cycles'] = cycles
     out['initial_state'] = check_state(merged.get('initial_state') or REST_STATE)
     out['objective'] = merged.get('objective')
+    # Opt-in, labelled simulation assistance (DreamSim/pregrasp.py); empty by default.
+    out['assist'] = dict(merged.get('assist') or {})
     out['motion_side'] = merged.get('motion_side', (out['objective'] or {}).get('side'))
     if out['motion_side'] not in (None, 'left', 'right'):
         raise ValueError('motion_side must be left, right or null')

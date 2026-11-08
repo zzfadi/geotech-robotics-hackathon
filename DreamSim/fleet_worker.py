@@ -25,6 +25,8 @@ import sys
 import threading
 import time
 import uuid
+
+import numpy as np
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -168,12 +170,15 @@ class TableRun:
         self.args = args
         self.client = client
         self.target_fell = False
+        self.grip_latch = None  # opt-in assist: max grip command once jaws stall on the cup
+        self.latch_z = None  # tool height (m, arm frame) when the jaws first stalled
+        self.hold_peak_z = None  # highest tool height while holding (hold_monotonic floor)
         self.result = {'table': self.key, 'name': variant['name'], 'prompt': variant['prompt'],
                        'checkpoint': variant['checkpoint'], 'position_ik': variant['position_ik'],
                        'pad_contacts': variant['pad_contacts'], 'action_rows': variant['action_rows'],
                        'cycles_planned': variant['cycles'], 'cycles_run': 0, 'calls': 0,
                        'lift': {'measured': False}, 'error': None, 'stopped_reason': None, 'events': [],
-                       'requests': [], 'motion_chunks': []}
+                       'requests': [], 'motion_chunks': [], 'assist': variant.get('assist') or {}}
 
     def log(self, message, **extra):
         item = {'t': round(time.time(), 3), 'message': message, **extra}
@@ -290,16 +295,46 @@ class TableRun:
             if self.v['position_ik'] and not self.args.dry_run:
                 from position_ik import adapt
                 active = [active_side] if active_side else None
-                action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12, active_sides=active, allow_prefix=True)
+                try:
+                    action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12, active_sides=active, allow_prefix=True)
+                except np.linalg.LinAlgError as error:
+                    # Numerical failure inside the solver: hold this cycle and replan.
+                    self.log('IK numerical failure (%s); holding pose this cycle' % error)
+                    action, ik = hold_action(packet['state'], 2), {'_execution': {'truncated': False, 'linalg_error': str(error)}}
             if active_side and not self.args.dry_run:
                 action = constrain_motion_side(action, packet['state'], active_side)
+            guard = None
+            if self.v.get('assist', {}).get('table_guard') and not self.args.dry_run:
+                from pregrasp import guard_table
+                guard = []
+                for side in ([active_side] if active_side else ['left', 'right']):
+                    action, report = guard_table(action, packet['state'], side)
+                    guard.append(report)
+                raised = sum(len(g['raised_rows']) for g in guard)
+                if raised:
+                    self.log('table guard raised %d row(s) to keep pads above the tabletop' % raised)
+            latch_side = active_side or 'left'
+            latch_key = 'q_l_chunk' if latch_side == 'left' else 'q_r_chunk'
+            vertical = None
+            if self.v.get('assist', {}).get('hold_vertical') and self.grip_latch is not None and not self.args.dry_run:
+                from pregrasp import vertical_only
+                floor = self.hold_peak_z if self.v['assist'].get('hold_monotonic') else self.latch_z
+                action, vertical = vertical_only(action, packet['state'], latch_side, floor_z=floor)
+                self.log('holding: applied only vertical motion (dz %+.1f cm over %d rows)' %
+                         ((vertical['dz_cm'] or [0])[-1], vertical['rows']))
+            if self.v.get('assist', {}).get('grip_latch') and self.grip_latch is not None and not self.args.dry_run:
+                clamped = sum(1 for row in action[latch_key] if row[6] > self.grip_latch)
+                action = dict(action)
+                action[latch_key] = [list(row[:6])+[min(row[6], self.grip_latch)] for row in action[latch_key]]
+                if clamped:
+                    self.log('grip latch kept %d row(s) closed at %.2f' % (clamped, self.grip_latch))
             execution = (ik or {}).get('_execution') or {}
             if execution.get('truncated'):
                 self.log('Executing feasible policy prefix %s/%s rows; replan from fresh feedback' %
                          (execution.get('executed_rows'), execution.get('requested_rows')))
             report = self.dir/('action-%02d.json' % (cycle+1))
             write_json(report, {'state': packet['state'], 'action': action, 'raw_action': raw if ik else None,
-                                'ik_report': ik, 'motion_side': active_side, 'execution_rows': None if self.args.dry_run else execution.get('executed_rows', self.v['action_rows']),
+                                'ik_report': ik, 'table_guard': guard, 'vertical_hold': vertical, 'grip_latch': self.grip_latch, 'motion_side': active_side, 'execution_rows': None if self.args.dry_run else execution.get('executed_rows', self.v['action_rows']),
                                 'checkpoint': None if self.args.dry_run else self.v['checkpoint'],
                                 'controller_source': 'dry-run hold' if self.args.dry_run else
                                 ('Dream EEF + position IK' if ik else 'Dream joint targets')})
@@ -319,6 +354,20 @@ class TableRun:
                 if time.monotonic() > deadline:
                     raise TimeoutError('Cycle %d motion did not finish' % (cycle+1))
                 time.sleep(.1)
+            if self.v.get('assist', {}).get('grip_latch') and not self.args.dry_run:
+                commanded = float(action[latch_key][-1][6])
+                observed = playback.get('gap_'+latch_side+'_m')
+                if observed is not None and observed - commanded*JAW_MAX_M > .01 and observed < .095:
+                    if self.grip_latch is None:
+                        from pregrasp import tool_height
+                        self.latch_z = tool_height(playback.get('q_'+latch_side, packet['state']['q_'+latch_side]))
+                    if self.grip_latch is None or commanded < self.grip_latch:
+                        self.grip_latch = commanded
+                        self.log('jaws stalled on an object at %.1f cm (commanded %.1f cm); grip latch set' %
+                                 (observed*100, commanded*JAW_MAX_M*100))
+            if self.latch_z is not None and playback.get('q_'+latch_side):
+                from pregrasp import tool_height
+                self.hold_peak_z = max(self.hold_peak_z or self.latch_z, tool_height(playback['q_'+latch_side]))
             motion_evidence = dict(playback)
             motion_evidence['max_joint_delta_rad'] = max(abs(a-b)
                 for side in ('left', 'right')
@@ -342,7 +391,19 @@ class TableRun:
                 self.result['stopped_reason'] = bounded_stop
                 self.log(bounded_stop)
                 return
-            if lift.get('height_cm', 0) >= 10:
+            required = float(objective.get('height_cm', 10.)) if objective else 10.
+            if objective and required != 10 and lift.get('height_cm', 0) >= required:
+                self.log('target above %.0f cm; holding pose to measure a continuous %.1f s hold' % (required, hold_seconds))
+                held = self.sampled_hold(target, required, hold_seconds, max_tilt)
+                self.result['threshold_hold'] = held
+                self.result['lift'] = {**lift_verdict(self.status(), target, hold_seconds, max_tilt), 'lift_held': held['passed'],
+                                       'required_height_cm': required, 'held_above_required_s': held['held_s']}
+                if held['passed']:
+                    self.result['stopped_reason'] = 'measured %.0f cm hold for %.1f s (needs video review)' % (required, held['held_s'])
+                    self.log(self.result['stopped_reason'])
+                    return
+                continue
+            if lift.get('height_cm', 0) >= 10 and required == 10:
                 self.log('target above 10 cm; holding pose for %.1f s to measure retention' % (hold_seconds+.2))
                 hold_until = time.monotonic()+hold_seconds+.2
                 while time.monotonic() < hold_until:
@@ -362,7 +423,32 @@ class TableRun:
                     return
         self.result['stopped_reason'] = 'cycles exhausted'
 
+    def sampled_hold(self, target, height, hold_seconds, max_tilt):
+        """Continuous hold above an arbitrary height from ~10 Hz runtime samples; numbers only."""
+        start, best, samples = None, 0., []
+        until = time.monotonic()+hold_seconds+.8
+        while time.monotonic() < until:
+            if self.stopped():
+                raise RuntimeError('Stopped during hold verification')
+            p = (self.status() or {}).get('props', {}).get(target, {})
+            h, tilt, speed = p.get('height_above_start_cm', 0.), p.get('tilt_degrees', 180.), p.get('speed_cm_s', 99.)
+            ok = (h >= height and speed <= 10 and (max_tilt is None or 0 <= tilt <= max_tilt)
+                  and p.get('physics_simulated') is True and p.get('gravity_enabled') is True and not p.get('attached_to'))
+            now = time.monotonic()
+            start = (start or now) if ok else None
+            best = max(best, now-start) if start else best
+            samples.append([round(h, 2), round(tilt, 1), round(speed, 1)])
+            if best >= hold_seconds:
+                break
+            time.sleep(.1)
+        heights = [x[0] for x in samples] or [0.]
+        return {'required_height_cm': height, 'required_hold_s': hold_seconds, 'max_tilt_deg': max_tilt,
+                'held_s': round(best, 2), 'passed': best >= hold_seconds, 'min_height_cm': min(heights),
+                'max_height_cm': max(heights), 'samples': len(samples),
+                'scope': 'cup centre rise sampled from runtime physics; not grasp proof'}
+
     def __call__(self):
+        self.finished = False
         try:
             self.execute()
         except Exception as error:
@@ -394,7 +480,13 @@ class TableRun:
             self.result['outcome'] = 'unverified'
         else:
             self.result['outcome'] = verification['outcome']
+            held = self.result.get('threshold_hold')
+            if held is not None:
+                self.result['outcome'] = 'passed' if held['passed'] else 'failed'
+            elif float(self.v['objective'].get('height_cm', 10)) != 10:
+                self.result['outcome'] = 'failed'
         self.result['objective'] = self.v.get('objective')
+        self.finished = True
         return self.result
 
 
@@ -476,16 +568,18 @@ def videos(run, key, fps):
 
 def latest_overhead(run, key):
     """Newest complete overhead JPEG for a live thumbnail (review frame or policy packet)."""
+    best = (None, None)
     frames = sorted((run/key/'recording').glob('overhead_rec_*.jpg'))[-2:]
     for path in reversed(frames):
         data = path.read_bytes()
         if data.startswith(b'\xff\xd8') and data.endswith(b'\xff\xd9'):
-            return data, path.stat().st_mtime
+            best = (data, path.stat().st_mtime)
+            break
     packet = read_json(run/key/'observation.json')
-    if packet and packet.get('frames', {}).get('video.overhead'):
+    if packet and packet.get('frames', {}).get('video.overhead') and (best[1] is None or packet['captured_unix'] > best[1]):
         import base64
         return base64.b64decode(packet['frames']['video.overhead']), packet['captured_unix']
-    return None, None
+    return best
 
 
 def print_table(results):
@@ -521,11 +615,19 @@ def run_trials(args, editor, variants, clients, run, progress=None, should_stop=
     results, note, runs = [], '', []
     done = threading.Event()
 
+    refreshed = {}
+
     def monitor():
         while not done.wait(.25):
             try:
                 if should_stop and should_stop():
                     (run/'stop').touch()
+                # Keep live thumbnails for tables that already finished: the runtime
+                # captures on demand, so ask for an idle observation every 2 s.
+                for r in runs:
+                    if getattr(r, 'finished', False) and time.monotonic()-refreshed.get(r.key, 0) > 2:
+                        (r.dir/'need_observation').touch()
+                        refreshed[r.key] = time.monotonic()
                 if progress:
                     progress(read_json(run/'fleet.json') or {}, runs)
             except Exception as error:
@@ -536,6 +638,16 @@ def run_trials(args, editor, variants, clients, run, progress=None, should_stop=
         for v in variants:
             editor.scene('maker_arm_fleet.build_table(%r, %d)' % (str(config_path), v['index']),
                          'Fleet: booth T%02d (%s)' % (v['index'], v['name']))
+        if any(v.get('assist', {}).get('layout') == 'live' for v in variants):
+            from pregrasp import live_cups_expression, apply_live_layout
+            editor.scene(live_cups_expression(run/'live-cups.json'), 'Fleet: read current cup layout (no edits)')
+            live = read_json(run/'live-cups.json')
+            if not live:
+                raise RuntimeError('Editor did not report live cup positions')
+            write_json(config_path, apply_live_layout(read_json(config_path), live))
+            fresh = {v['index']: v for v in normalize_config(read_json(config_path))}
+            variants = [fresh.get(v['index'], v) for v in variants]
+            print('Live cup layout applied to %d table(s)' % sum(v.get('assist', {}).get('layout') == 'live' for v in variants), flush=True)
         out = editor.scene('maker_arm_fleet.reset(%r)' % str(config_path), 'Fleet: set start poses for this run')
         print('Start poses: ' + out.splitlines()[-1][:300], flush=True)
         editor.deferred('start', [str(config_path), str(run), args.fps, args.max_seconds, 1], run/'start-result.json')
@@ -775,6 +887,8 @@ def serve(args, config):
     atexit.register(close_clients)
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
     usable = [v for v in variants if args.dry_run or v['index'] in clients]
+    warmed = {v['index']: v['checkpoint'] for v in variants}
+    config_mtime = args.config.stat().st_mtime
     hello = [{**v, 'checkpoint': v['checkpoint'] if not args.dry_run else 'dry-run (no Dream calls)',
               'ready': args.dry_run or v['index'] in clients, 'error': setup_errors.get(v['index'])} for v in variants]
     editor = Editor(args.project)
@@ -833,6 +947,14 @@ def serve(args, config):
             continue
         seen.add(command['id'])
         request_id = command['id']
+        if getattr(args, 'reload_config', False) and args.config.stat().st_mtime != config_mtime:
+            fresh = json.loads(args.config.read_text())
+            changed = [v['index'] for v in normalize_config(fresh) if v['index'] in clients and v['checkpoint'] != warmed.get(v['index'])]
+            if changed:
+                print('Config reload refused: checkpoint changed for tables %s (restart the worker)' % changed, flush=True)
+            else:
+                config, config_mtime = fresh, args.config.stat().st_mtime
+                print('Reloaded %s' % args.config, flush=True)
         chosen = [dict(t) for t in config['tables']]
         run_config = {'defaults': config.get('defaults', {}), 'tables': []}
         for position, table in enumerate(chosen):
@@ -867,6 +989,8 @@ def serve(args, config):
                 raise RuntimeError('Selected Dream sessions are unavailable: ' + ', '.join(map(str, missing)))
             if not run_config['tables']:
                 raise RuntimeError('No selected table has a ready Dream session')
+            from pregrasp import prepare_run_config
+            run_config = prepare_run_config(run_config, config)
             run = new_run(data, run_config)
             run_variants = normalize_config(run_config)
             for v in run_variants:
@@ -899,7 +1023,7 @@ def serve(args, config):
             status = 'stopped' if stop['flag'] else 'done'
             server.event('fleet.finished', request_id, ('Measured held lift on ' + ', '.join(held) + ' (review videos)') if held
                          else 'No table measured a held 10 cm lift')
-            summary = [{k: r.get(k) for k in ('batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason')} for r in results]
+            summary = [{k: r.get(k) for k in ('batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'cup_metrics', 'batch_end_cup_metrics', 'measured_cup', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason', 'threshold_hold', 'assist')} for r in results]
         except Exception as error:
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))
@@ -928,6 +1052,7 @@ def main():
     p.add_argument('--cycles', type=int, default=None, help="override every table's cycle count")
     p.add_argument('--tables', default=None, help='comma-separated table numbers to run, e.g. 1,3,5')
     p.add_argument('--serve', action='store_true', help='run commands queued from the Luna2 web page')
+    p.add_argument('--reload-config', action='store_true', help='re-read --config before each web command (checkpoints must not change)')
     p.add_argument('--maintenance',action='store_true',help='serve live cameras but never claim commands or resets; restart without flag to enable work')
     p.add_argument('--server', default='http://100.84.28.59:8786')
     p.add_argument('--token-file', type=Path, default=None, help='default <project>/Saved/DreamDebugger/worker-token')
@@ -943,6 +1068,8 @@ def main():
     if args.tables:
         keep = [int(x) for x in args.tables.split(',')]
         config['tables'] = [dict(t, index=t.get('index', i)) for i, t in enumerate(config['tables']) if t.get('index', i) in keep]
+    from pregrasp import prepare_run_config
+    config = prepare_run_config(config, config)
     variants = normalize_config(config)
     data = args.data or args.project/'Saved/DreamFleet'
     run = new_run(data, config)
