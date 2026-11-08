@@ -1,0 +1,5 @@
+{"name": "Shoulder or elbow heats past 49 C while waiting at the offer pose: stop and fold back",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "arm": {"temps_c": [47.0, 47.5], "heat_c_per_s": 0.2},
+ "timeline": [{"from": 0, "to": 80}],
+ "expect": {"outcome": "failed", "reason": "motor_hot", "holding": false, "final_step": "halted"}}

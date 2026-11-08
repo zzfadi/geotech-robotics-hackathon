@@ -1,0 +1,6 @@
+{"name": "Fallback with only a path feed (operator or hand detector, no wrist camera): still picks",
+ "mode": "mark", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 60}],
+ "path_only": true,
+ "truth_can": true,
+ "expect": {"outcome": "success", "reason": "held", "holding": true}}

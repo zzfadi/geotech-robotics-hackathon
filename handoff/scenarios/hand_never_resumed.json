@@ -1,0 +1,4 @@
+{"name": "Paused by a hand in the path and nobody resumes: stop where it is",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 3.0}, {"from": 3.0, "to": 4.0, "hand_in_path": true}, {"from": 4.0, "to": 80, "hand_in_path": false}],
+ "expect": {"outcome": "stopped", "reason": "not_resumed", "holding": false, "final_step": "halted"}}

@@ -1,0 +1,9 @@
+{"name": "A hand crosses the arm's path mid-approach: pause, then the operator resumes",
+ "mode": "hand", "operator": [[1.0, "go"], [6.0, "go"]],
+ "timeline": [
+   {"from": 0, "to": 3.0},
+   {"from": 3.0, "to": 4.5, "hand_in_path": true},
+   {"from": 4.5, "to": 12, "hand_in_path": false},
+   {"from": 12, "to": 14, "can_in_jaws": true, "hand_on_can": true},
+   {"from": 14, "to": 60, "can_in_jaws": true, "hand_on_can": false}],
+ "expect": {"outcome": "success", "reason": "held", "min_pauses": 1}}

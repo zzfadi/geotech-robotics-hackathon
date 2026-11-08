@@ -105,12 +105,13 @@ class Routine:
         self.step = "idle"
         self.events: List[dict] = []
         self._grant: Optional[int] = None
-        self._fed: Optional[float] = None
+        self._fed: Optional[float] = clock.now() - cfg.timing.stale_after_s
         self._path_hit: Optional[str] = None
         self._cursor: Dict[str, Optional[float]] = {}
         self._pending_ops: List[str] = []
         self._t0 = clock.now()
         self._grasped_at: Optional[float] = None
+        self._cooling = False
 
     # ----------------------------------------------------------------- output
     def _emit(self, kind: str, **f) -> None:
@@ -151,7 +152,10 @@ class Routine:
         if isinstance(q, list) and len(q) >= 7:
             self.q = [float(x) for x in q[:7]]
         temps = [t for t in (reply.get("temp_c") or [])[:6] if isinstance(t, (int, float))]
-        if temps and max(temps) >= self.cfg.temp_abort_c:
+        # Folding back after a hot abort lowers the load, so allow 2 C more
+        # for that one move (still under the server's 52 C trip).
+        limit = self.cfg.temp_abort_c + (2.0 if self._cooling else 0.0)
+        if temps and max(temps) >= limit:
             hot = max(range(len(temps)), key=lambda i: temps[i])
             raise Abort("motor_hot", "Motor %d reached %.0f C; the server trips at 52 C." % (
                 hot + 1, temps[hot]))
@@ -255,6 +259,9 @@ class Routine:
                                  "A hand is in the arm's path; it moves once the path is clear.")
                     said = True
             if self.clock.now() > deadline:
+                if waiting_for_op and purpose.startswith("resume"):
+                    raise Abort("not_resumed", "Paused, and nobody said go to resume within %.0f s." % timeout,
+                                outcome="stopped", retract=False)
                 if waiting_for_op:
                     raise Abort("no_go", "Nobody said go.", outcome="stopped", retract=False)
                 raise Abort("path_never_cleared", "The arm's path never cleared for %.0f s." % timeout,
@@ -449,9 +456,27 @@ class Routine:
         self._step("retreat")
         self._move_chain(cfg.chain(cfg.mark_retreat), "retreat")
 
+    def reset_to_ready(self) -> Result:
+        """Between trials: open the jaws (the operator has taken the can) and
+        return to the ready pose under the gate."""
+        self._t0 = self.clock.now()
+        self.events = []
+        self._emit("task", phase="start", name="Reset to the ready pose")
+        try:
+            self._status()
+            self._open()
+            self._cleanup(Abort("reset", "Reset between trials."))
+            outcome, reason = "success", "ready"
+        except Abort as a:
+            outcome, reason = a.outcome, a.reason
+        self._emit("task", phase="end", name="Reset to the ready pose", outcome=outcome, detail=reason)
+        return Result(self.mode, outcome, reason, "", self.holding, 0, self.pauses,
+                      self.clock.now() - self._t0, None, self.step, self.events)
+
     # -------------------------------------------------------------- cleanup
     def _cleanup(self, a: Abort) -> None:
         self._grant = None
+        self._cooling = a.reason == "motor_hot"
         if not a.retract:
             self._step("halted", "the arm holds where it is")
             return
