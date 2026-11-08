@@ -52,4 +52,15 @@ class PositionIKTests(unittest.TestCase):
         action['per_key']['action.left_eef_xyz'][1]=[100,100,100]
         with self.assertRaisesRegex(ValueError,'unreachable'):adapt(action,self.fixture['state'])
 
+
+    def test_explicit_single_arm_masks_only_inactive_policy(self):
+        action=copy.deepcopy(self.fixture['action'])
+        action['per_key']['action.right_eef_xyz']=[[999,999,999]]*len(action['q_r_chunk'])
+        out,report=adapt(action,self.fixture['state'],active_sides=['left'])
+        expected=self.fixture['state']['q_right']+[self.fixture['state']['gap_right_m']/.104825]
+        self.assertTrue(report['right']['masked'])
+        self.assertEqual(len(out['q_r_chunk']),len(out['q_l_chunk']))
+        self.assertTrue(all(row==expected for row in out['q_r_chunk']))
+        with self.assertRaises(ValueError):adapt(action,self.fixture['state'])
+
 if __name__=='__main__':unittest.main()

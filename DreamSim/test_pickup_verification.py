@@ -48,6 +48,20 @@ class Verification(unittest.TestCase):
         self.assertFalse(self.verify(motion=[])['measured_lift_pass'])
         self.assertFalse(self.verify(motion=[{'max_joint_delta_rad':0}])['measured_lift_pass'])
 
+    def test_upright_cup_requires_continuous_upright_hold(self):
+        objective=dict(OBJECTIVE,max_tilt_deg=15.)
+        status=copy.deepcopy(STATUS)
+        status['props'][TARGET].update(tilt_degrees=8.,upright_threshold_deg=15.,current_slow_upright_above_10cm_seconds=2.2)
+        self.assertTrue(self.verify(objective=objective,status=status)['measured_lift_pass'])
+        for patch in ({'tilt_degrees':16.},{'tilt_degrees':float('nan')},
+                      {'upright_threshold_deg':20.},{'current_slow_upright_above_10cm_seconds':0.},
+                      {'current_slow_upright_above_10cm_seconds':None}):
+            bad=copy.deepcopy(status);bad['props'][TARGET].update(patch)
+            self.assertFalse(self.verify(objective=objective,status=bad)['measured_lift_pass'])
+        self.assertFalse(self.verify(objective=objective)['measured_lift_pass'])
+        for value in (-1,181,True,float('nan')):
+            self.assertFalse(self.verify(objective=dict(OBJECTIVE,max_tilt_deg=value))['measured_lift_pass'])
+
     def test_nonfinite_or_missing_evidence_cannot_pass(self):
         for value in (float('nan'),float('inf'),None,True):
             status=copy.deepcopy(STATUS);status['props'][TARGET]['height_above_start_cm']=value

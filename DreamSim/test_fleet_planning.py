@@ -8,7 +8,10 @@ class Planning(unittest.TestCase):
         full = build_plan(list(range(9)), mode='random', seed=42, randomize=True)
         self.assertEqual(full, build_plan(list(range(9)), mode='random', seed=42, randomize=True))
         self.assertEqual(full['tables'][5], build_plan([5], mode='random', seed=42, randomize=True)['tables'][0])
-        self.assertGreater(len({t['prompt'] for t in full['tables']}), 1)
+        self.assertGreater(len({tuple(t['objects'][0]['location_cm']) for t in full['tables']}), 1)
+        self.assertTrue(all(t['target']=='MakerStation_Prop_Cup' for t in full['tables']))
+        self.assertTrue(all(len(t['objects'])==1 for t in full['tables']))
+        self.assertTrue(all(t['objective']['hold_seconds']==5 for t in full['tables']))
 
     def test_objects_have_clearance_and_remain_on_table(self):
         for seed in range(50):
@@ -24,14 +27,14 @@ class Planning(unittest.TestCase):
 
     def test_shared_prompt_and_independent_config_copy(self):
         config = {'defaults': {'cycles': 12}, 'tables': [{'name': 'a'}, {'name': 'b'}]}
-        plan = build_plan([0, 1], prompt='Pick up red cube', seed=3)
+        plan = build_plan([0, 1], prompt='Pick up the drinking cup', seed=3)
         result = apply_plan(config, plan)
-        self.assertEqual([t['prompt'] for t in result['tables']], ['Pick up red cube']*2)
+        self.assertEqual([t['prompt'] for t in result['tables']], ['Pick up the drinking cup']*2)
         self.assertNotIn('prompt', config['tables'][0])
         self.assertIsNone(plan['tables'][0]['objective'])  # Free text is not a verified lift objective.
 
-    def test_commanded_target_survives_randomized_layout_without_inherited_red_geometry(self):
-        config={'defaults':{},'tables':[{'index':i,'target':{'label':'old-red','scale':[1,1,3],'location_cm':[1,2,3]}}
+    def test_commanded_target_survives_randomized_layout_without_inherited_geometry(self):
+        config={'defaults':{},'tables':[{'index':i,'target':{'label':'old-object','scale':[1,1,3],'location_cm':[1,2,3]}}
                                        for i in range(9)]}
         for seed in range(10):
             plan=build_plan(list(range(9)),mode='random',seed=seed,randomize=True)
@@ -47,9 +50,9 @@ class Planning(unittest.TestCase):
                 self.assertEqual(variant['objective'],task['objective'])
 
     def test_configured_fixture_preserves_objective_layout_and_pose(self):
-        fixture={'index':1,'prompt':'Lift the green cube','objective':{'kind':'lift_hold','target':'green','height_cm':10},
-                 'objects':[{'label':'green','location_cm':[40,-40,77.5]}],
-                 'target':{'label':'green','location_cm':[40,-40,77.5]},
+        fixture={'index':1,'prompt':'Lift the drinking cup','objective':{'kind':'lift_hold','target':'MakerStation_Prop_Cup','height_cm':10},
+                 'objects':[{'label':'MakerStation_Prop_Cup','location_cm':[40,-40,77.5]}],
+                 'target':{'label':'MakerStation_Prop_Cup','location_cm':[40,-40,77.5]},
                  'initial_state':{'q_left':[1,2,3,4,5,6]}}
         config={'defaults':{},'tables':[fixture]}
         plan=build_plan([1],mode='configured',seed=7)
@@ -57,7 +60,7 @@ class Planning(unittest.TestCase):
         randomized=apply_plan(config,build_plan([1],mode='configured',seed=7,randomize=True))['tables'][0]
         self.assertEqual(randomized['objective'],fixture['objective'])
         self.assertEqual(randomized['target'],fixture['target'])
-        self.assertEqual(len(randomized['objects']),5)
+        self.assertEqual(len(randomized['objects']),1)
         self.assertEqual(randomized['initial_state']['q_left'],[0]*6)
         self.assertEqual(config['tables'][0],fixture)
 

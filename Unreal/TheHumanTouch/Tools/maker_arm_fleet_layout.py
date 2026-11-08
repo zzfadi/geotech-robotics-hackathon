@@ -16,7 +16,8 @@ SOURCE_PREFIXES = ('MakerArm_', 'MakerStation_', 'MakerCamera_', 'Dreamlabs_YAM_
 # Omit only hidden legacy YAM arms and their disabled lights.
 SKIP_SOURCE = re.compile(r'^(Dreamlabs_YAM_(left|right)_.*|Dreamlabs_YAM_(Fill|Key)Light)$')
 PROP_PREFIX = 'MakerStation_Approximate_Block_'
-TARGET = PROP_PREFIX + 'Red'
+PROP_PREFIXES = (PROP_PREFIX, 'MakerStation_Prop_')
+TARGET = PROP_PREFIX + 'Red' # Legacy recorded configurations remain readable; new default is fleet_cups.json.
 # Matches yam_station.BASES (checked by test_maker_arm_fleet_layout).
 STATION_BASES = {'left': (20, -40, 76), 'right': (20, 40, 76)}
 JAW_MAX_M = .104825
@@ -118,8 +119,8 @@ def normalize_variant(variant, index, defaults=None):
     seen = set()
     for obj in merged.get('objects', []):
         name = obj['label']
-        if not name.startswith(PROP_PREFIX) or name in seen:
-            raise ValueError('Object layout needs distinct simulated station blocks')
+        if not name.startswith(PROP_PREFIXES) or name in seen:
+            raise ValueError('Object layout needs distinct simulated station props')
         seen.add(name)
         loc = _vector(obj['location_cm'], 'objects.location_cm')
         if not 15 <= loc[0] <= 75 or not -85 <= loc[1] <= 85:
@@ -134,8 +135,8 @@ def normalize_variant(variant, index, defaults=None):
                      'rotation_deg': _vector(target.get('rotation_deg'), 'target.rotation_deg'),
                      'yaw_deg': None if target.get('yaw_deg') is None else float(target['yaw_deg']),
                      'scale': _vector(target.get('scale'), 'target.scale')}
-    if not out['target']['label'].startswith(PROP_PREFIX):
-        raise ValueError('Target must be a simulated station block (%s*)' % PROP_PREFIX)
+    if not out['target']['label'].startswith(PROP_PREFIXES):
+        raise ValueError('Target must be a simulated station prop (%s*)' % PROP_PREFIX)
     return out
 
 

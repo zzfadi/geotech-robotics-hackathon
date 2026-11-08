@@ -24,6 +24,10 @@ def verify_pickup(objective, target, status, requests=(), motion_chunks=(), now=
     if not finite_number(height) or height != 10 or not finite_number(hold) or hold <= 0:
         result['reasons'].append('Unsupported height or hold threshold')
         return result
+    max_tilt = objective.get('max_tilt_deg')
+    if max_tilt is not None and (not finite_number(max_tilt) or not 0 <= max_tilt <= 180):
+        result['reasons'].append('Invalid upright tilt threshold')
+        return result
     status = status or {}
     sampled = status.get('sampled_unix')
     now = time.time() if now is None else now
@@ -40,6 +44,14 @@ def verify_pickup(objective, target, status, requests=(), motion_chunks=(), now=
     current = prop.get('height_above_start_cm')
     duration = prop.get('current_slow_above_10cm_seconds')
     speed = prop.get('speed_cm_s')
+    upright = True
+    if max_tilt is not None:
+        tilt = prop.get('tilt_degrees')
+        duration = prop.get('current_slow_upright_above_10cm_seconds')
+        threshold = prop.get('upright_threshold_deg')
+        result.update(tilt_degrees=tilt, required_max_tilt_deg=max_tilt)
+        upright = (finite_number(tilt) and 0 <= tilt <= max_tilt
+                   and finite_number(threshold) and threshold == max_tilt)
     result.update(height_cm=current, held_seconds=duration, speed_cm_s=speed,
                   physics_simulated=prop.get('physics_simulated'),
                   gravity_enabled=prop.get('gravity_enabled'), attached_to=prop.get('attached_to'))
@@ -52,11 +64,11 @@ def verify_pickup(objective, target, status, requests=(), motion_chunks=(), now=
     result.update(api_action_returned=api_returned, robot_motion_observed=moved)
     physical = (prop.get('physics_simulated') is True and prop.get('gravity_enabled') is True
                 and prop.get('attached_to') is None)
-    measured = current >= height and duration >= hold and speed <= 10 and physical and api_returned and moved
+    measured = current >= height and duration >= hold and speed <= 10 and physical and api_returned and moved and upright
     result['measured_lift_pass'] = measured
     if not measured:
         result['outcome'] = 'failed'
-        result['reasons'].append('Current lift, continuous hold, physics or API-driven motion criterion not met')
+        result['reasons'].append('Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met')
     else:
         # A shelf or collision ejection can satisfy these measurements. The present
         # runtime does not supply validated bilateral gripper support evidence.

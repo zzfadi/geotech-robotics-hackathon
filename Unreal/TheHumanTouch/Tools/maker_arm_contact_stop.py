@@ -66,6 +66,24 @@ def contact_gap(requested, previous, boxes, compliance=.005, flat=False):
     return result, contacts
 
 
+def local_bounds_points(lo, hi, tapered_cup=False):
+    """Eight-corner contact envelope; cup asset is R3cm→R4cm over12cm.
+
+    This encloses the circular frustum and retains taper through finite-pad
+    clipping. It is an approximate actuator limit, not a Chaos contact report.
+    """
+    result=[]
+    for xyz in itertools.product((lo[0],hi[0]),(lo[1],hi[1]),(lo[2],hi[2])):
+        point=list(xyz)
+        if tapered_cup:
+            factor=.75 if xyz[2] == lo[2] else 1.
+            for axis in (0,1):
+                center=(lo[axis]+hi[axis])/2
+                point[axis]=center+(point[axis]-center)*factor
+        result.append(point)
+    return result
+
+
 def actor_boxes(actors, flange, base):
     """Read transformed mesh bounds; convert UE cm/LH to flange metres/RH."""
     import unreal
@@ -73,7 +91,8 @@ def actor_boxes(actors, flange, base):
     for label,actor in actors.items():
         c=actor.static_mesh_component
         lo,hi=c.get_local_bounds();t=actor.get_actor_transform();points=[]
-        for xyz in itertools.product((lo.x,hi.x),(lo.y,hi.y),(lo.z,hi.z)):
+        for xyz in local_bounds_points((lo.x,lo.y,lo.z),(hi.x,hi.y,hi.z),
+                                       tapered_cup=label.endswith('MakerStation_Prop_Cup')):
             p=t.transform_location(unreal.Vector(*xyz))
             rh=[(p.x-base[0])*.01,-(p.y-base[1])*.01,(p.z-base[2])*.01]
             d=[rh[i]-flange[i][3] for i in range(3)]

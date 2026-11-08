@@ -23,12 +23,21 @@ def orientation_reference(q, bounds, epsilon=1e-4):
     return np.clip(q,low,high)
 
 
-def adapt(action,state,rows=12):
+def adapt(action,state,rows=12,active_sides=None):
     result=copy.deepcopy(action);report={}
+    active_sides = set(('left','right') if active_sides is None else active_sides)
+    if not active_sides or not active_sides <= {'left','right'}:
+        raise ValueError('Invalid active sides')
+    active_key = 'q_l_chunk' if 'left' in active_sides else 'q_r_chunk'
+    count = min(rows, len(action[active_key]))
     fk=ArmFK()
     limits=[j.find('limit') for j in model().findall("joint[@type='revolute']")]
     bounds=(np.array([float(j.get('lower')) for j in limits])+1e-8,np.array([float(j.get('upper')) for j in limits])-1e-8)
     for side,key in [('left','q_l_chunk'),('right','q_r_chunk')]:
+        if side not in active_sides:
+            result[key]=[list(state['q_'+side])+[state['gap_'+side+'_m']/.104825] for _ in range(count)]
+            report[side]={'masked':True,'reason':'explicit single-arm objective; hold observed pose','rows':count}
+            continue
         xyz=np.array(action['per_key']['action.'+side+'_eef_xyz'],dtype=float)
         original=np.array(action[key],dtype=float)
         if xyz.shape!=(len(original),3) or original.ndim!=2 or original.shape[1]!=7 or not np.isfinite(xyz).all() or not np.isfinite(original).all():

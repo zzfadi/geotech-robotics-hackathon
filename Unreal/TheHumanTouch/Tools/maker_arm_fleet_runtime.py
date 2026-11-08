@@ -21,13 +21,14 @@ import collections
 import inspect
 import os
 import json
+import math
 import time
 import traceback
 from pathlib import Path
 
 import unreal
 import maker_arm_fleet
-from maker_arm_fleet_layout import label, replica_base, normalize_config, PROP_PREFIX, JAW_MAX_M
+from maker_arm_fleet_layout import label, replica_base, normalize_config, PROP_PREFIX, PROP_PREFIXES, JAW_MAX_M
 from maker_arm_actions import retime
 from maker_arm_trajectory import sample
 from maker_arm_contact_stop import contact_gap, actor_boxes
@@ -119,6 +120,8 @@ class Table:
         self.next_poll = 0.
         self.last_progress = 0.
         self.error = None
+        self.desired_gap = {}
+        self.last_grip_tick = time.monotonic()
 
     def name(self, source):
         return label(self.index, source)
@@ -244,7 +247,7 @@ class Session:
                         pc.set_phys_material_override(material)
                         c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
                         table.proxies[name] = proxy
-            prefix = table.name(PROP_PREFIX)
+            prefix = tuple(table.name(p) for p in PROP_PREFIXES)
             for name, actor in found.items():
                 if not name.startswith(prefix) or not isinstance(actor, unreal.StaticMeshActor):
                     continue
@@ -359,51 +362,8 @@ class Session:
         for side in BASES:
             base = table.bases[side]
             row, index = sample(m['chunks'][side], now-m['start'], m['timing']['action_hz'])
-            requested = row[6]*JAW_MAX_M
-            frames = mounted_frames(row[:6], requested, yaw=MOUNT_YAW[side])
-            previous = table.state['gap_'+side+'_m']
-            if requested < previous:
-                # Contact limiting only matters while a jaw closes (contact_gap
-                # returns early otherwise); skip the per-prop bound transforms.
-                boxes = actor_boxes(table.props, frames['link_007'], base)
-                if _FLAT:
-                    gap, contacts = contact_gap(requested, previous, boxes, flat=table.v['pad_contacts'])
-                else:
-                    gap, contacts = contact_gap(requested, previous, boxes)
-            else:
-                gap, contacts = requested, []
-            if gap != requested:
-                frames = mounted_frames(row[:6], gap, yaw=MOUNT_YAW[side])
-            bounds = {}
-            if not table.v['pad_contacts']:
-                for jaw in GRIPPERS:
-                    proxy = table.proxies[table.name('MakerArm_'+side+'_'+jaw)]
-                    low, high = proxy.static_mesh_component.get_local_bounds()
-                    bounds[jaw] = ([low.x, low.y, low.z], [high.x, high.y, high.z])
-            check_gripper_table(frames, base, maker_arm_fleet.offset(table.index),
-                                flat=table.v['pad_contacts'], collision_bounds_cm=bounds)
-            table.state['q_'+side] = row[:6]
-            table.state['gap_'+side+'_m'] = gap
-            table.state['contact_stop_'+side] = contacts
-            for link, t in frames.items():
-                if link not in VISUAL_LINKS:
-                    continue
-                name = table.name('MakerArm_'+side+'_'+link)
-                p, q = ue_pose(t)
-                p = [p[i]+base[i] for i in range(3)]
-                table.actors[name].set_actor_location_and_rotation(unreal.Vector(*p), unreal.Quat(*q).rotator(), False, False)
-                if name in table.proxies:
-                    if table.v['pad_contacts']:
-                        # 3x1x2 cm flat pad, inner face on each prismatic zero plane (as maker_arm_runtime).
-                        off = [0, .005 if link == 'gripper_left' else -.005, -.17]
-                        pad = [r[:] for r in t]
-                        for i in range(3):
-                            pad[i][3] += sum(t[i][j]*off[j] for j in range(3))
-                        pp, pq = ue_pose(pad)
-                        pp = [pp[i]+base[i] for i in range(3)]
-                    else:
-                        pp, pq = p, q
-                    table.proxies[name].set_actor_location_and_rotation(unreal.Vector(*pp), unreal.Quat(*pq).rotator(), False, False)
+            table.desired_gap[side] = row[6]*JAW_MAX_M
+            self.apply_row(table, side, row)
         m['index'] = index
         if index == len(m['chunks']['left'])-1:
             self.motion_report(table, True)
@@ -411,6 +371,65 @@ class Session:
             table.need_obs = True
         else:
             self.motion_report(table, False, progress=True)
+
+    def apply_row(self, table, side, row, jaws_only=False):
+        base = table.bases[side]
+        requested = row[6]*JAW_MAX_M
+        frames = mounted_frames(row[:6], requested, yaw=MOUNT_YAW[side])
+        previous = table.state['gap_'+side+'_m']
+        if requested < previous:
+            # Contact limiting only matters while a jaw closes (contact_gap
+            # returns early otherwise); skip the per-prop bound transforms.
+            boxes = actor_boxes(table.props, frames['link_007'], base)
+            if _FLAT:
+                gap, contacts = contact_gap(requested, previous, boxes, flat=table.v['pad_contacts'])
+            else:
+                gap, contacts = contact_gap(requested, previous, boxes)
+        else:
+            gap, contacts = requested, []
+        if jaws_only and abs(gap-previous) < 1e-8:
+            return
+        if gap != requested:
+            frames = mounted_frames(row[:6], gap, yaw=MOUNT_YAW[side])
+        bounds = {}
+        if not table.v['pad_contacts']:
+            for jaw in GRIPPERS:
+                proxy = table.proxies[table.name('MakerArm_'+side+'_'+jaw)]
+                low, high = proxy.static_mesh_component.get_local_bounds()
+                bounds[jaw] = ([low.x, low.y, low.z], [high.x, high.y, high.z])
+        check_gripper_table(frames, base, maker_arm_fleet.offset(table.index),
+                            flat=table.v['pad_contacts'], collision_bounds_cm=bounds)
+        table.state['q_'+side] = row[:6]
+        table.state['gap_'+side+'_m'] = gap
+        table.state['contact_stop_'+side] = contacts
+        for link, t in frames.items():
+            if link not in VISUAL_LINKS or (jaws_only and link not in GRIPPERS):
+                continue
+            name = table.name('MakerArm_'+side+'_'+link)
+            p, q = ue_pose(t)
+            p = [p[i]+base[i] for i in range(3)]
+            table.actors[name].set_actor_location_and_rotation(unreal.Vector(*p), unreal.Quat(*q).rotator(), False, False)
+            if name in table.proxies:
+                if table.v['pad_contacts']:
+                    # 3x1x2 cm flat pad, inner face on each prismatic zero plane (as maker_arm_runtime).
+                    off = [0, .005 if link == 'gripper_left' else -.005, -.17]
+                    pad = [r[:] for r in t]
+                    for i in range(3):
+                        pad[i][3] += sum(t[i][j]*off[j] for j in range(3))
+                    pp, pq = ue_pose(pad)
+                    pp = [pp[i]+base[i] for i in range(3)]
+                else:
+                    pp, pq = p, q
+                table.proxies[name].set_actor_location_and_rotation(unreal.Vector(*pp), unreal.Quat(*pq).rotator(), False, False)
+
+    def hold_grip(self, table, now):
+        from maker_arm_grip_hold import next_gap
+        dt = min(.05, max(0., now-table.last_grip_tick))
+        for side, desired in table.desired_gap.items():
+            current = table.state['gap_'+side+'_m']
+            gap = next_gap(current, desired, dt)
+            if gap < current:
+                self.apply_row(table, side, table.state['q_'+side]+[gap/JAW_MAX_M], jaws_only=True)
 
     def measure_props(self, table, now):
         for name, actor in table.props.items():
@@ -420,6 +439,11 @@ class Session:
             v = c.get_physics_linear_velocity()
             d = maker_arm_fleet.offset(table.index)
             update_lift_evidence(table.evidence[name], table.timers[name], [p.x, p.y, p.z], [v.x, v.y, v.z], now)
+            if name == 'MakerStation_Prop_Cup':
+                from maker_arm_cup_evidence import update as update_cup
+                up = actor.get_actor_up_vector()
+                tilt = math.degrees(math.acos(max(-1., min(1., up.z))))
+                update_cup(table.evidence[name], table.timers[name], tilt, now)
             parent = actor.get_attach_parent_actor()
             table.evidence[name].update({'table_local_cm': [p.x-d[0], p.y-d[1], p.z-d[2]],
                                          'gravity_enabled': c.is_gravity_enabled(),
@@ -559,6 +583,9 @@ class Session:
                     t1 = time.perf_counter()
                     if table.motion:
                         self.step_motion(table, now)
+                    else:
+                        self.hold_grip(table, now)
+                    table.last_grip_tick = now
                     t2 = time.perf_counter()
                     self.measure_props(table, now)
                     t3 = time.perf_counter()

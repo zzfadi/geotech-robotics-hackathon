@@ -181,11 +181,25 @@ class FakeRuntime(unittest.TestCase):
             runner.fresh = lambda after: packet
             errors = types.ModuleType('dream.errors')
             errors.DreamSessionExpired = type('Expired', (Exception,), {})
-            with patch.dict(sys.modules, {'dream.errors': errors}), patch.object(fleet_worker.time, 'monotonic', side_effect=[0, 10]):
+            with patch.dict(sys.modules, {'dream.errors': errors}), patch.object(fleet_worker.time, 'monotonic', side_effect=[0, 0, 0, 10]):
                 action, used = runner.infer(packet)
             self.assertEqual(runner.result['calls'], 2)
             self.assertEqual(action, {'action': 'real'})
             self.assertIn('NO_CAPACITY', runner.result['requests'][0]['error'])
+
+    def test_policy_session_released_after_success_and_failure(self):
+        from unittest.mock import Mock
+        for failure in (False, True):
+            with tempfile.TemporaryDirectory() as tmp:
+                run = Path(tmp); (run/'T01').mkdir()
+                client = Mock()
+                runner = TableRun(normalize_variant({'prompt':'p', 'initial_state':STATE}, 1), run,
+                                  types.SimpleNamespace(dry_run=False), client)
+                runner.execute = Mock(side_effect=RuntimeError('failed') if failure else None)
+                runner.stopped = lambda: False
+                result = runner()
+                client.reset_episode.assert_called_once_with()
+                self.assertTrue(result['policy_session_released'])
 
     def test_rejected_chunk_surfaces_error(self):
         with tempfile.TemporaryDirectory() as tmp:

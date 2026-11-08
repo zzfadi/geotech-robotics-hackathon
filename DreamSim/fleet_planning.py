@@ -3,17 +3,10 @@ import copy
 import random
 import secrets
 
-PREFIX = 'MakerStation_Approximate_Block_'
-OBJECTS = {
-    'Red': ('red block', 6.0, 4.0),
-    'Green': ('green cube', 2.5, 4.0),
-    'Orange': ('orange cube', 2.5, 4.0),
-    'OrangeRodAssembly': ('orange block with the yellow rod', 3.0, 8.0),
-    'OrangeCylinder': ('orange cylinder', 1.5, 9.0),
-}
-# Table-local positions: remain inside the 80 x 200 cm top, clear of the
-# rear robot mounting rail and front-right numbering sticker.
-SLOTS = ((48, -42), (65, -20), (48, 2), (65, 24), (48, 46))
+PREFIX = 'MakerStation_Prop_'
+OBJECTS = {'Cup': ('drinking cup', 6.0, 4.0)}
+# One upright empty cup, 12 cm high, within the left arm workspace.
+SLOTS = ((48, -42), (60, -40), (65, -30))
 
 
 def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
@@ -40,13 +33,13 @@ def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
         names = list(OBJECTS)
         rng.shuffle(names)
         objects = []
-        for name, (x, y) in zip(names, SLOTS):
+        for name, (x, y) in zip(names, rng.sample(SLOTS, len(names))):
             _, half_height, radius = OBJECTS[name]
             objects.append({'label': PREFIX+name,
                             'location_cm': [x+rng.uniform(-1, 1), y+rng.uniform(-1, 1), 75+half_height],
                             'yaw_deg': rng.uniform(-30, 30), 'clearance_radius_cm': radius})
         target = rng.choice(objects)
-        default_y = {'Red': -40, 'Green': -8, 'Orange': 15, 'OrangeRodAssembly': 30, 'OrangeCylinder': 40}
+        default_y = {'Cup': -40}
         target_y = target['location_cm'][1] if randomize else default_y[target['label'].removeprefix(PREFIX)]
         side = 'left' if target_y < 0 else 'right'
         text = prompt.strip()
@@ -54,9 +47,9 @@ def build_plan(indices, *, mode='same', prompt='', seed=None, randomize=False):
         if mode == 'random':
             name = target['label'].removeprefix(PREFIX)
             text = ('Use the %s arm to pick up the %s, lift it straight up by 10 cm, '
-                    'and hold it for 2 seconds. Keep the other arm still.' % (side, OBJECTS[name][0]))
+                    'and hold it upright and steady for 5 seconds. Keep the other arm still.' % (side, OBJECTS[name][0]))
             objective = {'kind': 'lift_hold', 'target': target['label'], 'side': side,
-                         'height_cm': 10.0, 'hold_seconds': 2.0}
+                         'height_cm': 10.0, 'hold_seconds': 5.0, 'max_tilt_deg': 15.0}
         tables.append({'index': index, 'display_number': index+1, 'prompt': text,
                        'objective': objective, 'objects': objects if randomize else [],
                        'target': target['label'] if objective else None})

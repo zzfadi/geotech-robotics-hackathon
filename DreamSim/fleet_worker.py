@@ -61,19 +61,21 @@ def hold_action(state, rows=12):
             'q_r_chunk': [list(state['q_right'])+[state['gap_right_m']/JAW_MAX_M]]*rows}
 
 
-def lift_verdict(table_status, target, hold_seconds=2.0):
+def lift_verdict(table_status, target, hold_seconds=2.0, max_tilt_deg=None):
     """Numbers only. Never a grasp claim: video review is still required."""
     p = (table_status or {}).get('props', {}).get(target)
     if not p:
         return {'measured': False}
-    return {'measured': True,
+    timer = p.get('current_slow_above_10cm_seconds', 0.) if max_tilt_deg is None else p.get('current_slow_upright_above_10cm_seconds', 0.)
+    upright = max_tilt_deg is None or (p.get('upright_threshold_deg') == max_tilt_deg and 0 <= p.get('tilt_degrees', 180) <= max_tilt_deg)
+    return {'measured': True, 'tilt_degrees': p.get('tilt_degrees'), 'upright_hold_s': timer if max_tilt_deg is not None else None,
             'height_cm': p.get('height_above_start_cm', 0.),
             'max_height_cm': p.get('max_z_cm', 0.) - p.get('initial_z_cm', 0.),
             'held_slow_above_10cm_s': p.get('current_slow_above_10cm_seconds', 0.),
             'max_held_slow_above_10cm_s': p.get('max_slow_above_10cm_seconds', 0.),
             'physics_simulated': p.get('physics_simulated'), 'attached_to': p.get('attached_to'),
             'gravity_enabled': p.get('gravity_enabled'),
-            'lift_held': (p.get('current_slow_above_10cm_seconds', 0.) >= hold_seconds
+            'lift_held': (timer >= hold_seconds and upright
                           and p.get('height_above_start_cm', 0.) >= 10
                           and p.get('gravity_enabled') is True
                           and p.get('physics_simulated') is True and not p.get('attached_to'))}
@@ -209,25 +211,29 @@ class TableRun:
             finally:
                 request['finished_unix'] = time.time()
                 write_json(self.dir/'requests.json', self.result['requests'])
-        for attempt in range(4):
+        capacity_deadline = time.monotonic() + 60
+        for attempt in range(9):
             while not _INFERENCE_SLOTS.acquire(timeout=.2):
                 if self.stopped():
                     raise RuntimeError('Stopped waiting for Dream capacity')
             try:
                 return request_action(call, refresh, self.stopped, lambda m: self.log(m), DreamSessionExpired)
             except Exception as error:
-                if 'NO_CAPACITY' not in str(error) or attempt == 3:
+                if 'NO_CAPACITY' not in str(error) or attempt == 8 or time.monotonic() >= capacity_deadline:
                     raise
-                self.log('Dream capacity busy; bounded retry %d/3' % (attempt+1))
+                self.log('Dream capacity busy; bounded retry %d/8 (60 s budget)' % (attempt+1))
             finally:
                 _INFERENCE_SLOTS.release()
-            deadline = time.monotonic() + 2**(attempt+1) + self.v['index']*.1
+            deadline = min(capacity_deadline, time.monotonic() + min(8, 2**(attempt+1)) + self.v['index']*.1)
             while time.monotonic() < deadline:
                 if self.stopped():
                     raise RuntimeError('Stopped during Dream capacity backoff')
                 time.sleep(.1)
 
     def execute(self):
+        objective = self.v.get('objective') or {}
+        hold_seconds = float(objective.get('hold_seconds', 2.))
+        max_tilt = objective.get('max_tilt_deg')
         after = time.time() - 1
         target = self.v['target']['label']
         for cycle in range(self.v['cycles']):
@@ -243,7 +249,9 @@ class TableRun:
                        {'state': packet['state'], 'action': raw, 'captured_unix': packet['captured_unix']})
             if self.v['position_ik'] and not self.args.dry_run:
                 from position_ik import adapt
-                action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12)
+                side = (self.v.get('objective') or {}).get('side')
+                active = [side] if side in ('left', 'right') else None
+                action, ik = adapt(raw, packet['state'], self.v['action_rows'] or 12, active_sides=active)
             report = self.dir/('action-%02d.json' % (cycle+1))
             write_json(report, {'state': packet['state'], 'action': action, 'raw_action': raw if ik else None,
                                 'ik_report': ik, 'execution_rows': None if self.args.dry_run else self.v['action_rows'],
@@ -273,13 +281,18 @@ class TableRun:
             self.result['motion_chunks'].append(motion_evidence)
             after = (playback.get('finished_unix') or time.time()) - .001
             self.result['cycles_run'] = cycle+1
-            lift = lift_verdict(self.status(), target)
+            lift = lift_verdict(self.status(), target, hold_seconds, max_tilt)
             self.result['lift'] = lift
             self.log('cycle %d done (inference %.2fs) lift %.2f cm' % (cycle+1, inference, lift.get('height_cm', 0.)))
             if lift.get('height_cm', 0) >= 10:
-                self.log('target above 10 cm; holding pose for 2.2 s to measure retention')
-                time.sleep(2.2)
-                lift = lift_verdict(self.status(), target)
+                self.log('target above 10 cm; holding pose for %.1f s to measure retention' % (hold_seconds+.2))
+                hold_until = time.monotonic()+hold_seconds+.2
+                while time.monotonic() < hold_until:
+                    if self.stopped():
+                        raise RuntimeError('Stopped during hold verification')
+                    self.status()
+                    time.sleep(.1)
+                lift = lift_verdict(self.status(), target, hold_seconds, max_tilt)
                 self.result['lift'] = lift
                 if lift.get('lift_held'):
                     self.result['stopped_reason'] = 'measured held lift (needs video review)'
@@ -293,6 +306,13 @@ class TableRun:
         except Exception as error:
             self.result['error'] = str(error)
             self.log('error: ' + str(error))
+        finally:
+            if self.client is not None and not self.args.dry_run:
+                try:
+                    self.client.reset_episode()
+                    self.result['policy_session_released'] = True
+                except Exception as error:
+                    self.result['policy_session_release_error'] = str(error)
         from pickup_verification import verify_pickup
         fleet = read_json(self.run/'fleet.json') or {}
         status = {**fleet.get('tables', {}).get(self.key, {}), 'sampled_unix': fleet.get('sampled_unix')}
@@ -426,6 +446,9 @@ def run_trials(args, editor, variants, clients, run, progress=None, should_stop=
     progress(fleet_json, runs) is called about once a second; should_stop() is
     polled and stops the whole fleet. Returns the per-table results (best first)."""
     config_path = run/'config.json'
+    # No table inference is active here. Release prior episodes without rebuilding CAD IK.
+    for client in clients.values():
+        client.reset_episode()
     title = title or 'Fleet: %d parallel %s trials' % (len(variants), 'dry-run' if args.dry_run else 'Dream')
     wait_for_editor(lambda: editor.call('begin_task', {'title': title, 'request': 'Replica Maker Arm tables in the open-top grid; parallel simulation',
                                                        'keep_view': True, 'focus_x': 40, 'focus_y': 0, 'focus_z': 100}),
@@ -475,7 +498,12 @@ def run_trials(args, editor, variants, clients, run, progress=None, should_stop=
                                      'keep_view': True})
         except Exception as error:
             print('end_task failed: %s' % error, flush=True)
+    final_fleet = read_json(run/'fleet.json') or {}
     for result in results:
+        final_table = final_fleet.get('tables', {}).get(result['table'], {})
+        target = result.get('objective', {}).get('target') if result.get('objective') else None
+        objective = result.get('objective') or {}
+        result['batch_end_lift'] = lift_verdict(final_table, target, objective.get('hold_seconds', 2.), objective.get('max_tilt_deg'))
         result['videos'] = videos(run, result['table'], args.fps)
     results.sort(key=lambda r: (not r['lift'].get('lift_held', False), -r['lift'].get('max_height_cm', 0.)))
     write_json(run/'summary.json', {'run': str(run), 'dry_run': args.dry_run, 'results': results, 'concurrency': concurrency_evidence(results),
@@ -610,6 +638,15 @@ def serve(args, config):
     acquire_worker_lock(data)
     setup_errors = {}
     clients = {} if args.dry_run else warm_clients(variants, data, setup_errors)
+    import atexit, signal
+    def close_clients():
+        for client in clients.values():
+            try:
+                client.close()
+            except Exception:
+                pass
+    atexit.register(close_clients)
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
     usable = [v for v in variants if args.dry_run or v['index'] in clients]
     hello = [{**v, 'checkpoint': v['checkpoint'] if not args.dry_run else 'dry-run (no Dream calls)',
               'ready': args.dry_run or v['index'] in clients, 'error': setup_errors.get(v['index'])} for v in variants]
@@ -689,7 +726,7 @@ def serve(args, config):
             status = 'stopped' if stop['flag'] else 'done'
             server.event('fleet.finished', request_id, ('Measured held lift on ' + ', '.join(held) + ' (review videos)') if held
                          else 'No table measured a held 10 cm lift')
-            summary = [{k: r[k] for k in ('table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason')} for r in results]
+            summary = [{k: r.get(k) for k in ('batch_end_lift', 'policy_session_released', 'policy_session_release_error', 'table', 'name', 'prompt', 'calls', 'requests', 'motion_chunks', 'outcome', 'objective', 'verification', 'cycles_run', 'cycles_planned', 'lift', 'error', 'stopped_reason')} for r in results]
         except Exception as error:
             print('fleet run failed: %s' % error, flush=True)
             server.event('fleet.failed', request_id, str(error))
@@ -703,7 +740,7 @@ def serve(args, config):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--project', type=Path, default=DEFAULT_PROJECT)
-    p.add_argument('--config', type=Path, default=HERE/'fleet_variants.json')
+    p.add_argument('--config', type=Path, default=HERE/'fleet_cups.json')
     p.add_argument('--data', type=Path, default=None, help='default <project>/Saved/DreamFleet')
     p.add_argument('--dry-run', action='store_true', help='hold poses; no Dream API calls')
     p.add_argument('--scene-only', action='store_true', help='extend the hall with the replica booths and exit')
