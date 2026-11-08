@@ -96,6 +96,16 @@ Idea flagged, not committed: **assisted intent**, where the arm infers what the 
 | 11 | Jetson robot server, end to end ([brief](handoffs/jetson-end-to-end.md)) | FADI, working on the Mac Mini from this repo | Tonight; not required for the MVP |
 | 12 | Train and score a small edge model for the Orin Nano: Dream lag bridging and auto-assist, no Dream fine-tune ([brief](handoffs/edge-model.md)) | FADI, working on the Mac Mini from this repo | Tonight, time-boxed; not required for the MVP |
 
+## Hybrid model: local detector plus Dream (added Nov 7, 10:30 PM)
+
+FADI's plan from tonight's call, in full in [hybrid-model.md](hybrid-model.md), with a first build in [`vision/`](../vision/README.md):
+
+- A loop on the Orin Nano runs a local YOLO detector (YOLO26n plus its pose model, converted to TensorRT) for moment-to-moment detection: hand entered, can offered, can held steady, can released, hand withdrawn.
+- A steady offered can is what requests the arm's turn; an extra hand, a jerked can or a detector failure revokes it through the existing turn gate.
+- When Dream's median round trip is at or under 850 ms, Dream does the full movement (sim). When it's slower, or on the real arm, the local controller does it. The last centimetre near the can is always local: the same code serves the handoff, aim assist and lag bridging.
+- FADI owns the can handoff on the real arm.
+- For the 9 AM standup: agree that a steady offered can sends `request_turn`, and test the detector on the real camera and can.
+
 ## Handoffs for the Mac Mini
 
 Two workstreams need the Mac or hardware. FADI owns both and works them on the Mac Mini from this repo, with whichever agents run there; the briefs are written so a fresh agent can start cold:
