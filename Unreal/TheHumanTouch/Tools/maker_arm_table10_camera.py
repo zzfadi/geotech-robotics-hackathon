@@ -15,7 +15,7 @@ import unreal
 from copresence_call import call_camera
 
 SOURCE = 'MakerInteraction_T09__MakerCamera_Overview'
-WIDTH, HEIGHT = 640, 352
+WIDTH, HEIGHT = 1280, 704  # same 20:11 aspect as before; sharper on the web page's bigger and full-screen views
 FPS = 10.
 QUALITY = 80
 
@@ -107,9 +107,22 @@ class Camera:
                 'directory': str(self.directory), 'fps': FPS, 'size': [WIDTH, HEIGHT]}
 
 
+def _stop_strays():
+    """Stop every running Camera from this module, including ones orphaned by an importlib.reload
+    (a reload resets the module handle, and the old capture would keep ticking and writing frames)."""
+    import gc
+    for o in gc.get_objects():
+        try:
+            if type(o).__name__ == 'Camera' and type(o).__module__ == __name__ and getattr(o, 'handle', None) is not None:
+                o.stop()
+        except Exception:
+            pass
+
+
 def start(directory, seconds=4*3600):
     global _camera
     stop()
+    _stop_strays()
     _camera = Camera(directory, seconds)
     return _camera.status()
 

@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T15:15:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "The Table 10 camera on the web page can be made bigger or full screen at 1280x704. The temporary public link no longer asks for an operator code, and the Unreal fleet worker is back online.",
+  "why": "User request: an easier-to-see Table 10 simulation in the browser, and a no-code public demo link.",
+  "where": ["DreamSim/web/index.html", "DreamSim/debug_server.py", "Unreal/TheHumanTouch/Tools/maker_arm_table10_camera.py", "docs/table10-real-arms.md"],
+  "details": ["Bigger view and Full screen sit under the camera; full screen falls back to a full-window overlay.", "The camera capture went from 640x352 to 1280x704 at about 9 fps. The camera module also stops copies of itself orphaned by a reload.", "Open public controls are a flag file on Luna2 (Saved/DreamDebugger/public-controls); deleting it restores the view-only link. Turning the real arms on stays tailnet-only."]
+}

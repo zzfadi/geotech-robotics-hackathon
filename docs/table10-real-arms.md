@@ -211,8 +211,16 @@ The page also has:
 - step-by-step feedback for every click (Server → Mac agent → SDK → physical arm), from acknowledgements written
   by each arm service.
 
+**Camera view.** The Table 10 stream is 1280×704 at about 9 fps (about 48 KB per frame, under the server's 200 KB
+cap). Below it, **Bigger view** gives the camera the full page width, and **Full screen** (or a double-click) fills
+the window, falling back to a full-window overlay where the browser refuses native full screen. Esc exits.
+
 **Public link.** Tailscale Funnel still awaits tailnet admin approval. A Cloudflare quick tunnel runs on Luna2 as
 the scheduled task `TheHumanTouch-PublicTunnel` (`cloudflared` 2026.10.7 in `%LOCALAPPDATA%\cloudflared`). It
-points at the Tailscale-serve listener, so public visitors get the same view-only access, with the operator code
-for controls. The `trycloudflare.com` URL changes whenever the task restarts; find the current one in
+points at the Tailscale-serve listener, so requests through it are treated as public.
+- **Temporary open demo (user request).** While `Saved/DreamDebugger/public-controls` exists on Luna2, the public
+  link needs no operator code for any control.
+- **Exception.** Turning the real arms on (torque on) still works only from the tailnet.
+- **To close it again,** delete that file: the public link goes back to view-only, with the operator code
+  required. The `trycloudflare.com` URL changes whenever the task restarts; find the current one in
 `%LOCALAPPDATA%\cloudflared\public-tunnel.log`.

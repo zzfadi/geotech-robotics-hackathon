@@ -82,8 +82,13 @@ class Handler(BaseHTTPRequestHandler):
         if self.headers.get('Tailscale-Funnel-Request') is not None:return True
         # Serve/Funnel reach only the serve listener; tailnet users there carry identity headers.
         return getattr(self.server,'serve_listener',False) and not self.headers.get('Tailscale-User-Login')
+    def open_controls(self):
+        """Temporary open demo (user request, 2026-11-08): while Saved/DreamDebugger/public-controls exists, the public
+        link needs no operator code. Delete the file to make the public link view-only again."""
+        return (self.server.store.path/'public-controls').exists()
     def operator(self):
-        return not self.public() or secrets.compare_digest(self.headers.get('X-Operator-Code',''),self.server.store.operator_code)
+        return (not self.public() or self.open_controls()
+                or secrets.compare_digest(self.headers.get('X-Operator-Code',''),self.server.store.operator_code))
     def send(self,status,data,mime='application/json'):
         body=json.dumps(data,allow_nan=False).encode() if mime=='application/json' else data
         self.send_response(status);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(body)))
