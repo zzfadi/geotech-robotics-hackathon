@@ -30,6 +30,37 @@ class Planning(unittest.TestCase):
         self.assertNotIn('prompt', config['tables'][0])
         self.assertIsNone(plan['tables'][0]['objective'])  # Free text is not a verified lift objective.
 
+    def test_commanded_target_survives_randomized_layout_without_inherited_red_geometry(self):
+        config={'defaults':{},'tables':[{'index':i,'target':{'label':'old-red','scale':[1,1,3],'location_cm':[1,2,3]}}
+                                       for i in range(1,11)]}
+        for seed in range(10):
+            plan=build_plan(list(range(1,11)),mode='random',seed=seed,randomize=True)
+            applied=apply_plan(config,plan)
+            for task,variant in zip(plan['tables'],applied['tables']):
+                self.assertEqual(task['target'],task['objective']['target'])
+                self.assertEqual(task['target'],variant['target']['label'])
+                self.assertIsNone(variant['target']['scale'])
+                self.assertIsNone(variant['target']['location_cm'])
+                target=next(o for o in task['objects'] if o['label']==task['target'])
+                self.assertEqual(task['objective']['side'],'left' if target['location_cm'][1]<0 else 'right')
+                self.assertIn('Use the '+task['objective']['side']+' arm',task['prompt'])
+                self.assertEqual(variant['objective'],task['objective'])
+
+    def test_configured_fixture_preserves_objective_layout_and_pose(self):
+        fixture={'index':1,'prompt':'Lift the green cube','objective':{'kind':'lift_hold','target':'green','height_cm':10},
+                 'objects':[{'label':'green','location_cm':[40,-40,77.5]}],
+                 'target':{'label':'green','location_cm':[40,-40,77.5]},
+                 'initial_state':{'q_left':[1,2,3,4,5,6]}}
+        config={'defaults':{},'tables':[fixture]}
+        plan=build_plan([1],mode='configured',seed=7)
+        self.assertEqual(apply_plan(config,plan)['tables'][0],fixture)
+        randomized=apply_plan(config,build_plan([1],mode='configured',seed=7,randomize=True))['tables'][0]
+        self.assertEqual(randomized['objective'],fixture['objective'])
+        self.assertEqual(randomized['target'],fixture['target'])
+        self.assertEqual(len(randomized['objects']),5)
+        self.assertEqual(randomized['initial_state']['q_left'],[0]*6)
+        self.assertEqual(config['tables'][0],fixture)
+
     def test_input_validation(self):
         for indices in ([True], [0], [13], [1, 1], []):
             with self.assertRaises(ValueError):

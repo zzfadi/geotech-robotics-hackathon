@@ -75,8 +75,13 @@ def apply_plan(config, plan):
         table['index'] = index
         if task['prompt']:
             table['prompt'] = task['prompt']
-        table['objective'] = copy.deepcopy(task['objective'])
-        table['objects'] = copy.deepcopy(task['objects'])
+        if plan.get('mode') != 'configured':
+            table['objective'] = copy.deepcopy(task['objective'])
+            table['objects'] = copy.deepcopy(task['objects'])
+        elif task['objects']:
+            # Configured fixtures retain their task, target, geometry and pose.
+            # Only an explicit rearrangement request replaces their object layout.
+            table['objects'] = copy.deepcopy(task['objects'])
         if task['target']:
             table['target'] = {'label': task['target'], 'location_cm': None,
                                'offset_cm': [0, 0, 0], 'scale': None, 'yaw_deg': None}
