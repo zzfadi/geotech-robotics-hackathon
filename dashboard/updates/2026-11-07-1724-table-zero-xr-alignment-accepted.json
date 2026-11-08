@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T17:24:36-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "The wearer accepted the Quest 2 view of the original virtual table aligned to the real tabletop for this session.",
+  "why": "The operator can use the station overlay now and refine its physical fit in a later session.",
+  "where": [
+    "dc55b5c",
+    "bf71881",
+    "de7765e"
+  ],
+  "details": "The local vertical adjustment preserved heading, horizontal registration and 1:1 world scale. Other numbered tables were hidden in the headset. Acceptance was visual; precision dimensions were not surveyed."
+}
