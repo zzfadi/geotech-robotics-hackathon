@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T18:59:59.305945-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Recorded another nine-table Dream cup trial; all nine remain unsuccessful",
+  "why": "Learn from actual failed trajectories and distinguish transient ejection from sustained physical grasp.",
+  "where": [
+    "docs/validation/nine-cup-restart-1d280239.json"
+  ],
+  "details": "Live capture continues for stopped tables. Mechanical contact diagnostic identified fixed gripper-body contact after cup tipping. Follow-up isolates approach clearance and unreachable policy targets; no joint or collision guard relaxed."
+}

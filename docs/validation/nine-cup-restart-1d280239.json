@@ -1,0 +1,311 @@
+{
+  "request_id": "1d280239b0b7469ea6ab190141eb8406",
+  "scope": "Real Dream API nine-table restart; no successful cup hold",
+  "recorded_tables": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "status": "done",
+  "results": [
+    {
+      "table": "T00",
+      "calls": 13,
+      "returned_actions": null,
+      "cycles_run": 12,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.04307434975572307,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.025963383620393188,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.08016835828535819,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "left policy target unreachable within 2 mm (17.36 mm)",
+      "stopped_reason": null
+    },
+    {
+      "table": "T01",
+      "calls": 16,
+      "returned_actions": null,
+      "cycles_run": 15,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.020212387304665,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.025243481340496032,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.0,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "left policy target unreachable within 2 mm (5.03 mm)",
+      "stopped_reason": null
+    },
+    {
+      "table": "T02",
+      "calls": 11,
+      "returned_actions": null,
+      "cycles_run": 10,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.13413335131600584,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.03068542566127519,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.0,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.233 cm",
+      "stopped_reason": null
+    },
+    {
+      "table": "T03",
+      "calls": 16,
+      "returned_actions": null,
+      "cycles_run": 15,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.06593978116098247,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.02704161314807152,
+        "held_seconds": 0.0,
+        "speed_cm_s": 1.1179582771550438,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "left policy target unreachable within 2 mm (6.48 mm)",
+      "stopped_reason": null
+    },
+    {
+      "table": "T04",
+      "calls": 11,
+      "returned_actions": null,
+      "cycles_run": 10,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.04241609399114268,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.025931999494773095,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.044096294227788706,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "Cycle 11 rejected: gripper_right collision bounds enter tabletop by 0.277 cm",
+      "stopped_reason": null
+    },
+    {
+      "table": "T05",
+      "calls": 24,
+      "returned_actions": null,
+      "cycles_run": 24,
+      "outcome": "failed",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 85.11420715700864,
+        "required_max_tilt_deg": 15,
+        "height_cm": -77.46407778417436,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.34368867834070926,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": null,
+      "stopped_reason": "cycles exhausted"
+    },
+    {
+      "table": "T06",
+      "calls": 11,
+      "returned_actions": null,
+      "cycles_run": 10,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.04856587348377782,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.026356595817091488,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.0,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "left policy target unreachable within 2 mm (10.46 mm)",
+      "stopped_reason": null
+    },
+    {
+      "table": "T07",
+      "calls": 18,
+      "returned_actions": null,
+      "cycles_run": 17,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.029347889186631608,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.025249971166815044,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.013522832745254097,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "left policy target unreachable within 2 mm (5.45 mm)",
+      "stopped_reason": null
+    },
+    {
+      "table": "T08",
+      "calls": 5,
+      "returned_actions": null,
+      "cycles_run": 4,
+      "outcome": "error",
+      "verification": {
+        "target": "MakerStation_Prop_Cup_03",
+        "measured_lift_pass": false,
+        "grasp_verified": false,
+        "designated_arm_support_verified": false,
+        "outcome": "failed",
+        "reasons": [
+          "Current lift, continuous hold, physics, upright orientation or API-driven motion criterion not met"
+        ],
+        "side": "left",
+        "required_height_cm": 10,
+        "required_hold_seconds": 5,
+        "tilt_degrees": 0.04457667448274778,
+        "required_max_tilt_deg": 15,
+        "height_cm": 0.02604219588108947,
+        "held_seconds": 0.0,
+        "speed_cm_s": 0.0,
+        "physics_simulated": true,
+        "gravity_enabled": true,
+        "attached_to": null,
+        "api_action_returned": true,
+        "robot_motion_observed": true
+      },
+      "error": "Cycle 5 rejected: gripper_right collision bounds enter tabletop by 0.222 cm",
+      "stopped_reason": null
+    }
+  ],
+  "lessons": [
+    "Cup ejection is not a verified grasp; table 6 fell to floor despite a transient 40 cm rise.",
+    "Repeated unreachable EEF targets and tabletop jaw collisions require controller/approach investigation. Guards remain enabled.",
+    "Terminal table camera capture now continues after motion failure."
+  ]
+}
