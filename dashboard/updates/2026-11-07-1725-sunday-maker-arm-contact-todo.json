@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T17:25:00-08:00",
+  "workstream": "vrxr",
+  "status": "note",
+  "what": "To do Sunday, November 8: run the Luna2 simulated hand-to-Maker-Arm contact trial.",
+  "why": "Measure the time between Unreal seeing the hand and the first PhysX impulse, and verify wrist movement against the clear-hand control.",
+  "where": [
+    "Capture/isaac/README.md#measure-contact-with-a-simulated-maker-arm",
+    "Capture/isaac/verify_maker_contact.py"
+  ],
+  "details": "The test harness and input settings are on main. The November 7 contact window closed before the Luna2 launcher ran. Start a fresh trial from the station Mac with PowerShell open on Luna2."
+}

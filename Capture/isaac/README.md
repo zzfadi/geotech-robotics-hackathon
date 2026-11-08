@@ -129,6 +129,8 @@ python3 Capture/isaac/bridge_trial.py report --unreal unreal.jsonl --isaac isaac
 
 ### Measure contact with a simulated Maker Arm
 
+- [ ] **Sunday, November 8, 2026 — Run the live hand-to-arm contact test on Luna2.** With Luna2 PowerShell open, start a fresh station trial, verify current Unreal hand evaluations, then run the contact launcher. Record repeated hand–wrist impulses, wrist displacement relative to the clear-hand control, and the median and range of the Unreal-evaluation-to-first-impulse delay. Publish the result and restore Tailscale Shields Up. The November 7 pose-parity run verified pose application; the contact test is still pending.
+
 Use a fresh trial identifier and an empty trial directory visible to both machines, or relay the target JSON to the Mac using the receiver's `--target-url` option. Start `HumanTouch.Isaac.Start` in the running Hub-connected editor, then start the station with the shared target file:
 
 ```sh
