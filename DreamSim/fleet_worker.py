@@ -404,7 +404,7 @@ class TableRun:
             latch_side = active_side or 'left'
             latch_key = 'q_l_chunk' if latch_side == 'left' else 'q_r_chunk'
             if (self.v.get('assist', {}).get('grasp_still') and self.grip_latch is None and not reaching
-                    and not self.args.dry_run and self.grasp_cycles < 3):
+                    and not self.args.dry_run and self.grasp_cycles < int(self.v['assist'].get('grasp_still_cycles', 3))):
                 # Grasp subgoal: the jaws are already around the cup after the reach. Keep
                 # the arm still so closing does not push the cup away; Dream drives the grip.
                 self.grasp_cycles += 1
@@ -431,7 +431,8 @@ class TableRun:
                                                  allow_down_cm=0. if assist.get('hold_monotonic') else .5,
                                                  max_step_cm=float(assist.get('lift_step_cm', .25)),
                                                  back_per_up=float(assist.get('lift_back_per_up', 0.)),
-                                                 up_gain=float(assist.get('lift_up_gain', 1.)))
+                                                 up_gain=min(float(assist.get('lift_up_gain_max', 6.)),
+                                                             float(assist.get('lift_up_gain', 1.))*(1+.5*self.lift_stalls)))
                 self.log('holding: applied only vertical motion (dz %+.1f cm over %d rows)' %
                          ((vertical['dz_cm'] or [0])[-1], vertical['rows']))
             if self.v.get('assist', {}).get('grip_latch') and self.grip_latch is not None and not self.args.dry_run:
@@ -485,7 +486,8 @@ class TableRun:
             if self.v.get('assist', {}).get('grip_latch') and not self.args.dry_run:
                 commanded = float(action[latch_key][-1][6])
                 observed = playback.get('gap_'+latch_side+'_m')
-                if observed is not None and observed - commanded*JAW_MAX_M > .01 and observed < .095:
+                stall = float(self.v.get('assist', {}).get('stall_threshold_m', .01))
+                if observed is not None and observed - commanded*JAW_MAX_M > stall and observed < .095:
                     if self.grip_latch is None:
                         from pregrasp import tool_height
                         self.latch_z = tool_height(playback.get('q_'+latch_side, packet['state']['q_'+latch_side]))

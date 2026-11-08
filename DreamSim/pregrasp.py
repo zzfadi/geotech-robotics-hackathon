@@ -221,6 +221,12 @@ def apply_live_layout(config, world_cups):
             for item in table.get('objects') or []:
                 if item.get('label') in cups and item.get('location_cm'):
                     cups[item['label']] = [float(v) for v in item['location_cm']]
+            # The target was moved out of `objects` when the run config was prepared; its
+            # reset position is in target.location_cm. Never take a displaced live position.
+            reset_target = (table.get('target') or {}).get('location_cm')
+            label_ = (table.get('target') or {}).get('label') or 'MakerStation_Prop_Cup'
+            if reset_target and label_ in cups:
+                cups[label_] = [float(v) for v in reset_target]
         for name, loc in cups.items():
             if abs(loc[2]-81.) > 1.:
                 cups[name] = [loc[0], loc[1], 81.]

@@ -219,3 +219,13 @@ subgoal; per-table grasp angle from the lift ceiling (45–80°); re-grasp if a 
 - Batch 30 (`c3b47496814a460ca5f220c5d658bea2`): 3/3 normally running tables passed (16, 21, 20 cm); four
   tables were refused by the shared Dream pool (`DA-2000 NO_CAPACITY (pool_full)`). Capacity waits now last up
   to 180 s.
+
+## Repeat runs (2026-11-08)
+
+- Batch 31 (`4302fb424e2b4afa8c05bab9c2fabaf5`): 7/9. Misses: Dream's upward requests faded at ~21 cm (target 26);
+  Dream closed only to 6.5–7.1 cm so the 1 cm stall test never latched and later moves toppled the cup.
+  Fixes: upward gain grows ×(1 + 0.5·stalls) up to 6×; latch at a 0.5 cm stall; still-arm grasp up to 5 cycles.
+- Batch 32 (`707bce40183a4191842d34672f62de9a`): 8/9 (incl. 28 cm). Miss: the target cup started at x 31.6 cm —
+  a position left displaced by an earlier run — because the per-run reset restored every cup from the Reset
+  layout except the target. Fixed (test added); a fresh Reset relaid all tables.
+- **Batch 33 (`53541a7280804001a56acaba7d0acfb2`): 9/9** in 84 s — 19, 15, 18, 15, 24, 15, 27, 19, 21 cm held 5 s.

@@ -68,6 +68,17 @@ class Pregrasp(unittest.TestCase):
         untouched = pg.prepare_run_config({'tables': [table()]}, None)
         self.assertNotIn('initial_state', untouched['tables'][0])
 
+    def test_reset_layout_target_is_never_taken_from_a_displaced_live_cup(self):
+        config = {'defaults': {'assist': {'start': 'pregrasp', 'layout': 'live'}},
+                  'tables': [table(1, preserve_scene_layout=True,
+                                   objects=[{'label': 'MakerStation_Prop_Cup_02', 'location_cm': [60, 30, 81]}])]}
+        d = offset(1)
+        world = {label(1, 'MakerStation_Prop_Cup'): [31+d[0], -39+d[1], 81+d[2]],
+                 label(1, 'MakerStation_Prop_Cup_02'): [40+d[0], 10+d[1], 81+d[2]]}
+        variant = normalize_config(pg.apply_live_layout(config, world))[0]
+        np.testing.assert_allclose(variant['target']['location_cm'], CUP, atol=1e-6)
+        np.testing.assert_allclose(variant['objects'][0]['location_cm'], [60, 30, 81], atol=1e-6)
+
     def test_live_layout_uses_editor_positions_per_table(self):
         config = {'defaults': {'assist': {'start': 'pregrasp', 'layout': 'live'}}, 'tables': [table(1)]}
         d = offset(1)
