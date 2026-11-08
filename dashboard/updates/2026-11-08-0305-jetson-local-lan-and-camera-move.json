@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-08T03:05:32-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Beryl LAN now carries verified Jetson SSH and KVM keyboard control; C270 still capture works on Jetson.",
+  "why": "Make local control repeatable without VPN and preserve capture instructions with explicit video, power and arm-acceptance limits.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json",
+    "arm/tools/camera_inspect_linux.py",
+    "arm/tools/test_camera_inspect_linux.py",
+    "docs/validation/jetson-runtime-recovery-2026-11-08/README.md"
+  ],
+  "details": "Jetson SSH remains at 192.168.8.136 with system running. Moved KVM 192.168.8.166 accepts the saved credential; Escape woke the Jetson lock screen, visibly verified through the Jetson-hosted C270. Old 192.168.2.2 is unreachable. Mouse request acceptance alone did not verify delivery. C270 046d:0825 uses uvcvideo: video0 capture/video1 metadata. Non-root GStreamer 1.24.2 produced 640x480 JPEGs after 30-frame warm-up; first frame was dark during exposure startup. Mac camera indices are obsolete. Reusable Linux helper passed inventory and a bounded 30-frame snapshot on Jetson with a stable alias and a new output directory; its own JPEG was visually verified and all four test methods passed on the Jetson in 0.020 s. Four private output copies match target hashes. Timing metadata is Jetson-local receipt timing, not a live feed. Network no longer depends on Mac Ethernet sharing, but KVM power still comes from the Mac. Same-LAN access needs no Tailscale or subnet change; optional off-site routing is unconfigured. Video cable expected in the morning: required direction is Jetson DisplayPort to KVM HDMI, with compatibility/image still unverified. No HDMI video or arm hardware milestone claimed. A brief interruption resolved at the original addresses without LAN reset/renumber: strict SSH and KVM authentication passed again, with 58 minutes Jetson uptime and no reboot. Exact cause remains unknown; native Wi-Fi settings confirmed Beryl. The exact historical runtime recovery script, dependency closure and result are archived with hashes and explicit reuse limits."
+}

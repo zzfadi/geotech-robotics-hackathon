@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "Installed NVMe OS, persistent key SSH and isolated Python runtime verified; 140 offline arm tests pass without hardware/controller startup; remote-access architecture/enrollment and portable KVM/off-site verification pending",
+  "scope": "Local Beryl SSH/KVM authentication restored after brief interruption of unknown cause; earlier keyboard delivery retained. Jetson C270 helper snapshot, visual image inspection and four on-device tests verified. Local LAN needs no VPN/subnet change; independent power, native HDMI video and arm/off-site acceptance remain pending.",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -53,28 +53,29 @@
   },
   "console": {
     "camera": "Logitech C270 HD WEBCAM",
-    "capture": "1280x720 AVFoundation still",
-    "observation": "Ubuntu graphical first-boot setup; driver license accepted, local account still pending",
+    "capture": "Non-root Jetson GStreamer 640x480 JPEG after 30-frame warm-up; first single frame was dark during exposure startup",
+    "observation": "Authenticated KVM Escape over Beryl woke Jetson lock screen, visibly verified through Jetson-hosted C270 image",
     "kvm": "GL.iNet GL-RM1",
     "local_web_reachable": true,
     "hdmi_connected": false,
     "hid_delivery_verified": true,
     "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
-    "internet_sharing": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
+    "internet_sharing": "KVM moved to Beryl; Mac Internet Sharing is no longer its network path. Sharing service enabled/disabled state not changed or reverified here.",
     "cloud": "Authenticated console launched via glkvm.com Remote Control; settled P2P/no HDMI from this Mac, off-site/relay/keyboard path unverified",
-    "updated_at": "2026-11-08T02:28:51-08:00",
+    "updated_at": "2026-11-08T03:25:20-08:00",
     "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
     "local_admin_initialized": true,
     "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
     "network": {
-      "sharing_active": true,
-      "upstream": "Wi-Fi",
-      "downstream": "Ethernet",
-      "mac_bridge": "bridge100",
-      "mac_bridge_ipv4": "192.168.2.1",
-      "kvm_ipv4": "192.168.2.2",
-      "kvm_address_source": "DHCP",
-      "jetson_network_path_verified": false
+      "router": "GL-MT3000 Beryl AX",
+      "kvm_ipv4": "192.168.8.166",
+      "jetson_ipv4": "192.168.8.136",
+      "mac_internet_sharing_required": false,
+      "jetson_network_path_verified": true,
+      "kvm_public_endpoint_verified": true,
+      "kvm_authenticated_access_after_move_verified": true,
+      "old_kvm_ipv4": "192.168.2.2",
+      "old_kvm_ipv4_reachable": false
     },
     "cloud_binding": {
       "sign_in_completed": true,
@@ -96,7 +97,7 @@
       "status": "Local KVM-to-Jetson HID independently verified by agent Enter opening the failed installer diagnostic shell",
       "tooltip_source": "Public KVM client JavaScript inspection",
       "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
-      "next_check": "Observe reinstall outcome; verify KVM port access after requested cable move and off-site control separately",
+      "next_check": "Verify mouse separately if needed; off-site control remains unverified",
       "physical_cable_check_completed": true,
       "usb_gadget_diagnostic": {
         "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
@@ -128,7 +129,7 @@
         "scope": "Local KVM path, not off-site/cloud control test"
       }
     },
-    "hid_verification_scope": "Agent sent Enter through KVM at installer error prompt; webcam directly confirms root diagnostic shell",
+    "hid_verification_scope": "Historical installer Enter succeeded; new Beryl LAN login and Escape delivery now visibly verified through Jetson webcam",
     "agent_keypress_verified": true,
     "usb_host_attachment_directly_verified": true,
     "hid_delivery_user_confirmed": true,
@@ -152,16 +153,149 @@
         "/private/tmp/jetson-cloud-control-check-08.png",
         "/private/tmp/jetson-cloud-control-check-09.png"
       ]
+    },
+    "capture_before_usb_move": "1280x720 AVFoundation still",
+    "internet_sharing_before_kvm_move": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
+    "network_before_kvm_move": {
+      "sharing_active": true,
+      "upstream": "Wi-Fi",
+      "downstream": "Ethernet",
+      "mac_bridge": "bridge100",
+      "mac_bridge_ipv4": "192.168.2.1",
+      "kvm_ipv4": "192.168.2.2",
+      "kvm_address_source": "DHCP",
+      "jetson_network_path_verified": false
+    },
+    "kvm_after_router_move": {
+      "recorded_at": "2026-11-08T03:05:32-08:00",
+      "user_confirmed_physical_move": true,
+      "ipv4": "192.168.8.166",
+      "tcp_ports_reachable": [
+        80,
+        443,
+        22
+      ],
+      "page_title": "GLKVM",
+      "public_client_asset": "index-DlOG5e8q.js",
+      "asset_matches_prior_device": true,
+      "old_ipv4": "192.168.2.2",
+      "old_ipv4_reachable": false,
+      "authenticated_console_verified": true,
+      "hid_delivery_verified": true,
+      "offsite_access_verified": false,
+      "updated_at": "2026-11-08T03:11:58-08:00",
+      "authentication": "Saved Keychain administrator credential; session token kept in memory only",
+      "keyboard_key": "Escape",
+      "keyboard_effect": "Jetson lock screen woke",
+      "keyboard_evidence": "/private/tmp/jetson-c270-after-kvm-key-20261108.jpg",
+      "keyboard_evidence_sha256": "e9f06276279a3a2e0c46de9282e15adf9fa5f89129f9a3c9d229a5c09280ce7a",
+      "mouse_relative_request_accepted": true,
+      "mouse_delivery_visibly_verified": false,
+      "power_source": "Mac",
+      "power_independent_of_mac_verified": false
+    },
+    "camera_after_usb_move": {
+      "recorded_at": "2026-11-08T03:05:32-08:00",
+      "user_confirmed_move_to_jetson": true,
+      "model": "Logitech C270",
+      "usb_id": "046d:0825",
+      "driver": "uvcvideo",
+      "capture_node": "/dev/video0",
+      "metadata_node": "/dev/video1",
+      "metadata_node_is_second_camera": false,
+      "gstreamer_version": "1.24.2",
+      "fadi_in_video_group": true,
+      "frame_verified": true,
+      "sustained_capture_verified": false,
+      "three_camera_contract_verified": false,
+      "previous_mac_avfoundation_indices_obsolete": true,
+      "learning": "Discover the camera on its current host after USB moves; Mac AVFoundation indices cannot address Jetson video nodes",
+      "updated_at": "2026-11-08T03:11:58-08:00",
+      "capture_user": "fadi",
+      "capture_as_root": false,
+      "frame_format": "JPEG",
+      "frame_dimensions": [
+        640,
+        480
+      ],
+      "initial_single_frame": "Valid JPEG but dark during exposure startup",
+      "warmup_frames": 30,
+      "warmup_sink": "multifilesink max-files=1",
+      "warmed_frame_path": "/private/tmp/jetson-c270-warmed-frame-20261108.jpg",
+      "warmed_frame_sha256": "8501741368b74bab69108f588de6d4d978d7a5ac8478c57bc8751b6acb83f9e7",
+      "after_key_frame_path": "/private/tmp/jetson-c270-after-kvm-key-20261108.jpg",
+      "after_key_frame_sha256": "e9f06276279a3a2e0c46de9282e15adf9fa5f89129f9a3c9d229a5c09280ce7a",
+      "local_frame_hashes_independently_rechecked": true,
+      "reusable_helper_verified": true,
+      "preboot_console_limitation": "Jetson-hosted camera requires running OS/capture path and does not replace HDMI KVM for preboot/recovery",
+      "reusable_helper_verification_scope": "Non-root inventory and bounded snapshot on actual Jetson C270, visually inspected helper image and four on-device test methods passed"
+    },
+    "camera_helper": {
+      "path": "arm/tools/camera_inspect_linux.py",
+      "test_path": "arm/tools/test_camera_inspect_linux.py",
+      "inventory_verified_on_jetson": true,
+      "capture_and_metadata_nodes_distinguished": true,
+      "stable_aliases_reported": true,
+      "nonroot_read_write_access_verified": true,
+      "snapshot_hardware_verified": true,
+      "snapshot_observed_at": "2026-11-08T03:06:22-08:00",
+      "explicit_stable_by_id_alias_selected": true,
+      "sampled_frames": 30,
+      "width": 640,
+      "height": 480,
+      "requested_fps": 30,
+      "default_timeout_seconds": 15,
+      "capture_started_uptime_s": 2529.075703918,
+      "receipt_uptime_s": 2532.135198036,
+      "outputs": [
+        "JPEG",
+        "camera-report.json",
+        "capture-latest.json",
+        "capture-ready.txt"
+      ],
+      "output_directory_must_be_new": true,
+      "image_visually_inspected": true,
+      "local_unit_test_methods_passed": 4,
+      "local_unit_scenarios_covered": 6,
+      "jetson_unit_tests_verified": true,
+      "timing_scope": "Jetson monotonic host start/receipt, not sensor exposure; copied metadata cannot be compared with Mac monotonic clock",
+      "live_camera_feed": false,
+      "three_camera_acceptance": false,
+      "updated_at": "2026-11-08T03:25:20-08:00",
+      "image_observation": "Clear camera image of blank monitor; confirms usable capture, not a new HID test",
+      "jetson_unit_test_methods_passed": 4,
+      "jetson_unit_test_duration_seconds": 0.02,
+      "local_helper_sha256_matches_jetson": true,
+      "sha256": {
+        "helper_source": "9fc2303cee74a452dd0714ef6e1df26cf57b07986f1274ae031a78547ac96462",
+        "jpeg": "591dadd30db4656a21a4f02bcd263e91ff17ecf81a46276272c3070549dbdc60",
+        "camera_report": "1b64a7b6b20a54e018f172e010b67bcb1814a42c85cce4d5c9b97dc4b7c6f083",
+        "capture_ready": "0b9ea005ed170271cdd1901336845fc1babe6e2285fa40337bf7369e4c3c9e6b",
+        "capture_latest": "0b9ea005ed170271cdd1901336845fc1babe6e2285fa40337bf7369e4c3c9e6b"
+      },
+      "private_outputs": {
+        "directory": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/c270-helper-verified-20261108",
+        "file_count": 4,
+        "each_hash_matched_target": true,
+        "raw_image_or_serial_metadata_committed": false
+      }
+    },
+    "expected_video_cable": {
+      "arrival": "Morning, user-reported",
+      "required_direction": "Jetson DisplayPort output to KVM HDMI input",
+      "compatibility_verified": false,
+      "native_video_verified": false
     }
   },
   "pending": [
-    "Select remote-access architecture and intended team network; proposed Beryl LAN gateway needs a distinct subnet, access policy and route approval. No enrollment or routing change has been made.",
-    "Await KVM cable move to Beryl Port 1, then verify reserved 192.168.8.166 is leased and accessible",
-    "Verify complete portable LAN without Mac sharing and off-site access separately; preserve home GL-MT6000",
-    "Complete attended hardware/controller, camera and telemetry acceptance separately; no arm hardware milestone is established by offline tests",
-    "Record fan and workload cooling observations before performance tuning; unchanged default 25 W mode 1 and idle temperatures are recorded"
+    "Verify mouse delivery separately if needed; accepted relative-mouse request did not visibly wake the screen",
+    "Provide and verify independent KVM/kit power if desired; network is independent of Mac Ethernet sharing, KVM power still comes from Mac",
+    "Complete attended hardware/controller, three-camera and telemetry acceptance separately",
+    "Record fan and workload cooling observations before performance tuning",
+    "Only if off-site/team access is selected, decide its architecture/network and approve routes/policy; current local LAN needs neither Tailscale nor subnet renumbering",
+    "When the user-reported morning video cable arrives, verify Jetson DisplayPort output to KVM HDMI input compatibility and actual video"
   ],
-  "updated_at": "2026-11-08T02:52:55-08:00",
+  "updated_at": "2026-11-08T03:25:20-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -439,44 +573,44 @@
   },
   "portable_lan_proposal": {
     "recorded_at": "2026-11-08T01:21:56-08:00",
-    "status": "Port 1 LAN and address reservations verified; physical KVM move/access and full topology still pending",
+    "status": "Local Beryl network verified for Jetson SSH and authenticated KVM keyboard; no VPN required for same-LAN access",
     "goal": "Portable Jetson/KVM LAN independent of Mac Internet Sharing",
     "intended_router": "Separate GL.iNet GL-MT3000 Beryl AX",
     "separate_model_confirmed": true,
     "separate_wiring_confirmed": true,
     "configuration_performed": true,
-    "local_topology_verified": false,
+    "local_topology_verified": true,
     "remote_access_verified": false,
     "home_gateway": {
       "model": "GL-MT6000",
       "ipv4": "192.168.8.1",
       "must_remain_unchanged": true
     },
-    "current_kvm_lan": "Mac Internet Sharing bridge100 192.168.2.1, KVM 192.168.2.2",
-    "next_step": "Await KVM cable move and verify local access through Port 1; after OS installation verify both devices without Mac sharing and off-site access separately",
-    "updated_at": "2026-11-08T02:09:16-08:00",
+    "current_kvm_lan": "Beryl LAN, KVM 192.168.8.166",
+    "next_step": "Finish reusable camera helper and attended acceptance; independent kit power and off-site access remain separate",
+    "updated_at": "2026-11-08T03:11:58-08:00",
     "model_evidence": "User-provided photo identifies GL-MT3000 Beryl AX; no Wi-Fi credentials or hardware addresses retained",
     "internet_available_user_confirmed": true,
     "internet_independently_verified": true,
-    "immediate_wiring_requested": "Jetson Ethernet to Beryl AX LAN; preserve KVM Ethernet to Mac",
-    "immediate_wiring_verified": true,
-    "configuration_scope": "Beryl firmware upgrade and Port 1 saved as LAN; actual KVM move and physical-port access not yet verified"
+    "configuration_scope": "Beryl upgrade and Port 1 saved as LAN; user-confirmed KVM move with new endpoint reachable",
+    "original_wiring_request": "Jetson Ethernet to Beryl AX LAN; preserve KVM Ethernet to Mac",
+    "original_wiring_verified": true
   },
   "portable_network_current": {
     "router_model": "GL-MT3000 Beryl AX",
     "mac_joined_travel_wifi": true,
-    "mac_ipv4": "192.168.8.174",
+    "mac_ipv4": "192.168.8.244",
     "travel_router_ipv4": "192.168.8.1",
     "router_identity_verified_by": "Changed gateway hardware identity and GL-MT3000 admin page",
     "internet_http_check": "Apple success page returned successfully",
     "kvm_local_reachable_after_wifi_change": true,
-    "kvm_ipv4": "192.168.2.2",
+    "kvm_ipv4": "192.168.8.166",
     "jetson_ethernet_to_beryl_lan_user_confirmed": true,
     "jetson_ipv4_after_cable_unverified": false,
     "router_admin_login": "User recovered password; authenticated admin UI verified",
     "router_settings_changed": true,
     "home_router_unchanged": true,
-    "updated_at": "2026-11-08T02:44:34-08:00",
+    "updated_at": "2026-11-08T03:25:20-08:00",
     "router_change_scope": "Beryl upgrade, Port 1 saved as LAN, and verified device address reservations; home GL-MT6000 unchanged",
     "router_firmware_version": "4.11.0",
     "router_firmware_verified": true,
@@ -486,8 +620,8 @@
     "jetson_recovery_ipv4": "192.168.8.136",
     "jetson_recovery_ssh_verified_before_reboot": true,
     "jetson_current_ipv4_after_reboot_verified": true,
-    "mac_sharing_still_required_for_kvm": true,
-    "portable_topology_independent_of_mac_verified": false,
+    "mac_sharing_still_required_for_kvm": false,
+    "portable_topology_independent_of_mac_verified": true,
     "offsite_access_verified": false,
     "port1_lan": {
       "physical_label": "WAN",
@@ -497,8 +631,10 @@
       "saved_setting_verified": true,
       "physical_port_access_verified": false,
       "kvm_cable_move_requested": "Move KVM Ethernet from Mac to free WAN-labeled Beryl Port 1",
-      "user_reply_received": false,
-      "physical_kvm_move_verified": false
+      "user_reply_received": true,
+      "physical_kvm_move_verified": true,
+      "exact_physical_port_independently_inspected": false,
+      "physical_port_access_scope": "KVM access through Beryl verified; exact port attachment not independently inspected"
     },
     "address_reservations": {
       "independently_verified": true,
@@ -522,6 +658,45 @@
       "hostname": "orin-arm",
       "verified": true,
       "scope": "Dedicated-key LAN SSH with strict host-key verification; off-site access remains unverified"
+    },
+    "network_path_independent_of_mac_sharing_verified": true,
+    "local_tailscale_required": false,
+    "local_subnet_change_required": false,
+    "portable_topology_verification_scope": "Local network independent of Mac Ethernet sharing only; KVM still powered by Mac, full power independence not verified",
+    "current_checks": {
+      "jetson_ssh_verified": true,
+      "jetson_system_state": "running",
+      "kvm_new_ipv4": "192.168.8.166",
+      "kvm_public_endpoint_verified": true,
+      "old_kvm_ipv4_reachable": false,
+      "kvm_authenticated_login_verified": true,
+      "kvm_keyboard_delivery_verified": true,
+      "kvm_mouse_delivery_verified": false,
+      "verified_again_after_interruption": true
+    },
+    "kit_power_independent_of_mac_verified": false,
+    "connectivity_interruption": {
+      "recorded_at": "2026-11-08T03:25:20-08:00",
+      "status": "resolved",
+      "cause": "unknown",
+      "mac_ipv4_before": "192.168.8.174",
+      "mac_ipv4_after": "192.168.8.244",
+      "gateway_reachable_during_interruption": true,
+      "kit_addresses_temporarily_unreachable": [
+        "192.168.8.136",
+        "192.168.8.166"
+      ],
+      "rejoin_attempt_error": -3900,
+      "native_wifi_settings_confirmed_beryl_connected": true,
+      "user_confirmed_beryl_powered": true,
+      "home_network_switch_confirmed": false,
+      "original_endpoints_reachable_again": true,
+      "strict_jetson_ssh_reauthenticated": true,
+      "jetson_uptime_minutes_at_recheck": 58,
+      "jetson_reboot_during_interruption": false,
+      "kvm_reauthenticated": true,
+      "lan_renumber_performed": false,
+      "lan_reset_performed": false
     }
   },
   "current_attempt": "reinstallation",
@@ -555,7 +730,7 @@
     "completion_verified": true,
     "installed_os_boot_verified": true,
     "persistent_ssh_verified": true,
-    "current_instruction": "Select remote-access architecture and verify KVM migration/off-site access; hardware/controller acceptance remains separate",
+    "current_instruction": "Local SSH/KVM and camera helper checks complete. Continue attended acceptance; independent power, native KVM video and optional off-site routing remain separate.",
     "updated_at": "2026-11-08T02:44:34-08:00",
     "partitioning_observation": {
       "observed_at": "2026-11-08T02:01:41-08:00",
@@ -705,7 +880,7 @@
     "assigned_tailscale_addresses": [],
     "tailnet_enrolled": false,
     "intended_tailnet_selection_pending": true,
-    "network_selection_context": "Beryl LAN subnet gateway recommended but not selected/configured; network choice, policy and route approval pending. Jetson remains unenrolled NeedsLogin.",
+    "network_selection_context": "No enrollment needed for current same-LAN work. Optional off-site proposal remains unselected; Jetson client is NeedsLogin without addresses.",
     "network_architecture_review_pending": true
   },
   "pre_firstboot_finalization": {
@@ -935,16 +1110,18 @@
   },
   "remote_access_recommendation": {
     "recorded_at": "2026-11-08T02:52:55-08:00",
-    "status": "recommended-awaiting-selection",
+    "status": "optional-offsite-proposal-unselected",
     "selected": false,
     "configured": false,
     "proposal": "Beryl AX Tailscale LAN subnet gateway for Jetson and KVM",
     "vendor_integration_stage": "beta",
     "lan_plan": {
-      "distinct_kit_lan_required": true,
+      "distinct_kit_lan_required": false,
       "current_home_and_beryl_subnet": "192.168.8.0/24",
       "replacement_subnet_selected": false,
-      "home_router_change_proposed": false
+      "home_router_change_proposed": false,
+      "distinct_kit_lan_required_if_proposed_overlapping_offsite_route_selected": true,
+      "local_subnet_change_required": false
     },
     "proposed_route_scope": "Kit LAN only; no upstream WAN or exit-node advertisement",
     "account_team_network_selected": false,
@@ -957,6 +1134,14 @@
       "https://docs.gl-inet.com/router/en/4/interface_guide/tailscale/",
       "https://tailscale.com/docs/features/sharing#sharing-and-subnets-subnet-routers",
       "https://docs.gl-inet.com/router/en/4/interface_guide/cloud/#remote-access"
-    ]
+    ],
+    "updated_at": "2026-11-08T03:05:32-08:00",
+    "required_for_same_lan": false,
+    "scope": "Optional access from another network only; current Beryl local access requires no Tailscale or renumbering"
+  },
+  "runtime_recovery_artifacts": {
+    "readme": "docs/validation/jetson-runtime-recovery-2026-11-08/README.md",
+    "scope": "Exact historical resume.py, dependency closure and provisioning result with hashes and reuse preconditions; not a general installer",
+    "new_camera_helper_changes_pinned_tools_tree": true
   }
 }
