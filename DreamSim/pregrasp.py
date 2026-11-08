@@ -88,6 +88,18 @@ def pregrasp_state(table, side='left', grasp_offset_cm=2.5, pitch_deg=45., stand
     """
     cup = arm_point(target_location(table), side)
     yaw = math.atan2(cup[1], cup[0])
+    initial = table.get('initial_state') or {}
+    # Steeper grasps lift higher but are not reachable everywhere: step toward 45 degrees.
+    pitches = [pitch_deg]+[p for p in (55., 50., 45.) if p < pitch_deg]
+    for attempt, pitch in enumerate(pitches):
+        try:
+            return _pregrasp_at(table, side, cup, yaw, pitch, grasp_offset_cm, standoff_cm, lift_cm, gap_m, grasp_depth_cm, initial)
+        except ValueError:
+            if attempt == len(pitches)-1:
+                raise
+
+
+def _pregrasp_at(table, side, cup, yaw, pitch_deg, grasp_offset_cm, standoff_cm, lift_cm, gap_m, grasp_depth_cm, initial):
     rotation = Rotation.from_euler('z', yaw).as_matrix()@Rotation.from_euler('y', -pitch_deg, degrees=True).as_matrix()
     approach = rotation@np.array([0, 0, -1.])
     # grasp_depth_cm moves the tool centre past the cup axis along the approach, so the cup
@@ -95,7 +107,6 @@ def pregrasp_state(table, side='left', grasp_offset_cm=2.5, pitch_deg=45., stand
     # the fingertip edge (the tool centre is at -17 cm).
     position = (cup+np.array([0, 0, grasp_offset_cm/100])+approach*(grasp_depth_cm-standoff_cm)/100
                 +np.array([0, 0, lift_cm/100]))
-    initial = table.get('initial_state') or {}
     q = solve_pose(position, rotation, initial.get('q_'+side) or [0, -1.95, 1.47, -.12, 0, 0])
     state = dict(initial)
     other = 'right' if side == 'left' else 'left'
