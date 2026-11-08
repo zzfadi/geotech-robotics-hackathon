@@ -212,3 +212,10 @@ Planned reach from idle (no Dream call) → Dream grasp subgoal with the arm hel
 the runtime compliance → friction-grip model while both pads squeeze → only Dream's vertical motion applied,
 never lowering a held cup, upward steps scaled 2.5×, ≈3 cm/s → lift subgoal until target + 1.5 cm → hold
 subgoal; per-table grasp angle from the lift ceiling (45–80°); re-grasp if a cup drops upright.
+- Batch 29 (`4c8ac211e3d14bd2b1fd41e808c14bcc`): ran right after Luna2's checkpoint published the saved map;
+  the Mac applied it mid-simulation and most tables hit `No fresh verified observation`, `SIE exit timed out`
+  or `Mirror sample requires no enclosing transaction`. The two tables that ran normally passed (16, 21 cm).
+  Do not start a run immediately after a checkpoint push.
+- Batch 30 (`c3b47496814a460ca5f220c5d658bea2`): 3/3 normally running tables passed (16, 21, 20 cm); four
+  tables were refused by the shared Dream pool (`DA-2000 NO_CAPACITY (pool_full)`). Capacity waits now last up
+  to 180 s.

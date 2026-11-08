@@ -289,8 +289,9 @@ class TableRun:
             finally:
                 request['finished_unix'] = time.time()
                 write_json(self.dir/'requests.json', self.result['requests'])
-        capacity_deadline = time.monotonic() + 60
-        for attempt in range(9):
+        # The shared Dream pool fills up during busy periods (DA-2000 pool_full); wait longer.
+        capacity_deadline = time.monotonic() + float(self.v.get('assist', {}).get('capacity_wait_s', 60))
+        for attempt in range(14):
             while not _INFERENCE_SLOTS.acquire(timeout=.2):
                 if self.stopped():
                     raise RuntimeError('Stopped waiting for Dream capacity')
@@ -304,11 +305,11 @@ class TableRun:
                     # phrasing (logged) instead of ending the table.
                     self.lift_stalls += 1
                     self.result.setdefault('refused_prompts', []).append(str(error)[-120:])
-                if (('NO_CAPACITY' not in str(error) and not numerical and not refused) or attempt == 8
+                if (('NO_CAPACITY' not in str(error) and not numerical and not refused) or attempt == 13
                         or time.monotonic() >= capacity_deadline):
                     raise
-                self.log(('Dream client IK numerical failure; retry %d/8' if numerical else
-                          'Dream capacity busy; bounded retry %d/8 (60 s budget)') % (attempt+1))
+                self.log(('Dream client IK numerical failure; retry %d/13' if numerical else
+                          'Dream capacity busy; bounded retry %d/13') % (attempt+1))
             finally:
                 _INFERENCE_SLOTS.release()
             deadline = min(capacity_deadline, time.monotonic() + min(8, 2**(attempt+1)) + self.v['index']*.1)
