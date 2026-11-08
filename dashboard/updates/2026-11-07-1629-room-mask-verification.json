@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T16:29:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Verified the live Luna2 editor switches between opaque and alpha blend, and that the outgoing stereo stream contains a room mask.",
+  "why": "The compositor is producing virtual foreground pixels and transparent room regions in both eyes. A physical Quest connection is still required to verify the room camera underlay.",
+  "where": [
+    "8ed1946",
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Shaders/Private/QuestPassthrough.usf"
+  ],
+  "details": "The Capture Performers checkbox was visible and enabled. The headset view filtered 374 environment primitives. In a short local diagnostic all 14 encoded frames carried the protocol alpha flag. A decoded frame had 92.1% key-black pixels in the left eye and 90.6% in the right. This diagnostic used no headset camera feed. USB authorization and wearer confirmation are pending."
+}

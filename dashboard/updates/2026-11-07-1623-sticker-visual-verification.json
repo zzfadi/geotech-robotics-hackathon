@@ -1,0 +1,8 @@
+{
+  "when": "2026-11-07T16:23:28-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Finished large white tabletop stickers with black numbers 1\u201311 at front-right corners.",
+  "why": "Matched the user marked placement and verified the actual rendered sticker instead of editor icons.",
+  "details": "20 cm square backing, 13 cm text, explicit font and pitch rotation, inset from table edges; billboard icons hidden. Global daylight rotation corrected using named Rotator arguments."
+}

@@ -11,13 +11,13 @@ The external producers send each frame to two loopback UDP sockets. Live Link Hu
    plugin="$PWD/Unreal/TheHumanTouch/Plugins/HumanTouchPose"
    work=$(mktemp -d)
    mkdir -p "$work/Plugins/HumanTouchPose"
-   cp -R "$plugin/Source" "$plugin/HumanTouchPose.uplugin" "$work/Plugins/HumanTouchPose/"
+   cp -R "$plugin/Source" "$plugin/Shaders" "$plugin/HumanTouchPose.uplugin" "$work/Plugins/HumanTouchPose/"
    echo '{"FileVersion":3,"Plugins":[{"Name":"HumanTouchPose","Enabled":true}]}' > "$work/CaptureBuild.uproject"
    "$engine/Build/BatchFiles/Mac/Build.sh" UnrealEditor Mac Development \
      -Project="$work/CaptureBuild.uproject" -Plugin="$work/Plugins/HumanTouchPose/HumanTouchPose.uplugin" \
      -architecture=arm64 -NoHotReload -NoUBA -NoUBALocal
    mkdir -p "$plugin/Binaries/Mac"
-   cp "$work/Plugins/HumanTouchPose/Binaries/Mac/"{UnrealEditor.modules,libUnrealEditor-HumanTouchPose.dylib,libUnrealEditor-HumanTouchPerformersEditor.dylib} "$plugin/Binaries/Mac/"
+   cp "$work/Plugins/HumanTouchPose/Binaries/Mac/"{UnrealEditor.modules,libUnrealEditor-HumanTouchPose.dylib,libUnrealEditor-HumanTouchPerformersEditor.dylib,libUnrealEditor-HumanTouchXR.dylib} "$plugin/Binaries/Mac/"
    ```
 
 2. Start one Hub with the station receiver. If Hub is already running, save any Hub session before quitting and reopening it with these arguments. `Listen` and the **Add → Human Touch Pose** menu item start the same receiver; use one.
@@ -115,6 +115,14 @@ uv run --script Capture/register_table.py camera --survey "$station_dir/survey.j
 uv run --script Capture/register_table.py quest --survey "$station_dir/survey.json" \
     --output "$station_dir/quest-session-registration.json"
 ```
+
+## Quest room passthrough
+
+On a Quest XR station, add `--passthrough` to the usual `Tools/join_human_touch.py` launch command to see the physical room behind the station objects. Use `--no-passthrough` to start in opaque VR with the switch available. Keep the usual XR bridge, headset transport, and session arguments. On the OXRSys Mac both commands prepare the runtime’s camera and alpha-blend capabilities before editor startup. A running opaque-only OpenXR instance needs one restart after initial setup.
+
+During the session, use **Tools → Capture Performers → Show room behind scene objects**, or enter `HumanTouch.Passthrough on` / `off` in the Unreal console. `HumanTouch.Passthrough status` reports the requested mode and runtime support. For a direct editor launch use `-EnablePlugins=HumanTouchPose -HumanTouchPassthrough` (append HumanTouchPose to the existing plugin list). For OXRSys direct launches enable both `passthrough_enabled` and `app_alpha_blend_passthrough` in the runtime's `[streaming]` settings and add `-HumanTouchVideoKey`.
+
+The headset view hides the simulated hall, including fleet copies, and the editor grid. Tables, robots, props and performers stay visible. Tag other background meshes `PassthroughBackground` to hide them in this view. Room geometry and collision remain available to the simulation and other participants. On the Mac H.265 stream, empty pixels use the headset viewer's black key; dark solid objects receive a minimum brightness so they stay opaque. The depth mask covers opaque and masked geometry; standalone translucent effects without scene depth are omitted. Verify inside the headset by switching between opaque VR and the overlay while looking past a virtual object at a recognizable part of the physical room.
 
 ## Choose the performers shown in this editor
 

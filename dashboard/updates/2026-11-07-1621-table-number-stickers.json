@@ -1,0 +1,8 @@
+{
+  "when": "2026-11-07T16:21:52-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added flat number stickers 1\u201311 on the table corners and removed all floating table labels.",
+  "why": "User clarified labels should be simple number stickers. Internal table IDs stay unchanged; web display mapping must use index + 1.",
+  "details": "Guarded shared edit created 22 sticker actors and removed 22 floating labels. Open-top correction removed all 11 roof meshes. Full fleet web workflow remains in progress."
+}

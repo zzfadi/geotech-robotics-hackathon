@@ -1,0 +1,8 @@
+{
+  "when": "2026-11-07T16:28:12-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Replaced dense room fills with open-world daylight: sun, sky and two ceiling fixtures per room.",
+  "why": "User requested directional outdoor-style illumination, adjusted exposure and fewer spotlights.",
+  "details": "Removed 55 redundant local lights. Sun 6500 lux, ambient 2, ceiling lights 1800 each, exposure +0.5 EV. Uses screen-space GI for current hardware configuration; full Lumen is not claimed. All remaining lights movable; removed distant-light culling so overview stays illuminated."
+}

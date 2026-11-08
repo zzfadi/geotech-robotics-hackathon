@@ -10,6 +10,7 @@
     "LiveLinkHub"
   ],
   "Modules": [
+    {"Name": "HumanTouchXR", "Type": "Editor", "LoadingPhase": "PostConfigInit", "TargetAllowList": ["Editor"]},
     {
       "Name": "HumanTouchPose",
       "Type": "Runtime",
@@ -28,6 +29,7 @@
     }
   ],
   "Plugins": [
+    {"Name": "OpenXR", "Enabled": true, "TargetAllowList": ["Editor"]},
     {
       "Name": "LiveLink",
       "Enabled": true
