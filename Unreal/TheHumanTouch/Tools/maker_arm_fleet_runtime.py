@@ -140,8 +140,9 @@ class Session:
         self.root.mkdir(parents=True, exist_ok=True)
         (self.root / 'stop').unlink(missing_ok=True)
         self.tables = [Table(v, self.root) for v in normalize_config(json.loads(Path(config_path).read_text()))]
-        from maker_arm_passive_preview import PassivePreview
-        self.passive_preview = PassivePreview([t.index for t in self.tables], self.root)
+        import importlib, maker_arm_passive_preview
+        importlib.reload(maker_arm_passive_preview)
+        self.passive_preview = maker_arm_passive_preview.PassivePreview([t.index for t in self.tables], self.root)
         self.interval = 1. / fps  # overhead review frames per live table
         self.max_seconds = min(max_seconds, 170)
         self.captures_per_tick = captures_per_tick
@@ -648,12 +649,17 @@ class Session:
                 except Exception as error:
                     table.error = 'capture: ' + str(error)
                 budget -= 1
-            due = sorted((t for t in live if not t.pending and now >= t.next_capture), key=lambda t: t.next_capture)
+            from maker_arm_passive_preview import review_candidates
+            due = review_candidates(self.tables, now)
             for table in due[:max(0, budget)]:
                 try:
                     self.record(table, now)
                 except Exception as error:
-                    table.error = 'capture: ' + str(error)
+                    # Retain the original guard/policy failure while retrying
+                    # review-only captures at the bounded scheduled cadence.
+                    table.preview_error = str(error)
+                    if not table.error:
+                        table.error = 'capture: ' + str(error)
                 table.next_capture = max(table.next_capture + self.interval, now)
                 budget -= 1
             # Unselected rooms get camera-only SIE images from remaining budget.
@@ -715,7 +721,10 @@ def stop():
 
 
 def start_preview(directory):
+    import importlib
     import maker_arm_fleet_preview
+    maker_arm_fleet_preview.stop()
+    importlib.reload(maker_arm_fleet_preview)
     return maker_arm_fleet_preview.start(directory, seconds=3600)
 
 

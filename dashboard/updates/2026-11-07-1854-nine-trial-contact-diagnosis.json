@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T18:54:53-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Completed nine-table Dream trial; preserve live cameras after table-level failures.",
+  "why": "Allnine receivedactions butnograspheld; terminatedtablecamera starvation causedstaleviews whileothertablescontinued.",
+  "where": [
+    "docs/validation/nine-blue-cup-trial-196ef51a.json",
+    "docs/validation/live-nine-mu-2026-11-07-1852.json",
+    "Unreal/TheHumanTouch/Tools/maker_arm_fleet_runtime.py"
+  ],
+  "details": "Request196ef51ae7eb49528ec5df31cc0ab19e recordedall9. Failureswereclearanceorreachguards; no10cm5s hold. ReadonlyMac/Luna samplesprovevisualposeupdates, notindependentChaosreplication. Reviewcaptures nowincludeerror tables; twofocusedtests pass. Previewmodules reloadbetweenruns toapplycadenceupdates."
+}

@@ -16,6 +16,16 @@ def due_camera(items, now):
     return min(due)[1] if due else None
 
 
+def review_candidates(tables, now):
+    """A failed policy/guard must not freeze its camera; pending packets matter
+    only for healthy tables. This does not resume observation or motion work.
+    """
+    return sorted((table for table in tables
+                   if 'overhead' in table.captures
+                   and (table.error or not table.pending)
+                   and now >= table.next_capture), key=lambda table: table.next_capture)
+
+
 class PassivePreview:
     def __init__(self, selected, root):
         self.indices = passive_indices(selected)

@@ -2,7 +2,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from maker_arm_passive_preview import passive_indices, due_camera, PassivePreview
+from maker_arm_passive_preview import passive_indices, due_camera, PassivePreview, review_candidates
 from fleet_worker import passive_preview_frames, table_progress
 
 
@@ -33,3 +33,16 @@ class PassiveCameras(unittest.TestCase):
             self.assertEqual(set(frames),{'T01'})
             self.assertEqual(passive_preview_frames(directory,now=packet['frame_times']['T01']+6),({},{}))
             self.assertEqual(table_progress({'tables':{}},[]),{})
+
+
+class TerminalReview(unittest.TestCase):
+    def test_error_table_keeps_camera_without_resuming_pending_policy(self):
+        from types import SimpleNamespace
+        failed=SimpleNamespace(error='table clearance',pending={'sequence':3},next_capture=1,captures={'overhead':object()})
+        healthy_pending=SimpleNamespace(error=None,pending={'sequence':2},next_capture=1,captures={'overhead':object()})
+        completed=SimpleNamespace(error=None,pending=None,next_capture=2,captures={'overhead':object()})
+        candidates=review_candidates([healthy_pending,completed,failed],3)
+        self.assertEqual(candidates,[failed,completed])
+        self.assertEqual(failed.pending,{'sequence':3})
+        self.assertEqual(failed.error,'table clearance')
+        self.assertEqual(review_candidates([failed],0),[])

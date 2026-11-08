@@ -1,0 +1,224 @@
+{
+  "request_id": "196ef51ae7eb49528ec5df31cc0ab19e",
+  "scope": "Nine simultaneous Unreal simulations with real Dream non-Flash actions; no cup pickup verified",
+  "checkpoint": "dreamlabs/dream-1-beta",
+  "recorded_tables": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "status": {
+    "request_id": "196ef51ae7eb49528ec5df31cc0ab19e",
+    "phase": "stopped",
+    "tables": {
+      "T00": {
+        "calls": 12,
+        "returned_actions": 12,
+        "cycles_run": 11,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.11264911374711134,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.029598507304086752,
+          "max_height_cm": 0.041593907532060825,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "Cycle 12 rejected: gripper_right collision bounds enter tabletop by 0.505 cm",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T01": {
+        "calls": 21,
+        "returned_actions": 21,
+        "cycles_run": 20,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.021605811166165174,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.02506076684746006,
+          "max_height_cm": 0.04160555675892397,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "left policy target unreachable within 2 mm (5.81 mm)",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T02": {
+        "calls": 6,
+        "returned_actions": 6,
+        "cycles_run": 5,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.11696017858601127,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.029814478609708317,
+          "max_height_cm": 0.04159296150562852,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "Cycle 6 rejected: gripper_right collision bounds enter tabletop by 0.260 cm",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T03": {
+        "calls": 23,
+        "returned_actions": 23,
+        "cycles_run": 22,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.02160596750590421,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.025060785754590142,
+          "max_height_cm": 0.041605467485339886,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "left policy target unreachable within 2 mm (6.82 mm)",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T04": {
+        "calls": 22,
+        "returned_actions": 22,
+        "cycles_run": 21,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.11364037581112799,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.02964306172458464,
+          "max_height_cm": 0.04159292655788249,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "Cycle 22 rejected: gripper_right collision bounds enter tabletop by 0.217 cm",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T05": {
+        "calls": 20,
+        "returned_actions": 20,
+        "cycles_run": 19,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.021619639332387933,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.025065178392836174,
+          "max_height_cm": 0.04159406251859821,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "left policy target unreachable within 2 mm (24.08 mm)",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T06": {
+        "calls": 14,
+        "returned_actions": 14,
+        "cycles_run": 13,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.021607798425223576,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.0250606451228208,
+          "max_height_cm": 0.04160536684489102,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "left policy target unreachable within 2 mm (9.34 mm)",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T07": {
+        "calls": 16,
+        "returned_actions": 16,
+        "cycles_run": 15,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.021603605302384376,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.02506085012376502,
+          "max_height_cm": 0.04160546446999547,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "left policy target unreachable within 2 mm (2.67 mm)",
+        "stopped_reason": null,
+        "moving": false
+      },
+      "T08": {
+        "calls": 16,
+        "returned_actions": 16,
+        "cycles_run": 15,
+        "cycles_planned": 24,
+        "lift": {
+          "measured": true,
+          "tilt_degrees": 0.28718955900239107,
+          "upright_hold_s": 0.0,
+          "height_cm": 0.0386656956075484,
+          "max_height_cm": 0.041593947549003474,
+          "held_slow_above_10cm_s": 0.0,
+          "max_held_slow_above_10cm_s": 0.0,
+          "physics_simulated": true,
+          "attached_to": null,
+          "gravity_enabled": true,
+          "lift_held": false
+        },
+        "error": "Cycle 16 rejected: gripper_left collision bounds enter tabletop by 0.291 cm",
+        "stopped_reason": null,
+        "moving": false
+      }
+    },
+    "updated": 1794106373.160781
+  },
+  "reset_seed": 157479489,
+  "target": "MakerStation_Prop_Cup_03",
+  "success": false
+}
