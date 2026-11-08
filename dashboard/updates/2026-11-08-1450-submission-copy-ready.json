@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T14:50:00-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Finished paste-ready submission text using the final standup and physical demo video",
+  "why": "The submission must distinguish the supervised water-bottle handover and separate hardware/VR control from assisted simulation results and unfinished perception integration.",
+  "where": ["demo/submission.md", "https://youtu.be/GK2B8TnZ3BI", "https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794177557353809", "docs/table10-real-arms.md"],
+  "details": "Includes title, one-liner, team/Creative track, description, sponsor usage and links with no fill-in placeholders. Reviewed the 59-second uploaded take; describe one supervised robot-to-person water-bottle handover, with no autonomy or success-rate claim. Simulation assistance and kinematic carry are disclosed. The overnight draft is preserved as a historical evidence archive. Submission logistics remain unconfirmed; no form submission has been performed."
+}
