@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T23:37:00-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Delivered the native Keynote pitch, refined brand guide and five edited Higgsfield exhibit movies.",
+  "why": "The stage deck plays offline, with separate movie cues, presenter notes and a live-demo hold until the on-site footage is captured.",
+  "where": [
+    "demo/pitch/deck/The Human Touch \u2014 Stage.key",
+    "demo/pitch/deck/slide-contact-sheet.jpg",
+    "demo/pitch/films/higgsfield/museum-sequence.mp4",
+    "demo/pitch/asset-contact-sheet.jpg"
+  ]
+}

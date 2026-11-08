@@ -21,4 +21,4 @@ Use the [face portrait](details/08-face.png) for close shots and the [spine deta
 
 Choose the view that matches the camera. Use the portrait alongside it when the face is visible. Pose Emmy for one clear response to a human cue. Match the scene’s light direction, perspective, reflections and contact shadows while retaining the photographic finish of her ceramic and metal. Frame the complete interaction at 16:9 with enough room for its motion.
 
-The [pitch art library](../../demo/pitch/README.md) contains draft first frames. Use the selected composite as the Higgsfield starting image after creative review. The [generation prompts and source references](../../brand-kit-scratchpad/parian-hero-v1/prompts.json) accompany the native renders.
+The [pitch art library](../../demo/pitch/README.md) contains the approved wall-mounted keyframes, edited Higgsfield takes and native Keynote deck. The [generation prompts and source references](../../brand-kit-scratchpad/parian-hero-v1/prompts.json) accompany the native renders.

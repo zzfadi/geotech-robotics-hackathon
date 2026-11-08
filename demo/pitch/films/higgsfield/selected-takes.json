@@ -1,0 +1,45 @@
+{
+  "provider": "Higgsfield",
+  "status": "Completed; edited for stage",
+  "submissions_with_job_ids": 10,
+  "completed": 8,
+  "filtered": 2,
+  "selected": [
+    {
+      "exhibit": "01-creation",
+      "job_id": "c043168b-03fa-4fac-84c9-62fca42eabfb",
+      "model": "Seedance 2.5",
+      "source_action": "The painted Adam reaches his extended index fingertip just slightly closer to Emmy's ceramic finger. The distant painted banners ripple. Hold the peaceful tiny gap.",
+      "stage_file": "01-creation.mp4"
+    },
+    {
+      "exhibit": "02-supper",
+      "job_id": "83762267-433b-46b5-9af2-075909f13c0f",
+      "model": "Kling v3.0",
+      "source_action": "The painted central seated figure reaches gently for the loaf. Emmy responds by extending the bread a few centimeters toward him, holding it steady.",
+      "stage_file": "02-supper.mp4"
+    },
+    {
+      "exhibit": "03-kerchief",
+      "job_id": "ece8db71-7dfc-472f-911f-f5a64bf6a0e7",
+      "model": "Seedance 2.5",
+      "source_action": "The painted woman lowers her gaze, a tear glistening. Emmy extends her folded linen kerchief gently and waits.",
+      "stage_file": "03-kerchief.mp4"
+    },
+    {
+      "exhibit": "04-photo-gallery",
+      "job_id": "ba2a924d-976f-44ba-a626-27bdce637d00",
+      "model": "Kling v3.0",
+      "source_action": "The monochrome photographic subject lifts his cigarette slightly. The modern ceramic humanoid offers the small lighter flame. Gentle flicker then hold.",
+      "stage_file": "04-photo-gallery.mp4"
+    },
+    {
+      "exhibit": "05-milkmaid",
+      "job_id": "8c12b6cc-be32-4213-a598-033c88a6f1ae",
+      "model": "Kling v3.0",
+      "source_action": "The painted milkmaid tips her jug, a thin stream pours into the bowl. Emmy responds by steadying the bowl in both hands.",
+      "stage_file": "05-milkmaid.mp4"
+    }
+  ],
+  "edit": "Stabilize the scene against the gallery plate, delay the robot-side source clock through the opening human cue, then hold the gesture. Trim the kerchief before facial contact. The opening also uses a matched fingertip pullback."
+}

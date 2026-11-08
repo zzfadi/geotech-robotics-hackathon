@@ -1,14 +1,16 @@
 # The Human Touch · presentation art
 
-[Review contact sheet](asset-contact-sheet.jpg) · [Play the museum sequence](museum-reel.mp4) · [Brand guide](../../brand-kit-final/identity/brand-guide.pdf) · [Emmy turnaround](../../brand-kit-final/emmy/README.md)
+[Open the native Keynote presentation](deck/The%20Human%20Touch%20%E2%80%94%20Stage.key) · [Slide proof](deck/The%20Human%20Touch%20%E2%80%94%20Stage.pdf) · [Timed outline and notes](deck/outline.md)
+
+[Review the asset library](asset-contact-sheet.jpg) · [Play the Higgsfield museum sequence](films/higgsfield/museum-sequence.mp4) · [Opening and ending concepts](keyframes/pairs.jpg) · [Brand guide](../../brand-kit-final/identity/brand-guide.pdf) · [Emmy turnaround](../../brand-kit-final/emmy/README.md)
 
 ## Media cues
 
 | Moment | Presentation asset | Use |
 | --- | --- | --- |
-| Opening | [Fingertip pullback](films/01-creation-reveal.mp4) | Start tight. Reveal the painted war. Ask “How can we avoid this future?” |
+| Opening | [Fingertip pullback](films/higgsfield/opening.mp4) | Start tight. Reveal the painted war. Ask “How can we avoid this future?” |
 | Hold my beer | [Title card](assets/title.jpg) | Use this stage hold while the speaker addresses the physical arm. Insert the real take after feature lock. |
-| Why people matter | [Recognizing a human cue](assets/problem.jpg) | The painted woman is crying. Emmy offers a folded cloth. Use the scene to explain what an isolated rehearsal misses. |
+| Why people matter | [Alone and with a person](assets/problem-comparison.jpg) | In the empty Vermeer kitchen the bowl stays still. When the milkmaid begins pouring, Emmy has a reason to steady it. |
 | Live co-presence | [System design](assets/architecture.jpg) | Webcam or Quest supplies human input. Unreal and Isaac are the rehearsal architecture. Dream supplies simulated-arm actions. Codex and the SDK drive the physical Maker Arm. Live Isaac integration is a design goal. |
 | Evidence | [Observed runs](assets/numbers.jpg) | Ten parallel simulations. Eighty-four Dream attempts in 170 seconds. The physical right arm picked up a cylinder, lifted it, placed it and parked in 16 seconds. These are distinct observations. |
 | Museum exhibits | [Framed supper](assets/gallery-02-supper.jpg), [kerchief](assets/gallery-03-kerchief.jpg), [photo](assets/gallery-04-photo-gallery.jpg) | Emmy appears inside each work. The same thin gilt frame and strip of limestone wall remain visible during each gesture. |
@@ -18,9 +20,9 @@
 
 ## Motion
 
-The 30-second presentation reel visits five normally hung exhibits. Each silent six-second clip keeps the frame around the moving work. The mural holds the fingertip gesture, then Emmy offers bread, extends a kerchief, offers a light and steadies a bowl. The painting occupies 88% of the width and height of each shot. These are locally authored camera and limited 2D animations. An optional seven-second tight finger pullback is supplied separately for the original prologue.
+The stage sequence runs 31 seconds. The opening pulls back from the finger gap inside the mounted frame. Each subsequent five-second Higgsfield source was edited into a six-second stage clip, with separate timing for the painted or photographed subject and Emmy. Her response begins after the human cue. The architectural surround stays fixed. Each exhibit has its own movie slide and can be advanced independently in Keynote.
 
-Higgsfield did not submit a character-animation job. Seedance required Plus, and Wan reported insufficient Starter credits. The image-to-video cues are in [motion-brief.md](motion-brief.md) for a future render.
+[View the five-cut timing proof](films/higgsfield/motion-review.jpg). The original 30-second local animatic remains available as [a rehearsal alternative](museum-reel.mp4). The stage cut uses the apron version of Emmy in the Vermeer kitchen. The [concept direction](keyframes/REVIEW.md) and [motion cues](motion-brief.md) document the approved action and stopping point.
 
 ## Real footage after feature lock
 
