@@ -1,0 +1,10 @@
+{
+  "when": "2026-11-07T19:01:17.317668-08:00",
+  "workstream": "vrxr",
+  "status": "decision",
+  "what": "Use standard Dream for Hold My Beer; Flash is excluded",
+  "why": "Explicit user preference. Active blue-cup worker already uses standard Dream; make the saved cup preset consistent for subsequent starts.",
+  "where": [
+    "DreamSim/fleet_cups.json"
+  ]
+}

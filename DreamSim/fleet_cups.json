@@ -1,7 +1,7 @@
 {
   "description": "HoldMyBeer: nine tables with4\u20135 seeded separated drinking cups each (40total), arms start clear at fixed home poses; no pregrasp or liquid simulation.",
   "defaults": {
-    "checkpoint": "dreamlabs/dream-1-beta-flash",
+    "checkpoint": "dreamlabs/dream-1-beta",
     "position_ik": true,
     "pad_contacts": true,
     "tcp_back": 0,
