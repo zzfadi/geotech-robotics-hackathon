@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T23:29:00-08:00",
+  "workstream": "demo",
+  "status": "decision",
+  "what": "Reviewed the opening and ending states for five Emmy museum exhibits.",
+  "why": "The human cue and the stopping point for each robotic response guide selective motion generation.",
+  "where": [
+    "demo/pitch/keyframes/pairs.jpg",
+    "demo/pitch/keyframes/REVIEW.md"
+  ]
+}
