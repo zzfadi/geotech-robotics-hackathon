@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T14:53:07-08:00",
+  "workstream": "demo",
+  "status": "in-progress",
+  "what": "Published the finished submission text in Slack for the team's final check",
+  "why": "The team needs to confirm physical robot claims, simulation assistance and any newly completed integration before submitting.",
+  "where": ["https://geotech-org.slack.com/archives/C0CFR1X1W2E/p1794178387401739", "demo/submission.md"],
+  "details": "Verified the full text posted with a channel mention and individual mentions for all five teammates, requesting OK or exact corrections in the thread. The physical demo video and canonical copy are linked. A separate VR control video link will be added when its YouTube upload is ready. Team approval and organizer submission are not yet established."
+}
