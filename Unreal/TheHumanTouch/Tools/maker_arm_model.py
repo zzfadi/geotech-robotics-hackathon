@@ -16,41 +16,57 @@ def _frames_model(path, mtime_ns, size):
     # Private read-only root; public model() deliberately returns a fresh tree.
     return ET.parse(path).getroot()
 
+@lru_cache(maxsize=1)
+def _joint_plan(root):
+    """Joints of one cached URDF tree, parsed to numbers once, in exactly the
+    order the breadth-first traversal visits them (keyed by tree identity)."""
+    joints = root.findall('joint')
+    revolute = [j.get('name') for j in joints if j.get('type') == 'revolute']
+    order, known, pending = [], {'base_link'}, list(joints)
+    while pending:
+        ready = [j for j in pending if j.find('parent').get('link') in known]
+        if not ready:
+            raise ValueError('Disconnected or cyclic URDF')
+        for j in ready:
+            kind = j.get('type')
+            mimic = limits = axis = None
+            if kind != 'fixed':
+                m = j.find('mimic')
+                if m is not None:
+                    mimic = (m.get('joint'), float(m.get('multiplier', '1')), float(m.get('offset', '0')))
+                lim = j.find('limit')
+                limits = (float(lim.get('lower')), float(lim.get('upper')))
+                axis = numbers(j.find('axis').get('xyz'))
+                length = math.sqrt(sum(v*v for v in axis))
+                axis = [v / length for v in axis]
+            order.append((j.get('name'), kind, j.find('parent').get('link'), j.find('child').get('link'),
+                          origin(j.find('origin')), mimic, limits, axis))
+            known.add(j.find('child').get('link'))
+            pending.remove(j)
+    return revolute, order
+
 def frames(q, gap=0.04):
     """Six radians plus total jaw gap in metres, in original CAD coordinates."""
     if len(q) != 6 or not all(math.isfinite(v) for v in [*q, gap]):
         raise ValueError('Expected six finite radians and a finite jaw gap in metres')
     stat = MODEL.stat()
-    r = _frames_model(str(MODEL.resolve()), stat.st_mtime_ns, stat.st_size)
-    joints = r.findall('joint')
-    values = {j.get('name'): v for j, v in zip([j for j in joints if j.get('type') == 'revolute'], q)}
+    revolute, order = _joint_plan(_frames_model(str(MODEL.resolve()), stat.st_mtime_ns, stat.st_size))
+    values = dict(zip(revolute, q))
     values['gripper_left_joint'] = gap / 2
     out = {'base_link': identity()}
-    pending = list(joints)
-    while pending:
-        ready = [j for j in pending if j.find('parent').get('link') in out]
-        if not ready:
-            raise ValueError('Disconnected or cyclic URDF')
-        for j in ready:
-            kind = j.get('type')
-            delta = identity()
-            if kind != 'fixed':
-                mimic = j.find('mimic')
-                v = values[j.get('name')] if mimic is None else values[mimic.get('joint')] * float(mimic.get('multiplier', '1')) + float(mimic.get('offset', '0'))
-                lim = j.find('limit')
-                if not float(lim.get('lower')) <= v <= float(lim.get('upper')):
-                    raise ValueError(f'{j.get("name")} outside model limit: {v}')
-                axis = numbers(j.find('axis').get('xyz'))
-                length = math.sqrt(sum(v*v for v in axis))
-                axis = [v / length for v in axis]
-                if kind == 'revolute':
-                    delta = rotation(axis, v)
-                elif kind == 'prismatic':
-                    for i in range(3): delta[i][3] = axis[i] * v
-                else:
-                    raise ValueError(f'Unsupported joint {kind}')
-            out[j.find('child').get('link')] = mul(mul(out[j.find('parent').get('link')], origin(j.find('origin'))), delta)
-            pending.remove(j)
+    for name, kind, parent, child, joint_origin, mimic, limits, axis in order:
+        delta = identity()
+        if kind != 'fixed':
+            v = values[name] if mimic is None else values[mimic[0]] * mimic[1] + mimic[2]
+            if not limits[0] <= v <= limits[1]:
+                raise ValueError(f'{name} outside model limit: {v}')
+            if kind == 'revolute':
+                delta = rotation(axis, v)
+            elif kind == 'prismatic':
+                for i in range(3): delta[i][3] = axis[i] * v
+            else:
+                raise ValueError(f'Unsupported joint {kind}')
+        out[child] = mul(mul(out[parent], joint_origin), delta)
     return out
 
 def mounted_frames(q, gap=0.04, yaw=0.0):
