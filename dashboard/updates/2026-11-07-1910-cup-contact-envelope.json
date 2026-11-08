@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T19:10:18-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Corrected round-cup actuator envelope and tested bounded mechanical continuation.",
+  "why": "The tapered square envelope inflated cup width under rotation; measured aperture discontinuity then exceeded the playback duration limit.",
+  "where": [
+    "Unreal/TheHumanTouch/Tools/maker_arm_contact_stop.py",
+    "Unreal/TheHumanTouch/Tools/test_maker_arm_cup_contact.py",
+    "docs/validation/cup-contact-envelope-2026-11-07.json"
+  ],
+  "details": "21 offline contact tests pass; exact rejected phase5 replay retimes to4seconds at20Hz with smooth aperture demand. No live grasp or Dream success claimed; runtime validation remains pending."
+}

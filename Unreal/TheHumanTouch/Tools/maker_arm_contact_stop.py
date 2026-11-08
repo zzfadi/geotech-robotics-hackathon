@@ -3,16 +3,21 @@ No prop transforms are written. Chaos remains responsible for retention/lift.
 Coordinates below are metres in the official link_007 flange frame.
 """
 import itertools
+import math
+from functools import lru_cache
 
 
 def pad_points(points, flat=False):
-    """Clip an oriented box to the finite finger-pad X/Z corridor.
+    """Clip a convex envelope to the finite finger-pad X/Z corridor.
 
-    Corner order matches itertools.product in actor_boxes. Full-box projection
-    overestimates the width for oblique props outside the contact region.
+    Legacy boxes use itertools.product corner order; round cups supply faces.
+    Full-envelope projection overestimates width outside the contact region.
     """
-    if len(points)!=8:raise ValueError('Expected eight ordered box corners')
-    faces=((0,1,3,2),(4,6,7,5),(0,4,5,1),(2,3,7,6),(0,2,6,4),(1,5,7,3))
+    if isinstance(points, dict):
+        faces=points['faces'];points=points['points']
+    else:
+        if len(points)!=8:raise ValueError('Expected eight ordered box corners')
+        faces=((0,1,3,2),(4,6,7,5),(0,4,5,1),(2,3,7,6),(0,2,6,4),(1,5,7,3))
     result=[]
     for face in faces:
         polygon=[points[i] for i in face]
@@ -44,7 +49,7 @@ def inner_pad_offset(z):
 def contact_gap(requested, previous, boxes, compliance=.005, flat=False):
     """Stop inward jaw travel at a prop intersecting both finger pads.
 
-    boxes are oriented prop corners expressed in flange coordinates. Require
+    boxes contain oriented corners or a faced cup envelope in flange coordinates. Require
     overlap of the inner pad corridor (X +/-2cm, Z -17..-10cm) and both jaws.
     Open commands remain unrestricted; no automatic opening on new contact.
     """
@@ -84,6 +89,39 @@ def local_bounds_points(lo, hi, tapered_cup=False):
     return result
 
 
+@lru_cache(maxsize=32)
+def cup_contact_shape(lo, hi, segments=128):
+    """Conservative circular outer frustum, not a yaw-dependent square box.
+
+    The authored cup has outer radii 3/4 cm and height 12 cm. Bounds supply
+    units/scale; bottom radius is 3/4 of rim radius. Circumscribed polygon
+    encloses the round surface (128 sides: radial excess <= 0.0013 cm).
+    Finite-pad clipping uses all side faces and end caps. This models the
+    exterior envelope, not cavity contacts or a measured Chaos impulse.
+    """
+    if segments < 16:raise ValueError('Cup envelope needs at least 16 sides')
+    center=[(lo[i]+hi[i])/2 for i in range(2)]
+    radius=[(hi[i]-lo[i])/2 for i in range(2)]
+    enclosure=1/math.cos(math.pi/segments)
+    points=[]
+    for z,factor in ((lo[2],.75),(hi[2],1.)):
+        for k in range(segments):
+            angle=2*math.pi*k/segments
+            points.append([center[0]+radius[0]*factor*enclosure*math.cos(angle),
+                           center[1]+radius[1]*factor*enclosure*math.sin(angle),z])
+    faces=[tuple(range(segments)),tuple(range(segments,2*segments))]
+    faces.extend((k,(k+1)%segments,(k+1)%segments+segments,k+segments)
+                 for k in range(segments))
+    return {'points':tuple(tuple(p) for p in points),'faces':tuple(faces)}
+
+
+def broad_phase(corners):
+    """Conservative full-bounds rejection; never supplies a contact width."""
+    lo=[min(p[i] for p in corners) for i in range(3)]
+    hi=[max(p[i] for p in corners) for i in range(3)]
+    return hi[0]>=-.02 and lo[0]<=.02 and hi[2]>=-.18 and lo[2]<=-.10 and lo[1]<0<hi[1]
+
+
 def actor_boxes(actors, flange, base):
     """Read transformed mesh bounds; convert UE cm/LH to flange metres/RH."""
     import unreal
@@ -91,11 +129,19 @@ def actor_boxes(actors, flange, base):
     for label,actor in actors.items():
         c=actor.static_mesh_component
         lo,hi=c.get_local_bounds();t=actor.get_actor_transform();points=[]
-        for xyz in local_bounds_points((lo.x,lo.y,lo.z),(hi.x,hi.y,hi.z),
-                                       tapered_cup=label.split('__')[-1] in ('MakerStation_Prop_Cup','MakerStation_Prop_Cup_02','MakerStation_Prop_Cup_03','MakerStation_Prop_Cup_04','MakerStation_Prop_Cup_05')):
+        is_cup=label.split('__')[-1] in ('MakerStation_Prop_Cup','MakerStation_Prop_Cup_02','MakerStation_Prop_Cup_03','MakerStation_Prop_Cup_04','MakerStation_Prop_Cup_05')
+        bounds=((lo.x,lo.y,lo.z),(hi.x,hi.y,hi.z))
+        def convert(xyz):
             p=t.transform_location(unreal.Vector(*xyz))
             rh=[(p.x-base[0])*.01,-(p.y-base[1])*.01,(p.z-base[2])*.01]
             d=[rh[i]-flange[i][3] for i in range(3)]
-            points.append([sum(flange[j][i]*d[j] for j in range(3)) for i in range(3)])
-        result.append((label,points))
+            return [sum(flange[j][i]*d[j] for j in range(3)) for i in range(3)]
+        corners=[convert(xyz) for xyz in local_bounds_points(*bounds)]
+        if is_cup:
+            # Cheap enclosing OBB broad phase, covering BOTH pad corridors.
+            # Only nearby candidates need the 256 transformed ring vertices.
+            if not broad_phase(corners):continue
+            shape=cup_contact_shape(*bounds)
+            result.append((label,{'points':[convert(p) for p in shape['points']], 'faces':shape['faces']}))
+        else:result.append((label,corners))
     return result

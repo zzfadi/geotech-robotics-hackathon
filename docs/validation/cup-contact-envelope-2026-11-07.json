@@ -1,0 +1,42 @@
+{
+  "scope": "Offline actuator-envelope and continuation correction; not a successful grasp or Dream inference result",
+  "source_run": "Saved/DreamFleet/mechanical-cup-v2-20261107-190409",
+  "observed": {
+    "completed_phases": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "phase4_gap_m": 0.09523778400012162,
+    "phase4_cup_tilt_degrees": 0.2884848469214646,
+    "max_cup_center_rise_cm": 0.46023280261382,
+    "phase5_error": "Speed-limited action exceeds bounded playback duration",
+    "phase5_next_demand_gap_m": 0.055,
+    "old_uniform_retime_duration_seconds_approx": 16.1
+  },
+  "fix": {
+    "cup_envelope": "128-sided circumscribed circular frustum, authored outer radii3/4cm and12cmheight; actor rotation/scale retained",
+    "maximum_radial_enclosure_excess_cm": 0.001205,
+    "compression_allowance_m": 0.005,
+    "broad_phase": "Eight transformed full-bounds corners reject only outside candidates; local frustum cached",
+    "continuation": "Blend measured aperture into planned aperture over20rows at20Hz; joint path unchanged",
+    "replayed_phase5": {
+      "duration_seconds": 4.0,
+      "time_scale": 1.0,
+      "action_hz": 20.0,
+      "grip_limit_corrections": []
+    }
+  },
+  "validation": {
+    "contact_tests_passed": 21,
+    "pure_clipping_1000_candidate_mean_ms": 0.785,
+    "performance_scope": "Offline Python clipping only; excludes Unreal transforms and capture. Live runtime profiling pending.",
+    "limitations": [
+      "Actuator envelope is geometric, not a Chaos contact report.",
+      "Outer envelope does not model cup cavity contact.",
+      "Cup physics assumptions remain uncalibrated.",
+      "No new live execution or API calls performed."
+    ]
+  }
+}
