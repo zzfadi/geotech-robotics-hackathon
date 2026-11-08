@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T18:35:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Physical right Maker Arm picked up the upright yellow cylinder: grasped, lifted ~6 cm, placed back and returned to verified rest in a 16 s replayed run. Left arm attempt missed high.",
+  "why": "First physical pickup. Wrist-camera servoing plus measured waypoints replaced the stalled full camera-to-arm calibration.",
+  "where": [
+    "arm/tools/pickup_server.py",
+    "arm/tools/pickup_client.py",
+    "arm/evidence/2026-11-07-cylinder-pickup.json",
+    "docs/images/maker-arm-right-cylinder-lift.jpg"
+  ],
+  "details": "Guarded seven-joint controller (gravity-residual torque, speed, temperature guards; holds on trip, SDK verified return before release) with SDK gripper capped closing and 0.5 Nm hold. Motor heating under extended load is the limiting factor: slow step-by-step approaches tripped the 48/52 C guards, while fast waypoint replay stays under 46 C. The left arm has a different claw and offsets (same model height is roughly 10 cm higher physically) and needs its own height reference. Dream-1 key is in team 1Password (DREAM_API_KEY) and not yet available on this Mac."
+}

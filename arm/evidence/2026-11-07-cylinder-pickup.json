@@ -1,0 +1,97 @@
+{
+  "when": "2026-11-07T18:18:25-08:00",
+  "scope": "Supervised physical pickup of the upright yellow cylinder on the bench; wrist-camera visual servoing plus provisional SDK FK. Not a calibrated or autonomous grasp controller.",
+  "tools": [
+    "arm/tools/pickup_server.py",
+    "arm/tools/pickup_client.py"
+  ],
+  "right_arm": {
+    "result": "grasped, lifted ~6 cm clear of the table, held upright, lowered, released and returned to verified rest; cylinder left standing",
+    "fast_run_seconds_enable_to_lifted": 16,
+    "gripper_contact_sdk_deg": -27.0,
+    "gripper_hold_effort_nm": 0.5,
+    "waypoints_sdk_deg_joints_1_6": [
+      [
+        -16.5,
+        -55.6,
+        20.9,
+        44.1,
+        10.25,
+        1.46
+      ],
+      [
+        -18.8,
+        -80.9,
+        37.5,
+        39.4,
+        10.21,
+        1.44
+      ],
+      [
+        -19.68,
+        -94.14,
+        53.16,
+        35.73,
+        10.21,
+        1.4
+      ]
+    ],
+    "then": "grip -2.5 (SDK caps closing, regulates to 0.5 Nm on contact); IK nudge +3 cm z twice at pitch -15",
+    "temperatures_c_motor2_motor3": {
+      "start": [
+        42,
+        43
+      ],
+      "lifted": [
+        44,
+        45
+      ],
+      "after_place_and_return": [
+        46,
+        48
+      ]
+    },
+    "earlier_attempts": [
+      "slow step-and-look approach (~10 min) reached the grasp pose but tripped the 48 C elbow guard before closing",
+      "second attempt closed in steps but tripped the 52 C guard before lifting; gripper speed guard false-tripped on capped closing (fixed: gripper excluded)"
+    ]
+  },
+  "left_arm": {
+    "result": "missed: jaws closed above the cylinder top; cylinder untouched; verified rest/release",
+    "last_pre_close_sdk_deg": [
+      32.67,
+      -118.94,
+      66.04,
+      47.55,
+      3.42,
+      -1.48
+    ],
+    "model_tip_m_at_close": [
+      0.4234,
+      -0.2595,
+      0.0971
+    ],
+    "candidate_next_target_sdk_deg": [
+      32.63,
+      -127.17,
+      64.58,
+      57.56,
+      3.42,
+      -1.48
+    ],
+    "notes": "Different claw type and different joint offsets from the right arm: the same model tip height sits roughly 10 cm higher physically than on the right. Needs its own height reference (side camera) before closing. Shoulder hit 52 C in the deeper pose (6-7 Nm)."
+  },
+  "learnings": [
+    "Skip full camera-to-arm calibration for a single object: pan to centre it between the jaws in the wrist camera, advance along the approach axis, judge height from the laptop side view.",
+    "SDK FK frame: x forward, y left, z up; +pan turns the arm to its right. At rest the upper arm folds backward, so forward reach swings the shoulder ~90-120 degrees.",
+    "Model z does not match the table: right fingertips were at mid-cylinder with model tip z ~0.16 m; left was above the cylinder at 0.10 m. Use cameras, not model height.",
+    "Thermal budget is the limiting factor: shoulder/elbow carry 4.5-7 Nm while extended and heat ~1.5 C/min; slow step-and-look approaches overheat, replaying measured waypoints at 12-15 deg/s finishes in under 20 s.",
+    "Torque guard must compare to the gravity model and wait out the SDK's 0.5 s gravity ease-in; gripper velocity spikes during capped closing and must not be speed-guarded.",
+    "Repeated hold freezes let the arm creep upward several cm; send fresh targets instead of relying on repeated freezes."
+  ],
+  "dream_api_key": "Not on this Mac. Scripts reference 1Password item via DREAM_API_KEY (see DreamSim/start_worker.command); no op CLI or Agents Vault helper installed here.",
+  "raw_logs_local_only": {
+    "arm/local/pickup-2026-11-07/server-right-3.jsonl": "9104063cdf92233f081248c5111ed3a2f6b3301df3df9b4568a09ea8520eb981",
+    "arm/local/pickup-2026-11-07/server-left-2.jsonl": "e9c481046e0d5831d500c3e412dc74ee6f72190da89b753b8d6dae32ff4d2ac0"
+  }
+}

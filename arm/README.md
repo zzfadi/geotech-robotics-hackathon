@@ -220,9 +220,33 @@ policy-driven physical control.
 
 Read [the November 7 Opus handoff](docs/opus-handoff-2026-11-07.md) for the
 latest hardware state, camera IDs, local recordings, experimental calibration
-tools and exact remaining work. Camera-to-arm alignment and gripper calibration
-are incomplete; no yellow-cylinder pickup was attempted. Optional vision
-dependencies are pinned separately in `requirements-vision.txt`.
+tools and exact remaining work. Optional vision dependencies are pinned
+separately in `requirements-vision.txt`.
+
+**Yellow-cylinder pickup (November 7, 18:18 Pacific):** the right arm grasped,
+lifted about 6 cm, placed and released the upright cylinder, then returned to
+verified rest. The run replayed measured joint waypoints in 16 s using
+`pickup_server.py` (guarded seven-joint holding controller on a localhost
+socket) and `pickup_client.py` (level-gripper IK nudges). The waypoints were
+found by wrist-camera servoing, not full camera calibration. The left arm
+missed high: its jaws closed above the cylinder. It has a different claw and
+joint offsets. Motor heating under extended load (shoulder/elbow) is the
+limiting factor. Waypoints and learnings:
+[evidence/2026-11-07-cylinder-pickup.json](evidence/2026-11-07-cylinder-pickup.json);
+photo: [docs/images/maker-arm-right-cylinder-lift.jpg](../docs/images/maker-arm-right-cylinder-lift.jpg).
+
+```sh
+# Server needs --operator-cutoff; it holds until 'rest' (verified return, release).
+PYTHONPATH=arm/tools arm/.venv/bin/python arm/tools/pickup_server.py right \
+  --operator-cutoff --log arm/local/NEW/server.jsonl
+arm/.venv/bin/python arm/tools/pickup_client.py joints -16.5 -55.6 20.9 44.1 10.25 1.46 --speed 12
+arm/.venv/bin/python arm/tools/pickup_client.py grip -2.5 --wait 3
+arm/.venv/bin/python arm/tools/pickup_client.py rest
+```
+
+Launch the server through `bash arm/tools/arm`'s libusb setup, or export
+`DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix libusb)/lib"` first. Waypoints are
+valid only while the cylinder and arms stay where they were.
 
 ## Offline handoff verification
 
