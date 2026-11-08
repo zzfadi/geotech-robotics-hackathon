@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-08T03:50:00-08:00",
+  "workstream": "turn-gate",
+  "status": "in-progress",
+  "what": "The hand-and-can detector ran with the real YOLO26 models on still photos on the Mac mini, and its decisions now show up in the control center; a Dream response-time probe is ready but has only run with made-up timings",
+  "why": "Before the demo we need to know whether the detector is fast and accurate enough, and whether the network is quick enough to use Dream instead of the local controller, without guessing.",
+  "where": [
+    "vision/dream_latency.py",
+    "vision/telemetry_bridge.py",
+    "vision/still_check.py",
+    "docs/validation/vision-ultralytics-mac-2026-11-08.json",
+    "docs/hybrid-model.md"
+  ],
+  "details": "Mac M4 numbers, not the Orin: both models together take about 48-53 ms per frame on the CPU and 22-26 ms on the Apple GPU, and the output fits the tracker. To fix on the real camera: pose-built hand boxes sit on the wrist rather than the fingers, and the yellow test cylinder read as 'bottle' at 0.33 in one view, just under the 0.35 cut-off. `python3 -m vision.run --telemetry DIR` writes any replay, video or camera run as a control-center session. `python3 -m vision.dream_latency` gives the 850 ms rule's verdict (Dream or local) for a network; mock only so far because the Dream key is not on the Mac, and a real run refuses without the key and caps at 10 calls. The first online Ultralytics runs likely sent Ultralytics' default anonymous usage analytics; that setting is now off for these runs. 49 vision tests pass. Still to do: real camera and real can, Orin latency, a real Dream measurement."
+}

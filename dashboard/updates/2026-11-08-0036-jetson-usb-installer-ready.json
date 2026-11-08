@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T00:36:24-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "JetPack 7.2.1 USB installer written, validated and safely ejected for the Orin Nano",
+  "why": "Photo-verified 36.4.2 firmware enables NVIDIA's USB route without a microSD. The boot media is now ready for supervised installation.",
+  "where": [
+    "docs/validation/jetson-usb-prep-2026-11-08.json",
+    "docs/handoffs/orin-nano-setup.md"
+  ],
+  "details": "Official 5.04 GB ISO downloaded and locally hashed; Etcher 2.1.9 reported Flash Completed with one successful SanDisk target after validation. Updated offline Git bundle verifies at 119d38b and cached base arm pins still match. No Jetson OS/SSH or powered-arm milestone is claimed; NVMe identity and erase confirmation remain pending."
+}

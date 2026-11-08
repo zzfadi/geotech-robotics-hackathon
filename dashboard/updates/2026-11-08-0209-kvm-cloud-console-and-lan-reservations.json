@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T02:09:16-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "KVM cloud console and Beryl address reservations verified; Jetson reinstall is installing packages.",
+  "why": "Record the working access paths and remaining physical-network checks while installation continues.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "The authenticated console launched from glkvm.com settles on P2P/no HDMI from this Mac; the initial Relay label is not relay proof, and no off-site or Jetson key test is claimed. Beryl reservations are verified for KVM 192.168.8.166 and Jetson 192.168.8.136; the KVM still uses Mac sharing at 192.168.2.2, with cable move pending. Reinstall reached many-package installation at 02:03:50 Pacific with a 15-minute estimate; completion remains unverified. The end-to-end handoff now states pickup_server.py enables motors before socket bind: no auto-start during OS provisioning, offline help/tests first."
+}

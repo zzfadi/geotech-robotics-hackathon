@@ -11,8 +11,11 @@ Hand mode ("hold my beer"):
   4. Grasp: close. The jaw angle says what happened: on nothing (open, try
      again), something thinner than a can such as fingers (open at once, try
      again), or the can.
-  5. Release: keep holding still until the hand is off the can, continuously.
-     If the person never lets go, open the jaws and give it back.
+  5. Release: keep holding still until the hand is off the can, continuously,
+     and the detector saw it off the can with the can still between the jaws
+     (a hand that just vanishes, or a covered lens, is not a release). Frames
+     from the start of the close count, in order. If the person never lets
+     go, or the release is never seen, open the jaws and give it back.
   6. Retreat: a fresh gate grant, then a guarded move to the carry pose.
   7. Confirm: hold for a moment, re-read the jaw angle. Success means the can
      is still held at the carry pose; the arm stays holding for the next beat.
@@ -301,22 +304,34 @@ class Routine:
                 self._emit("state", q=[round(x, 2) for x in self.q[:6]], grip=round(self.q[6], 2))
 
     # ------------------------------------------------------------- watching
-    def _start_watch(self, role: str) -> None:
+    def _start_watch(self, role: str, since: Optional[float] = None) -> None:
+        """Watch frames captured from now on, or after ``since`` (oldest first)."""
         self._before_read()
+        if since is not None:
+            self._cursor[role] = since
+            return
         hist = self.fuser.history(role, None)
         self._cursor[role] = max(self.clock.now(), hist[-1].captured_at if hist else 0.0)
 
     def _wait_for(self, role: str, predicate: Callable[[Scene], bool], debounce: float,
-                  timeout: float, on_poll: Optional[Callable[[], None]] = None) -> bool:
-        """True once predicate holds on every fresh frame for debounce seconds."""
+                  timeout: float, on_poll: Optional[Callable[[], None]] = None,
+                  on_stale: Optional[Callable[[], None]] = None) -> bool:
+        """True once predicate holds on every fresh frame for debounce seconds.
+
+        A gap longer than stale_after_s, between two frames or since the last
+        one, breaks continuity and calls on_stale."""
         start = last_poll = self.clock.now()
-        since = last_ok = None
+        since = last_ok = prev = None
         stale = self.cfg.timing.stale_after_s
         while True:
             self._poll_operator()
             self._before_read()
             for sc in self.fuser.history(role, self._cursor.get(role)):
-                self._cursor[role] = sc.captured_at
+                if prev is not None and sc.captured_at - prev > stale:
+                    since = last_ok = None   # frames were missing in between
+                    if on_stale:
+                        on_stale()
+                self._cursor[role] = prev = sc.captured_at
                 if predicate(sc):
                     since = sc.captured_at if since is None else since
                     last_ok = sc.captured_at
@@ -325,6 +340,8 @@ class Routine:
             now = self.clock.now()
             if last_ok is not None and now - last_ok > stale:
                 since = last_ok = None   # the feed stalled: continuity is broken
+                if on_stale:
+                    on_stale()
             if since is not None and last_ok - since >= debounce - 1e-9:
                 return True
             if on_poll and now - last_poll >= self.cfg.timing.status_every_s:
@@ -333,6 +350,38 @@ class Routine:
             if now - start > timeout:
                 return False
             self._sleep(0.03)
+
+    @staticmethod
+    def _release_evidence():
+        """A release predicate for _wait_for that needs positive evidence.
+
+        A frame counts toward the release only once the hand has been seen in
+        view and off the can since it was last on it. After that, the hand may
+        leave the view (people pull their hand back), as long as the can stays
+        in view between the jaws. A hand on the can, or an invalid frame,
+        starts over. "No hand on the can" straight after "hand on the can",
+        with no hand in view, is uncertain: it may be a hand hidden behind the
+        can or a covered lens, so the arm keeps holding. A frame with no can
+        between the jaws (covered lens, feed restart) is the same: it drops a
+        seen release, which must then be seen again. The caller also drops it
+        when the feed goes stale (watch["seen_off"] = False).
+        """
+        watch = {"seen_off": False, "unseen": False}
+
+        def released(sc: Scene) -> bool:
+            if not sc.valid or sc.hand_on_can is not False:
+                watch["seen_off"] = watch["unseen"] = False
+                return False
+            if sc.can_in_jaws is not True:
+                watch["seen_off"], watch["unseen"] = False, True
+                return False
+            if sc.hand_seen_off_can:
+                watch["seen_off"], watch["unseen"] = True, False
+            elif not watch["seen_off"]:
+                watch["unseen"] = True
+            return watch["seen_off"]
+
+        return released, watch
 
     def _check_holding(self) -> None:
         self._status()
@@ -406,6 +455,7 @@ class Routine:
                 raise Abort("no_can_presented", "No can was held between the jaws for %.0f s." %
                             t.present_timeout_s)
             self._step("grasp", "attempt %d" % attempt)
+            t_close = self.clock.now()
             result = self._close()
             if result == "can":
                 break
@@ -421,10 +471,19 @@ class Routine:
         self._step("release")
         self._decide("loop", "Holding still until the hand lets go",
                      "Pulling away while the person still holds the can would tug it.")
-        self._start_watch("jaws")
-        if not self._wait_for("jaws", lambda s: s.released, t.release_debounce_s,
-                              t.release_timeout_s, on_poll=self._check_holding):
+        # Watch from the start of the close, in order: a person often lets go
+        # while the jaws close, then lowers the hand out of view.
+        self._start_watch("jaws", since=t_close)
+        released, watch = self._release_evidence()
+        if not self._wait_for("jaws", released, t.release_debounce_s,
+                              t.release_timeout_s, on_poll=self._check_holding,
+                              on_stale=lambda: watch.update(seen_off=False)):
             self._open()
+            if watch["unseen"]:
+                self._decide("controller", "Gave the can back",
+                             "The hand left the camera's view while on the can, so the release was never seen.")
+                raise Abort("release_not_seen", "The hand vanished from view while on the can (hidden hand or "
+                            "covered lens) and was never seen off it for %.0f s." % t.release_timeout_s)
             self._decide("controller", "Gave the can back", "The person kept holding it.")
             raise Abort("person_kept_holding", "The hand stayed on the can for %.0f s." % t.release_timeout_s)
         self._check_holding()

@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-07T23:55:42-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Home Jetson Ethernet link responds; OS and USB access not yet established",
+  "why": "There is no microSD available, so the next installation route must follow actual device and firmware evidence.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html"
+  ],
+  "details": "Direct Mac Ethernet link negotiates gigabit and one IPv6 peer answers; SSH and standard web-port probes time out. USB registry exposes no NVIDIA recovery/device-mode function, and there is no USB serial port or USB network interface. A separate 16 GB SanDisk stick contains an Intel Ubuntu 18.04.1 installer, not Jetson media. NVIDIA documents a Mac-created JetPack 7.2.1 USB installer to NVMe only after compatible JetPack 6-generation firmware is confirmed. Awaiting KVM/display firmware evidence; no storage, firmware or network settings changed."
+}

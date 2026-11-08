@@ -1,0 +1,18 @@
+{
+  "when": "2026-11-08T05:35:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Independent review fixes to the can hand-off: a let-go during the close now counts, a covered lens after a glimpse no longer releases, hand mode needs a measured grip band, and the station checklist covers setup, stopping safely and the hand-mode gate",
+  "why": "An independent overnight review found that tonight's hidden-hand fail-safe would have turned a normal let-go during the 3 s close into a dropped can and a failed trial, and that the checklist could not reach hand mode as written.",
+  "where": [
+    "handoff/routine.py",
+    "handoff/preflight.py",
+    "handoff/run.py",
+    "handoff/README.md",
+    "voice_agent/README.md"
+  ],
+  "details": "Release rule: the release watch now starts when the close is commanded, so a person who lets go as the jaws close and then pulls away is a normal release; a hand that vanishes, or a brief glimpse followed by a covered lens or a stalled feed, still gives the can back after 10 s (release_not_seen) and never carries it away. A seen release counts only while the camera still sees the can between the jaws, so if the detector loses a gripped can the arm gives it back: watch for this in the first hand trial. Preflight: an unmeasured grip band now blocks hand mode (MARK-ONLY) and handoff.run refuses live hand mode until it is measured; a pickup_server running for the other arm is NO-GO. Checklist (handoff/README.md): fresh-laptop setup (row 0), the expected first preflight result (NO-GO for untaught mark poses is the cue to teach), the e-stop person named at the 8:30 hardware check before the server starts, stop only with pickup_client rest (never Ctrl-C), the hand-mode gate after the mark trials, a one-time detector venv, how to find the jaw camera, and the 11:00 / 11:30 times. Tests: 54 handoff tests (also with simulated taught poses), 22 of 22 replay scenarios incl. 2 new, 144 arm tests, 16 adversarial probes. Replay only, not hardware.",
+  "workstream_update": {
+    "milestones_done": ["handoff-replay"]
+  }
+}

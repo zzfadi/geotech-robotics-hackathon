@@ -6,10 +6,13 @@ operator on the e-stop, and a detector feed on the same host's monotonic clock:
   # terminal 1: the guarded arm server (holds until 'rest')
   PYTHONPATH=arm/tools arm/.venv/bin/python arm/tools/pickup_server.py right \\
       --operator-cutoff --log arm/local/handoff/server.jsonl
-  # terminal 2: detector piped into the routine
-  python3 -m vision.run --camera 0 --detect yolo26n.engine --pose yolo26n-pose.engine \\
+  # terminal 2: detector piped into the routine (.pt weights work on any host;
+  # .engine weights only on the Orin after a TensorRT export)
+  python3 -m vision.run --camera 0 --detect yolo26n.pt --pose yolo26n-pose.pt \\
       --target real --verbose --max-seconds 3600 \\
     | python3 -m handoff.run --mode hand --feed - --operator-cutoff --trials 10
+
+Check the station first: python3 -m handoff.preflight (GO / MARK-ONLY / NO-GO).
 
 Fallback with no detector (operator says when the path is clear):
 
@@ -109,6 +112,10 @@ def main(argv=None) -> int:
         return 2
     if a.mode == "hand" and a.feed == "operator":
         print("Hand mode needs a detector feed: it waits for the can between the jaws.", file=sys.stderr)
+        return 2
+    if a.mode == "hand" and not cfg.gripper.contact_calibrated and not a.dry_run:
+        print("Not running hand mode on the real arm: the gripper contact band is not measured on the can yet.\n"
+              "Close the jaws on the demo can, then python3 -m handoff.teach --contact.", file=sys.stderr)
         return 2
     if not cfg.gripper.contact_calibrated:
         print("warning: the gripper contact band is not measured on the can yet "

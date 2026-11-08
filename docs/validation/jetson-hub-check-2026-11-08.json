@@ -1,0 +1,190 @@
+{
+  "scope": "Jetson Orin Nano as a test hub without the arms: offline suites, control center through an SSH tunnel, YOLO26n detect + pose on CPU, CUDA PyTorch and TensorRT, a live C270 loop, and temperatures. No arm, no CAN/USB adapter, no pickup_server, no Dream key, nothing posted.",
+  "date": "2026-11-08",
+  "window_pst": "03:47 to 04:35",
+  "where": "~/hub-tests on the Jetson only (fresh clone and isolated venvs). ~/geotech-robotics-hackathon, ~/jetson-runtime (its Python was only run for the arm tests) and ~/jetson-prep-assets were not touched. No sudo, no system settings changed.",
+  "host": {
+    "ssh_alias": "orin-arm",
+    "lan_ip": "192.168.8.136",
+    "board": "Jetson Orin Nano devkit, nvgpu 'Orin' compute capability 8.7, 7.3 GiB RAM shared with the GPU, 6 CPU cores",
+    "os": "Ubuntu 24.04.4, kernel 6.8.12-1021-tegra",
+    "l4t": "R39.2.1 (JetPack 7.2.1), driver 595.78, CUDA driver API 13.2 (no CUDA toolkit or TensorRT installed system-wide; trtexec not present)",
+    "power_mode": "25W (nvpmodel mode 1, unchanged)",
+    "cpu_clock_observed_mhz": "1344 max in tegrastats under load",
+    "python": "3.12.3 (system, no pip); arm tests used /home/fadi/jetson-runtime/.venv/bin/python 3.12.15 with pytest 9.2.0",
+    "uv": "0.13.7 (from ~/jetson-runtime/unpack, run only)"
+  },
+  "commits": {
+    "first_run": "132ee2e6d2501b452e5a27dbd8f8d1cd7e070197",
+    "script_runs": "9ceef72 (main advanced during the session; the script fast-forwarded the hub-tests clone)"
+  },
+  "offline_suites": [
+    {"name": "arm tests", "command": "ARMCTL_PYTHON=/home/fadi/jetson-runtime/.venv/bin/python bash arm/tools/arm test -p no:cacheprovider", "result": "144 passed", "seconds": 2.4, "commits": ["132ee2e", "9ceef72"]},
+    {"name": "handoff unit, fresh clone, ARMCTL_PYTHON unset", "command": "python3 -m unittest discover -s handoff -t . -p 'test_*.py'", "result": "50 run, 2 failed", "seconds": 1.9, "commit": "132ee2e",
+     "failures": ["test_preflight.MainTest.test_go_mark_only_and_no_go_exit_codes", "test_preflight.MainTest.test_only_harmless_commands_run"],
+     "cause": "Both tests expect GO but the real check_arm_venv() sees no arm/.venv in a fresh clone and no ARMCTL_PYTHON, so the verdict is NO-GO. The tests depend on the host; not a product bug. Fix belongs in handoff/test_preflight.py (stub check_arm_venv)."},
+    {"name": "handoff unit, ARMCTL_PYTHON set", "command": "same, with ARMCTL_PYTHON=/home/fadi/jetson-runtime/.venv/bin/python", "result": "50 run, OK", "seconds": 1.8, "commits": ["132ee2e", "9ceef72"]},
+    {"name": "handoff replay", "command": "python3 -m handoff.replay", "result": "20 scenarios, 20 passed, 0 failed", "seconds": 0.4},
+    {"name": "control center", "command": "python3 -m unittest discover -s control_center/tests -t .", "result": "17 run, OK", "seconds": 4.9},
+    {"name": "vision unit", "command": "python3 -m unittest discover -s vision -t . -p 'test_*.py'", "result": "49 run, OK", "seconds": 2.1},
+    {"name": "vision replay", "command": "python3 -m vision.run --replay vision/examples/handoff.jsonl --target real", "result": "rc 0; one start_handoff with executor local (reason real_arm_runs_local) and one retreat_with_can, as the README expects", "seconds": 0.2},
+    {"name": "DreamSim", "command": "~/hub-tests/venv-sim/bin/python -m unittest discover -s DreamSim -p 'test_*.py'", "result": "141 run, 2 errors, 3 skipped", "seconds": 25.1,
+     "errors": ["test_model.ModelTest.test_opt_in_contact_center_preserves_urdf", "test_model.ModelTest.test_source_joints_preserved_and_frames_match"],
+     "cause": "PORTABILITY BUG: DreamSim/model.py line 22 (and Unreal/TheHumanTouch/Tools/maker_arm_physics.py line 73) read SourceAssets/MakerArm/provenance.json, but git tracks PROVENANCE.json. macOS is case-insensitive so it works there; on Linux (the Jetson) it raises FileNotFoundError. vision/dream_latency.py real mode imports DreamSim/model.py, so it would fail the same way on the Jetson.",
+     "with_workaround": "141 run, OK, 3 skipped, with a temporary provenance.json -> PROVENANCE.json symlink in the hub-tests clone only (removed afterwards; that clone is clean)",
+     "skipped": "3 JavaScript UI tests need quickjs (test_web_cup_status)"},
+    {"name": "Capture", "command": "~/hub-tests/venv-sim/bin/python -m unittest discover -s Capture -p 'test_*.py'", "result": "17 run, OK (with mediapipe 1.2.2; without mediapipe test_webcam_registration fails to import)", "seconds": 4.0},
+    {"name": "Unreal Tools model", "command": "~/hub-tests/venv-sim/bin/python -m unittest discover -s Unreal/TheHumanTouch/Tools -p 'test_maker_arm_model.py'", "result": "5 run, OK", "seconds": 0.1},
+    {"name": "Unreal Tools actions", "command": "~/hub-tests/venv-sim/bin/python -m unittest discover -s Unreal/TheHumanTouch/Tools -p 'test_maker_arm_actions.py'", "result": "9 run, OK", "seconds": 0.5}
+  ],
+  "not_run": [
+    "Anything that needs Unreal Editor, Luna2, Multi-User, a Quest, the arms or credentials (DreamSim/probe.py, worker/fleet servers against real endpoints, vision.dream_latency real mode).",
+    "The 3 quickjs JavaScript UI tests in DreamSim.",
+    "handoff.preflight --run-tests (the same suites ran individually)."
+  ],
+  "preflight": {
+    "command": "python3 -m handoff.preflight",
+    "fresh_clone": [
+      "ok        git            HEAD 132ee2e matches origin/main",
+      "ok        port 8765      127.0.0.1:8765 is free for pickup_server",
+      "NO-GO     arm venv       arm/.venv missing",
+      "NO-GO     mark poses     not taught yet: ready, above_mark, at_mark, carry",
+      "MARK-ONLY hand poses     not taught yet: ready, offer, carry",
+      "warn      grip band      contact band -60.0 to -12.0 deg is a wide default",
+      "MARK-ONLY detector       cv2/ultralytics do not import in /usr/bin/python3",
+      "NO-GO: fix arm venv, mark poses first."
+    ],
+    "with_ARMCTL_PYTHON_vision_python_and_weights": [
+      "ok        arm venv       ARMCTL_PYTHON=/home/fadi/jetson-runtime/.venv/bin/python present",
+      "NO-GO     mark poses     not taught yet",
+      "MARK-ONLY hand poses     not taught yet",
+      "warn      grip band      wide default",
+      "ok        detector       cv2 5.0.0 and ultralytics 8.4.207 import in /home/fadi/hub-tests/venv-vision/bin/python",
+      "NO-GO: fix mark poses first."
+    ],
+    "meaning": "Expected without the arms: only the untaught poses keep it from GO. The detector line goes ok once --vision-python points at a venv with Ultralytics."
+  },
+  "control_center": {
+    "demo": {
+      "command": "python3 -m control_center --data ~/hub-tests/cc-demo serve --demo (Jetson, 127.0.0.1:8780) + ssh -N -L 18780:127.0.0.1:8780 orin-arm (Mac)",
+      "mac_local_port_note": "18780 on the Mac end so it could not collide with a Mac control center; the documented default is 8780",
+      "results": {"GET /": "200, 4557 bytes, <title>Robot Control Center</title>", "GET /app.js": "200, 37987 bytes", "GET /style.css": "200, 17059 bytes", "GET /api/sessions": "200, 5 sessions (3 seeded history, 1 live simulated, 1 from the earlier attempt)", "GET /api/sessions/<live>/events?from=0": "200, 50 events (state, network, task, frame, command, chunk, camera, decision, session, contact)"},
+      "first_attempt": "curl got connection refused 7 s after starting the remote command; the second attempt polled until the port listened (about 2 s) and passed. The script now polls."
+    },
+    "real_sessions": {
+      "what": "The Mac's vision/local/sessions (4 sessions) copied to ~/hub-tests/sessions, plus the Jetson's own live C270 sessions, served with --data",
+      "validate": "python3 -m control_center --data ~/hub-tests/sessions validate <id>: all 0 invalid (Mac: 59, 32, 22, 9 events; Jetson live CPU 18, live CUDA 27)",
+      "api": "GET /api/sessions 200 with 6 sessions; every GET /api/sessions/<id>/events 200 with the expected kinds (camera, decision, network, mode, task, session)",
+      "not_checked": "The frames endpoint (none of these sessions has frame events) and the page by eye in a browser"
+    },
+    "stopped": "Server ended (timeout/pkill), tunnel killed; no listener left on the Mac or the Jetson"
+  },
+  "detector": {
+    "weights": {
+      "yolo26n.pt": "9b09cc8bf347f0fc8a5f7657480587f25db09b34bf33b0652110fb03a8ad4fef (copied from the Mac, matches the Mac check)",
+      "yolo26n-pose.pt": "eb3bb8268828aeaf515cec23a4bfafd793944a86fe9af94ba7823609c14522a9"
+    },
+    "ultralytics_settings": "YOLO_CONFIG_DIR=~/hub-tests/yolo-config, sync=false, and YOLO_OFFLINE=1 on every run",
+    "environments": {
+      "venv-vision": {"how": "uv venv --python /usr/bin/python3; uv pip install ultralytics opencv-python-headless (PyPI, 60 s); later tensorrt-cu13 onnx onnxslim", "versions": {"ultralytics": "8.4.207", "torch": "2.15.0+cu132", "torchvision": "0.29.2+cu132", "opencv": "5.0.0", "numpy": "2.5.4", "cudnn": "9.26", "tensorrt": "11.4.0.106", "onnx": "1.23.2", "onnxslim": "0.1.99"}},
+      "venv-trt10": {"how": "same plus 'tensorrt-cu13>=10.15,<11' (the range Ultralytics 8.4.207 asks for)", "versions": {"tensorrt": "10.16.1.11", "torch": "2.15.0+cu132", "ultralytics": "8.4.207"}}
+    },
+    "cuda_pytorch": {
+      "finding": "The plain PyPI torch 2.15.0 for aarch64 is a CUDA 13.2 build and works on the Orin under JetPack 7.2.1: torch.cuda.is_available() True, device 'Orin' (8, 7), a GPU matmul ran. Its arch list is sm_80..sm_120 without sm_87; sm_80 code runs on sm_87. No NVIDIA Jetson-specific wheel index was needed. vision/README.md says plain pip gives a CPU-only build; that was true for JetPack 6, not here.",
+      "import_seconds": 19.4
+    },
+    "still_images": {
+      "command": "python -m vision.still_check --detect <detect> --pose <pose> --device cpu --device 0 --repeat 10 <the 5 Mac stills>",
+      "method": "Same as the Mac check: imgsz 640, conf 0.25, adapter_ms is one UltralyticsDetector call (detect + pose + conversion), median of 10 after one warm-up; inference_ms is Ultralytics' own per-model time.",
+      "adapter_ms_median": {
+        "orin_cpu_pt":        {"station-side-cylinder": 385.8, "station-wrist-cylinder": 384.5, "woman_hands": 360.8, "ultralytics-bus": 377.0, "synthetic-red-can": 379.1},
+        "orin_cuda_pt":       {"station-side-cylinder": 77.8,  "station-wrist-cylinder": 75.4,  "woman_hands": 77.1,  "ultralytics-bus": 74.8,  "synthetic-red-can": 67.5},
+        "orin_trt_fp32":      {"station-side-cylinder": 48.7,  "station-wrist-cylinder": 47.9,  "woman_hands": 41.9,  "ultralytics-bus": 43.1,  "synthetic-red-can": 32.8},
+        "orin_trt_fp16":      {"station-side-cylinder": 36.6,  "station-wrist-cylinder": 38.4,  "woman_hands": 34.5,  "ultralytics-bus": 35.9,  "synthetic-red-can": 25.7},
+        "mac_m4_cpu_for_reference": {"station-side-cylinder": 48.7, "station-wrist-cylinder": 49.2, "woman_hands": 51.5, "ultralytics-bus": 53.1, "synthetic-red-can": 47.5},
+        "mac_m4_mps_for_reference": {"station-side-cylinder": 25.2, "station-wrist-cylinder": 21.9, "woman_hands": 24.0, "ultralytics-bus": 26.0, "synthetic-red-can": 24.7}
+      },
+      "inference_ms_per_model": {
+        "orin_cpu_pt": {"detect": "162-174", "pose": "186-202"},
+        "orin_cuda_pt": {"detect": "27.5-28.4", "pose": "30.6-31.7"},
+        "orin_trt_fp32": {"detect": "7.8-9.3", "pose": "8.6-10.1"},
+        "orin_trt_fp16": {"detect": "5.3-5.4", "pose": "5.7"}
+      },
+      "repeatability": "A second .pt run from the script (commit 9ceef72) gave CPU 357-379 ms and CUDA 69-78 ms, same labels.",
+      "labels": {
+        "pt_cpu_and_cuda": "Identical to the Mac on all 5 stills (side cylinder: bottle 0.33 + hand 0.856 -> HAND empty_hand; wrist cylinder: cup 0.517 -> EMPTY; woman_hands: 2 hands -> HAND multiple_hands; bus: 9 person, 8 hand; synthetic can: cup 0.84).",
+        "engines_fp32_and_fp16": "Differ from .pt on 3 of 5 stills: side cylinder loses the 0.33 bottle and gains a second hand (HAND multiple_hands instead of empty_hand); wrist cylinder cup 0.517 -> 0.753 and 2 persons; bus 8 person, 7 hand. FP16 matches FP32 within 0.003. Likely cause: the engines are fixed 640x640 (padded) while .pt predicts on a rectangular letterbox. Tune and test thresholds on the engines you will run."
+      }
+    },
+    "tensorrt": {
+      "system_trtexec": "not installed (/usr/src/tensorrt absent, no trtexec on PATH, no libnvinfer packages); not installed with apt because that needs sudo",
+      "trt11_fp16": "yolo export format=engine quantize=16 with tensorrt-cu13 11.4.0.106 FAILED after the ONNX step: 'No module named modelopt'. Ultralytics 8.4.207 needs nvidia-modelopt[onnx] for FP16 on TensorRT 11 (strongly typed only) and itself asks for tensorrt-cu13 >=10.15,<11. modelopt was not installed (it would also change nvidia-cusparselt in that venv).",
+      "trt11_fp32": "yolo export format=engine device=0 (no quantize) worked: yolo26n.engine 159.1 MB in 136 s, yolo26n-pose.engine 82.2 MB in 153 s",
+      "trt10_fp16": "In venv-trt10 (tensorrt-cu13 10.16.1.11 from PyPI; its sdist pulls the wheel from NVIDIA's pip index), yolo export format=engine quantize=16 device=0 worked: yolo26n.engine 8.1 MB in 512 s, yolo26n-pose.engine 9.5 MB in about 11 min. sha256 df137906236396cbf5eb133b339d5406db65e4b8ba8590f47416ed5b00104445 and f24ff05bf0492f549998cb8cb19be383bfa1c4443647a757eadab94a070d1ede (board-specific, not portable, git-ignored, kept in ~/hub-tests/engines-fp16)",
+      "dla_int8": "not tried (Ultralytics refuses DLA on TensorRT 11; INT8 needs a calibration set)"
+    },
+    "live_c270": {
+      "camera": "Logitech C270 /dev/video0 (index 0), V4L2, 640x480 YUYV. fuser showed it free before each run. The room was dark (mean pixel 44/255), so the C270 ran at 15 fps (raw read 68 ms per frame), not 30. Nobody was in front of it at 4 AM: no hand or can moments were exercised.",
+      "command": "python -m vision.run --camera 0 --detect <weights> --pose <weights> --device <cpu|0> --target real --max-seconds 30 --record ... --telemetry ~/hub-tests/sessions --session <id>",
+      "runs": [
+        {"path": "CPU .pt", "frames": 30, "steady_fps": 1.14, "frame_latency_ms": {"p50": 882.0, "p95": 907.4, "max": 4782.5}, "detections": {}},
+        {"path": "CUDA .pt (venv-vision)", "frames": 359, "steady_fps": 14.3, "frame_latency_ms": {"p50": 69.9, "p95": 70.6, "max": 4934.4}, "detections": {}},
+        {"path": "TensorRT FP32 engines (TRT 11.4)", "frames": 375, "steady_fps": 15.1, "frame_latency_ms": {"p50": 67.6, "p95": 70.4, "max": 5251.7}, "detections": {"person": 1}},
+        {"path": "TensorRT FP16 engines (TRT 10.16, from the script)", "frames": 272, "steady_fps": 15.1, "frame_latency_ms": {"p50": 68.0, "p95": 80.5, "max": 12104.3}, "detections": {}}
+      ],
+      "reading": "frame_latency_ms is read start to decision. When the detector is faster than the camera (engines) it equals the camera's frame period (about 67 ms at 15 fps), so the engines are camera-bound here; when slower (CUDA .pt, about 75 ms) frames queue in the V4L2 buffer and get stale. max is the first frame: model load and CUDA/TensorRT warm-up (5 s, 12 s for the FP16 venv). Warm up before trusting the first seconds.",
+      "telemetry": "Sessions jetson-c270-live-cpu-20261108 (18 events), jetson-c270-live-gpu-20261108 (27), jetson-c270-live-trt-fp32-20261108 (28) and jetson-c270-trt-fp16-20261108-042701 (21) under ~/hub-tests/sessions; all four validate with 0 invalid; the first two were also served through the tunnel API.",
+      "unexplained": "The CPU path is 2.3x slower per frame inside vision.run (877 ms on the stills clip too, so not the camera) than in still_check (375 ms) with the same adapter; tegrastats showed 1-2 busy cores in the loop vs all 6 in still_check; torch reports 6 threads either way. Not investigated further; CPU at about 1 fps is not a demo option anyway."
+    }
+  },
+  "thermals": {
+    "source": "/sys/class/thermal zones, pwmfan hwmon, tegrastats (no sudo)",
+    "idle_before": {"cpu_c": 46.1, "gpu_c": 47.2, "tj_c": 47.2, "soc_c": [45.3, 46.1, 45.3], "fan_pwm": 58, "fan_rpm": 1107, "vdd_in_mw": 4714},
+    "peaks_during_runs": {
+      "still_check cpu+cuda": {"tj_c": 49.3, "vdd_in_mw": 8029, "gpu_load_pct": 37},
+      "live cuda .pt": {"tj_c": 50.1, "vdd_in_mw": 8619, "gpu_load_pct": 47},
+      "live trt fp32": {"tj_c": 50.7, "vdd_in_mw": 7753, "gpu_load_pct": 68},
+      "engine builds (minutes at 97-99% GPU)": {"tj_c": 52.5, "vdd_in_mw": 12727}
+    },
+    "after_last_live_run": {"cpu_c": 47.7, "gpu_c": 49.2, "tj_c": 49.0, "fan_pwm": 66, "fan_rpm": 1314, "vdd_in_mw": 4825},
+    "reading": "The fan is spinning and responds (58 -> 66 PWM). Junction stayed at or below 52.5 C over about 45 minutes of mixed load, far below throttling. Runs were 30 s to 10 min; a sustained hour at the demo, in a warmer room or in an enclosure, is not covered."
+  },
+  "disk": "About 19 GB under ~/hub-tests (three venvs share files through uv's cache; venv-vision alone is 5.8 GB with the CUDA wheels). 859 GB were free.",
+  "cleanup": "No server, tunnel, tegrastats or detector process left running on the Jetson or the Mac. The hub-tests clone is clean (git status empty).",
+  "independent_verification": {
+    "window_pst": "04:36 to 04:46",
+    "commit": "9ceef72",
+    "script_runs": [
+      {"command": "scripts/jetson_hub_check.sh --detector --control-center", "result": "arm 144 passed; handoff unit 50 OK; replay 20/20; control center 17 OK; vision 49 OK; vision replay start_handoff executor=local + retreat_with_can; preflight lines as recorded above (NO-GO: fix mark poses first, detector ok); fresh tunnel on Mac port 8780: GET / 200 4557 bytes, /api/sessions 200, demo events 200; tunnel and server stopped"},
+      {"command": "scripts/jetson_hub_check.sh --sim", "result": "DreamSim 141 run, FAILED (errors=2, skipped=3), both FileNotFoundError on SourceAssets/MakerArm/provenance.json; Capture 17 OK; Unreal Tools 5 OK and 9 OK"}
+    ],
+    "still_adapter_ms_median": {
+      "orin_cpu_pt": {"station-side-cylinder": 378.0, "station-wrist-cylinder": 378.3, "woman_hands": 361.3, "ultralytics-bus": 377.1, "synthetic-red-can": 376.3},
+      "orin_cuda_pt": {"station-side-cylinder": 78.5, "station-wrist-cylinder": 74.7, "woman_hands": 76.4, "ultralytics-bus": 77.8, "synthetic-red-can": 68.5},
+      "orin_trt_fp16": {"station-side-cylinder": 41.0, "station-wrist-cylinder": 38.3, "woman_hands": 34.5, "ultralytics-bus": 36.0, "synthetic-red-can": 25.7},
+      "note": "Within the first run's ranges except FP16 side cylinder (41.0 against 36.6). FP16 per-model inference 5.3 to 5.7 ms again; the .pt and engine label differences reproduced (side cylinder: .pt HAND empty_hand, FP16 HAND multiple_hands)."
+    },
+    "real_sessions": "control_center serve --data ~/hub-tests/sessions through a fresh tunnel (Mac port 18780): /, app.js, style.css and /api/sessions 200 with all 8 sessions; every /api/sessions/<id>/events 200; validate gives 0 invalid for all 8",
+    "fixes_made": [
+      "Script: exit status is now 1 when any suite exits non-zero (it was always 0).",
+      "Script: the control center step skips when port 8780 is already in use on the Jetson, instead of curling someone else's server and reporting it as a pass.",
+      "Script: a trap stops the tunnel and the check's server on Ctrl-C or TERM (tested with TERM: rc 130, nothing left on either machine).",
+      "Doc: the manual server command needs ssh -t. Without it, killing the local ssh left python3 -m control_center running on the Jetson (reproduced, then killed)."
+    ],
+    "other_checkout": "~/geotech-robotics-hackathon on the Jetson: HEAD 24d61e1, git status clean, index last written 03:45:48 (before this track started). The verifier's own read-only git status there at 04:36 updated the .git directory mtime (a transient index.lock), with no content change; GIT_OPTIONAL_LOCKS=0 avoids that. ~/jetson-runtime and ~/jetson-prep-assets: no files newer than 03:46.",
+    "not_rerun": "Live C270 runs, the CPU-in-vision.run slowdown, engine builds, --setup and the thermal peaks were not repeated. Idle before and after the still check: tj 47.3 C and 48.3 C, fan PWM 64, 25 W mode."
+  },
+  "verdict": "The Orin Nano is a usable test hub tonight without the arms: every offline suite runs (failures above are a host-dependent test and a filename-case bug, both reproducible), the control center serves through the tunnel, and YOLO26n + pose run on the GPU from plain PyPI wheels. Best path: TensorRT FP16 engines at about 35 ms per frame for both models (5-6 ms inference each), camera-bound at 15 fps in a dark room. CUDA .pt is about 75 ms; CPU is not usable (about 375 ms, 1 fps in the loop).",
+  "not_established": [
+    "Hands, a held can or any handoff moment on the C270 (nobody in view; dark room).",
+    "Sustained thermals over a full demo, and power independence of the kit.",
+    "The --show preview on the KVM display (all runs were headless).",
+    "Any arm, CAN, pickup_server or Dream round trip from the Jetson.",
+    "Whether the engine-vs-.pt label differences hold on real camera frames."
+  ],
+  "post_fix": [
+    {"name": "DreamSim", "commit": "0306c8a", "where": "on the Jetson (orin-arm)", "result": "141 run, OK, 3 skipped (the quickjs UI tests)",
+     "meaning": "0306c8a makes DreamSim/model.py and Unreal/TheHumanTouch/Tools/maker_arm_physics.py read the tracked PROVENANCE.json, so the 2 FileNotFoundError errors above no longer occur on Linux. Earlier entries are left as recorded.",
+     "source": "dashboard/updates/2026-11-08-0453-edge-model-on-jetson.json and docs/jetson-hub-testing.md finding 4; the run's exact time was not recorded"}
+  ]
+}

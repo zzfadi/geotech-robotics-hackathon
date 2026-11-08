@@ -28,3 +28,10 @@ dashboard/data/feed.json
 
 # Control center sessions written locally
 control_center/local/
+
+# Local datasets, checkpoints, model weights and generated audio
+edge_model/local/
+vision/local/
+voice_agent/local/
+/yolo*.pt
+/yolo*.engine

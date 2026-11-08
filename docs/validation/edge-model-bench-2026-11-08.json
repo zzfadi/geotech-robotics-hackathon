@@ -1,0 +1,394 @@
+{
+  "what": "Edge model (19,335-parameter numpy MLP) trained on scripted-expert demonstrations and scored in three scenarios on held-out scene seeds of the kinematic bench, plus a MuJoCo physics-sim grasp check",
+  "date": "2026-11-08",
+  "machine": "FADI's Mac mini (arm64, Python 3.12.15, numpy 2.5.4)",
+  "kind": "SIMULATION ONLY. Bench = kinematic, not physics (friction-proxy grasp). Physics rows = MuJoCo physics sim with assumed cup mass, friction and servo gains. Nothing here is a physical result; no hardware, no Dream API.",
+  "commands": {
+    "pipeline": "arm/.venv/bin/python -W ignore -m edge_model run-all",
+    "tests": "arm/.venv/bin/python -m unittest discover -s edge_model -p 'test_*.py' -t .",
+    "telemetry_check": "python3 -m control_center --data edge_model/local/sessions validate <session id>  (all 1260 sessions)",
+    "physics": "uv run --python 3.12 --with numpy --with mujoco==4.0.0 python -m edge_model.physics_bench --seeds 2 --policy edge_model/local/checkpoints/policy.npz",
+    "physics_default_cone": "same with --cone pyramidal --impratio 1",
+    "quick": "arm/.venv/bin/python -W ignore -m edge_model run-all --quick  (writes edge_model/local/quick/)"
+  },
+  "git_commit_base": "bb9326f824e2e37d01118f26c909f49bcbc92eab",
+  "dataset": {
+    "source": "bench-expert",
+    "scene_seeds": "1000-1099 (train 1000-1069, val 1070-1079, held-out 1080-1099)",
+    "tables": 9,
+    "variants_per_scene": [
+      "clean",
+      "perturbed",
+      "perturbed"
+    ],
+    "episodes": 2700,
+    "gate_passing_demonstrations": 2576,
+    "eval_set_failures": 124,
+    "samples": {
+      "train": 146270,
+      "val": 20783,
+      "heldout": 40988,
+      "eval_failures": 18600
+    },
+    "manifest_sha256": "f313e1c8818c51c8effc6cc690fa177b54baacafddf741087adf3ad9b07af4f9",
+    "dream_outputs_used": false,
+    "dream_export_eligible": false
+  },
+  "training": {
+    "trainer": "numpy (edge_model/model.py train_numpy), Adam",
+    "config": {
+      "hidden": [
+        128,
+        128
+      ],
+      "epochs": 150,
+      "batch_size": 256,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "grip_weight": 0.5,
+      "seed": 0
+    },
+    "train_samples": 146270,
+    "best_epoch": 142,
+    "best_val_loss": 0.03495,
+    "train_seconds": 21.75,
+    "heldout_offline": {
+      "heldout_samples": 40988,
+      "dq_rmse_rad": 0.00618,
+      "grip_accuracy": 0.9988
+    },
+    "parameters": 19335,
+    "dagger_rounds": 0
+  },
+  "heldout_attempts_per_row": 180,
+  "autonomous": {
+    "expert": {
+      "attempts": 180,
+      "success": 167,
+      "success_rate": 0.9278,
+      "wrong_cup_attempts": 0,
+      "drop_attempts": 0,
+      "collision_attempts": 6,
+      "gate_pass_s_median": 13.6,
+      "peak_commanded_speed_m_s": 0.1855,
+      "speed_clamps_total": 0,
+      "failure_reasons": {
+        "held by both jaws": 13
+      }
+    },
+    "untrained_model": {
+      "attempts": 180,
+      "success": 0,
+      "success_rate": 0.0,
+      "wrong_cup_attempts": 0,
+      "drop_attempts": 0,
+      "collision_attempts": 180,
+      "gate_pass_s_median": null,
+      "peak_commanded_speed_m_s": 0.4677,
+      "speed_clamps_total": 0,
+      "failure_reasons": {
+        "held by both jaws": 180
+      },
+      "inference_ms_median": 0.008,
+      "inference_ms_p99_worst_attempt": 0.0376
+    },
+    "trained_model": {
+      "attempts": 180,
+      "success": 172,
+      "success_rate": 0.9556,
+      "wrong_cup_attempts": 0,
+      "drop_attempts": 0,
+      "collision_attempts": 7,
+      "gate_pass_s_median": 13.6,
+      "peak_commanded_speed_m_s": 0.478,
+      "speed_clamps_total": 0,
+      "failure_reasons": {
+        "held by both jaws": 8
+      },
+      "inference_ms_median": 0.008,
+      "inference_ms_p99_worst_attempt": 0.0379
+    }
+  },
+  "lag": {
+    "hold_on_late": {
+      "attempts": 180,
+      "success": 170,
+      "success_rate": 0.9444,
+      "wrong_cup_attempts": 0,
+      "drop_attempts": 0,
+      "collision_attempts": 4,
+      "gate_pass_s_median": 14.4,
+      "peak_commanded_speed_m_s": 0.1827,
+      "speed_clamps_total": 0,
+      "failure_reasons": {
+        "held by both jaws": 10
+      },
+      "frozen_s_mean": 1.301,
+      "frozen_s_median": 0.8,
+      "frozen_s_p95": 3.2,
+      "bridge_s_mean": 0.0,
+      "time_to_hold_s_median": 9.4,
+      "requests": 1375,
+      "late": 87,
+      "failed": 23,
+      "stale_replies_dropped": 0,
+      "chunks_played": 1335,
+      "skipped_actions": 0,
+      "bridge_cap_hits": 0,
+      "frozen_before_first_reply_s_mean": 0.903,
+      "frozen_after_first_reply_s_mean": 0.398,
+      "frozen_after_first_reply_s_p95": 1.81,
+      "skipped_actions_note": "measured: accepted chunk steps minus steps played minus steps still queued at the end"
+    },
+    "model_bridges": {
+      "attempts": 180,
+      "success": 173,
+      "success_rate": 0.9611,
+      "wrong_cup_attempts": 0,
+      "drop_attempts": 0,
+      "collision_attempts": 4,
+      "gate_pass_s_median": 13.6,
+      "peak_commanded_speed_m_s": 0.1911,
+      "speed_clamps_total": 0,
+      "failure_reasons": {
+        "held by both jaws": 7
+      },
+      "inference_ms_median": 0.007,
+      "inference_ms_p99_worst_attempt": 0.0469,
+      "frozen_s_mean": 0.272,
+      "frozen_s_median": 0.0,
+      "frozen_s_p95": 1.8,
+      "bridge_s_mean": 1.291,
+      "time_to_hold_s_median": 8.6,
+      "requests": 1360,
+      "late": 79,
+      "failed": 23,
+      "stale_replies_dropped": 22,
+      "chunks_played": 1185,
+      "skipped_actions": 0,
+      "bridge_cap_hits": 2,
+      "frozen_before_first_reply_s_mean": 0.004,
+      "frozen_after_first_reply_s_mean": 0.268,
+      "frozen_after_first_reply_s_p95": 1.8,
+      "skipped_actions_note": "measured: accepted chunk steps minus steps played minus steps still queued at the end"
+    },
+    "paired": {
+      "pairs": 180,
+      "frozen_s_saved_mean": 1.029,
+      "both_passed": 170,
+      "time_to_hold_s_saved_median": 0.8,
+      "time_to_hold_s_saved_mean": 0.96,
+      "frozen_s_saved_before_first_reply_mean": 0.899,
+      "frozen_s_saved_after_first_reply_mean": 0.13,
+      "note": "Most of the frozen-time gain and nearly all of the time-to-hold gain is the wait for the very first reply: hold-on-late freezes until the first chunk lands, the bridge starts moving at t = 0. Mid-task the bridge saves about 0.13 s of frozen time per attempt; net of the first wait, time to hold is unchanged (paired mean 0.055 s, median 0).",
+      "time_to_hold_s_saved_net_of_first_reply_wait": {
+        "pairs": 170,
+        "mean": 0.055,
+        "median": 0.0
+      }
+    },
+    "rtt_realized": {
+      "requests": 10800,
+      "median_ms": 711.689,
+      "p95_ms": 1425.579,
+      "over_850_ms_fraction": 0.2261,
+      "failed_fraction": 0.0269
+    },
+    "protocol": {
+      "chunk_actions": 48,
+      "chunk_s": 2.4,
+      "bench_rate_hz": 5,
+      "actions_per_bench_step": 4,
+      "async_request_lead_actions": 32,
+      "threshold_ms": 850,
+      "window": 5,
+      "timeout_s": 2.5,
+      "bridge_cap_s": 4.0,
+      "speed_limit_m_s": 0.85,
+      "teacher": "scripted expert (not Dream), continuation chunks",
+      "frozen_time_resolution_s": 0.2
+    }
+  },
+  "assist": {
+    "operator_alone": {
+      "attempts": 180,
+      "success": 18,
+      "success_rate": 0.1,
+      "wrong_cup_attempts": 0,
+      "drop_attempts": 0,
+      "collision_attempts": 145,
+      "gate_pass_s_median": 13.6,
+      "peak_commanded_speed_m_s": 0.1949,
+      "speed_clamps_total": 0,
+      "failure_reasons": {
+        "held by both jaws": 162
+      },
+      "aim_error_cm": {
+        "min": 2.0,
+        "median": 3.045,
+        "max": 3.99
+      }
+    },
+    "operator_with_assist": {
+      "attempts": 180,
+      "success": 162,
+      "success_rate": 0.9,
+      "wrong_cup_attempts": 0,
+      "drop_attempts": 0,
+      "collision_attempts": 5,
+      "gate_pass_s_median": 14.0,
+      "peak_commanded_speed_m_s": 0.4638,
+      "speed_clamps_total": 0,
+      "failure_reasons": {
+        "held by both jaws": 18
+      },
+      "inference_ms_median": 0.008,
+      "inference_ms_p99_worst_attempt": 0.0571,
+      "aim_error_cm": {
+        "min": 2.0,
+        "median": 3.045,
+        "max": 3.99
+      },
+      "assist_steps_mean": 10.82
+    },
+    "protocol": {
+      "aim_error_m": [
+        0.02,
+        0.04
+      ],
+      "zone_m": 0.08,
+      "ramp_s": 0.6000000000000001
+    }
+  },
+  "telemetry": {
+    "sessions": 1260,
+    "events": 160784,
+    "invalid_events": 0,
+    "cli_validate_failures": 0,
+    "component": "edge-model",
+    "purpose": "sim (schema enum has no bench)",
+    "decision_by": [
+      "edge",
+      "loop",
+      "safety",
+      "assist",
+      "operator",
+      "controller"
+    ]
+  },
+  "physics_sim_mujoco": {
+    "mujoco": "4.0.0",
+    "fk_max_error_m": 3.37705848098552e-07,
+    "scene_seeds": [
+      1080,
+      1081
+    ],
+    "tables": 9,
+    "assumptions": {
+      "cup_radius_m": 0.035,
+      "cup_height_m": 0.12,
+      "cup_mass_kg": 0.05,
+      "friction": 1.0,
+      "arm_servo": [
+        300.0,
+        15.0,
+        10.0
+      ],
+      "jaw_servo": [
+        400.0,
+        10.0,
+        20.0
+      ],
+      "arm_gravcomp": true,
+      "arm_table_contact": false,
+      "timestep_s": 0.002,
+      "cone": "elliptic",
+      "impratio": 10
+    },
+    "expert_elliptic_impratio10": {
+      "attempts": 18,
+      "gate_pass": 18,
+      "longest_hold_s_median": 19.2,
+      "max_clearance_cm_median": 12.335,
+      "reasons": {
+        "passed": 18
+      }
+    },
+    "trained_model_elliptic_impratio10": {
+      "attempts": 18,
+      "gate_pass": 17,
+      "longest_hold_s_median": 20.2,
+      "max_clearance_cm_median": 11.6,
+      "reasons": {
+        "below 10 cm clearance": 1,
+        "passed": 17
+      }
+    },
+    "expert_default_pyramidal_impratio1": {
+      "attempts": 18,
+      "gate_pass": 0,
+      "longest_hold_s_median": 4.0,
+      "max_clearance_cm_median": 11.01,
+      "reasons": {
+        "below 10 cm clearance": 18
+      }
+    },
+    "note": "With MuJoCo default friction cones the held cup creeps down through the jaws and drops below 10 cm after about 4 s in every attempt; with elliptic cones and impratio 10 the grasp holds. The result depends on contact-solver settings; arm-table contact is not modelled.",
+    "cup_position": "ground truth (no estimate noise) in the physics runs",
+    "attempts_total": 54
+  },
+  "pipeline_seconds": 264.8,
+  "not_done": [
+    "Nothing ran on the Orin Nano or a physical arm",
+    "Teacher in the lag scenario is the scripted expert, not Dream",
+    "DAgger (python -m edge_model run-all --dagger N) is implemented and smoke-tested only, not in the scored run",
+    "PyTorch trainer still not run (torch not installed here)"
+  ],
+  "failures_note": "One failing attempt grasped the target cup (lag/bridge, seed 1098, table 5: closed at 42.5 s, the 45 s attempt ended at 6.4 cm clearance); no other failure in any row grasped it. Attempts are 30 s (autonomous, assist) and 45 s (lag).",
+  "significance_paired_by_table": {
+    "test": "exact two-sided McNemar on the 180 seed x table pairs",
+    "trained_model_vs_expert": {
+      "only_model_passed": 6,
+      "only_expert_passed": 1,
+      "p": 0.125
+    },
+    "model_bridges_vs_hold_on_late": {
+      "only_bridge_passed": 3,
+      "only_hold_passed": 0,
+      "p": 0.25
+    },
+    "assist_vs_operator_alone": {
+      "only_assist_passed": 144,
+      "only_alone_passed": 0,
+      "p": "<1e-40"
+    },
+    "reading": "Model vs expert and bridge vs hold are within noise; assist vs alone is a real gap."
+  },
+  "verification": {
+    "by": "independent verifier pass, Nov 8 ~04:00-05:00 PST, same Mac mini",
+    "full_rerun_unchanged_code": "run-all into a scratch folder, 272.7 s: dataset files bit-identical (sha256), trained weights identical, every scored row identical",
+    "full_rerun_after_fixes": "run-all into edge_model/local, 264.8 s: every scored row identical; adds the measured skipped_actions and the first-reply frozen split",
+    "leakage": "train 1000-1069, val 1070-1079, held-out 1080-1099; no seed overlap in any .npz; eval used held-out only",
+    "outside_lag_trace": {
+      "what": "every teacher action played in both lag rows mapped back to (request, index) by object identity; checked order, starts at action 0, and real state vs the state each action was planned from",
+      "teacher_actions": 27405,
+      "order_violations": 0,
+      "chunks_not_started_at_action_0": 0,
+      "max_state_mismatch_rad": 0.0,
+      "peak_applied_tool_speed_m_s": 0.1911
+    },
+    "gate": "edge_model/gate.py, unchanged since 68bed8e; thresholds equal DreamSim/demonstration_dataset.py positive_eligibility",
+    "telemetry": {
+      "sessions": 1260,
+      "events": 160784,
+      "invalid_events": 0,
+      "sessions_dir": "edge_model/local/sessions",
+      "component": "edge-model",
+      "purpose": "sim",
+      "cli_validate": "python3 -m control_center validate: 1260 of 1260 pass (system Python 3.9.6)"
+    },
+    "physics_rerun": "elliptic: expert 18/18, model 17/18; pyramidal impratio 1: expert 0/18; FK error 3.38e-07 m (identical)",
+    "runtime_imports": "numpy + stdlib (+ control_center.telemetry); mujoco only inside physics_bench, torch only in model.train_torch",
+    "dream_outputs_used": false
+  }
+}

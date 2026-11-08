@@ -1,6 +1,6 @@
 # The Human Touch · presentation art
 
-[Open the native Keynote presentation](deck/The%20Human%20Touch%20%E2%80%94%20Stage.key) · [Slide proof](deck/The%20Human%20Touch%20%E2%80%94%20Stage.pdf) · [Timed outline and notes](deck/outline.md)
+[Open the native Keynote presentation](deck/The%20Human%20Touch%20%E2%80%94%20Judges.key) · [Slide proof](deck/The%20Human%20Touch%20%E2%80%94%20Judges.pdf) · [Timed outline and notes](deck/judges-script.md)
 
 [Review the asset library](asset-contact-sheet.jpg) · [Play the Higgsfield museum sequence](films/higgsfield/museum-sequence.mp4) · [Opening and ending concepts](keyframes/pairs.jpg) · [Brand guide](../../brand-kit-final/identity/brand-guide.pdf) · [Emmy turnaround](../../brand-kit-final/emmy/README.md)
 

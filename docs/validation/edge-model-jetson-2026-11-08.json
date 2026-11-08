@@ -1,0 +1,37 @@
+{
+  "what": "The small edge model on the Jetson Orin Nano: pipeline smoke run, inference latency of the trained policy, and the MuJoCo physics bench",
+  "when": "2026-11-08T04:55:00-08:00",
+  "type": "simulation and timing on the Jetson CPU; no arm, camera or CAN attached",
+  "host": {
+    "name": "orin-arm",
+    "board": "Jetson Orin Nano, JetPack 7.2.1 / L4T 39.2.1, Ubuntu 24.04.4, 25 W mode",
+    "env": "~/hub-tests/venv-sim (Python 3.12, numpy 2.5.4, mujoco 4.0.0)",
+    "commit": "0306c8a"
+  },
+  "pipeline_quick": {
+    "command": "python -W ignore -m edge_model --out ~/hub-tests/edge-quick run-all --quick",
+    "wall_seconds": 135,
+    "mac_wall_seconds_for_comparison": 18,
+    "note": "Plumbing check only. The quick model is deliberately undertrained (assist 7 of 18), the same as the quick run on the Mac."
+  },
+  "inference_latency": {
+    "checkpoint": "the Mac-trained policy from edge_model run-all (19,335 parameters), copied to ~/hub-tests/edge-trained/",
+    "method": "2,000 single-observation numpy forward passes after 50 warm-up calls, synthetic inputs",
+    "jetson_cpu": { "median_ms": 0.0379, "p99_ms": 0.0499, "max_ms": 0.1765 },
+    "mac_mini_cpu": { "median_ms": 0.0071, "p99_ms": 0.008, "max_ms": 0.0256 },
+    "note": "The control loop runs at 5 Hz (200 ms per step), so the model's cost on the Jetson is negligible."
+  },
+  "physics_bench": {
+    "command": "python -W ignore -m edge_model.physics_bench --seeds 1 --seed-start 1080 --policy ~/hub-tests/edge-trained/policy.npz",
+    "settings": "the physics_bench defaults (elliptic friction cones); cup 3.5 cm radius x 12 cm, 50 g, friction 1.0; assumed servo gains; arm links gravity-compensated; no arm-table contact; true cup position",
+    "wall_seconds": 44,
+    "expert": { "attempts": 9, "gate_pass": 9, "longest_hold_s_median": 19.2, "max_clearance_cm_median": 12.33 },
+    "model": { "attempts": 9, "gate_pass": 9, "longest_hold_s_median": 20.2, "max_clearance_cm_median": 11.62 },
+    "cross_platform_note": "On the Mac the model missed table 7 at seed 1080 (peak 9.03 cm, docs/validation/edge-model-bench-2026-11-08.json); on the Jetson the same table passed (peak 11.99 cm). Contact physics differs slightly across CPUs, so treat single-table physics results as indicative, not exact."
+  },
+  "not_tested": [
+    "the full held-out kinematic evaluation on the Jetson (about 4.5 minutes on the Mac, so roughly half an hour here at the quick run's ratio)",
+    "any real arm, camera input or Dream reply driving the model",
+    "the GPU: the model is numpy on the CPU and does not need it"
+  ]
+}

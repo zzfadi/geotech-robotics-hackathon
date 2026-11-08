@@ -1,0 +1,6 @@
+{"name": "The arm has the can, then Brian's hand drops out of the camera's view while still on it (hidden behind the can). No hand was seen letting go, so the arm keeps holding still; after 10 s it opens to give the can back and never carries it away",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 8},
+              {"from": 8, "to": 14, "can_in_jaws": true, "hand_on_can": true},
+              {"from": 14, "to": 80, "can_in_jaws": true, "hand_on_can": false, "hand_visible": false}],
+ "expect": {"outcome": "failed", "reason": "release_not_seen", "holding": false, "grasp_attempts": 1, "final_step": "halted"}}

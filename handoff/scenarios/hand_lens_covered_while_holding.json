@@ -1,0 +1,6 @@
+{"name": "The arm has the can, then something covers the wrist camera: no can and no hand in view. That is not a release; the arm keeps holding still, then opens to give the can back after 10 s",
+ "mode": "hand", "operator": [[1.0, "go"]],
+ "timeline": [{"from": 0, "to": 8},
+              {"from": 8, "to": 14, "can_in_jaws": true, "hand_on_can": true},
+              {"from": 14, "to": 80, "can_in_jaws": false, "hand_on_can": false, "hand_visible": false}],
+ "expect": {"outcome": "failed", "reason": "release_not_seen", "holding": false, "grasp_attempts": 1, "final_step": "halted"}}

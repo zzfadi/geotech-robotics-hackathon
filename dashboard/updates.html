@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All updates · Team Dashboard</title>
+  <meta name="description" content="Every update, commit and milestone from the GeoTech hackathon team, newest first.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Crect x='6' y='16' width='4' height='10' rx='1.5' fill='%232a78d6'/%3E%3Crect x='12' y='10' width='4' height='16' rx='1.5' fill='%23eb6834'/%3E%3Crect x='18' y='13' width='4' height='13' rx='1.5' fill='%231baf7a'/%3E%3Crect x='24' y='6' width='4' height='20' rx='1.5' fill='%23eda100'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="updates">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="bar-top">
+    <div class="wrap">
+      <a class="brand" href="./"><span class="brand-mark" id="mark" aria-hidden="true"></span><span id="brand">Team dashboard</span></a>
+      <nav class="nav" id="nav" aria-label="Pages"></nav>
+      <button class="theme" id="theme" type="button" aria-label="Switch light or dark mode" title="Switch light or dark mode">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="wrap">
+      <section class="card page-head">
+        <p class="eyebrow">Everything, newest first</p>
+        <h1>All updates</h1>
+        <p class="sub">Every change, decision and blocker the team posted, and every commit on main. Filter by track or by person.</p>
+        <div class="chips" id="track-filter" aria-label="Filter by track"></div>
+      </section>
+
+      <section class="feed-wrap">
+        <div class="card">
+          <h2>Updates</h2>
+          <p class="sub">What changed, where and why</p>
+          <div class="chips" id="people" aria-label="Filter by person"></div>
+          <ol class="feed" id="feed"></ol>
+          <button class="more" id="more" type="button" hidden>Show more</button>
+        </div>
+        <div class="card">
+          <h2>Commits on main</h2>
+          <p class="sub">Credited to whoever pushed them</p>
+          <ol class="commits" id="commits"></ol>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Milestones to the demo</h2>
+        <p class="sub">Each dot is a milestone at its target time. Filled means done; a red ring means overdue.</p>
+        <div class="chart" id="timeline"></div>
+      </section>
+
+      <section class="charts">
+        <div class="card">
+          <h2>Activity by hour</h2>
+          <p class="sub">Updates and commits per hour, Pacific time, colored by track</p>
+          <div class="chart" id="hourly"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+        <div class="card">
+          <h2>Who's shipping</h2>
+          <p class="sub">Updates and commits by GitHub user, split by track</p>
+          <div id="contrib"></div>
+        </div>
+      </section>
+    </div>
+    <footer class="wrap" id="footer"></footer>
+  </main>
+  <div id="tip" role="tooltip"></div>
+  <script src="app.js"></script>
+</body>
+</html>

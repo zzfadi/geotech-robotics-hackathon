@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-08T03:44:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Station readiness for the morning, in software: control center on port 8780, a one-command preflight, safe arm-server startup, a hidden-hand fail-safe, and a mark-first checklist",
+  "why": "The control center and the arm server both used port 8765, and a busy port could kill the server right after the motors were enabled. A hand hidden behind the can, or a covered camera, looked like the person letting go, so the arm could carry the can away while someone still held it. The stage plan uses the taped mark unless the hand-off is proven.",
+  "where": [
+    "handoff/preflight.py",
+    "handoff/README.md",
+    "handoff/routine.py",
+    "arm/tools/pickup_server.py",
+    "arm/tools/test_pickup_server_startup.py",
+    "control_center/server.py"
+  ],
+  "details": "Run `python3 -m handoff.preflight` first at the station: it answers GO, MARK-ONLY or NO-GO and never touches hardware (on the Mac mini today: NO-GO because poses are untaught; detector MARK-ONLY, no cv2). pickup_server now claims its port before it finds, connects or enables the arm; a busy port prints PORT_BUSY and exits 1 with the motors untouched, and connections made before READY are dropped, so a move sent early never runs. Start handoff.run, teach and pickup_client only after READY. In hand mode the arm releases only after the camera sees the hand off the can; if the hand just vanishes it holds still, then opens after 10 s (release_not_seen) and never retreats with the can, so keep a hand under the can. Software only: 144 arm tests (incl. 4 new startup tests), 50 handoff tests, 20 of 20 replay scenarios, 17 control-center tests. Nothing has run on the real arm, cameras or the Jetson."
+}

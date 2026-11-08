@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How it works · Team Dashboard</title>
+  <meta name="description" content="Hold My Beer in pictures: the demo, the whole system and the machines, with what is working, in progress or planned.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Crect x='6' y='16' width='4' height='10' rx='1.5' fill='%232a78d6'/%3E%3Crect x='12' y='10' width='4' height='16' rx='1.5' fill='%23eb6834'/%3E%3Crect x='18' y='13' width='4' height='13' rx='1.5' fill='%231baf7a'/%3E%3Crect x='24' y='6' width='4' height='20' rx='1.5' fill='%23eda100'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="design">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="bar-top">
+    <div class="wrap">
+      <a class="brand" href="./"><span class="brand-mark" id="mark" aria-hidden="true"></span><span id="brand">Team dashboard</span></a>
+      <nav class="nav" id="nav" aria-label="Pages"></nav>
+      <button class="theme" id="theme" type="button" aria-label="Switch light or dark mode" title="Switch light or dark mode">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="wrap">
+      <section class="card page-head">
+        <p class="eyebrow">For everyone on the team</p>
+        <h1 id="d-title">How it works</h1>
+        <p class="summary" id="d-intro"></p>
+        <div class="d-legend" id="d-legend"></div>
+        <nav class="d-toc" id="d-toc" aria-label="On this page"></nav>
+        <p class="fine" id="d-asof"></p>
+      </section>
+
+      <div id="diagrams"></div>
+
+      <section class="card" id="team-wrap" hidden>
+        <h2>Who's who</h2>
+        <p class="sub">The team and what each person leads</p>
+        <ul class="team" id="team"></ul>
+      </section>
+
+      <section class="card" id="glossary-wrap">
+        <h2 id="glossary">Glossary</h2>
+        <p class="sub">The words you'll hear today, in plain language</p>
+        <dl class="glossary" id="glossary-list"></dl>
+      </section>
+    </div>
+    <footer class="wrap" id="footer"></footer>
+  </main>
+  <div id="tip" role="tooltip"></div>
+  <script src="app.js"></script>
+</body>
+</html>

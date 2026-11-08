@@ -3,11 +3,14 @@
 
 Usage:
   python3 dashboard/build.py          # validate and write dashboard/data/feed.json
+  python3 dashboard/build.py --check  # validate only (run before you commit)
 
 Authors are GitHub usernames of whoever pushed each commit to main, read from the
 repository activity API in GitHub Actions. Locally (no GITHUB_TOKEN) they fall back
 to git author names.
-  python3 dashboard/build.py --check  # validate only (run before you commit)
+
+It also checks data/project.json (including the optional "today" schedule and
+"decisions" list) and data/design.json (the How it works page), when present.
 
 No dependencies beyond the Python 3 standard library.
 """
@@ -27,6 +30,9 @@ DATA = ROOT / "data"
 
 UPDATE_STATUSES = {"done", "in-progress", "blocked", "decision", "note"}
 WS_STATUSES = {"not-started", "in-progress", "at-risk", "blocked", "done"}
+DESIGN_STATUSES = {"working", "in-progress", "planned"}
+TODAY_STATES = {"agreed", "proposed", "done", "cancelled"}
+WS_TEXT = ("short", "plain", "next", "goal", "risk")
 REQUIRED = ["when", "workstream", "status", "what", "why"]
 ALLOWED = set(REQUIRED) | {"where", "details", "workstream_update"}
 # Older entries named their author by hand. Authors now come from GitHub, so these are ignored.
@@ -63,6 +69,9 @@ def validate_workstreams(items, errors):
             errors.append(f"{where}: status must be one of {sorted(WS_STATUSES)}")
         if "progress" in ws and (not isinstance(ws["progress"], int) or not 0 <= ws["progress"] <= 100):
             errors.append(f"{where}: progress must be a whole number 0-100")
+        for key in WS_TEXT:
+            if key in ws and not isinstance(ws[key], str):
+                errors.append(f"{where}: '{key}' must be text")
         paths = ws.get("paths", [])
         if not isinstance(paths, list) or not all(isinstance(p, str) and p for p in paths):
             errors.append(f"{where}: paths must be a list of repo path prefixes")
@@ -91,7 +100,7 @@ def validate_workstreams(items, errors):
 def validate_update(path, entry, ws_ids, errors, warnings):
     rel = path.relative_to(REPO)
     if not NAME_RE.match(path.name):
-        errors.append(f"{rel}: file name must look like YYYY-MM-DD-HHMM-who-short-title.json (lowercase)")
+        errors.append(f"{rel}: file name must look like YYYY-MM-DD-HHMM-short-title.json (lowercase)")
     if not isinstance(entry, dict):
         errors.append(f"{rel}: must be a JSON object")
         return None
@@ -117,9 +126,12 @@ def validate_update(path, entry, ws_ids, errors, warnings):
         errors.append(f"{rel}: 'where' must be a list of text (paths, URLs or commit SHAs)")
     wu = entry.get("workstream_update")
     if wu is not None:
-        if not isinstance(wu, dict) or not set(wu) <= {"status", "progress", "owner", "milestones_done"}:
-            errors.append(f"{rel}: workstream_update may only have status, progress, owner, milestones_done")
+        if not isinstance(wu, dict) or not set(wu) <= {"status", "progress", "owner", "next", "milestones_done"}:
+            errors.append(f"{rel}: workstream_update may only have status, progress, owner, next, milestones_done")
         else:
+            for key in ("owner", "next"):
+                if key in wu and (not isinstance(wu[key], str) or not wu[key].strip()):
+                    errors.append(f"{rel}: workstream_update.{key} must be text")
             if "status" in wu and wu["status"] not in WS_STATUSES:
                 errors.append(f"{rel}: workstream_update.status must be one of {sorted(WS_STATUSES)}")
             if "progress" in wu and (not isinstance(wu["progress"], int) or not 0 <= wu["progress"] <= 100):
@@ -134,6 +146,102 @@ def validate_update(path, entry, ws_ids, errors, warnings):
                         errors.append(f"{rel}: milestone '{m}' isn't in workstream '{entry.get('workstream')}' "
                                       f"(ids: {sorted(known)})")
     return when
+
+
+def validate_project(project, errors):
+    """The overview's optional 'today' schedule and 'decisions' list."""
+    where = "data/project.json"
+    if not isinstance(project, dict):
+        errors.append(f"{where}: must be a JSON object")
+        return
+    for key in ("name", "deadline"):
+        if not isinstance(project.get(key), str) or not project[key].strip():
+            errors.append(f"{where}: '{key}' is required")
+    for key in ("deadline", "start"):
+        if isinstance(project.get(key), str):
+            try:
+                parse_when(project[key])
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"{where}: '{key}' is not an ISO time ({exc})")
+    today = project.get("today", [])
+    if not isinstance(today, list):
+        errors.append(f"{where}: 'today' must be a list")
+        today = []
+    for i, item in enumerate(today):
+        w = f"{where}: today[{i}]"
+        if not isinstance(item, dict) or not isinstance(item.get("what"), str) or not item["what"].strip():
+            errors.append(f"{w}: needs 'at' and 'what'")
+            continue
+        for key in ("at", "end"):
+            if key in item or key == "at":
+                try:
+                    parse_when(item.get(key, ""))
+                except Exception as exc:  # noqa: BLE001
+                    errors.append(f"{w}: '{key}' is not an ISO time ({exc})")
+        if item.get("state", "proposed") not in TODAY_STATES:
+            errors.append(f"{w}: state must be one of {sorted(TODAY_STATES)}")
+    decisions = project.get("decisions", [])
+    if not isinstance(decisions, list):
+        errors.append(f"{where}: 'decisions' must be a list")
+        decisions = []
+    for i, item in enumerate(decisions):
+        if not isinstance(item, dict) or not isinstance(item.get("q"), str) or not item["q"].strip():
+            errors.append(f"{where}: decisions[{i}] needs a 'q' (the question)")
+
+
+def validate_design(design, errors):
+    """data/design.json: the How it works page. Every box needs a status the page can show."""
+    where = "data/design.json"
+    if not isinstance(design, dict):
+        errors.append(f"{where}: must be a JSON object")
+        return 0
+    diagrams = design.get("diagrams", [])
+    if not isinstance(diagrams, list):
+        errors.append(f"{where}: 'diagrams' must be a list")
+        return 0
+    boxes = 0
+    for i, dg in enumerate(diagrams):
+        dw = f"{where}: diagrams[{i}]"
+        if not isinstance(dg, dict) or not isinstance(dg.get("title"), str):
+            errors.append(f"{dw}: needs a 'title'")
+            continue
+        cols = dg.get("cols", 3)
+        if not isinstance(cols, int) or not 1 <= cols <= 6:
+            errors.append(f"{dw}: cols must be a whole number 1-6")
+            cols = 3
+        ids = set()
+        for j, node in enumerate(dg.get("nodes", [])):
+            nw = f"{dw}.nodes[{j}]"
+            if not isinstance(node, dict) or not isinstance(node.get("id"), str) or not isinstance(node.get("title"), str):
+                errors.append(f"{nw}: needs an 'id' and a 'title'")
+                continue
+            if node["id"] in ids:
+                errors.append(f"{nw}: duplicate id '{node['id']}'")
+            ids.add(node["id"])
+            boxes += 1
+            if ("status" in node or not node.get("items")) and node.get("status") not in DESIGN_STATUSES:
+                errors.append(f"{nw}: status must be one of {sorted(DESIGN_STATUSES)} (a box with items may leave it out)")
+            col, row, span = node.get("col", 0), node.get("row", 0), node.get("span", 1)
+            if not all(isinstance(v, int) and v >= 0 for v in (col, row)) or not isinstance(span, int) or span < 1 \
+                    or col + span > cols:
+                errors.append(f"{nw}: col/row/span must be whole numbers inside the diagram's {cols} columns")
+            for k, it in enumerate(node.get("items", [])):
+                if not isinstance(it, dict) or not isinstance(it.get("label"), str):
+                    errors.append(f"{nw}.items[{k}]: needs a 'label'")
+                elif it.get("status") not in DESIGN_STATUSES:
+                    errors.append(f"{nw}.items[{k}]: status must be one of {sorted(DESIGN_STATUSES)}")
+                else:
+                    boxes += 1
+        for j, edge in enumerate(dg.get("edges", [])):
+            ew = f"{dw}.edges[{j}]"
+            if not isinstance(edge, dict) or edge.get("from") not in ids or edge.get("to") not in ids:
+                errors.append(f"{ew}: 'from' and 'to' must be node ids in this diagram ({sorted(ids)})")
+            elif "status" in edge and edge["status"] not in DESIGN_STATUSES:
+                errors.append(f"{ew}: status must be one of {sorted(DESIGN_STATUSES)}")
+    for i, g in enumerate(design.get("glossary", [])):
+        if not isinstance(g, dict) or not isinstance(g.get("term"), str) or not isinstance(g.get("plain"), str):
+            errors.append(f"{where}: glossary[{i}] needs a 'term' and a 'plain' explanation")
+    return boxes
 
 
 def git(*args):
@@ -261,8 +369,14 @@ def main():
     check_only = "--check" in sys.argv
     errors, warnings = [], []
     project = load_json(DATA / "project.json", errors) or {}
+    validate_project(project, errors)
     workstreams = load_json(DATA / "workstreams.json", errors) or []
     ws_ids = validate_workstreams(workstreams, errors)
+    design_boxes = None
+    if (DATA / "design.json").exists():
+        design = load_json(DATA / "design.json", errors)
+        if design is not None:
+            design_boxes = validate_design(design, errors)
 
     updates = []
     for path in sorted(UPDATES.glob("*")):
@@ -313,6 +427,8 @@ def main():
         entry.pop("_ts", None)
 
     print(f"OK: {len(updates)} updates, {len(workstreams)} workstreams.")
+    if design_boxes is not None:
+        print(f"Design page: {design_boxes} boxes checked.")
     if check_only:
         return 0
 

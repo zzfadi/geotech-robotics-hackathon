@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T04:46:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "The Jetson Orin Nano now works as a software test hub: our offline test suites, the control center and the hand/can detector all run on it. No arms were attached, so nothing physical was tested.",
+  "why": "The Jetson is the computer that will sit next to the arm. Running our software on it tonight finds Linux and Jetson problems, and gives real speed numbers, before the arm station opens. One command from the Mac (scripts/jetson_hub_check.sh) reruns it.",
+  "where": [
+    "scripts/jetson_hub_check.sh",
+    "docs/jetson-hub-testing.md",
+    "docs/validation/jetson-hub-check-2026-11-08.json"
+  ],
+  "details": "These are Jetson software tests only. No arms, CAN or USB adapters were attached, pickup_server was never started, there was no Dream key, and nothing was posted. Everything ran in ~/hub-tests on the Jetson; the other setup checkout was left alone. Results at commit 9ceef72:\n- Arm: 144 tests passed.\n- Handoff: 50 tests OK and 20 of 20 replay scenarios.\n- Control center 17 OK, vision 49 OK.\n- Preflight: NO-GO only because the arm's poses aren't taught yet.\n- DreamSim: 2 errors from a filename-case bug on Linux (DreamSim/model.py reads provenance.json; git has PROVENANCE.json). Not yet fixed.\n\nThe control center served demo data and 8 real sessions through an SSH tunnel to the Mac. Plain PyPI PyTorch uses the Orin's GPU on JetPack 7, so vision/README is out of date there. Detect + pose on still images per frame: CPU about 375 ms, GPU about 75 ms, TensorRT FP16 engines 26 to 41 ms.\n\nA 30 s live run on the C270 webcam reached 15 fps on the engines, limited by the camera in a dark room with nobody in view, so hands and the can are untested on the camera. The engines and the .pt models disagree on 3 of 5 stills, so tune on the engines we'll run. Junction temperature peaked at 52.5 C in 25 W mode; a full demo's heat is not tested.\n\nAn independent rerun matched these numbers and fixed four problems in the new files: the script now exits 1 when a test fails, the tunnel step won't test someone else's server, the tunnel is cleaned up on Ctrl-C, and the doc now uses ssh -t so the server can't outlive its terminal. Details: docs/jetson-hub-testing.md and docs/validation/jetson-hub-check-2026-11-08.json."
+}

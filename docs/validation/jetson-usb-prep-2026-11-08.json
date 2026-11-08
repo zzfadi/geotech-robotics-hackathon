@@ -1,0 +1,1147 @@
+{
+  "recorded_at": "2026-11-08T00:36:24-08:00",
+  "scope": "Local Beryl SSH/KVM authentication restored after brief interruption of unknown cause; earlier keyboard delivery retained. Jetson C270 helper snapshot, visual image inspection and four on-device tests verified. Local LAN needs no VPN/subnet change; independent power, native HDMI video and arm/off-site acceptance remain pending.",
+  "firmware_before": {
+    "version": "36.4.2-gcid-38685322",
+    "build_date": "2024-12-12",
+    "evidence": "User-provided DisplayPort monitor photos",
+    "passes_documented_usb_prerequisite": true,
+    "reference": "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html"
+  },
+  "iso": {
+    "file": "jetsoninstaller-r39.2.1-2026-08-07-18-30-47-arm64.iso",
+    "size_bytes": 5035601920,
+    "sha256": "f31cf35023cd072707dfc46ef23ed71318449516333055fe3bb9455a615395d0",
+    "source_url": "https://developer.nvidia.com/downloads/embedded/l4t/r39_release_v2.1/iso/jetsoninstaller-r39.2.1-2026-08-07-18-30-47-arm64.iso",
+    "http_length_matches": true,
+    "format": "Bootable ISO 9660 with DOS/MBR boot sector",
+    "publisher_digest_verified": false,
+    "hash_scope": "Locally calculated; no published NVIDIA ISO digest found"
+  },
+  "usb": {
+    "device": "SanDisk Cruzer Blade 16 GB",
+    "size_bytes": 16008609792,
+    "erase_authorized": true,
+    "writer": "balenaEtcher 2.1.9 ARM64",
+    "write_completed": true,
+    "validation_completed": true,
+    "observed_ui_result": "Flash Completed! 1 Successful target",
+    "validation_scope": "Etcher validation completed; no separate raw-device SHA-256 readback was obtained",
+    "safely_ejected": true,
+    "eject_result": "Disk /dev/disk6 ejected",
+    "device_number_scope": "At this write only; re-identify before any future operation",
+    "inserted_into_jetson": true,
+    "insertion_evidence": "User confirmed insertion, then reported selecting installer; active installation now directly observed",
+    "insertion_evidence_history": [
+      "User confirmed insertion; installer boot remains unverified"
+    ],
+    "installer_boot_verified": true
+  },
+  "project_bundle": {
+    "file": "geotech-robotics-hackathon-119d38b.bundle",
+    "commit": "119d38be9a91feae23fdfc1d4d39ede8fd7a697a",
+    "size_bytes": 187678678,
+    "sha256": "0f04f5c09baddd5089bb41c35aca78f929f088529a1da7bf425cd4d720503db4",
+    "git_bundle_verify": "passed; complete history"
+  },
+  "runtime_cache": {
+    "file": "jetson-runtime-ready.tar.gz",
+    "sha256": "ab7c3c02e743e07442394dd916dd9fb3605ebc22809ffe6797a6cea53ee59c85",
+    "all_15_base_pins_and_sdk_commit_match_at": "119d38b",
+    "jetson_execution_verified": false,
+    "vision_stack_included": false
+  },
+  "console": {
+    "camera": "Logitech C270 HD WEBCAM",
+    "capture": "Non-root Jetson GStreamer 640x480 JPEG after 30-frame warm-up; first single frame was dark during exposure startup",
+    "observation": "Authenticated KVM Escape over Beryl woke Jetson lock screen, visibly verified through Jetson-hosted C270 image",
+    "kvm": "GL.iNet GL-RM1",
+    "local_web_reachable": true,
+    "hdmi_connected": false,
+    "hid_delivery_verified": true,
+    "factory_reset": "User requested physical reset; fresh local administrator initialization now verified",
+    "internet_sharing": "KVM moved to Beryl; Mac Internet Sharing is no longer its network path. Sharing service enabled/disabled state not changed or reverified here.",
+    "cloud": "Authenticated console launched via glkvm.com Remote Control; settled P2P/no HDMI from this Mac, off-site/relay/keyboard path unverified",
+    "updated_at": "2026-11-08T03:25:20-08:00",
+    "kvm_firmware_ui": "V1.9.2 release1 (RM1)",
+    "local_admin_initialized": true,
+    "credential_storage": "Generated administrator password saved in Mac login Keychain; no secret recorded",
+    "network": {
+      "router": "GL-MT3000 Beryl AX",
+      "kvm_ipv4": "192.168.8.166",
+      "jetson_ipv4": "192.168.8.136",
+      "mac_internet_sharing_required": false,
+      "jetson_network_path_verified": true,
+      "kvm_public_endpoint_verified": true,
+      "kvm_authenticated_access_after_move_verified": true,
+      "old_kvm_ipv4": "192.168.2.2",
+      "old_kvm_ipv4_reachable": false
+    },
+    "cloud_binding": {
+      "sign_in_completed": true,
+      "provider": "Google",
+      "bind_completed": true,
+      "device_name": "GL-RM1-569",
+      "online": true,
+      "paid_plan_activated": false,
+      "remote_control_session_verified": true,
+      "remote_control_session_scope": "Authenticated console connection from this Mac only; no target input test or off-site test"
+    },
+    "hid_check": {
+      "keyboard_enabled_in_settings": true,
+      "virtual_key": "V",
+      "click_attempts": 2,
+      "focus_attempted": true,
+      "visible_character_observed": false,
+      "tooltip": "Keyboard captured, inactive",
+      "status": "Local KVM-to-Jetson HID independently verified by agent Enter opening the failed installer diagnostic shell",
+      "tooltip_source": "Public KVM client JavaScript inspection",
+      "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
+      "next_check": "Verify mouse separately if needed; off-site control remains unverified",
+      "physical_cable_check_completed": true,
+      "usb_gadget_diagnostic": {
+        "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
+        "state": "not attached",
+        "current_speed": "UNKNOWN",
+        "scope": "Read-only through authenticated KVM built-in terminal; no USB host connection observed"
+      },
+      "recovery": {
+        "evidence": "User report",
+        "connection": "KVM data/HID cable USB-C to Jetson USB-C",
+        "keyboard_worked": true,
+        "user_selected_installer": true,
+        "reported_menu_label": "Install ...39.something",
+        "earlier_failure_fields_are_historical": true
+      },
+      "usb_gadget_diagnostic_after_reconnect": {
+        "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
+        "state": "configured",
+        "current_speed": "high-speed",
+        "scope": "Read-only through same authenticated KVM built-in terminal; USB host connection directly verified",
+        "local_screenshot": "/private/tmp/jetson-kvm-usb-state-after-reconnect.png",
+        "agent_keypress_on_jetson_verified": false
+      },
+      "agent_keypress_evidence": {
+        "key": "Enter",
+        "before": "An error occurred. Press enter to start a shell",
+        "after": "Root diagnostic shell prompt visible",
+        "local_screenshot": "/private/tmp/jetson-installer-shell-open.png",
+        "scope": "Local KVM path, not off-site/cloud control test"
+      }
+    },
+    "hid_verification_scope": "Historical installer Enter succeeded; new Beryl LAN login and Escape delivery now visibly verified through Jetson webcam",
+    "agent_keypress_verified": true,
+    "usb_host_attachment_directly_verified": true,
+    "hid_delivery_user_confirmed": true,
+    "cloud_console": {
+      "recorded_at": "2026-11-08T02:09:16-08:00",
+      "entrypoint": "glkvm.com Remote Control",
+      "endpoint_domain": "Dynamic glkvm.top endpoint supplied by the authenticated portal; exact endpoint omitted",
+      "authenticated_console_verified": true,
+      "client_location": "Same Mac used for local setup",
+      "settled_transport": "P2P",
+      "transitional_transport_label": "Relay",
+      "relay_connection_verified": false,
+      "video_status": "No HDMI signal detected",
+      "hdmi_input_connected": false,
+      "jetson_key_test_during_active_install": false,
+      "cloud_route_keyboard_delivery_verified": false,
+      "offsite_access_verified": false,
+      "optional_web_terminal": "No shell established; later displayed reconnect prompt, not a blocker",
+      "local_screenshots": [
+        "/private/tmp/jetson-cloud-control-check-07.png",
+        "/private/tmp/jetson-cloud-control-check-08.png",
+        "/private/tmp/jetson-cloud-control-check-09.png"
+      ]
+    },
+    "capture_before_usb_move": "1280x720 AVFoundation still",
+    "internet_sharing_before_kvm_move": "Wi-Fi to Ethernet active on Mac bridge100 192.168.2.1; KVM DHCP address 192.168.2.2",
+    "network_before_kvm_move": {
+      "sharing_active": true,
+      "upstream": "Wi-Fi",
+      "downstream": "Ethernet",
+      "mac_bridge": "bridge100",
+      "mac_bridge_ipv4": "192.168.2.1",
+      "kvm_ipv4": "192.168.2.2",
+      "kvm_address_source": "DHCP",
+      "jetson_network_path_verified": false
+    },
+    "kvm_after_router_move": {
+      "recorded_at": "2026-11-08T03:05:32-08:00",
+      "user_confirmed_physical_move": true,
+      "ipv4": "192.168.8.166",
+      "tcp_ports_reachable": [
+        80,
+        443,
+        22
+      ],
+      "page_title": "GLKVM",
+      "public_client_asset": "index-DlOG5e8q.js",
+      "asset_matches_prior_device": true,
+      "old_ipv4": "192.168.2.2",
+      "old_ipv4_reachable": false,
+      "authenticated_console_verified": true,
+      "hid_delivery_verified": true,
+      "offsite_access_verified": false,
+      "updated_at": "2026-11-08T03:11:58-08:00",
+      "authentication": "Saved Keychain administrator credential; session token kept in memory only",
+      "keyboard_key": "Escape",
+      "keyboard_effect": "Jetson lock screen woke",
+      "keyboard_evidence": "/private/tmp/jetson-c270-after-kvm-key-20261108.jpg",
+      "keyboard_evidence_sha256": "e9f06276279a3a2e0c46de9282e15adf9fa5f89129f9a3c9d229a5c09280ce7a",
+      "mouse_relative_request_accepted": true,
+      "mouse_delivery_visibly_verified": false,
+      "power_source": "Mac",
+      "power_independent_of_mac_verified": false
+    },
+    "camera_after_usb_move": {
+      "recorded_at": "2026-11-08T03:05:32-08:00",
+      "user_confirmed_move_to_jetson": true,
+      "model": "Logitech C270",
+      "usb_id": "046d:0825",
+      "driver": "uvcvideo",
+      "capture_node": "/dev/video0",
+      "metadata_node": "/dev/video1",
+      "metadata_node_is_second_camera": false,
+      "gstreamer_version": "1.24.2",
+      "fadi_in_video_group": true,
+      "frame_verified": true,
+      "sustained_capture_verified": false,
+      "three_camera_contract_verified": false,
+      "previous_mac_avfoundation_indices_obsolete": true,
+      "learning": "Discover the camera on its current host after USB moves; Mac AVFoundation indices cannot address Jetson video nodes",
+      "updated_at": "2026-11-08T03:11:58-08:00",
+      "capture_user": "fadi",
+      "capture_as_root": false,
+      "frame_format": "JPEG",
+      "frame_dimensions": [
+        640,
+        480
+      ],
+      "initial_single_frame": "Valid JPEG but dark during exposure startup",
+      "warmup_frames": 30,
+      "warmup_sink": "multifilesink max-files=1",
+      "warmed_frame_path": "/private/tmp/jetson-c270-warmed-frame-20261108.jpg",
+      "warmed_frame_sha256": "8501741368b74bab69108f588de6d4d978d7a5ac8478c57bc8751b6acb83f9e7",
+      "after_key_frame_path": "/private/tmp/jetson-c270-after-kvm-key-20261108.jpg",
+      "after_key_frame_sha256": "e9f06276279a3a2e0c46de9282e15adf9fa5f89129f9a3c9d229a5c09280ce7a",
+      "local_frame_hashes_independently_rechecked": true,
+      "reusable_helper_verified": true,
+      "preboot_console_limitation": "Jetson-hosted camera requires running OS/capture path and does not replace HDMI KVM for preboot/recovery",
+      "reusable_helper_verification_scope": "Non-root inventory and bounded snapshot on actual Jetson C270, visually inspected helper image and four on-device test methods passed"
+    },
+    "camera_helper": {
+      "path": "arm/tools/camera_inspect_linux.py",
+      "test_path": "arm/tools/test_camera_inspect_linux.py",
+      "inventory_verified_on_jetson": true,
+      "capture_and_metadata_nodes_distinguished": true,
+      "stable_aliases_reported": true,
+      "nonroot_read_write_access_verified": true,
+      "snapshot_hardware_verified": true,
+      "snapshot_observed_at": "2026-11-08T03:06:22-08:00",
+      "explicit_stable_by_id_alias_selected": true,
+      "sampled_frames": 30,
+      "width": 640,
+      "height": 480,
+      "requested_fps": 30,
+      "default_timeout_seconds": 15,
+      "capture_started_uptime_s": 2529.075703918,
+      "receipt_uptime_s": 2532.135198036,
+      "outputs": [
+        "JPEG",
+        "camera-report.json",
+        "capture-latest.json",
+        "capture-ready.txt"
+      ],
+      "output_directory_must_be_new": true,
+      "image_visually_inspected": true,
+      "local_unit_test_methods_passed": 4,
+      "local_unit_scenarios_covered": 6,
+      "jetson_unit_tests_verified": true,
+      "timing_scope": "Jetson monotonic host start/receipt, not sensor exposure; copied metadata cannot be compared with Mac monotonic clock",
+      "live_camera_feed": false,
+      "three_camera_acceptance": false,
+      "updated_at": "2026-11-08T03:25:20-08:00",
+      "image_observation": "Clear camera image of blank monitor; confirms usable capture, not a new HID test",
+      "jetson_unit_test_methods_passed": 4,
+      "jetson_unit_test_duration_seconds": 0.02,
+      "local_helper_sha256_matches_jetson": true,
+      "sha256": {
+        "helper_source": "9fc2303cee74a452dd0714ef6e1df26cf57b07986f1274ae031a78547ac96462",
+        "jpeg": "591dadd30db4656a21a4f02bcd263e91ff17ecf81a46276272c3070549dbdc60",
+        "camera_report": "1b64a7b6b20a54e018f172e010b67bcb1814a42c85cce4d5c9b97dc4b7c6f083",
+        "capture_ready": "0b9ea005ed170271cdd1901336845fc1babe6e2285fa40337bf7369e4c3c9e6b",
+        "capture_latest": "0b9ea005ed170271cdd1901336845fc1babe6e2285fa40337bf7369e4c3c9e6b"
+      },
+      "private_outputs": {
+        "directory": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/c270-helper-verified-20261108",
+        "file_count": 4,
+        "each_hash_matched_target": true,
+        "raw_image_or_serial_metadata_committed": false
+      }
+    },
+    "expected_video_cable": {
+      "arrival": "Morning, user-reported",
+      "required_direction": "Jetson DisplayPort output to KVM HDMI input",
+      "compatibility_verified": false,
+      "native_video_verified": false
+    }
+  },
+  "pending": [
+    "Verify mouse delivery separately if needed; accepted relative-mouse request did not visibly wake the screen",
+    "Provide and verify independent KVM/kit power if desired; network is independent of Mac Ethernet sharing, KVM power still comes from Mac",
+    "Complete attended hardware/controller, three-camera and telemetry acceptance separately",
+    "Record fan and workload cooling observations before performance tuning",
+    "Only if off-site/team access is selected, decide its architecture/network and approve routes/policy; current local LAN needs neither Tailscale nor subnet renumbering",
+    "When the user-reported morning video cable arrives, verify Jetson DisplayPort output to KVM HDMI input compatibility and actual video"
+  ],
+  "updated_at": "2026-11-08T03:25:20-08:00",
+  "status_history": [
+    {
+      "recorded_at": "2026-11-08T00:51:55-08:00",
+      "scope": "Installer USB prepared and verified on Mac; insertion into Jetson user-confirmed; KVM admin, network and cloud binding verified; HID, Jetson installation and SSH pending",
+      "console_observation": "UEFI Interactive Shell with idle Shell> prompt; two virtual V key attempts produced no visible character",
+      "hid_delivery_verified": false,
+      "hid_check": {
+        "keyboard_enabled_in_settings": true,
+        "virtual_key": "V",
+        "click_attempts": 2,
+        "focus_attempted": true,
+        "visible_character_observed": false,
+        "tooltip": "Keyboard captured, inactive",
+        "status": "physical USB/HID connection check pending",
+        "tooltip_source": "Public KVM client JavaScript inspection",
+        "tooltip_interpretation": "Keyboard capture enabled while HID keyboard is offline or busy; no HDMI condition",
+        "next_check": "User asked to reseat only the KVM keyboard/mouse USB cable into another Jetson USB-A port, preserving KVM power and SanDisk installer",
+        "physical_cable_check_completed": false,
+        "usb_gadget_diagnostic": {
+          "command": "cat /sys/class/udc/*/state /sys/class/udc/*/current_speed",
+          "state": "not attached",
+          "current_speed": "UNKNOWN",
+          "scope": "Read-only through authenticated KVM built-in terminal; no USB host connection observed"
+        }
+      },
+      "pending": [
+        "Complete requested physical KVM USB/HID cable check, then verify keyboard delivery visibly through the C270",
+        "Select the inserted, verified USB in UEFI Boot Manager and verify installer boot",
+        "Complete documented QSPI update with Y within 30-second prompt and allow both capsule passes",
+        "Identify intended NVMe and obtain its erase confirmation before installing",
+        "Complete Jetson initial setup/network/SSH and verify installed versions/root device",
+        "Verify an actual GLKVM remote-control session; cloud online status alone is insufficient",
+        "Run cached arm environment and offline checks on actual Jetson"
+      ]
+    },
+    {
+      "recorded_at": "2026-11-08T01:07:15-08:00",
+      "scope": "User reconnected KVM data cable and started installer; webcam directly verifies NVMe installation progressing beyond partitioning; completion, final firmware and SSH unverified",
+      "console_observation": "Subiquity/curtin install logs show nvme0n1 partitions 1-15 configured, partitioning and extraction finished, then curthooks configuring installed system/installing missing packages",
+      "hid_delivery_verified": false,
+      "hid_verification_scope": "User-reported successful keyboard interaction and install selection after USB-C-to-USB-C cable reconnect; agent has not independently sent/observed a successful keypress",
+      "installation": {
+        "recorded_at": "2026-11-08T01:07:15-08:00",
+        "started_by": "user",
+        "agent_triggered_install_or_erase": false,
+        "active_directly_verified": true,
+        "screenshots": [
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-a.png",
+            "observation": "Subiquity/curtin partitioning with nvme0n1 text; bottom of display cut off"
+          },
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-b.png",
+            "observation": "nvme0n1 partitions 1-15 configured; partitioning finished; extracting install sources to disk"
+          },
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-c.png",
+            "observation": "Extract stage finished; configuring installed system and installing missing packages through curthooks"
+          },
+          {
+            "local_path": "/private/tmp/jetson-installer-20261108-d.png",
+            "observation": "NVIDIA/Ubuntu package list and active installing packages progress; screen estimates 15 minutes"
+          }
+        ],
+        "screenshot_scope": "Local webcam captures inspected directly; paths are local evidence, not committed image artifacts",
+        "visible_target_device": "nvme0n1",
+        "partitioning_stage_finished": true,
+        "extract_stage_finished": true,
+        "latest_stage": "Installing NVIDIA and Ubuntu packages; screen estimates 15 minutes",
+        "target_model_capacity_independently_verified": false,
+        "target_prior_contents_independently_verified": false,
+        "final_firmware_verified": false,
+        "completion_verified": false,
+        "installed_os_boot_verified": false,
+        "ssh_verified": false,
+        "current_instruction": "Observe progress without interrupting power, removing installer USB or sending exploratory keys"
+      },
+      "pending": [
+        "Observe active installation through completion without interrupting it; retain full-screen outcome/error evidence",
+        "Follow actual completion/reboot/media-removal prompts and verify installed-system boot",
+        "Record final firmware, L4T/Ubuntu versions, NVMe model/capacity and actual root device",
+        "Complete Jetson initial account/network/SSH setup",
+        "Independently verify an agent-sent key and actual GLKVM remote-control session when safe; user operation already succeeded",
+        "Run cached arm environment and offline checks on actual Jetson"
+      ]
+    }
+  ],
+  "installation": {
+    "recorded_at": "2026-11-08T01:07:15-08:00",
+    "started_by": "user",
+    "agent_triggered_install_or_erase": false,
+    "active_directly_verified": false,
+    "screenshots": [
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-a.png",
+        "observation": "Subiquity/curtin partitioning with nvme0n1 text; bottom of display cut off"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-b.png",
+        "observation": "nvme0n1 partitions 1-15 configured; partitioning finished; extracting install sources to disk"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-c.png",
+        "observation": "Extract stage finished; configuring installed system and installing missing packages through curthooks"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-20261108-d.png",
+        "observation": "NVIDIA/Ubuntu package list and active installing packages progress; screen estimates 15 minutes"
+      },
+      {
+        "local_path": "/private/tmp/jetson-install-watch-hand-observation-09.png",
+        "observation": "Explicit installation failure, no matching -nv DTB message, crash report under /var/crash and Enter-to-shell prompt"
+      },
+      {
+        "local_path": "/private/tmp/jetson-installer-shell-open.png",
+        "observation": "Root diagnostic shell visible after agent Enter through KVM"
+      },
+      {
+        "local_path": "/private/tmp/jetson-network-bios-result.png",
+        "observation": "Read-only bios_version still 36.4.2-gcid-38685322; nvbootctrl unavailable; IPv4 query shows only loopback"
+      }
+    ],
+    "screenshot_scope": "Local webcam captures inspected directly; paths are local evidence, not committed image artifacts",
+    "visible_target_device": "nvme0n1",
+    "partitioning_stage_finished": true,
+    "extract_stage_finished": true,
+    "latest_stage": "Original attempt failed at late/run/command_27; private evidence preserved. Subsequent firmware result verified; see reinstallation for active retry.",
+    "target_model_capacity_independently_verified": true,
+    "target_prior_contents_independently_verified": false,
+    "final_firmware_verified": false,
+    "completion_verified": false,
+    "installed_os_boot_verified": false,
+    "ssh_verified": false,
+    "current_instruction": "Original attempt ended; preserve failure/archive evidence and observe the active reinstallation",
+    "updated_at": "2026-11-08T01:55:56-08:00",
+    "status": "failed",
+    "failure": {
+      "observed_at": "2026-11-08T01:17:00-08:00",
+      "directly_verified": true,
+      "prompt": "An error occurred. Press enter to start a shell",
+      "trace_stage": "late/run/command_27",
+      "trace_message": "No matching -nv DTB found for running board",
+      "crash_location_pattern": "/var/crash/...install_fail.crash",
+      "exact_crash_filename_verified": true,
+      "root_cause_confirmed": false,
+      "diagnosis_status": "Immediate DTB model/compatible mismatch identified; subsequent UEFI update verified, retry installation in progress",
+      "reboot_performed_for_diagnosis": true,
+      "firmware_changed_for_diagnosis": true,
+      "dtb_override_applied": false,
+      "firmware_update_not_completed": false,
+      "trace_stage_evidence": "Preserved installer log; corrects earlier screen-based command23 transcription",
+      "dtb_mismatch_confirmed": true,
+      "root_cause_scope": "Immediate matching failure identified; cause of the mixed running identity and successful recovery remain unproven",
+      "reboot_scope": "After private log preservation, rebooted for official USB/QSPI recovery",
+      "firmware_change_status": "Subsequent UEFI directly verifies 39.2.1-gcid-46758480",
+      "dtb_mismatch": {
+        "evidence": "Read-only running device-tree and candidate DTB comparison during temporary installer SSH",
+        "running_model": "NVIDIA Jetson Orin Nano Developer Kit",
+        "running_compatible": [
+          "nvidia,p3768-0000+p3767-0005-super",
+          "nvidia,p3767-0005",
+          "nvidia,tegra234"
+        ],
+        "super_dtb_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+        "super_dtb_model_matches_running": false,
+        "standard_dtb_model": "NVIDIA Jetson Orin Nano Developer Kit",
+        "standard_dtb_model_matches_running": true,
+        "standard_dtb_compatible_matches_running": false,
+        "standard_dtb_difference": "Board compatible value lacks -super",
+        "result": "Neither candidate satisfies both model and compatible matching",
+        "dtb_override_applied": false
+      },
+      "crash_path": "/var/crash/1751465839.266846180.install_fail.crash",
+      "crash_in_private_archive_verified": true,
+      "installer_clock": {
+        "log_date": "2025-07-02",
+        "stale": true,
+        "interpretation": "Installer log/crash timestamps are not the wall time of the November 8 recovery; preserve both clocks without conflating them"
+      }
+    },
+    "diagnostic_shell_open": false,
+    "read_only_diagnostics": {
+      "recorded_at": "2026-11-08T01:24:56-08:00",
+      "local_screenshot": "/private/tmp/jetson-network-bios-result.png",
+      "bios_version": {
+        "command": "cat /sys/class/dmi/id/bios_version",
+        "value": "36.4.2-gcid-38685322",
+        "directly_verified": true,
+        "matches_starting_firmware": true,
+        "interpretation": "Historical pre-recovery firmware. Later UEFI directly verifies 39.2.1-gcid-46758480."
+      },
+      "boot_slots": {
+        "command": "nvbootctrl dump-slots-info",
+        "result": "nvbootctrl: command not found in live installer",
+        "slot_state_verified": false
+      },
+      "ipv4": {
+        "command": "ip -br -4 addr",
+        "result": "Only lo 127.0.0.1/8",
+        "non_loopback_ipv4_observed": false,
+        "scope": "Historical pre-network observation; superseded by successful temporary installer SSH before recovery reboot"
+      }
+    },
+    "ssh_verification_scope": "ssh_verified remains false for installed OS; temporary installer recovery SSH is recorded separately",
+    "recovery_ssh": {
+      "recorded_at": "2026-11-08T01:54:45-08:00",
+      "host": "192.168.8.136",
+      "username": "root",
+      "authentication": "Dedicated SSH key; no key material recorded",
+      "independently_verified": true,
+      "environment": "Temporary failed installer",
+      "purpose": "Read-only diagnosis and private log preservation",
+      "verified_before_recovery_reboot": true,
+      "current_reachability_after_reboot_verified": false,
+      "installed_os_ssh_verified": false
+    },
+    "private_evidence_archive": {
+      "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/failed-installer-evidence.tar.gz",
+      "sha256": "3a0f81d9499911ef5871481e5c1d379bbe9721ba2ec692c0df016d4696c4cc98",
+      "sha256_independently_rechecked": true,
+      "contents_scope": "/var/log/installer and crash evidence",
+      "raw_logs_committed": false,
+      "privacy": "Private archive retained outside repository; only selected diagnostic facts recorded here",
+      "verified_crash_path": "/var/crash/1751465839.266846180.install_fail.crash"
+    },
+    "firmware_recovery": {
+      "recorded_at": "2026-11-08T01:54:45-08:00",
+      "status": "firmware result directly verified in UEFI",
+      "rebooted_after_log_preservation": true,
+      "boot_manager_selected_usb": "SanDisk installer USB",
+      "prompt_before_grub": true,
+      "confirmation_key": "Y",
+      "seconds_remaining_when_sent": 19,
+      "confirmation_observed": "User confirmed. Proceeding with capsule update.",
+      "local_screenshot": "/private/tmp/jetson-firmware-recovery-06.png",
+      "both_capsule_passes_complete": null,
+      "resulting_firmware_version_verified": true,
+      "installed_os_boot_verified": false,
+      "official_reference": "https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/quick_start.html",
+      "updated_at": "2026-11-08T02:03:18-08:00",
+      "progress_screens_observed": 2,
+      "progress_observation": "Two update-progress screens separated by black-screen/reboot intervals",
+      "hundred_percent_frame_observed": false,
+      "completion_evidence_scope": "Result verified from post-update UEFI; no claim of observing both progress counters reach 100 percent",
+      "resulting_firmware_version": "39.2.1-gcid-46758480",
+      "resulting_firmware_screenshot": "/private/tmp/jetson-firmware-watch-hand-observation-11.png"
+    },
+    "target_storage": {
+      "evidence": "Read-only lsblk through independently verified temporary installer SSH",
+      "device": "/dev/nvme0n1",
+      "lsblk_size": "931.5G",
+      "model": "SHPP41-1000GM",
+      "partitions_observed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "target_root_mountpoint": "/target",
+      "installed_os_boot_verified": false,
+      "prior_contents_independently_verified": false
+    },
+    "attempt_scope": "Original failed attempt; retained as historical evidence, with subsequent firmware recovery recorded below. See reinstallation for current attempt."
+  },
+  "portable_lan_proposal": {
+    "recorded_at": "2026-11-08T01:21:56-08:00",
+    "status": "Local Beryl network verified for Jetson SSH and authenticated KVM keyboard; no VPN required for same-LAN access",
+    "goal": "Portable Jetson/KVM LAN independent of Mac Internet Sharing",
+    "intended_router": "Separate GL.iNet GL-MT3000 Beryl AX",
+    "separate_model_confirmed": true,
+    "separate_wiring_confirmed": true,
+    "configuration_performed": true,
+    "local_topology_verified": true,
+    "remote_access_verified": false,
+    "home_gateway": {
+      "model": "GL-MT6000",
+      "ipv4": "192.168.8.1",
+      "must_remain_unchanged": true
+    },
+    "current_kvm_lan": "Beryl LAN, KVM 192.168.8.166",
+    "next_step": "Finish reusable camera helper and attended acceptance; independent kit power and off-site access remain separate",
+    "updated_at": "2026-11-08T03:11:58-08:00",
+    "model_evidence": "User-provided photo identifies GL-MT3000 Beryl AX; no Wi-Fi credentials or hardware addresses retained",
+    "internet_available_user_confirmed": true,
+    "internet_independently_verified": true,
+    "configuration_scope": "Beryl upgrade and Port 1 saved as LAN; user-confirmed KVM move with new endpoint reachable",
+    "original_wiring_request": "Jetson Ethernet to Beryl AX LAN; preserve KVM Ethernet to Mac",
+    "original_wiring_verified": true
+  },
+  "portable_network_current": {
+    "router_model": "GL-MT3000 Beryl AX",
+    "mac_joined_travel_wifi": true,
+    "mac_ipv4": "192.168.8.244",
+    "travel_router_ipv4": "192.168.8.1",
+    "router_identity_verified_by": "Changed gateway hardware identity and GL-MT3000 admin page",
+    "internet_http_check": "Apple success page returned successfully",
+    "kvm_local_reachable_after_wifi_change": true,
+    "kvm_ipv4": "192.168.8.166",
+    "jetson_ethernet_to_beryl_lan_user_confirmed": true,
+    "jetson_ipv4_after_cable_unverified": false,
+    "router_admin_login": "User recovered password; authenticated admin UI verified",
+    "router_settings_changed": true,
+    "home_router_unchanged": true,
+    "updated_at": "2026-11-08T03:25:20-08:00",
+    "router_change_scope": "Beryl upgrade, Port 1 saved as LAN, and verified device address reservations; home GL-MT6000 unchanged",
+    "router_firmware_version": "4.11.0",
+    "router_firmware_verified": true,
+    "router_firmware_evidence": "/private/tmp/jetson-beryl-upgrade-check.png",
+    "upgrade_download_38_percent_previously_observed": true,
+    "internet_http_check_after_upgrade": "HTTP success response verified",
+    "jetson_recovery_ipv4": "192.168.8.136",
+    "jetson_recovery_ssh_verified_before_reboot": true,
+    "jetson_current_ipv4_after_reboot_verified": true,
+    "mac_sharing_still_required_for_kvm": false,
+    "portable_topology_independent_of_mac_verified": true,
+    "offsite_access_verified": false,
+    "port1_lan": {
+      "physical_label": "WAN",
+      "configured_mode": "LAN",
+      "apply_toast_observed": "Applied",
+      "reloaded_table_mode": "LAN",
+      "saved_setting_verified": true,
+      "physical_port_access_verified": false,
+      "kvm_cable_move_requested": "Move KVM Ethernet from Mac to free WAN-labeled Beryl Port 1",
+      "user_reply_received": true,
+      "physical_kvm_move_verified": true,
+      "exact_physical_port_independently_inspected": false,
+      "physical_port_access_scope": "KVM access through Beryl verified; exact port attachment not independently inspected"
+    },
+    "address_reservations": {
+      "independently_verified": true,
+      "local_screenshot": "/private/tmp/beryl-lan-reservations-03.png",
+      "identity_check": "Each reservation matched known device hardware identity; hardware addresses omitted",
+      "kvm_ipv4": "192.168.8.166",
+      "jetson_ipv4": "192.168.8.136",
+      "scope": "Router reservations only; not proof of current leases, physical port access or installed-system reachability"
+    },
+    "kvm_reserved_beryl_ipv4": "192.168.8.166",
+    "post_reboot_ping_and_tcp22": {
+      "address": "192.168.8.136",
+      "ping": true,
+      "tcp22": true,
+      "ssh_host_identity_verified": true,
+      "authenticated_login_verified": true
+    },
+    "installed_host_ssh": {
+      "address": "192.168.8.136",
+      "username": "fadi",
+      "hostname": "orin-arm",
+      "verified": true,
+      "scope": "Dedicated-key LAN SSH with strict host-key verification; off-site access remains unverified"
+    },
+    "network_path_independent_of_mac_sharing_verified": true,
+    "local_tailscale_required": false,
+    "local_subnet_change_required": false,
+    "portable_topology_verification_scope": "Local network independent of Mac Ethernet sharing only; KVM still powered by Mac, full power independence not verified",
+    "current_checks": {
+      "jetson_ssh_verified": true,
+      "jetson_system_state": "running",
+      "kvm_new_ipv4": "192.168.8.166",
+      "kvm_public_endpoint_verified": true,
+      "old_kvm_ipv4_reachable": false,
+      "kvm_authenticated_login_verified": true,
+      "kvm_keyboard_delivery_verified": true,
+      "kvm_mouse_delivery_verified": false,
+      "verified_again_after_interruption": true
+    },
+    "kit_power_independent_of_mac_verified": false,
+    "connectivity_interruption": {
+      "recorded_at": "2026-11-08T03:25:20-08:00",
+      "status": "resolved",
+      "cause": "unknown",
+      "mac_ipv4_before": "192.168.8.174",
+      "mac_ipv4_after": "192.168.8.244",
+      "gateway_reachable_during_interruption": true,
+      "kit_addresses_temporarily_unreachable": [
+        "192.168.8.136",
+        "192.168.8.166"
+      ],
+      "rejoin_attempt_error": -3900,
+      "native_wifi_settings_confirmed_beryl_connected": true,
+      "user_confirmed_beryl_powered": true,
+      "home_network_switch_confirmed": false,
+      "original_endpoints_reachable_again": true,
+      "strict_jetson_ssh_reauthenticated": true,
+      "jetson_uptime_minutes_at_recheck": 58,
+      "jetson_reboot_during_interruption": false,
+      "kvm_reauthenticated": true,
+      "lan_renumber_performed": false,
+      "lan_reset_performed": false
+    }
+  },
+  "current_attempt": "reinstallation",
+  "firmware_after": {
+    "recorded_at": "2026-11-08T02:03:18-08:00",
+    "version": "39.2.1-gcid-46758480",
+    "directly_verified": true,
+    "evidence": "Post-update UEFI firmware setup screen",
+    "local_screenshot": "/private/tmp/jetson-firmware-watch-hand-observation-11.png",
+    "installed_os_boot_verified": false
+  },
+  "reinstallation": {
+    "recorded_at": "2026-11-08T02:03:18-08:00",
+    "started_at_approximate": "2026-11-08T02:00:00-08:00",
+    "started_by": "agent",
+    "authorization": "User-authorized fresh setup of previously identified NVMe target",
+    "menu_sequence": [
+      "UEFI Boot Manager: SanDisk USB",
+      "Install r39.2.1",
+      "Install on NVMe"
+    ],
+    "agent_triggered_install_or_erase": true,
+    "separate_erase_confirmation_observed_before_partitioning": false,
+    "status": "installed-os-and-ssh-verified",
+    "active_directly_verified": false,
+    "target_device": "/dev/nvme0n1",
+    "target_model_previously_verified": "SHPP41-1000GM",
+    "target_lsblk_size_previously_verified": "931.5G",
+    "latest_stage": "Setup Complete / All done; desktop after reboot, NVMe root and authenticated installed-OS SSH verified",
+    "progress_observed_at": "2026-11-08T02:03:50-08:00",
+    "completion_verified": true,
+    "installed_os_boot_verified": true,
+    "persistent_ssh_verified": true,
+    "current_instruction": "Local SSH/KVM and camera helper checks complete. Continue attended acceptance; independent power, native KVM video and optional off-site routing remain separate.",
+    "updated_at": "2026-11-08T02:44:34-08:00",
+    "partitioning_observation": {
+      "observed_at": "2026-11-08T02:01:41-08:00",
+      "local_screenshot": "/private/tmp/jetson-retry-watch-hand-observation-03.png"
+    },
+    "progress_evidence": "Direct webcam observation; installer remains running",
+    "displayed_wait_minutes": 15,
+    "wait_estimate_is_completion_evidence": false,
+    "package_progress_observation": {
+      "observed_at": "2026-11-08T02:03:50-08:00",
+      "stage": "Installing many packages; displayed estimated wait of 15 minutes",
+      "evidence": "Direct webcam observation; installer remains running"
+    },
+    "failure": {
+      "package": "nvidia-l4t-bootloader",
+      "stage": "in-target APT reinstall and bootloader post-install configuration",
+      "apt_exit_status": 100,
+      "postinst_exit_status": 1,
+      "error": "3767--0005--1--jetson-orin-nx-devkit-16gb- does not match any known boards",
+      "target_config": "/target/etc/nv_boot_control.conf",
+      "generated_board_name": "jetson-orin-nx-devkit-16gb",
+      "affected_fields": [
+        "TNSPEC",
+        "COMPATIBLE_SPEC"
+      ],
+      "crash_path": "/var/crash/1794132808.244395971.install_fail.crash",
+      "evidence": "Read-only inspection of preserved retry archive",
+      "observed_at": "2026-11-08T02:13:28-08:00",
+      "time_evidence": "Second crash epoch 1794132808; recorded by primary recovery session"
+    },
+    "private_evidence_archive": {
+      "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/retry-bootloader-failure.tar.gz",
+      "working_copy": "/private/tmp/jetson-install-recovery-20261108/retry-bootloader-failure.tar.gz",
+      "sha256": "3cc4d1b27f14b8eaf30ae95a342cd72e321a10a24a351a8924ca6256523bfcf0",
+      "both_copies_hash_verified": true,
+      "contents_scope": "Installer/crash/package logs, target boot-control config and bootloader scripts",
+      "raw_logs_committed": false
+    },
+    "targeted_repair": {
+      "updated_at": "2026-11-08T02:44:34-08:00",
+      "status": "Bootloader package repair succeeded; subsequent OEM finalization, setup and installed-OS verification complete",
+      "backup_before_edit": true,
+      "scope": "Corrected only two boot-control board names; other identifiers preserved",
+      "corrected_board_name": "jetson-orin-nano-devkit",
+      "affected_fields": [
+        "TNSPEC",
+        "COMPATIBLE_SPEC"
+      ],
+      "target_mounts_prepared": [
+        "/proc",
+        "/sys",
+        "EFI variables"
+      ],
+      "apt_reinstall_attempts": {
+        "forms": [
+          "Package name",
+          "Local Debian package"
+        ],
+        "result": "Internal Error, No file name"
+      },
+      "successful_installer": "dpkg --install exact ISO bootloader package",
+      "package": "nvidia-l4t-bootloader",
+      "package_version": "39.2.1-20260806224157",
+      "dpkg_exit_status": 0,
+      "configuration_success_verified": true,
+      "vendor_normalized_compatible_spec_board_name": "jetson-orin-nano-devkit-super",
+      "tnspec_board_name": "jetson-orin-nano-devkit",
+      "current_qspi_value": 2556417,
+      "package_qspi_value": 2556417,
+      "capsule_log_result": "No need to trigger capsule update",
+      "target_log": "/target/root/jetson-installer-repair-20261108/reinstall-dpkg.log",
+      "repair_log_private_preservation_verified": true,
+      "remaining_oem_late_commands_verified": true,
+      "installation_completion_verified": true,
+      "installed_os_boot_verified": true,
+      "package_status": "install ok installed",
+      "dpkg_audit_output_empty": true,
+      "private_evidence_archive": {
+        "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/bootloader-repair-evidence.tar.gz",
+        "working_copy": "/private/tmp/jetson-install-recovery-20261108/bootloader-repair-evidence.tar.gz",
+        "sha256": "d15872aa5b974a88a2f5c6d3d25036f1441095444e85ec39d8915cd3becb565a",
+        "both_copies_hash_verified": true,
+        "raw_logs_committed": false
+      },
+      "installed_os_boot_verification_scope": "Completed setup and desktop after reboot; local console verifies /dev/nvme0n1p1, fadi and orin-arm; installed-host OS checks and strict dedicated-key SSH verified"
+    },
+    "installed_os_boot_verification_scope": "Completed setup and desktop after reboot; local console verifies /dev/nvme0n1p1, fadi and orin-arm; installed-host OS checks and strict dedicated-key SSH verified",
+    "completion_scope": "Recovered installation with bootloader repair and applicable OEM finalization, followed by successful graphical account setup and installed-OS boot; original installer failure remains historical"
+  },
+  "tailscale_package_cache": {
+    "prepared_at": "2026-11-08T10:11:56.866552+00:00",
+    "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/tailscale-ubuntu-noble-arm64",
+    "manifest_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/tailscale-ubuntu-noble-arm64/MANIFEST.json",
+    "target": {
+      "distribution": "Ubuntu 24.04 noble",
+      "architecture": "arm64",
+      "tailscale_version": "1.104.5"
+    },
+    "keyring_version": "1.35.181",
+    "state": "Packages installed; tailscaled active/enabled, NeedsLogin without enrollment or addresses",
+    "verification": {
+      "trust_root": "Tailscale repository key retrieved via official HTTPS URL; no separate out-of-band key verification.",
+      "signing_fingerprint": "2596A99EAAB33821893C0A79458CA832957F5868",
+      "inrelease_signature_verified_with_gpgv": true,
+      "arm64_and_all_packages_gz_sha256_verified_against_inrelease": true,
+      "deb_sha256_and_sizes_verified_against_signed_package_indexes": true
+    },
+    "all_seven_artifact_sizes_and_sha256_rechecked": true,
+    "dependencies": {
+      "required": [
+        "iptables"
+      ],
+      "recommended": [
+        "tailscale-archive-keyring (>= 1.35.181)",
+        "iproute2"
+      ],
+      "ubuntu_dependency_packages_cached": false
+    },
+    "install_can_start_tailscaled": true,
+    "packages": [
+      {
+        "name": "tailscale_1.104.5_arm64.deb",
+        "size": 37508766,
+        "sha256": "7ce61e75d15c1269d0aebe3ed59524b83225121cba1b8ea682d04594195f6bc1"
+      },
+      {
+        "name": "tailscale-archive-keyring_1.35.181_all.deb",
+        "size": 3082,
+        "sha256": "dfefafbbc1046114f8c99256a8e6fbec44d27bd2dd8db8ab9d4c5a99087aec90"
+      }
+    ],
+    "jetson_installation_verified": true,
+    "daemon_started": true,
+    "authenticated": false,
+    "device_activated": false,
+    "sources": [
+      "https://pkgs.tailscale.com/stable/#ubuntu-noble",
+      "https://tailscale.com/docs/install/linux"
+    ],
+    "updated_at": "2026-11-08T02:49:38-08:00",
+    "initial_preparation_state": "Prepared only; not installed, started, authenticated or activated",
+    "daemon_enabled": true,
+    "installed_tailscale_version": "1.104.5",
+    "installed_keyring_version": "1.35.181",
+    "artifact_hashes_and_gpg_verified_again_before_install": true,
+    "backend_state": "NeedsLogin",
+    "assigned_tailscale_addresses": [],
+    "tailnet_enrolled": false,
+    "intended_tailnet_selection_pending": true,
+    "network_selection_context": "No enrollment needed for current same-LAN work. Optional off-site proposal remains unselected; Jetson client is NeedsLogin without addresses.",
+    "network_architecture_review_pending": true
+  },
+  "pre_firstboot_finalization": {
+    "recorded_at": "2026-11-08T02:25:30-08:00",
+    "completed_at": "2026-11-08T02:22:49-08:00",
+    "oem_late_commands_applied": 26,
+    "postchecks_verified": true,
+    "scope": "Applicable true branch only; absent tuned helper omitted",
+    "missing_marker_directory_created": "/etc/nv",
+    "boot_entry_removed": {
+      "name": "Ubuntu",
+      "number": "0009"
+    },
+    "boot_order_verified": {
+      "first": "NVMe 0008",
+      "last": "USB 0001"
+    },
+    "persistent_network": {
+      "manager": "NetworkManager",
+      "interface": "enP8p1s0",
+      "ipv4": "DHCP",
+      "netplan_generated": true
+    },
+    "reboot_issued_at_approximate": "2026-11-08T02:24:00-08:00",
+    "first_ssd_boot_verified": true,
+    "installed_os_account_verified": true,
+    "persistent_ssh_verified": true,
+    "private_evidence_archive": {
+      "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/pre-firstboot-finalization.tar.gz",
+      "working_copy": "/private/tmp/jetson-install-recovery-20261108/pre-firstboot-finalization.tar.gz",
+      "sha256": "cf3c64540f8dbd54fc4d22f5e10130554f4b5bbedf0328336a1995aeaafca871",
+      "both_copies_hash_verified": true,
+      "raw_logs_public": false
+    },
+    "first_ssd_boot_verification_scope": "Completed setup and desktop after reboot; local console verifies /dev/nvme0n1p1, fadi and orin-arm; installed-host OS checks and strict dedicated-key SSH verified",
+    "updated_at": "2026-11-08T02:44:34-08:00"
+  },
+  "first_boot": {
+    "observed_at": "2026-11-08T02:25:35-08:00",
+    "graphical_first_boot_verified": true,
+    "visible_screen": "Ubuntu Welcome / English",
+    "local_screenshot": "/private/tmp/jetson-ssd-firstboot-watch-04.png",
+    "boot_context": "After finalized installation, verified NVMe-first order and reboot",
+    "running_root_mount_verified": true,
+    "running_os_versions_verified": true,
+    "setup_progress": [
+      "Welcome / English",
+      "US keyboard selection",
+      "NVIDIA license screen",
+      "NVIDIA license accepted",
+      "Wi-Fi skipped; wired network retained",
+      "Pacific time zone selected; PST verified around 02:35",
+      "Account fadi and hostname orin-arm created",
+      "Setup Complete / All done",
+      "Start Using Ubuntu selected; automatic reboot and desktop observed"
+    ],
+    "license_acceptance_verified": true,
+    "account_created_verified": true,
+    "setup_completion_verified": true,
+    "network_observation": {
+      "observed_after": "2026-11-08T02:26:00-08:00",
+      "address": "192.168.8.136",
+      "ping_reachable": true,
+      "tcp_port_22_reachable": true,
+      "ssh_host_identity_verified": true,
+      "authenticated_ssh_login_verified": true,
+      "address_identity_scope": "Installed orin-arm host identity verified against local console, followed by authenticated dedicated-key SSH",
+      "ssh_verification": {
+        "username": "fadi",
+        "hostname": "orin-arm",
+        "authentication": "Dedicated client key",
+        "batch_mode": true,
+        "strict_known_host_check": true,
+        "host_fingerprint_verified_against_local_console": "SHA256:1Re9L+dbMLneresWeHhOM37nO2PW7a3mjuEhyHNGvvk",
+        "host_key_algorithm": "ED25519",
+        "socket_unit": "ssh.socket",
+        "socket_enabled": true,
+        "socket_active": true,
+        "service_unit": "ssh.service",
+        "service_enabled": false,
+        "service_disabled_expected_for_socket_activation": true,
+        "mac_alias": "ssh orin-arm",
+        "persistent_known_hosts_console_verified": true,
+        "mac_config_backup_created": true,
+        "existing_colima_include_preserved": true
+      }
+    },
+    "updated_at": "2026-11-08T02:44:34-08:00",
+    "setup_completion_evidence": {
+      "all_done_screenshot": "/private/tmp/jetson-oobe-step-23.png",
+      "reboot_screenshot": "/private/tmp/jetson-oobe-step-24.png",
+      "desktop_screenshot": "/private/tmp/jetson-oobe-step-25.png",
+      "console_verification_screenshot": "/private/tmp/jetson-first-terminal-02.png"
+    },
+    "account": {
+      "username": "fadi",
+      "hostname": "orin-arm",
+      "administrator_credential_storage": "Mac login Keychain",
+      "keychain_service": "Jetson Orin Nano administrator 2026-11-08",
+      "credential_value_recorded": false
+    }
+  },
+  "installed_system": {
+    "evidence": "Local console identity/root/fingerprint check and authenticated installed-OS SSH commands",
+    "ubuntu_version": "24.04.4",
+    "l4t_version": "39.2.1",
+    "uefi_version": "39.2.1-gcid-46758480",
+    "kernel_version": "6.8.12-1021-tegra",
+    "system_python_version": "3.12.3",
+    "ram_reported": "7.3 GiB",
+    "root": {
+      "device": "/dev/nvme0n1p1",
+      "filesystem": "ext4",
+      "total_reported": "915G",
+      "used_reported": "8.7G",
+      "available_reported": "860G"
+    },
+    "timezone_observation": "PST selected and verified around 02:35 Pacific",
+    "failed_service_cause_verified": false,
+    "failed_service_remediation_verified": true,
+    "arm_runtime_verified": true,
+    "offline_arm_tests_run": true,
+    "arm_hardware_milestone_claimed": false,
+    "recorded_at": "2026-11-08T02:44:34-08:00",
+    "updated_at": "2026-11-08T02:49:38-08:00",
+    "initially_failed_services": [
+      "dnsmasq",
+      "isc-dhcp-server",
+      "isc-dhcp-server6"
+    ],
+    "network_service_remediation": {
+      "scope": "Stopped and disabled global dnsmasq, isc-dhcp-server and isc-dhcp-server6 individually",
+      "preserved_active_services": [
+        "NVIDIA USB service",
+        "NetworkManager",
+        "systemd-resolved"
+      ],
+      "systemctl_failed_count": 0,
+      "systemctl_is_system_running": "running"
+    },
+    "timezone": "America/Los_Angeles",
+    "ntp_enabled": true,
+    "post_boot_control_check": {
+      "nano_tnspec_retained": true,
+      "super_compatible_spec_retained": true
+    },
+    "gpu_observation": {
+      "reported_by": "nvidia-smi",
+      "name": "Orin (nvgpu)",
+      "driver_version": "595.78"
+    },
+    "power_and_cooling": {
+      "power_watts": 25,
+      "mode": 1,
+      "default_mode_unchanged": true,
+      "temperature_celsius_observed_range": [
+        47,
+        49
+      ],
+      "scope": "Read-only idle baseline; workload and fan acceptance not verified"
+    },
+    "desktop_power_settings": {
+      "ac_sleep_action_before": "suspend",
+      "ac_sleep_action_after": "nothing",
+      "ac_sleep_action_explicitly_set": true,
+      "ac_sleep_timeout_seconds": 0,
+      "timeout_was_already_zero": true,
+      "display_blank_seconds": 300,
+      "display_blank_changed": false
+    },
+    "arm_runtime_verification_scope": "Isolated environment, SDK build, dependency/library checks, offline tests and help commands only; no controller or hardware session",
+    "old_installer_crash_preservation": {
+      "action": "Moved without deletion",
+      "destination": "/root/jetson-installer-repair-20261108/nvidia-l4t-bootloader.install-failure.crash",
+      "external_report_sent": false
+    }
+  },
+  "runtime_installation": {
+    "updated_at": "2026-11-08T02:52:55-08:00",
+    "status": "offline-validation-passed",
+    "initial_issue": "Install helper omitted packaging build dependency from its hash closure",
+    "build_dependency_closure_corrected": true,
+    "full_build_closure_verified_against_metadata": true,
+    "installation_resumed": true,
+    "installation_completion_verified": true,
+    "offline_arm_tests_run": true,
+    "hardware_touched_by_runtime_provisioning": false,
+    "environment_path": "/home/fadi/jetson-runtime/.venv",
+    "python_version": "3.12.15",
+    "build_packages": {
+      "packaging": "26.3",
+      "setuptools": "84.2.1",
+      "wheel": "0.48.0"
+    },
+    "cache_verified": true,
+    "environment_verified": true,
+    "maker_arm_sdk_build_succeeded": true,
+    "uv_pip_check_compatible_packages": 18,
+    "missing_libraries": [],
+    "tested_repository_commit": "d5c4f8d6ca67b4d3cc1a6eeb4eb22a1fce704542",
+    "offline_arm_tests_passed": 140,
+    "offline_arm_tests_duration_seconds": 2.77,
+    "pickup_client_help_passed": true,
+    "pickup_server_help_passed": true,
+    "controller_started": false,
+    "hardware_session_started": false,
+    "result_filename": "PROVISIONING-RESULT.json",
+    "target_log_path": "/home/fadi/jetson-prep-assets/provisioning-resume-final.log",
+    "private_evidence_preservation_verified": true,
+    "python_executable": "/home/fadi/jetson-runtime/.venv/bin/python",
+    "private_evidence": {
+      "directory": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/installed-runtime",
+      "files": [
+        {
+          "name": "PROVISIONING-RESULT.json",
+          "sha256": "a1261d1d52d79cf5af35a29d6f145f0330d0a706c64c0eb71152317cca88c2da"
+        },
+        {
+          "name": "provisioning-resume-final.log",
+          "sha256": "c6df8f0108e4d7023bf3104fec41ef14dcef38a82cf412a23c1a3d710122fc78"
+        }
+      ],
+      "target_local_external_hashes_match": true,
+      "external_copies_independently_rehashed": true,
+      "raw_evidence_committed": false
+    }
+  },
+  "remote_access_recommendation": {
+    "recorded_at": "2026-11-08T02:52:55-08:00",
+    "status": "optional-offsite-proposal-unselected",
+    "selected": false,
+    "configured": false,
+    "proposal": "Beryl AX Tailscale LAN subnet gateway for Jetson and KVM",
+    "vendor_integration_stage": "beta",
+    "lan_plan": {
+      "distinct_kit_lan_required": false,
+      "current_home_and_beryl_subnet": "192.168.8.0/24",
+      "replacement_subnet_selected": false,
+      "home_router_change_proposed": false,
+      "distinct_kit_lan_required_if_proposed_overlapping_offsite_route_selected": true,
+      "local_subnet_change_required": false
+    },
+    "proposed_route_scope": "Kit LAN only; no upstream WAN or exit-node advertisement",
+    "account_team_network_selected": false,
+    "access_policy_approved": false,
+    "route_approved": false,
+    "teammate_requirement": "Same gateway tailnet membership and policy permission; router sharing alone does not share subnet routes",
+    "goodcloud_ordinary_remote_gui_ssh_scope": "Router management only; not established Jetson/KVM network access",
+    "enrollment_or_routing_changes_made": false,
+    "sources": [
+      "https://docs.gl-inet.com/router/en/4/interface_guide/tailscale/",
+      "https://tailscale.com/docs/features/sharing#sharing-and-subnets-subnet-routers",
+      "https://docs.gl-inet.com/router/en/4/interface_guide/cloud/#remote-access"
+    ],
+    "updated_at": "2026-11-08T03:05:32-08:00",
+    "required_for_same_lan": false,
+    "scope": "Optional access from another network only; current Beryl local access requires no Tailscale or renumbering"
+  },
+  "runtime_recovery_artifacts": {
+    "readme": "docs/validation/jetson-runtime-recovery-2026-11-08/README.md",
+    "scope": "Exact historical resume.py, dependency closure and provisioning result with hashes and reuse preconditions; not a general installer",
+    "new_camera_helper_changes_pinned_tools_tree": true
+  }
+}

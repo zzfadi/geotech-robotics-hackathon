@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-08T00:07:36-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added Quest 3 look-to-relock using both Maker Arm factory hole patterns and a stationary headset fallback at the midpoint between the arms.",
+  "why": "Recover small tracking drift during the demonstration without repeating a mechanical survey. A fixed cradle provides a repeatable second starting pose.",
+  "where": [
+    "Capture/quest_relock.py",
+    "docs/quest-look-to-relock.md",
+    "output/pdf/quest-relock-color-rims.pdf",
+    "https://github.com/Geodesic-Games/OpenXR-OSX/commit/025ba373bce9d9329b0987af5585702a9df8c13d"
+  ],
+  "details": "Signed Android build, optical image/pose regressions and three Unreal XR automation tests passed. The wearer or operator still needs to qualify actual bore contrast on each plate, drift recovery and dock repeatability on the physical Quest 3 station. Ambiguous, stale and conflicting observations hold the previous local room transform."
+}

@@ -13,7 +13,9 @@ Scenario timeline segments run from ``from`` to ``to`` seconds; keys a segment
 leaves out carry over from the one before. ``valid: false`` makes the detector
 report failure; ``missing: true`` sends no frames at all. ``truth_can`` is
 whether a can is really between the jaws when they close (defaults to what the
-detector says), so a detector false positive can be scripted.
+detector says), so a detector false positive can be scripted. ``hand_visible``
+(default true) is whether the jaw camera sees the person's hand at all; set it
+false to script a hand hidden behind the can or a covered lens.
 """
 from __future__ import annotations
 
@@ -29,12 +31,12 @@ from .detections import Fuser, Zones
 from .routine import Result, Routine, ScriptedOperator
 
 SCENARIOS = Path(__file__).with_name("scenarios")
-FLAG_KEYS = ("hand_in_path", "can_in_jaws", "hand_on_can")
+FLAG_KEYS = ("hand_in_path", "can_in_jaws", "hand_on_can", "hand_visible")
 
 
 def _segments(timeline: List[dict]) -> List[dict]:
     state = {"hand_in_path": False, "can_in_jaws": False, "hand_on_can": False,
-             "valid": True, "missing": False, "truth_can": None}
+             "hand_visible": True, "valid": True, "missing": False, "truth_can": None}
     out = []
     for seg in timeline:
         state = dict(state, **{k: v for k, v in seg.items() if k not in ("from", "to")})

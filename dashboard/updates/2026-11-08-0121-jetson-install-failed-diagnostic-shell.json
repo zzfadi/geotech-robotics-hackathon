@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T01:21:56-08:00",
+  "workstream": "arm-station",
+  "status": "blocked",
+  "what": "Jetson installation failed late; KVM keyboard delivery works, and diagnostics confirm firmware remains at its starting version.",
+  "why": "Preserve the failed-installer evidence and determine the recovery path before changing firmware or boot files.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "At about 01:17 Pacific the webcam showed an installer failure, a /var/crash install_fail report and No matching -nv DTB found for running board during late/run/command23. Read-only bios_version still returns 36.4.2-gcid-38685322, confirming the expected firmware-update stage has not advanced it; the exact DTB-match root cause remains unresolved. nvbootctrl is absent from the live installer, and ip -br -4 addr shows only loopback. Earlier NVMe partitioning, extraction and package progress are preserved. No reboot, firmware change or DTB override has been performed for diagnosis. Agent Enter opened the prompted root shell, independently verifying local HID. Installed OS and SSH are not verified."
+}

@@ -12,17 +12,19 @@ Python 3.9 or newer, standard library only. From the repo root, on the Mac or on
 python3 -m control_center serve --demo
 ```
 
-Then open http://127.0.0.1:8765. `--demo` writes three finished demo sessions (if the folder is empty) and runs a live simulated one, so every view has data before the arm is wired. Demo sessions say so in a banner.
+Then open http://127.0.0.1:8780. `--demo` writes three finished demo sessions (if the folder is empty) and runs a live simulated one, so every view has data before the arm is wired. Demo sessions say so in a banner.
 
 Without `--demo` it serves whatever is in the sessions folder: `control_center/local/sessions/` (git-ignored), or `--data <folder>`, or `$CONTROL_CENTER_DATA`.
 
 **From the Mac, with the server on the Orin Nano:** keep it on localhost there and tunnel the port.
 
 ```
-ssh -N -L 8765:127.0.0.1:8765 <user>@<orin-host>
+ssh -N -L 8780:127.0.0.1:8780 <user>@<orin-host>
 ```
 
-Then open http://127.0.0.1:8765 on the Mac.
+Then open http://127.0.0.1:8780 on the Mac.
+
+The control center uses port **8780**. Port 8765 belongs to the arm tools (`arm/tools/pickup_server.py`, `pickup_client.py` and `handoff/`); the two used to collide, so do not move it back. Use `--port` to pick another one.
 
 Other commands:
 
@@ -85,7 +87,7 @@ The writer validates every event, flushes each line so the page sees it at once,
 
 ## What is not tested yet
 
-- Everything here has run against the demo stream only, on Linux. Nothing has run on the Orin Nano or the Mac, or with the real arm, the Dream API or real cameras.
+- Tested on the Mac and on the Orin Nano. On the Orin it served demo data and real sessions through an SSH tunnel: the Mac's vision and Dream-mock sessions and four live C270 sessions (nobody in view), all validating with 0 invalid ([Jetson hub testing](../docs/jetson-hub-testing.md)). On the Mac, `validate` passes on the 1,260 edge-model sessions. Not yet with the real arm or the Dream API.
 - The page has been exercised in a scripted test of its logic, not checked by eye in a browser yet.
 - No writer exists yet in the sim loop or the arm server; adding one is part of [edge-model.md](../docs/handoffs/edge-model.md) and [jetson-end-to-end.md](../docs/handoffs/jetson-end-to-end.md).
 - The camera checks are fields in the schema; nothing computes them from real images yet.

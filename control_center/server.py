@@ -24,6 +24,8 @@ from control_center.telemetry import SESSION_ID, read
 UI = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ui')
 FRAME = re.compile(r'^[A-Za-z0-9._-]{1,120}\.(png|jpe?g)$')
 MAX_CHUNK = 4 * 1024 * 1024
+# 8765 belongs to the arm tools (pickup_server, handoff). Never share it.
+DEFAULT_PORT = 8780
 LIVE_IF_WRITTEN_WITHIN = 20.0
 
 
@@ -159,7 +161,7 @@ def read_limited(path, start):
     return events, start + end
 
 
-def serve(root, host='127.0.0.1', port=8765):
+def serve(root, host='127.0.0.1', port=DEFAULT_PORT):
     os.makedirs(root, exist_ok=True)
     httpd = ThreadingHTTPServer((host, port), make_handler(Catalog(root)))
     httpd.daemon_threads = True

@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T01:21:56-08:00",
+  "workstream": "arm-station",
+  "status": "decision",
+  "what": "Use the identified separate GL-MT3000 Beryl AX for the portable Jetson/KVM LAN; connect Jetson Ethernet first while preserving the working KVM path.",
+  "why": "The kit needs a repeatable local network that can travel without repurposing the home router.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "The separate router is GL-MT3000 Beryl AX. The user confirms Jetson Ethernet is connected to its LAN port. The Mac joined Beryl Wi-Fi and received 192.168.8.174; the current 192.168.8.1 admin page identifies GL-MT3000, distinct from the prior home GL-MT6000 at that address on the home network. Internet and the KVM at 192.168.2.2 remain reachable through Mac sharing. Beryl admin login, Jetson DHCP/SSH and the final portable topology remain pending. No router configuration has changed, and the home router remains unchanged. No Wi-Fi credentials are recorded."
+}

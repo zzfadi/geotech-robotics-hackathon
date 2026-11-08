@@ -70,7 +70,7 @@ def inertial_data(node):
 
 
 def description():
-    provenance=json.loads((MODEL.parent/'provenance.json').read_text())
+    provenance=json.loads((MODEL.parent/'PROVENANCE.json').read_text())
     for name,digest in provenance['sha256'].items():
         if hashlib.sha256((MODEL.parent/name).read_bytes()).hexdigest()!=digest:
             raise ValueError('Pinned source changed: '+name)

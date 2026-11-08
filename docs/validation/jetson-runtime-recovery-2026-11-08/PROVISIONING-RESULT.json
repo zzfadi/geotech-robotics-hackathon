@@ -1,0 +1,23 @@
+{
+  "scope": "Offline runtime resumed after build hash closure correction",
+  "git_head": "d5c4f8d6ca67b4d3cc1a6eeb4eb22a1fce704542",
+  "origin": "https://github.com/zzfadi/geotech-robotics-hackathon.git",
+  "runtime_sha256": "ab7c3c02e743e07442394dd916dd9fb3605ebc22809ffe6797a6cea53ee59c85",
+  "python": "/home/fadi/jetson-runtime/.venv/bin/python",
+  "build_dependencies": {
+    "setuptools": "84.2.1",
+    "wheel": "0.48.0",
+    "packaging": "26.3"
+  },
+  "missing_system_libraries": [],
+  "checks": [
+    "complete metadata dependency closure",
+    "uv pip check",
+    "arm --help",
+    "arm test",
+    "pickup_client --help",
+    "pickup_server --help"
+  ],
+  "controller_started": false,
+  "hardware_access_tested": false
+}

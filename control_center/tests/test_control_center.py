@@ -186,5 +186,47 @@ class ServerTest(unittest.TestCase):
         self.assertEqual((len(events), nxt), (2, os.path.getsize(path)))
 
 
+class PortTest(unittest.TestCase):
+    """The arm tools own 127.0.0.1:8765; the control center must not take it."""
+
+    ARM_PORT = 8765
+
+    def test_server_default_is_8780(self):
+        import inspect
+        from control_center import server
+        self.assertEqual(server.DEFAULT_PORT, 8780)
+        self.assertEqual(inspect.signature(serve).parameters['port'].default, 8780)
+
+    def test_cli_serve_defaults_to_8780(self):
+        import contextlib
+        import io
+        from unittest import mock
+        from control_center import cli
+
+        seen = {}
+
+        class FakeHttpd:
+            def serve_forever(self):
+                raise KeyboardInterrupt
+
+        def fake_serve(root, host, port):
+            seen.update(root=root, host=host, port=port)
+            return FakeHttpd()
+
+        with tempfile.TemporaryDirectory() as root, mock.patch('control_center.server.serve', fake_serve), \
+                contextlib.redirect_stdout(io.StringIO()) as out:
+            cli.main(['--data', root, 'serve'])
+        self.assertEqual((seen['host'], seen['port']), ('127.0.0.1', 8780))
+        self.assertIn('http://127.0.0.1:8780', out.getvalue())
+
+    def test_docs_do_not_point_at_the_arm_port(self):
+        from control_center import cli
+        readme = open(os.path.join(os.path.dirname(HERE), 'README.md')).read()
+        for text in (cli.__doc__, readme):
+            self.assertNotIn('127.0.0.1:%d' % self.ARM_PORT, text)
+            self.assertNotIn('%d:127.0.0.1' % self.ARM_PORT, text)
+        self.assertIn('ssh -N -L 8780:127.0.0.1:8780', readme)
+
+
 if __name__ == '__main__':
     unittest.main()

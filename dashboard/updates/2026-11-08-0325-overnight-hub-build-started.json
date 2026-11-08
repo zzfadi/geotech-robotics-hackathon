@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-08T03:25:00-08:00",
+  "workstream": "planning",
+  "status": "in-progress",
+  "what": "Overnight build on the Mac mini: station-readiness patch, edge model scored in simulation, hybrid/API tooling, LiveKit fit, simpler dashboard",
+  "why": "Use the hours before the 08:30 station opening, while the arms are disconnected, for work that needs no hardware, so the morning goes straight to the real-arm run.",
+  "where": [
+    "handoff/",
+    "control_center/",
+    "edge_model/",
+    "vision/",
+    "dashboard/"
+  ],
+  "details": "Five parallel tracks, each checked by an independent reviewer before it lands on main: (1) control center off the arm's port 8765, arm server binds its port before enabling motors, mark-first checklist, a GO/MARK-ONLY preflight, and a hidden-hand fail-safe; (2) small edge model collected, trained and scored on the kinematic bench, plus a MuJoCo physics try; (3) a Dream round-trip probe that feeds the Dream-or-local rule (mock only: no Dream key on this Mac), control-center telemetry from the detector, and a first real Ultralytics run on still images; (4) what fits from LiveKit (the sponsor), with an offline voice-line fallback; (5) a plainer dashboard with a How-it-works page. No arm or camera hardware is touched. Jetson tests follow once its LAN link is back."
+}

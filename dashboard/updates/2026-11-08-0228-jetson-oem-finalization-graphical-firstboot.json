@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T02:28:51-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "OEM finalization completed and Jetson graphical first boot reached Ubuntu Welcome.",
+  "why": "Advance from package recovery to first-boot setup while keeping runtime and authenticated-access checks explicit.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "At 02:22:49 Pacific, 26 applicable OEM late commands/postchecks completed; exact Ubuntu 0009 entry removed, NVMe 0008 first/USB 0001 last verified, and persistent NetworkManager DHCP netplan for enP8p1s0 generated. Private finalization archive hash checked in both copies. Reboot about 02:24 reached graphical Welcome/English at 02:25:35; NVIDIA driver license acceptance is complete and time-zone/account setup is ongoing. 192.168.8.136 answers ping and TCP22 after 02:26, but SSH host identity/login, actual findmnt root and OS/runtime checks remain pending. No arm milestone claimed."
+}
