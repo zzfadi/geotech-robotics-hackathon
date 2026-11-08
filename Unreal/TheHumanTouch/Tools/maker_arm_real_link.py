@@ -214,6 +214,8 @@ class Link:
             return
         if time.time() - float(command.get("unix", 0)) > 15:
             return self._report(command, "rejected", "command too old")
+        if real and real.get("mode") == "hold":
+            return self._report(command, "rejected", "an arm is holding after a fault: press Release now (or use the E-stop) first")
         preview = bool(real and real.get("mode") == "mirror")
         if any(self.q[s] is None for s in SIDES):
             return self._report(command, "rejected", "Table 10 arm pose not known yet")
@@ -361,7 +363,7 @@ class Link:
             if self.motion is not None:
                 self.mode = "test"
                 self._step_test(real)
-            elif real and real.get("mode") == "mirror":
+            elif real and real.get("mode") in ("mirror", "hold"):
                 self.mode = "mirror"
                 for side, arm in real.get("arms", {}).items():
                     if side in SIDES and arm.get("q"):

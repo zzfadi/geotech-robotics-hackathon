@@ -59,3 +59,26 @@ Added for unattended use:
   - Torque off and Stop work for everyone.
   - Public visitors are view-only unless they have the operator code, which is kept in `Saved/DreamDebugger/operator-code` on Luna2.
 - Joints 1–6 have no motor watchdog in this SDK: keep the hardware E-stop within reach whenever drive is on.
+
+## Lessons from the first hardware sessions (2026-11-08)
+
+- **Turning off must never wait.** The terminal bridge's release blocked on a typed RELEASE after a fault, so the web
+  Torque off did nothing and the status froze. The service now never blocks.
+  - An arm that can't verify its return is shown as **holding**. **Release now** turns torque off immediately, via the
+    SDK's thread-safe `estop()`.
+  - A faulted arm still at its engage pose is released automatically.
+- **Power off is torque off.** When no motor answers for 2 s, the state becomes **off**, drive is dropped, and the
+  service reconnects by itself when power returns.
+  - The Turn arms ON button explains why it's unavailable (for example, "release the E-stops").
+  - Turn arms OFF is always clickable.
+- **Motors dropped off the CAN bus right after torque on.** Every left-arm motor stopped answering within 0.85 s of
+  enable, then the right elbow and wrist reported "feedback timeout — check bus/power". With torque off, the same
+  motors answer normally.
+  - Suspects: the arm power supply sagging under torque, or the CAN cabling and termination.
+  - In place now:
+    - drive runs at 25 Hz;
+    - every motor must pass a clean-read check before torque on;
+    - CAN error and echo counters plus feedback age are logged every second;
+    - drive can be switched on per arm (Left / Right) to isolate a weak arm.
+- **No phantom moves.** While an arm is faulted or holding, test buttons are refused instead of moving only the
+  virtual Table 10.

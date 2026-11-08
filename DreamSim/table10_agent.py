@@ -223,7 +223,8 @@ def main():
             # Drive heartbeat for the real-arm service: only while the server answers.
             write_json(LINK_DIR/'control.json', {'unix': time.time(), 'source': 'web',
                                                   'drive': bool(drive.get('on')) and now-server_ok < SERVER_LOST_S,
-                                                  'drive_seq': drive.get('seq'), 'release_seq': release_seq})
+                                                  'drive_seq': drive.get('seq'), 'release_seq': release_seq,
+                                                  'sides': drive.get('sides') or ['left', 'right']})
             # A drive request the service could not engage within its window: clear it so the
             # page shows the refusal and Enable drive can be pressed again.
             if drive.get('on') and status.get('mode') == 'mirror' and drive.get('since') and time.time()-drive['since'] > 13:

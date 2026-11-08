@@ -51,7 +51,7 @@ class Table10Tests:
     def request(self, data):
         action = (data or {}).get('action')
         if action in DRIVE_ACTIONS:
-            return self.drive_request(action, (data or {}).get('source', 'web'))
+            return self.drive_request(action, (data or {}).get('source', 'web'), (data or {}).get('sides'))
         if action not in ACTIONS:
             raise ValueError('Unknown Table 10 test action')
         if not self.online():
@@ -63,7 +63,7 @@ class Table10Tests:
                         'progress': 0., 'created_at': self.clock()}
         return dict(self.command)
 
-    def drive_request(self, action, source):
+    def drive_request(self, action, source, sides=None):
         if action == 'drive_off':
             self.drive.update(on=False, ended='switched off from ' + str(source)[:20])
         elif action == 'release':
@@ -72,9 +72,12 @@ class Table10Tests:
             service = (self.agent or {}).get('service') or {}
             if not self.online() or not service.get('running'):
                 raise ValueError('Real-arm service is not running on the Mac')
+            sides = [s for s in ('left', 'right') if s in (sides or ('left', 'right'))]
+            if not sides:
+                raise ValueError('Choose at least one arm')
             now = self.clock()
             self.drive.update(on=True, seq=self.drive['seq']+1, since=now, until=now+DRIVE_S,
-                              source=str(source)[:20], ended=None)
+                              source=str(source)[:20], ended=None, sides=sides)
         return {'drive': self.drive_state(), 'release_seq': self.release_seq}
 
     def agent_update(self, data):
