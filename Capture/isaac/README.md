@@ -126,3 +126,27 @@ Bring the two JSONL files to the same machine and run the report. It checks the 
 ```sh
 python3 Capture/isaac/bridge_trial.py report --unreal unreal.jsonl --isaac isaac.jsonl
 ```
+
+### Measure contact with a simulated Maker Arm
+
+Use a fresh trial identifier and an empty trial directory visible to both machines, or relay the target JSON to the Mac using the receiver's `--target-url` option. Start `HumanTouch.Isaac.Start` in the running Hub-connected editor, then start the station with the shared target file:
+
+```sh
+python3 Capture/isaac/bridge_trial.py station --bind "$STATION_TAILSCALE_IP" --luna "$LUNA_TAILSCALE_IP" --trial "$TRIAL" --contact-target "$DIR/target.json" --output "$DIR/unreal.jsonl"
+```
+
+From Luna2's Isaac Python, run:
+
+```powershell
+& $IsaacPython Capture/isaac/maker_contact.py --station $StationIP --trial $Trial --target-file "$Dir/target.json" --output "$Dir/physics.jsonl"
+```
+
+Luna2 opens the metre-scale parity scene in a separate process and puts the experimental collider in the USD session layer. It returns the settled wrist collider's center to the Mac. The Mac places the webcam performer's left hand 22 cm clear, sweeps it into the wrist, then withdraws. The hand's 3.5 cm sphere follows the Live Link pose as a PhysX kinematic target. The receipt records the solver impulse, the wrist transform and the Unreal evaluation that positioned the hand for that step.
+
+Run the verifier on the two logs:
+
+```sh
+python3 Capture/isaac/verify_maker_contact.py "$DIR/unreal.jsonl" "$DIR/physics.jsonl"
+```
+
+It checks exact station pose hashes, absence of hand–wrist impulses during the clear controls, and wrist translation above baseline drift on repeated approaches. Delay is measured from Unreal evaluating the driving hand pose to the first positive contact impulse reported after a physics step. It includes the 100 ms receiver buffer. Scene dimensions, drive gains and the synthetic hand radius determine the contact behavior.

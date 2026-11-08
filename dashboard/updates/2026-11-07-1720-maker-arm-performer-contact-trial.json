@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T17:20:00-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Added a spoofed hand contact trial for Luna2's Maker Arm wrist, with PhysX impulse, wrist motion, and Unreal-to-contact timing measurements.",
+  "why": "The previous skeletal parity trial measured when poses were applied. Solver contact and arm motion require a separate test with collision geometry.",
+  "where": [
+    "Capture/isaac/maker_contact.py",
+    "Capture/isaac/verify_maker_contact.py",
+    "Capture/isaac/README.md"
+  ],
+  "details": "The Mac exported fresh webcam hand evaluations. The local fixtures and verifier pass seven bridge tests. A Luna2 contact run is pending."
+}
