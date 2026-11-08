@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-08T02:44:34-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Jetson NVMe OS, persistent SSH and Python runtime verified; 140 offline arm tests passed.",
+  "why": "The recovered Jetson now has a verified software baseline for station work; hardware/controller acceptance and the remote-access architecture remain separate open work.",
+  "where": [
+    "docs/handoffs/orin-nano-setup.md",
+    "docs/handoffs/jetson-end-to-end.md",
+    "docs/validation/jetson-usb-prep-2026-11-08.json"
+  ],
+  "details": "Setup completed and rebooted to fadi on orin-arm; console verified /dev/nvme0n1p1 and SSH identity, with strict dedicated-key SSH and Mac alias retained. Actual Ubuntu 24.04.4, L4T/UEFI 39.2.1, kernel 6.8.12-1021-tegra and system Python 3.12.3 recorded. Global DHCP/DNS service failures were cleared without stopping NVIDIA USB/network/resolver services; zero failed units and running state verified. The isolated Python 3.12.15 runtime built the pinned SDK, passed 18-package compatibility and missing-library checks, and ran 140 offline arm tests in 2.77 s at target repo d5c4f8d6ca67b4d3cc1a6eeb4eb22a1fce704542. Both pickup help commands passed; no controller or hardware session started. Tailscale 1.104.5 is installed but NeedsLogin with no enrollment or addresses. Runtime result/log copies are privately preserved with matching target/local/external hashes. A Beryl Tailscale LAN gateway is recommended, not selected or configured: beta integration, distinct kit subnet, LAN-only advertisement, intended team network and policy/route approval required. Sharing only the router does not share its subnet. KVM cable/access and off-site verification remain pending. No arm hardware milestone claimed."
+}

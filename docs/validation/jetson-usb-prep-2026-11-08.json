@@ -1,6 +1,6 @@
 {
   "recorded_at": "2026-11-08T00:36:24-08:00",
-  "scope": "OEM finalization/postchecks complete and graphical first boot observed at02:25:35 Pacific; time-zone/account setup ongoing, ping/TCP22 reachable but SSH identity/login and running root unverified",
+  "scope": "Installed NVMe OS, persistent key SSH and isolated Python runtime verified; 140 offline arm tests pass without hardware/controller startup; remote-access architecture/enrollment and portable KVM/off-site verification pending",
   "firmware_before": {
     "version": "36.4.2-gcid-38685322",
     "build_date": "2024-12-12",
@@ -155,15 +155,13 @@
     }
   },
   "pending": [
-    "Complete graphical time-zone/account setup; record final username/hostname without secrets",
-    "Verify running root with findmnt, expected NVMe and actual OS versions",
-    "Verify SSH host identity and persistent authenticated/key-based login; ping/TCP22 alone is insufficient",
-    "Record RAM and run cached arm environment/offline checks after installed-host verification",
-    "Await KVM cable move to Beryl Port 1, then verify reserved192.168.8.166 is leased and accessible",
+    "Select remote-access architecture and intended team network; proposed Beryl LAN gateway needs a distinct subnet, access policy and route approval. No enrollment or routing change has been made.",
+    "Await KVM cable move to Beryl Port 1, then verify reserved 192.168.8.166 is leased and accessible",
     "Verify complete portable LAN without Mac sharing and off-site access separately; preserve home GL-MT6000",
-    "After installed-host verification, prepare Tailscale dependencies/install and intended tailnet authentication; cache preparation is not remote access"
+    "Complete attended hardware/controller, camera and telemetry acceptance separately; no arm hardware milestone is established by offline tests",
+    "Record fan and workload cooling observations before performance tuning; unchanged default 25 W mode 1 and idle temperatures are recorded"
   ],
-  "updated_at": "2026-11-08T02:28:51-08:00",
+  "updated_at": "2026-11-08T02:52:55-08:00",
   "status_history": [
     {
       "recorded_at": "2026-11-08T00:51:55-08:00",
@@ -478,7 +476,7 @@
     "router_admin_login": "User recovered password; authenticated admin UI verified",
     "router_settings_changed": true,
     "home_router_unchanged": true,
-    "updated_at": "2026-11-08T02:09:16-08:00",
+    "updated_at": "2026-11-08T02:44:34-08:00",
     "router_change_scope": "Beryl upgrade, Port 1 saved as LAN, and verified device address reservations; home GL-MT6000 unchanged",
     "router_firmware_version": "4.11.0",
     "router_firmware_verified": true,
@@ -487,7 +485,7 @@
     "internet_http_check_after_upgrade": "HTTP success response verified",
     "jetson_recovery_ipv4": "192.168.8.136",
     "jetson_recovery_ssh_verified_before_reboot": true,
-    "jetson_current_ipv4_after_reboot_verified": false,
+    "jetson_current_ipv4_after_reboot_verified": true,
     "mac_sharing_still_required_for_kvm": true,
     "portable_topology_independent_of_mac_verified": false,
     "offsite_access_verified": false,
@@ -515,8 +513,15 @@
       "address": "192.168.8.136",
       "ping": true,
       "tcp22": true,
-      "ssh_host_identity_verified": false,
-      "authenticated_login_verified": false
+      "ssh_host_identity_verified": true,
+      "authenticated_login_verified": true
+    },
+    "installed_host_ssh": {
+      "address": "192.168.8.136",
+      "username": "fadi",
+      "hostname": "orin-arm",
+      "verified": true,
+      "scope": "Dedicated-key LAN SSH with strict host-key verification; off-site access remains unverified"
     }
   },
   "current_attempt": "reinstallation",
@@ -540,18 +545,18 @@
     ],
     "agent_triggered_install_or_erase": true,
     "separate_erase_confirmation_observed_before_partitioning": false,
-    "status": "oobe-in-progress",
+    "status": "installed-os-and-ssh-verified",
     "active_directly_verified": false,
     "target_device": "/dev/nvme0n1",
     "target_model_previously_verified": "SHPP41-1000GM",
     "target_lsblk_size_previously_verified": "931.5G",
-    "latest_stage": "OEM finalization complete; graphical Welcome observed, time-zone/account setup ongoing",
+    "latest_stage": "Setup Complete / All done; desktop after reboot, NVMe root and authenticated installed-OS SSH verified",
     "progress_observed_at": "2026-11-08T02:03:50-08:00",
-    "completion_verified": false,
+    "completion_verified": true,
     "installed_os_boot_verified": true,
-    "persistent_ssh_verified": false,
-    "current_instruction": "Complete first-boot account setup; verify running root/versions and SSH host identity/login before runtime provisioning",
-    "updated_at": "2026-11-08T02:28:51-08:00",
+    "persistent_ssh_verified": true,
+    "current_instruction": "Select remote-access architecture and verify KVM migration/off-site access; hardware/controller acceptance remains separate",
+    "updated_at": "2026-11-08T02:44:34-08:00",
     "partitioning_observation": {
       "observed_at": "2026-11-08T02:01:41-08:00",
       "local_screenshot": "/private/tmp/jetson-retry-watch-hand-observation-03.png"
@@ -590,8 +595,8 @@
       "raw_logs_committed": false
     },
     "targeted_repair": {
-      "updated_at": "2026-11-08T02:21:55-08:00",
-      "status": "bootloader package repair succeeded; remaining installer steps pending",
+      "updated_at": "2026-11-08T02:44:34-08:00",
+      "status": "Bootloader package repair succeeded; subsequent OEM finalization, setup and installed-OS verification complete",
       "backup_before_edit": true,
       "scope": "Corrected only two boot-control board names; other identifiers preserved",
       "corrected_board_name": "jetson-orin-nano-devkit",
@@ -624,7 +629,7 @@
       "target_log": "/target/root/jetson-installer-repair-20261108/reinstall-dpkg.log",
       "repair_log_private_preservation_verified": true,
       "remaining_oem_late_commands_verified": true,
-      "installation_completion_verified": false,
+      "installation_completion_verified": true,
       "installed_os_boot_verified": true,
       "package_status": "install ok installed",
       "dpkg_audit_output_empty": true,
@@ -635,9 +640,10 @@
         "both_copies_hash_verified": true,
         "raw_logs_committed": false
       },
-      "installed_os_boot_verification_scope": "Graphical first-boot screen after NVMe-first reboot; running root/versions not yet inspected"
+      "installed_os_boot_verification_scope": "Completed setup and desktop after reboot; local console verifies /dev/nvme0n1p1, fadi and orin-arm; installed-host OS checks and strict dedicated-key SSH verified"
     },
-    "installed_os_boot_verification_scope": "Graphical first-boot screen after NVMe-first reboot; running root/versions not yet inspected"
+    "installed_os_boot_verification_scope": "Completed setup and desktop after reboot; local console verifies /dev/nvme0n1p1, fadi and orin-arm; installed-host OS checks and strict dedicated-key SSH verified",
+    "completion_scope": "Recovered installation with bootloader repair and applicable OEM finalization, followed by successful graphical account setup and installed-OS boot; original installer failure remains historical"
   },
   "tailscale_package_cache": {
     "prepared_at": "2026-11-08T10:11:56.866552+00:00",
@@ -649,7 +655,7 @@
       "tailscale_version": "1.104.5"
     },
     "keyring_version": "1.35.181",
-    "state": "Prepared only; not installed, started, authenticated or activated",
+    "state": "Packages installed; tailscaled active/enabled, NeedsLogin without enrollment or addresses",
     "verification": {
       "trust_root": "Tailscale repository key retrieved via official HTTPS URL; no separate out-of-band key verification.",
       "signing_fingerprint": "2596A99EAAB33821893C0A79458CA832957F5868",
@@ -681,14 +687,26 @@
         "sha256": "dfefafbbc1046114f8c99256a8e6fbec44d27bd2dd8db8ab9d4c5a99087aec90"
       }
     ],
-    "jetson_installation_verified": false,
-    "daemon_started": false,
+    "jetson_installation_verified": true,
+    "daemon_started": true,
     "authenticated": false,
     "device_activated": false,
     "sources": [
       "https://pkgs.tailscale.com/stable/#ubuntu-noble",
       "https://tailscale.com/docs/install/linux"
-    ]
+    ],
+    "updated_at": "2026-11-08T02:49:38-08:00",
+    "initial_preparation_state": "Prepared only; not installed, started, authenticated or activated",
+    "daemon_enabled": true,
+    "installed_tailscale_version": "1.104.5",
+    "installed_keyring_version": "1.35.181",
+    "artifact_hashes_and_gpg_verified_again_before_install": true,
+    "backend_state": "NeedsLogin",
+    "assigned_tailscale_addresses": [],
+    "tailnet_enrolled": false,
+    "intended_tailnet_selection_pending": true,
+    "network_selection_context": "Beryl LAN subnet gateway recommended but not selected/configured; network choice, policy and route approval pending. Jetson remains unenrolled NeedsLogin.",
+    "network_architecture_review_pending": true
   },
   "pre_firstboot_finalization": {
     "recorded_at": "2026-11-08T02:25:30-08:00",
@@ -713,8 +731,8 @@
     },
     "reboot_issued_at_approximate": "2026-11-08T02:24:00-08:00",
     "first_ssd_boot_verified": true,
-    "installed_os_account_verified": false,
-    "persistent_ssh_verified": false,
+    "installed_os_account_verified": true,
+    "persistent_ssh_verified": true,
     "private_evidence_archive": {
       "local_path": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/pre-firstboot-finalization.tar.gz",
       "working_copy": "/private/tmp/jetson-install-recovery-20261108/pre-firstboot-finalization.tar.gz",
@@ -722,7 +740,8 @@
       "both_copies_hash_verified": true,
       "raw_logs_public": false
     },
-    "first_ssd_boot_verification_scope": "Graphical Ubuntu Welcome/OOBE observed after NVMe-first reboot; actual root mount not yet inspected"
+    "first_ssd_boot_verification_scope": "Completed setup and desktop after reboot; local console verifies /dev/nvme0n1p1, fadi and orin-arm; installed-host OS checks and strict dedicated-key SSH verified",
+    "updated_at": "2026-11-08T02:44:34-08:00"
   },
   "first_boot": {
     "observed_at": "2026-11-08T02:25:35-08:00",
@@ -730,27 +749,214 @@
     "visible_screen": "Ubuntu Welcome / English",
     "local_screenshot": "/private/tmp/jetson-ssd-firstboot-watch-04.png",
     "boot_context": "After finalized installation, verified NVMe-first order and reboot",
-    "running_root_mount_verified": false,
-    "running_os_versions_verified": false,
+    "running_root_mount_verified": true,
+    "running_os_versions_verified": true,
     "setup_progress": [
       "Welcome / English",
       "US keyboard selection",
       "NVIDIA license screen",
       "NVIDIA license accepted",
       "Wi-Fi skipped; wired network retained",
-      "Time-zone picker; account setup pending"
+      "Pacific time zone selected; PST verified around 02:35",
+      "Account fadi and hostname orin-arm created",
+      "Setup Complete / All done",
+      "Start Using Ubuntu selected; automatic reboot and desktop observed"
     ],
     "license_acceptance_verified": true,
-    "account_created_verified": false,
-    "setup_completion_verified": false,
+    "account_created_verified": true,
+    "setup_completion_verified": true,
     "network_observation": {
       "observed_after": "2026-11-08T02:26:00-08:00",
       "address": "192.168.8.136",
       "ping_reachable": true,
       "tcp_port_22_reachable": true,
-      "ssh_host_identity_verified": false,
-      "authenticated_ssh_login_verified": false,
-      "address_identity_scope": "Reserved address responds; installed-host identity still needs authenticated verification"
+      "ssh_host_identity_verified": true,
+      "authenticated_ssh_login_verified": true,
+      "address_identity_scope": "Installed orin-arm host identity verified against local console, followed by authenticated dedicated-key SSH",
+      "ssh_verification": {
+        "username": "fadi",
+        "hostname": "orin-arm",
+        "authentication": "Dedicated client key",
+        "batch_mode": true,
+        "strict_known_host_check": true,
+        "host_fingerprint_verified_against_local_console": "SHA256:1Re9L+dbMLneresWeHhOM37nO2PW7a3mjuEhyHNGvvk",
+        "host_key_algorithm": "ED25519",
+        "socket_unit": "ssh.socket",
+        "socket_enabled": true,
+        "socket_active": true,
+        "service_unit": "ssh.service",
+        "service_enabled": false,
+        "service_disabled_expected_for_socket_activation": true,
+        "mac_alias": "ssh orin-arm",
+        "persistent_known_hosts_console_verified": true,
+        "mac_config_backup_created": true,
+        "existing_colima_include_preserved": true
+      }
+    },
+    "updated_at": "2026-11-08T02:44:34-08:00",
+    "setup_completion_evidence": {
+      "all_done_screenshot": "/private/tmp/jetson-oobe-step-23.png",
+      "reboot_screenshot": "/private/tmp/jetson-oobe-step-24.png",
+      "desktop_screenshot": "/private/tmp/jetson-oobe-step-25.png",
+      "console_verification_screenshot": "/private/tmp/jetson-first-terminal-02.png"
+    },
+    "account": {
+      "username": "fadi",
+      "hostname": "orin-arm",
+      "administrator_credential_storage": "Mac login Keychain",
+      "keychain_service": "Jetson Orin Nano administrator 2026-11-08",
+      "credential_value_recorded": false
     }
+  },
+  "installed_system": {
+    "evidence": "Local console identity/root/fingerprint check and authenticated installed-OS SSH commands",
+    "ubuntu_version": "24.04.4",
+    "l4t_version": "39.2.1",
+    "uefi_version": "39.2.1-gcid-46758480",
+    "kernel_version": "6.8.12-1021-tegra",
+    "system_python_version": "3.12.3",
+    "ram_reported": "7.3 GiB",
+    "root": {
+      "device": "/dev/nvme0n1p1",
+      "filesystem": "ext4",
+      "total_reported": "915G",
+      "used_reported": "8.7G",
+      "available_reported": "860G"
+    },
+    "timezone_observation": "PST selected and verified around 02:35 Pacific",
+    "failed_service_cause_verified": false,
+    "failed_service_remediation_verified": true,
+    "arm_runtime_verified": true,
+    "offline_arm_tests_run": true,
+    "arm_hardware_milestone_claimed": false,
+    "recorded_at": "2026-11-08T02:44:34-08:00",
+    "updated_at": "2026-11-08T02:49:38-08:00",
+    "initially_failed_services": [
+      "dnsmasq",
+      "isc-dhcp-server",
+      "isc-dhcp-server6"
+    ],
+    "network_service_remediation": {
+      "scope": "Stopped and disabled global dnsmasq, isc-dhcp-server and isc-dhcp-server6 individually",
+      "preserved_active_services": [
+        "NVIDIA USB service",
+        "NetworkManager",
+        "systemd-resolved"
+      ],
+      "systemctl_failed_count": 0,
+      "systemctl_is_system_running": "running"
+    },
+    "timezone": "America/Los_Angeles",
+    "ntp_enabled": true,
+    "post_boot_control_check": {
+      "nano_tnspec_retained": true,
+      "super_compatible_spec_retained": true
+    },
+    "gpu_observation": {
+      "reported_by": "nvidia-smi",
+      "name": "Orin (nvgpu)",
+      "driver_version": "595.78"
+    },
+    "power_and_cooling": {
+      "power_watts": 25,
+      "mode": 1,
+      "default_mode_unchanged": true,
+      "temperature_celsius_observed_range": [
+        47,
+        49
+      ],
+      "scope": "Read-only idle baseline; workload and fan acceptance not verified"
+    },
+    "desktop_power_settings": {
+      "ac_sleep_action_before": "suspend",
+      "ac_sleep_action_after": "nothing",
+      "ac_sleep_action_explicitly_set": true,
+      "ac_sleep_timeout_seconds": 0,
+      "timeout_was_already_zero": true,
+      "display_blank_seconds": 300,
+      "display_blank_changed": false
+    },
+    "arm_runtime_verification_scope": "Isolated environment, SDK build, dependency/library checks, offline tests and help commands only; no controller or hardware session",
+    "old_installer_crash_preservation": {
+      "action": "Moved without deletion",
+      "destination": "/root/jetson-installer-repair-20261108/nvidia-l4t-bootloader.install-failure.crash",
+      "external_report_sent": false
+    }
+  },
+  "runtime_installation": {
+    "updated_at": "2026-11-08T02:52:55-08:00",
+    "status": "offline-validation-passed",
+    "initial_issue": "Install helper omitted packaging build dependency from its hash closure",
+    "build_dependency_closure_corrected": true,
+    "full_build_closure_verified_against_metadata": true,
+    "installation_resumed": true,
+    "installation_completion_verified": true,
+    "offline_arm_tests_run": true,
+    "hardware_touched_by_runtime_provisioning": false,
+    "environment_path": "/home/fadi/jetson-runtime/.venv",
+    "python_version": "3.12.15",
+    "build_packages": {
+      "packaging": "26.3",
+      "setuptools": "84.2.1",
+      "wheel": "0.48.0"
+    },
+    "cache_verified": true,
+    "environment_verified": true,
+    "maker_arm_sdk_build_succeeded": true,
+    "uv_pip_check_compatible_packages": 18,
+    "missing_libraries": [],
+    "tested_repository_commit": "d5c4f8d6ca67b4d3cc1a6eeb4eb22a1fce704542",
+    "offline_arm_tests_passed": 140,
+    "offline_arm_tests_duration_seconds": 2.77,
+    "pickup_client_help_passed": true,
+    "pickup_server_help_passed": true,
+    "controller_started": false,
+    "hardware_session_started": false,
+    "result_filename": "PROVISIONING-RESULT.json",
+    "target_log_path": "/home/fadi/jetson-prep-assets/provisioning-resume-final.log",
+    "private_evidence_preservation_verified": true,
+    "python_executable": "/home/fadi/jetson-runtime/.venv/bin/python",
+    "private_evidence": {
+      "directory": "/Volumes/Fadi/Jetson-Orin-Nano-Setup-2026-11-07/private-recovery-20261108/installed-runtime",
+      "files": [
+        {
+          "name": "PROVISIONING-RESULT.json",
+          "sha256": "a1261d1d52d79cf5af35a29d6f145f0330d0a706c64c0eb71152317cca88c2da"
+        },
+        {
+          "name": "provisioning-resume-final.log",
+          "sha256": "c6df8f0108e4d7023bf3104fec41ef14dcef38a82cf412a23c1a3d710122fc78"
+        }
+      ],
+      "target_local_external_hashes_match": true,
+      "external_copies_independently_rehashed": true,
+      "raw_evidence_committed": false
+    }
+  },
+  "remote_access_recommendation": {
+    "recorded_at": "2026-11-08T02:52:55-08:00",
+    "status": "recommended-awaiting-selection",
+    "selected": false,
+    "configured": false,
+    "proposal": "Beryl AX Tailscale LAN subnet gateway for Jetson and KVM",
+    "vendor_integration_stage": "beta",
+    "lan_plan": {
+      "distinct_kit_lan_required": true,
+      "current_home_and_beryl_subnet": "192.168.8.0/24",
+      "replacement_subnet_selected": false,
+      "home_router_change_proposed": false
+    },
+    "proposed_route_scope": "Kit LAN only; no upstream WAN or exit-node advertisement",
+    "account_team_network_selected": false,
+    "access_policy_approved": false,
+    "route_approved": false,
+    "teammate_requirement": "Same gateway tailnet membership and policy permission; router sharing alone does not share subnet routes",
+    "goodcloud_ordinary_remote_gui_ssh_scope": "Router management only; not established Jetson/KVM network access",
+    "enrollment_or_routing_changes_made": false,
+    "sources": [
+      "https://docs.gl-inet.com/router/en/4/interface_guide/tailscale/",
+      "https://tailscale.com/docs/features/sharing#sharing-and-subnets-subnet-routers",
+      "https://docs.gl-inet.com/router/en/4/interface_guide/cloud/#remote-access"
+    ]
   }
 }
