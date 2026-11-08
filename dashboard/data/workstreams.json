@@ -45,7 +45,7 @@
     "short": "Arm station",
     "owner": "TBD",
     "status": "at-risk",
-    "goal": "Book an arm station slot and get LiveKit's portal-makermods driving our MakerMods arm.",
+    "goal": "Drive both physical Maker Arms through the SDK for the Hold My Beer handoff, with cameras calibrated at the station.",
     "paths": [
       "portal/",
       "arm/",
@@ -77,7 +77,7 @@
         "done": false
       }
     ],
-    "risk": "Portal targets the Metal Arm, not our Maker Arm: adapter unconfirmed"
+    "risk": "Physical arm runs on direct SDK control, not Portal or Dream-1; the left arm still needs its own height reference"
   },
   {
     "id": "dream1",
@@ -85,7 +85,7 @@
     "short": "Dream-1",
     "owner": "TBD",
     "status": "not-started",
-    "goal": "Dream Labs API key, then Dream-1 untrained on \"move the token to the next spot\".",
+    "goal": "Dream-1 drives the simulated Maker Arms in Unreal across the parallel tables; the real arm uses direct SDK control for now.",
     "paths": [
       "dream1/",
       "policy/"
@@ -227,6 +227,12 @@
         "title": "Hand tracking feeds the turn gate",
         "due": "2026-11-07T21:00:00-08:00",
         "done": false
+      },
+      {
+        "id": "parallel-demo",
+        "title": "Parallel-table sim demo runs smoothly",
+        "due": "2026-11-08T13:00:00-08:00",
+        "done": false
       }
     ]
   },
@@ -242,6 +248,12 @@
     ],
     "milestones": [
       {
+        "id": "pitch",
+        "title": "Pitch creative + Hold My Beer script",
+        "due": "2026-11-08T11:00:00-08:00",
+        "done": false
+      },
+      {
         "id": "e2e",
         "title": "First end-to-end run",
         "due": "2026-11-08T11:00:00-08:00",
@@ -250,6 +262,12 @@
       {
         "id": "video",
         "title": "Backup video recorded",
+        "due": "2026-11-08T13:00:00-08:00",
+        "done": false
+      },
+      {
+        "id": "submit-start",
+        "title": "Submission started (2 h reserved)",
         "due": "2026-11-08T13:00:00-08:00",
         "done": false
       },

@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-07T13:45:56-08:00",
+  "workstream": "arm-station",
+  "status": "decision",
+  "what": "Arm station and Dream-1 real-arm work assigned to Saleh and FADI",
+  "why": "Brian's split for the team: Saleh and FADI own the physical arms and policy access, the GeoTech side owns Unreal/XR.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "workstream_update": {
+    "owner": "Saleh Aldwais, FADI",
+    "status": "in-progress"
+  }
+}

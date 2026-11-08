@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T16:54:08-08:00",
+  "workstream": "vrxr",
+  "status": "decision",
+  "what": "Isaac owns live physics and streams to Unreal over LiveKit; a virtual block in Isaac holds both the sim and real arms",
+  "why": "Brian confirmed how Isaac and Unreal split the work during the demo, so the stream and interlock can be built against one plan.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "details": "Physics-based rehearsal, no accuracy claims; draw the human from the same Isaac frame; one portal-makermods message format; Unreal physics off for Isaac-owned objects; freeze the layout before rehearsals; hold the last pose with a sim-offline tag on drops. The hold is a software interlock on a padded zone, not a safety stop. Not built or tested yet."
+}

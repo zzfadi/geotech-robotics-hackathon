@@ -1,0 +1,16 @@
+{
+  "when": "2026-11-07T13:35:54-08:00",
+  "workstream": "dream1",
+  "status": "done",
+  "what": "Team Dream Labs API key created on the platform, with $160 of credit",
+  "why": "Dream-1 calls from the simulation fleet and any real-arm run need an authenticated, credited account.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "details": "The key is never committed: use DREAM_API_KEY from the team password manager.",
+  "workstream_update": {
+    "milestones_done": [
+      "api-key"
+    ]
+  }
+}

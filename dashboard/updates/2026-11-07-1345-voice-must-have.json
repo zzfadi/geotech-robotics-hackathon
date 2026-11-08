@@ -1,0 +1,13 @@
+{
+  "when": "2026-11-07T13:45:56-08:00",
+  "workstream": "voice-agent",
+  "status": "decision",
+  "what": "LiveKit voice agent is a must-have for the demo; LiveKit and UI sit with Takeshi",
+  "why": "Brian made voice a must-have and wants it worked into Hold My Beer; it gives the arms personalities and makes the turn cues audible.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "workstream_update": {
+    "owner": "Takeshi Okamura"
+  }
+}

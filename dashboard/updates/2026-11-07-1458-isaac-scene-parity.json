@@ -1,0 +1,11 @@
+{
+  "when": "2026-11-07T14:58:59-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "Isaac Sim 6.2 installed on Luna2 with a scene built 1:1 from Unreal's USD export of TheHumanTouch",
+  "why": "Brian asked for exact parity so Isaac physics and the Unreal view describe the same table, props and arm mounts.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "details": "Reported in Slack: 18 arm links matched at load, worst drift 2.7 mm after 4 s of gravity. The build and check scripts are only on Luna2, not in this repo yet, and Isaac follows a snapshot until the live bridge exists."
+}

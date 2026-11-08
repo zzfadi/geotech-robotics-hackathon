@@ -1,0 +1,15 @@
+{
+  "when": "2026-11-07T19:04:39-08:00",
+  "workstream": "demo",
+  "status": "decision",
+  "what": "Demo is the Hold My Beer gag: Brian holds out a beer, the arm takes it, maybe a fist bump, then the parallel-sim story",
+  "why": "Simple and memorable inside a 3-minute pitch, then explains why human-robot interaction needs real humans, not pure simulation.",
+  "where": [
+    "docs/slack-log-2026-11-07.md"
+  ],
+  "details": "Show the Unreal tables running in parallel and webcam and VR capture as two inputs. Denys's overlay shows what the arm is thinking with emoji. A 5-minute version if we reach the finals. Brian owns the pitch creative and script.",
+  "workstream_update": {
+    "owner": "Brian Frager",
+    "status": "in-progress"
+  }
+}
