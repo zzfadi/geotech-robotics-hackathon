@@ -38,6 +38,9 @@ from maker_arm_model import mounted_frames, ue_pose
 from maker_arm_station import BASES, MOUNT_YAW, VISUAL_LINKS
 
 ROLES = maker_arm_fleet.CAMERA_ROLES
+WAKE_PROPS_DURING_MOTION = False  # tested: awake cups were ejected by the kinematic pads (0/9 carried)
+WAKE_AFTER_MOTION_S = 3.
+CUP_MASS_KG = .05  # uncalibrated; 15 g (empty paper cup) tipped far more often in batch 17
 GRIPPERS = ('gripper_left', 'gripper_right')
 _FLAT = 'flat' in inspect.signature(contact_gap).parameters
 _session = None
@@ -267,7 +270,8 @@ class Session:
                 c.set_mobility(unreal.ComponentMobility.MOVABLE)
                 c.set_collision_profile_name('PhysicsActor')
                 c.set_phys_material_override(material)
-                c.set_mass_override_in_kg('', .05, True)
+                # Empty paper drinking cup: ~10-15 g (was an uncalibrated 50 g assumption).
+                c.set_mass_override_in_kg('', CUP_MASS_KG, True)
                 c.set_enable_gravity(True)
                 c.set_simulate_physics(True)
                 if not c.is_simulating_physics():
@@ -453,9 +457,17 @@ class Session:
                 self.apply_row(table, side, table.state['q_'+side]+[gap/JAW_MAX_M], jaws_only=True)
 
     def measure_props(self, table, now):
+        moving = table.motion is not None or now-getattr(table, 'last_motion_end', -1e9) < WAKE_AFTER_MOTION_S
+        if table.motion is not None:
+            table.last_motion_end = now
         for name, actor in table.props.items():
             c = actor.static_mesh_component
-            # Observation must not keep resting free bodies artificially awake.
+            # Observation alone must not keep resting bodies awake, but while this table's
+            # kinematic jaws are moving (and shortly after) keep its props awake: Chaos may
+            # not wake a sleeping body that a teleported kinematic pad enters, so the jaws
+            # slide over a cup that a real gripper would carry. Real cups never sleep.
+            if moving and WAKE_PROPS_DURING_MOTION:
+                c.wake_all_rigid_bodies()
             p = actor.get_actor_location()
             v = c.get_physics_linear_velocity()
             d = maker_arm_fleet.offset(table.index)

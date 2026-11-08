@@ -132,3 +132,20 @@ allows ~28 cm and 75° ~34 cm.
 out of reach (one table stopped on six truncated horizons). Dream refused one subgoal:
 `DA-4000 BAD_REQUEST (malformed): unsafe instruction in this scene, refused: Lift` — now handled by rotating to
 the next subgoal wording. Batch 16 compares 45°, 55° and 60° grasps, three tables each.
+
+## Batches 16–18 and zero-API physics probes — the grip, not Dream, is the limit
+
+- Batch 16 (`1279806c1f3e49ab8d3cc7b19291d42b`): 60° grasps carried 18.5 cm and 11.2 cm; 45° tables dropped.
+- Batch 17 (`1e59155997794cf191c53faea02d3e89`): 15 g cup (realistic empty paper cup) instead of the uncalibrated
+  50 g: cups tipped far more often. Reverted to 50 g.
+- Batch 18 (`011eed1997234b81a5519d4415031a2f`): smooth 30-row jaw close: 11.6, 9.4, 9.2 cm; no pass.
+- **Probe 1 (no Dream calls)**, scripted close + straight 2 cm/chunk lift: cups carried at most 9.9 cm.
+- **Probe 2 (no Dream calls)**, exact replica of Codex's verified mechanical sequence (65-row close to 5.5 cm,
+  12 cm up / 8 cm back lift, constant command): **2 of 9 carried** (11.5 cm held 7 s; 21.3 cm).
+- Probe 3: keeping cups awake while the jaws move: **0 of 9**, 7 cups ejected. Reverted (flag off).
+
+Conclusion: the kinematic pads teleport into the cup and rely on penetration contacts, which carry the cup only
+~20–30% of the time whoever drives the arm. Codex's single verified mechanical hold was one of the lucky cases.
+Further gains need a physics-side change (simulated finger drives, or a grasp constraint while both pads hold
+the cup, which the current "no attachment" rule forbids) — a team decision. Also: holding the 45° grasp
+orientation caps the lift at ~18–22 cm; 60° allows ~28 cm.
