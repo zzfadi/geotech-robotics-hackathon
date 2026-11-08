@@ -1,6 +1,8 @@
 # The Human Touch · cloud handoff
 
-Open the [mirrored-palm galaxy style studies](https://drive.google.com/drive/folders/1YVeyrgsiEpJEnIELAmikmD7CfirYcvar) for the current round. Compare cut paper, cloisonné enamel, marble relief, and illuminated glass in `comparison.jpg`. The cut-paper mark also has transparent PNG and single-color SVG files.
+The latest [Emmy nebula study](https://drive.google.com/drive/folders/1bc5jN98K6F4x3xEz2fVVPHVdoJs8XVr5) uses the amber glass human hand and Emmy’s ivory finger plates with exposed titanium joints. Use `emmy-nebula.png` for transparent placement. The two JPEG proofs show the glow on oxblood and limestone.
+
+Open the [mirrored-palm galaxy style studies](https://drive.google.com/drive/folders/1YVeyrgsiEpJEnIELAmikmD7CfirYcvar) for the earlier material comparison. Compare cut paper, cloisonné enamel, marble relief, and illuminated glass in `comparison.jpg`. The cut-paper mark also has transparent PNG and single-color SVG files.
 
 Earlier logo studies include [Almost Touch](https://drive.google.com/drive/folders/1IpI_RMz44ndKjYeFpBkBPDIaE0_RLVih) and [Galactic Energy](https://drive.google.com/drive/folders/1umQT9TK7_6UAwohqBk3oTNoSRYdAbe4G). Galactic Energy replaces the Shared Vessel bowl with a spiral of stars suspended above the human palm and reaching Emmy’s fingertip. Its Drive folder includes the transparent emblem, SVG, and title and plaque proofs. The [earlier editable comparison](logo-redesign/almost-touch/README.md) provides the title layout.
 
