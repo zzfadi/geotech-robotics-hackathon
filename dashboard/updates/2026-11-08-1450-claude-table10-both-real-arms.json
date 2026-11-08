@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T14:50:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Both real Maker Arms now follow Table 10 from the web panel: Turn arms ON, Move up, Go to idle and Turn arms OFF all work on the physical arms.",
+  "why": "User request: one-click web control of the real arms. Root cause of the motor dropouts was both USB-CAN adapters sharing one process; one service process per arm fixes it.",
+  "where": ["Unreal/TheHumanTouch/Tools/real_arm_service.py", "Unreal/TheHumanTouch/Tools/maker_arm_real_link.py", "DreamSim/table10_agent.py", "DreamSim/web/index.html", "docs/table10-real-arms.md"],
+  "details": ["Proof: the SDK's own maker-arm check held all motors on the same arm; our service with a single adapter per process then drove cleanly.", "Two-arm web test: real arms within 2.6 deg of Unreal while moving, 0 CAN errors, clean return and release on Turn arms OFF.", "The page shows a live real-arm log for debugging."]
+}

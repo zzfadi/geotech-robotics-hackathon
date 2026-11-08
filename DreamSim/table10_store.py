@@ -23,7 +23,7 @@ def _clip(value, depth=0):
     if isinstance(value, dict):
         return {str(k)[:40]: _clip(v, depth+1) for k, v in list(value.items())[:24]}
     if isinstance(value, list):
-        return [_clip(v, depth+1) for v in value[:12]]
+        return [_clip(v, depth+1) for v in value[:16]]
     if isinstance(value, str):
         return value[:300]
     if isinstance(value, (int, float, bool)) or value is None:
@@ -82,7 +82,7 @@ class Table10Tests:
 
     def agent_update(self, data):
         data = data or {}
-        self.agent = _clip({k: data.get(k) for k in ('link', 'bridge', 'sync_deg', 'camera', 'service')})
+        self.agent = _clip({k: data.get(k) for k in ('link', 'bridge', 'sync_deg', 'camera', 'service', 'log')})
         self.agent_at = self.clock()
         command = self.command
         if command:

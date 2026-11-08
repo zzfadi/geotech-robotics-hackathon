@@ -149,3 +149,27 @@ Next hardware checks:
 - the right elbow motor's power/CAN connector and cable at the elbow joint;
 - whether the supply can hold voltage when the motors enable;
 - swapping the elbow cable, or the arm, to see whether the fault moves with it.
+
+## Root cause found: one USB-CAN adapter per process (2026-11-08, 14:4x)
+
+**Test.** The SDK's own `maker-arm check` held all seven right-arm motors and moved the elbow cleanly, on the same
+hardware where our drive faulted. The service then held both adapters in one process; run with only the right
+adapter in the process, the full web flow worked on the real arm.
+
+**Fix.** The agent now starts one service per arm:
+- `real_arm_service.py --left|--right`;
+- per-arm state in `Saved/RealArmLink/left|right/`;
+- shared `ue_state.json` and `control.json`.
+
+The link merges the per-arm states, with a mode per side. The SDK's control loop keeps its default 200 Hz.
+
+**Verified from the web UI, both arms:**
+- Turn arms ON.
+- Move up: real arms within 2.6° of Unreal while moving, 0.3–0.4° at the end.
+- Go to idle.
+- Turn arms OFF: returned, released, back in mirror.
+- 0 CAN errors.
+
+The page also shows a live real-arm log (also in `GET /api/table10/test` → `agent.log`).
+
+The earlier "power connection" theory was wrong. The motors were fine; the two-adapter process was not.

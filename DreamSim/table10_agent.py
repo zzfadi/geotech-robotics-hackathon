@@ -89,18 +89,77 @@ def interactive_bridge_running():
     return subprocess.run(['pgrep', '-f', 'real_arm_bridge.py'], capture_output=True).returncode == 0
 
 
+def stop_legacy_dual_service():
+    """Stop a service started the old way with both adapters in one process."""
+    out = subprocess.run(['pgrep', '-fl', 'real_arm_service.py'], capture_output=True, text=True).stdout
+    for line in out.splitlines():
+        if '--left' in line and '--right' in line:
+            subprocess.run(['kill', '-TERM', line.split()[0]])
+            print('stopped legacy two-arm service %s' % line.split()[0], flush=True)
+
+
+MODE_ORDER = ('drive', 'returning', 'hold', 'mirror', 'off')
+
+
+def merged_status(services):
+    """One status for the web from the per-arm services."""
+    now = time.time()
+    parts = {s.side: s.status() for s in services}
+    live = {side: st for side, st in parts.items() if now - st.get('unix', 0) < 3 and st.get('running')}
+    if not live:
+        return {'running': False, 'mode': 'off', 'message': 'real-arm services not running'}
+    modes = [st.get('mode') for st in live.values()]
+    mode = next((m for m in MODE_ORDER if m in modes), 'off')
+    message = '; '.join('%s: %s' % (side, st.get('message')) for side, st in sorted(live.items()) if st.get('message'))
+    out = {'running': True, 'mode': mode, 'message': message[:400], 'modes': {side: st.get('mode') for side, st in live.items()},
+           'answering': {}, 'bus': {}, 'holding': [], 'driving': []}
+    for st in live.values():
+        out['answering'].update(st.get('answering') or {})
+        out['bus'].update(st.get('bus') or {})
+        out['holding'] += st.get('holding') or []
+        out['driving'] += st.get('driving') or []
+    return out
+
+
+def merged_real():
+    """Per-arm real_state.json files merged (falls back to the single legacy file)."""
+    out = {'arms': {}, 'mode': None, 'unix': 0}
+    for side in ('left', 'right'):
+        d = read_json(LINK_DIR/side/'real_state.json') or {}
+        if d and time.time()-d.get('unix', 0) < 1:
+            out['arms'].update(d.get('arms') or {})
+            out['unix'] = max(out['unix'], d.get('unix', 0))
+            out['mode'] = 'drive' if d.get('mode') == 'drive' or out['mode'] == 'drive' else (out['mode'] or d.get('mode'))
+    return out if out['arms'] else (read_json(LINK_DIR/'real_state.json') or {})
+
+
 class RealArmService:
-    """The headless real-arm service process (holds both USB-CAN adapters while running)."""
-    def __init__(self):
+    """One headless real-arm service process per arm. Two USB-CAN adapters in one process lost motor
+    feedback right after enable; one adapter per process (like the SDK's own tools) drives cleanly."""
+    def __init__(self, side):
+        self.side = side
+        self.dir = LINK_DIR / side
+        self.dir.mkdir(parents=True, exist_ok=True)
+        self.pattern = 'real_arm_service.py --%s ' % side
         self.process = None
         self.started = 0.
         self.editor_gone = None
 
     def running(self):
-        # Also adopts a service left by a previous agent run (it holds the adapters).
+        # Also adopts this arm's service left by a previous agent run (it holds the adapter).
         if self.process is not None and self.process.poll() is None:
             return True
-        return subprocess.run(['pgrep', '-f', 'real_arm_service.py'], capture_output=True).returncode == 0
+        return subprocess.run(['pgrep', '-f', self.pattern], capture_output=True).returncode == 0
+
+    def status(self):
+        return read_json(self.dir/'service.json') or {}
+
+    def log_tail(self, n=8):
+        try:
+            lines = (self.dir/'service.log').read_text(errors='replace').splitlines()
+        except OSError:
+            return []
+        return ['%s: %s' % (self.side, l) for l in lines if l and not l.startswith(('[mirror] left', '[mirror] right', '[drive] left', '[drive] right', 'gs_usb adapter'))][-n:]
 
     def supervise(self, now):
         if editor_running():
@@ -108,11 +167,12 @@ class RealArmService:
             if (not self.running() and now-self.started > RESTART_EVERY_S and SDK_PYTHON.exists()
                     and not interactive_bridge_running()):
                 self.started = now
-                log = open(LINK_DIR/'service.log', 'a')
+                log = open(self.dir/'service.log', 'a')
                 self.process = subprocess.Popen(
-                    [str(SDK_PYTHON), '-u', 'real_arm_service.py', '--left', ADAPTERS['left'], '--right', ADAPTERS['right'],
-                     '--state-dir', str(LINK_DIR)], cwd=TOOLS, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
-                print('started real-arm service (pid %d)' % self.process.pid, flush=True)
+                    [str(SDK_PYTHON), '-u', 'real_arm_service.py', '--%s' % self.side, ADAPTERS[self.side],
+                     '--state-dir', str(self.dir), '--ue-state', str(LINK_DIR/'ue_state.json'), '--control', str(LINK_DIR/'control.json')],
+                    cwd=TOOLS, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+                print('started %s real-arm service (pid %d)' % (self.side, self.process.pid), flush=True)
         else:
             self.editor_gone = self.editor_gone or now
             if self.running() and now-self.editor_gone > 30:
@@ -120,8 +180,8 @@ class RealArmService:
 
     def stop(self, why):
         if self.running():
-            print('stopping real-arm service: %s' % why, flush=True)
-            subprocess.run(['pkill', '-TERM', '-f', 'real_arm_service.py'])  # verified return + torque off, exit
+            print('stopping %s real-arm service: %s' % (self.side, why), flush=True)
+            subprocess.run(['pkill', '-TERM', '-f', self.pattern])  # verified return + torque off, exit
             for _ in range(40):
                 if not self.running():
                     return
@@ -160,7 +220,8 @@ def main():
     LINK_DIR.mkdir(parents=True, exist_ok=True)
     CAMERA_DIR.mkdir(parents=True, exist_ok=True)
     restarted = {'link': 0., 'camera': 0.}
-    service = RealArmService()
+    services = [RealArmService('left'), RealArmService('right')]
+    stop_legacy_dual_service()
     drive = {'on': False, 'seq': 0}
     release_seq = 0
     server_ok = 0.
@@ -191,7 +252,7 @@ def main():
         # ---- heartbeat, buttons, health ---------------------------------------------------
         if now >= next_beat:
             next_beat = now+HEARTBEAT_S
-            real, ue = read_json(LINK_DIR/'real_state.json'), read_json(LINK_DIR/'ue_state.json')
+            real, ue = merged_real(), read_json(LINK_DIR/'ue_state.json')
             real_age = time.time()-(real or {}).get('unix', 0)
             ue_age = time.time()-(ue or {}).get('unix', 0)
             report = {
@@ -204,10 +265,9 @@ def main():
                 'camera': {'running': bool(info.get('running')), 'sequence': seq, 'error': info.get('error'),
                            'age_s': round(time.time()-info.get('captured_unix', 0), 2) if info else None},
                 'claimed': claimed}
-            status = read_json(LINK_DIR/'service.json') or {}
-            report['service'] = {'running': service.running() and time.time()-status.get('unix', 0) < 3,
-                                 'mode': status.get('mode'), 'message': status.get('message'),
-                                 'interactive_bridge': interactive_bridge_running() if not service.running() else False}
+            status = merged_status(services)
+            report['service'] = {**status, 'interactive_bridge': interactive_bridge_running() if not status.get('running') else False}
+            report['log'] = sum((s.log_tail() for s in services), [])[-12:]
             try:
                 reply = server.post('/api/table10/agent', report)
                 server_ok = now
@@ -234,7 +294,8 @@ def main():
                     drive = {**drive, 'on': False}
                 except (OSError, ValueError) as error:
                     print('drive clear: %s' % error, flush=True)
-            service.supervise(now)
+            for service in services:
+                service.supervise(now)
             # Restart the link or camera when they stop advancing (e.g. after an editor restart).
             if ue_age > 3 and now-restarted['link'] > RESTART_EVERY_S:
                 restarted['link'] = now

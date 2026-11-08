@@ -109,6 +109,7 @@ class Link:
         self.accum = 0.0
         self.real = None
         self.real_mtime = None
+        self._last = {}
         self.ticks = 0
         self.callback = unreal.register_slate_post_tick_callback(self._tick)
 
@@ -164,21 +165,37 @@ class Link:
         self.expected[side] = self._poses(side)
 
     # ---- bridge state -------------------------------------------------------------------
-    def _read_real(self):
+    def _read_one(self, path):
         try:
-            mtime = os.stat(self.real_path).st_mtime_ns
-        except FileNotFoundError:
+            value = json.loads(path.read_text())
+        except (FileNotFoundError, ValueError, OSError):
+            return self._last.get(path) if path.exists() else None  # mid-write: keep the previous sample
+        self._last[path] = value
+        return value
+
+    def _read_real(self):
+        """Merge the per-arm services' states (left/, right/) into one view with a mode per side.
+        Falls back to a single real_state.json (one process for both arms)."""
+        now = time.time()
+        merged = {"arms": {}, "modes": {}, "unix": 0.0}
+        sources = [self.dir / side / "real_state.json" for side in SIDES]
+        if not any(p.exists() for p in sources):
+            sources = [self.real_path]
+        for path in sources:
+            value = self._read_one(path)
+            if not value or now - value.get("unix", 0) > REAL_FRESH_S:
+                continue
+            for side, arm in (value.get("arms") or {}).items():
+                merged["arms"][side] = arm
+                merged["modes"][side] = value.get("mode")
+            merged["unix"] = max(merged["unix"], value.get("unix", 0))
+        if not merged["modes"]:
             self.real = None
             return None
-        if mtime != self.real_mtime:
-            try:
-                self.real = json.loads(self.real_path.read_text())
-                self.real_mtime = mtime
-            except (ValueError, OSError):
-                return None  # mid-write; keep the previous sample
-        if self.real and time.time() - self.real.get("unix", 0) <= REAL_FRESH_S:
-            return self.real
-        return None
+        modes = set(merged["modes"].values())
+        merged["mode"] = "drive" if "drive" in modes else "hold" if "hold" in modes else "mirror"
+        self.real = merged
+        return merged
 
     # ---- test motions -------------------------------------------------------------------
     def _read_command(self):
@@ -306,6 +323,8 @@ class Link:
             return None
         worst = None
         for side in SIDES:
+            if (real.get("modes") or {}).get(side, real.get("mode")) != "drive":
+                continue
             measured = (real.get("arms") or {}).get(side, {}).get("q")
             if measured and self.q[side] is not None:
                 gap = max(abs(math.degrees(a - b)) for a, b in zip(measured, self.q[side]))
@@ -363,13 +382,17 @@ class Link:
             if self.motion is not None:
                 self.mode = "test"
                 self._step_test(real)
-            elif real and real.get("mode") in ("mirror", "hold"):
-                self.mode = "mirror"
-                for side, arm in real.get("arms", {}).items():
-                    if side in SIDES and arm.get("q"):
+            elif real:
+                # Per side: an arm in mirror/hold poses Table 10; an arm in drive follows Table 10.
+                self.mode = real.get("mode")
+                for side in SIDES:
+                    arm = real["arms"].get(side)
+                    if real["modes"].get(side) in ("mirror", "hold") and arm and arm.get("q"):
                         self._mirror(side, arm)
+                    else:
+                        self._follow_handle(side)
             else:
-                self.mode = "drive" if real else "handle (no bridge)"
+                self.mode = "handle (no bridge)"
                 for side in SIDES:
                     self._follow_handle(side)
             self.seq += 1

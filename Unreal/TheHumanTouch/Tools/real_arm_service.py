@@ -50,7 +50,11 @@ UE_LOST_S = 5.0          # drive needs Unreal state within this
 POWER_LOST_S = 2.0       # no motor answered for this long -> arms are unpowered -> 'off'
 RECONNECT_S = 3.0
 PREFLIGHT_READS = 8
-DRIVE_HZ = 50.0          # the bridge's rate; 25 Hz left fewer replies inside the SDK's fixed 0.25 s feedback window
+# The SDK's own control loop rate. The bridge forced 50 Hz; at that rate a motor's feedback lapsed past the SDK's
+# 0.25 s watchdog right after enable, while the SDK's `maker-arm check` (default 200 Hz) held all seven motors and
+# moved the same elbow cleanly on the same hardware (2026-11-08). Keep the SDK default.
+SDK_CONTROL_HZ = 200.0
+DRIVE_HZ = 50.0          # how often this service forwards Unreal targets to the SDK (not the motor loop)
 ENGAGE_WINDOW_S = 10.0   # retry a refused engage (e.g. Table 10 still easing back after a preview)
 ENGAGE_RETRY_S = 1.5
 ACTIVE = (ArmState.ENABLED, ArmState.FAULT)
@@ -61,10 +65,14 @@ AT_ENGAGE_DEG = 2.0      # a faulted arm still this close to its engage pose is 
 class Service:
     def __init__(self, args):
         self.args = args
-        rb.DRIVE_HZ = DRIVE_HZ  # Bridge.engage() reads the module value
+        rb.DRIVE_HZ = SDK_CONTROL_HZ  # Bridge.engage() sets the SDK control_rate_hz from this module value
         self.bridge = rb.Bridge(args)
         self.dir = Path(args.state_dir)
-        self.control_path = self.dir / 'control.json'
+        # One process per arm (two USB-CAN adapters in one process lost motor feedback right after enable,
+        # while one adapter per process drives cleanly): per-arm state dir, shared Unreal state and control.
+        if getattr(args, 'ue_state', None):
+            self.bridge.ue_path = Path(args.ue_state)
+        self.control_path = Path(args.control) if getattr(args, 'control', None) else self.dir / 'control.json'
         self.status_path = self.dir / 'service.json'
         self.control = {}
         self.mode, self.message, self.holding = 'off', 'starting', []
@@ -320,7 +328,12 @@ class Service:
                 else:
                     self.engage_last = now
                     wanted = c.get('sides') or ['left', 'right']
-                    self.bridge.sides = [s for s in self.all_sides if s.name in wanted] or list(self.all_sides)
+                    mine = [s for s in self.all_sides if s.name in wanted]
+                    if not mine:  # this process's arm was not selected: stay in mirror
+                        self.engage_since = None
+                        arms = self.bridge.mirror_step()
+                        return 1.0 / rb.MIRROR_HZ
+                    self.bridge.sides = mine
                     reason = self.preflight()
                     if reason:
                         self.bridge.sides = list(self.all_sides)
@@ -404,6 +417,8 @@ def main():
     ap.add_argument('--left')
     ap.add_argument('--right')
     ap.add_argument('--state-dir', default=str(rb.DEFAULT_DIR))
+    ap.add_argument('--ue-state', help='shared ue_state.json (per-arm processes)')
+    ap.add_argument('--control', help='shared control.json (per-arm processes)')
     ap.add_argument('--max-velocity', type=float, default=0.6)
     ap.add_argument('--gripper', action='store_true')
     args = ap.parse_args()
