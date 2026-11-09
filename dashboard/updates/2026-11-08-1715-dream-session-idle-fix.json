@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:15:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "dream_arm.py keeps the Dream session alive: it continues on the new session when Dream expires an idle one, and plays one chunk point per Dream call by default.",
+  "why": "Two live runs stopped after cycle 1 with DreamSessionExpired (reason expired): three slow guarded moves left the session idle about 12-15 s.",
+  "where": ["DreamSim/dream_arm.py"],
+  "details": ["Recovery follows the Dream client's documented path: the arm holds its pose under pickup_server's guards, then get_action is called again on the adopted session; restarts are logged per cycle.", "Defaults now --waypoints 1 --cycles 20; fixed the waypoint index so one waypoint takes the chunk's last row.", "Dry run (no motion) at 17:14: two cycles, Dream 1.4 s then 0.65 s."]
+}

@@ -125,7 +125,7 @@ def run_side(client, side, other_sdk, a, run, start_cycle, cycles, active_sdk=No
     prompt = mirror(a.prompt, side)
     print(f'{side} arm: prompt "{prompt}"', flush=True)
     status = (lambda: {'q_deg': active_sdk, 'temp_c': [0], 'trip': None}) if a.dry else (lambda: server({'cmd': 'status'}, a.port))
-    done = 0
+    done = restarts = 0
     try:
         for cycle in range(start_cycle, start_cycle + cycles):
             st = status()
@@ -142,16 +142,25 @@ def run_side(client, side, other_sdk, a, run, start_cycle, cycles, active_sdk=No
             (run / f'cycle{cycle}').mkdir(exist_ok=True)
             frames = fetch_frames(a.cams, run / f'cycle{cycle}')
             t0 = time.monotonic()
-            client.set_observation(frames, obs)
-            action = client.get_action()
+            try:
+                client.set_observation(frames, obs)
+                action = client.get_action()
+            except DreamSessionExpired:
+                # Dream ends a session left idle while the arm moved; the client has adopted the new one and the
+                # arm is holding its pose under the guards, so ask again (Dream's documented recovery).
+                print('  Dream session expired while the arm moved; continuing on the new session', flush=True)
+                restarts += 1
+                client.set_observation(frames, obs)
+                action = client.get_action()
             dt = time.monotonic() - t0
             rows = [obs_to_sdk(r) for r in np.asarray(action[key], dtype=float)]
-            picks = sorted({round(i) for i in np.linspace(len(rows) / a.waypoints, len(rows) - 1, a.waypoints)})
+            picks = sorted({round(i) for i in np.linspace(len(rows) / a.waypoints - 1, len(rows) - 1, a.waypoints)})
             plan = [rows[i] for i in picks]
             print(f'cycle {cycle} ({side}): Dream {dt:.2f}s, {len(rows)} rows -> {plan[-1][:6]} grip {plan[-1][6]}'
                   f'  (temps max {hot})', flush=True)
             entry = {'cycle': cycle, 'side': side, 'prompt': prompt, 'dream_s': round(dt, 3), 'state_sdk': st['q_deg'],
-                     'temps': st['temp_c'], 'plan_sdk': plan, 'chunk_len': len(rows)}
+                     'temps': st['temp_c'], 'plan_sdk': plan, 'chunk_len': len(rows),
+                     'session_restarts': restarts}
             if not a.dry:
                 for row in plan:
                     cur = server({'cmd': 'status'}, a.port)['q_deg']
@@ -184,8 +193,9 @@ def main():
     p.add_argument('--side', choices=('auto', 'right', 'left'), default='auto')
     p.add_argument('--other-sdk', help='with --side right|left: seven measured SDK degrees of the idle arm')
     p.add_argument('--cams', default='http://127.0.0.1:8792', help='dashboard serving /cam/<role>.jpg')
-    p.add_argument('--cycles', type=int, default=8)
-    p.add_argument('--waypoints', type=int, default=3, help='chunk rows played per cycle (evenly spaced)')
+    p.add_argument('--cycles', type=int, default=20)
+    p.add_argument('--waypoints', type=int, default=1,
+                   help='chunk rows played per cycle (evenly spaced); 1 keeps Dream asked every few seconds')
     p.add_argument('--temp-stop', type=float, default=50.0, help='return home when any motor reaches this')
     p.add_argument('--start-below', type=float, default=44.0, help='auto: only start an arm whose motors are cooler')
     p.add_argument('--checkpoint', default='dreamlabs/dream-1-beta')
@@ -196,7 +206,8 @@ def main():
     run = a.out / time.strftime('arm-%Y%m%d-%H%M%S')
     run.mkdir(parents=True, exist_ok=True)
 
-    from dream import DreamClient
+    global DreamSessionExpired
+    from dream import DreamClient, DreamSessionExpired
     from model import prepare
     from probe import configure
     client = DreamClient()
