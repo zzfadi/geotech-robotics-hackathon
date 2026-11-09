@@ -50,6 +50,8 @@ MAX_STEP_RAD = math.radians(1.5)
 # While idle, the arm state is read back from the actors this often, so something else moving them
 # (the VR wrist handle, the real-arm link) doesn't leave this runtime planning from stale joints
 RESYNC_S = 0.5
+# A held can follows its wrist while idle, unless the wrist jumps further than this in one tick
+JUMP_CM = 6.0
 _rt = None
 
 
@@ -308,13 +310,29 @@ class Runtime:
             self._read_command()
             if self.motion is not None:
                 self._step_motion()
+                self.held_link_at = None        # planned motion: the idle jump check restarts after it
             else:
                 if time.monotonic() - getattr(self, 'synced', 0.0) > RESYNC_S:
                     self._resync()
                 if self.held in SIDES and self.cup is not None:
-                    # Still in hand while idle: it moves with the gripper whatever moves the arm
+                    # Still in hand while idle: it moves with the gripper whatever moves the arm (the VR handle),
+                    # except a jump: when the holding wrist leaps more than JUMP_CM in one tick (drive engaging
+                    # and snapping Unreal to the real arm, a link resync), the can is set down upright where it
+                    # was instead of teleporting along (2026-11-08: an engage carried it 40 cm)
                     link = self.arms[(self.held, 'link_007')]
-                    self.cup.set_actor_transform(unreal.MathLibrary.compose_transforms(self.rel, link.get_actor_transform()), False, True)
+                    here = link.get_actor_location()
+                    last = getattr(self, 'held_link_at', None)
+                    if last is not None and (here - last).length() > JUMP_CM:
+                        loc = self.cup.get_actor_location()
+                        self.cup.set_actor_location_and_rotation(unreal.Vector(loc.x, loc.y, self.spec['rest_z']), unreal.Rotator(0, 0, 0), False, True)
+                        unreal.log_warning('Table 10 Dream runtime: the %s wrist jumped %.0f cm; the %s is set down where it was'
+                                           % (self.held, (here - last).length(), self.spec['noun']))
+                        self.held, self.rel, self.held_link_at = None, None, None
+                    else:
+                        self.cup.set_actor_transform(unreal.MathLibrary.compose_transforms(self.rel, link.get_actor_transform()), False, True)
+                        self.held_link_at = here
+                else:
+                    self.held_link_at = None
             _write(self.dir / 'cup.json', self._cup_status())
             self.error = None
         except Exception as error:
