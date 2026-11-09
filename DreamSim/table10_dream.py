@@ -20,6 +20,7 @@ Run with the Dream key from the launcher (never handled here):
 """
 import json
 import math
+import re
 import subprocess
 import sys
 import time
@@ -34,7 +35,19 @@ DIR = PROJECT / 'Saved/Table10Dream'
 TOOLS = PROJECT / 'Tools'
 JAW = .104825
 REQUEST_FRESH_S = 30.
-CAPABILITIES = ['pickup', 'put_down', 'side', 'cancel']
+CAPABILITIES = ['pickup', 'put_down', 'home', 'side', 'cancel', 'refuse_unknown']
+# What a prompt asks for. Anything else is refused: defaulting to a pickup made "Return both arms to their idle
+# positions" reach for the can with the real right arm (2026-11-08 16:26).
+INTENTS = (
+    ('put_down', re.compile(r"\b(put|place|set\b.*\bdown|release|drop|let go|reset)\b|\b(to|on|onto) the table\b")),
+    ('home', re.compile(r"\b(idle|home|rest|park|return|go back|retract)\b")),
+    ('pickup', re.compile(r"\b(pick|grab|take|lift|hold|grasp|get)\b")),
+)
+
+
+def intent(prompt):
+    text = str(prompt or '').lower()
+    return next((name for name, pattern in INTENTS if pattern.search(text)), None)
 
 
 class Cancelled(Exception):
@@ -265,6 +278,21 @@ class Runner:
         self.play({'q_l_chunk': home['left'], 'q_r_chunk': home['right']}, 'planned return to idle (no Dream call)')
         return '%s set down; arms at idle' % (read(DIR / 'cup.json') or {}).get('noun', 'cup')
 
+    def home(self):
+        """Both arms back to idle (planned, no Dream call), grippers as they are. Refused while an arm holds the can."""
+        from fleet_reset import HOME_Q
+        cup = read(DIR / 'cup.json') or {}
+        if cup.get('held_by') in ('left', 'right'):
+            raise RuntimeError('the %s arm is holding the %s: say "put the %s down" first' % (cup['held_by'], cup.get('noun', 'cup'), cup.get('noun', 'cup')))
+        packet = self.observe()
+        st = packet['state']
+        ease = [.5 - .5 * math.cos(math.pi * k / 39) for k in range(40)]
+        rows = {s: [list(np.array(st['q_' + s]) * (1 - e) + np.array(HOME_Q) * e) + [st['gap_%s_m' % s] / JAW] for e in ease]
+                for s in ('left', 'right')}
+        self.status('running', 'arms returning to idle')
+        self.play({'q_l_chunk': rows['left'], 'q_r_chunk': rows['right']}, 'planned return to idle (no Dream call)')
+        return 'arms at idle'
+
     def run(self):
         import os
         write(DIR / 'runner.json', {'capabilities': CAPABILITIES, 'pid': os.getpid(), 'unix': time.time()})
@@ -283,9 +311,14 @@ class Runner:
                     self.status('queued', 'received "%s" from %s' % (request.get('prompt'), request.get('source')))
                     try:
                         self.ensure_editor()
-                        prompt = str(request.get('prompt', '')).lower()
-                        if any(word in prompt for word in ('put', 'release', 'drop', 'reset', 'let go')):
+                        kind = intent(request.get('prompt'))
+                        if kind is None:
+                            self.status('rejected', 'not a Table 10 task I know: "%s". Say pick up / grab the can, put it down, '
+                                                    'or go to idle.' % str(request.get('prompt', ''))[:80])
+                        elif kind == 'put_down':
                             self.status('done', self.put_down())
+                        elif kind == 'home':
+                            self.status('done', self.home())
                         else:
                             self.ensure_client()
                             side = request.get('side')
