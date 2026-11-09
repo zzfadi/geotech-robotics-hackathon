@@ -129,6 +129,8 @@ def hide_camera_bodies():
     for actor in unreal.GameplayStatics.get_all_actors_of_class(world, unreal.CameraActor):
         if 'MakerCamera' not in actor.get_actor_label():
             continue
+        # Actor-level too: component visibility alone came back after the editor re-registered the proxies.
+        actor.set_is_temporarily_hidden_in_editor(True)
         for component in actor.get_components_by_class(unreal.PrimitiveComponent):
             if component.get_class().get_name() in ('CameraProxyMeshComponent', 'DrawFrustumComponent'):
                 component.set_visibility(False, False)
