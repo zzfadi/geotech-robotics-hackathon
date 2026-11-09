@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T18:01:00-08:00",
+  "workstream": "vrxr",
+  "status": "done",
+  "what": "From the Quest in VR, the in-editor agent now turns plain speech into Table 10 arm actions: pick up the can with either arm, pass it between the arms, move one or both arms in straight lines, put it carefully back on the table, go to idle; the real arms follow when their service is in drive.",
+  "why": "Denys asked to talk naturally to the agent in VR ('use the DreamLab API', 'grab the bottle', 'give it to the other arm') instead of it asking whether he meant Unreal or the robot, and for movements as careful as the physical arms.",
+  "where": ["Unreal/TheHumanTouch/Tools/copresence_mcp.py", "Unreal/TheHumanTouch/Tools/QuestVR/", "Unreal/TheHumanTouch/Tools/maker_arm_table10_dream.py", "Unreal/TheHumanTouch/SourceAssets/FreeWaveCan/"],
+  "details": ["New robot_arms agent tool (Codex never saw the server instructions and kept asking which robot was meant); a robot hint is added to robot-sounding turns.", "Agent viewport images are skipped in VR Mode: CaptureViewport crashed UE 5.8.3 there.", "All motion goes through the Table 10 runtime: joints capped at 30 deg/s, straight-line lifts and set-downs, a handover carry, a held can set down instead of teleporting when drive takes over.", "Tested by voice: pickup, handover right to left, both-arm moves; scripted: pickup, +10 cm, handover, put-down with the can upright (tilt at most 0.4 deg)."]
+}
