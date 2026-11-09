@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:28:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "With live cameras, Dream drove the real left Maker Arm to the bottle held in a person's hand and began closing the gripper on it (Saleh's 17:00 hand-to-hand prompt); the run then switched to the right arm on a heat stop and completed 20 cycles.",
+  "why": "First real-arm run where Dream saw live frames (the earlier runs got a frozen picture); the left wrist camera shows the held bottle between the jaws at cycles 9 and 13.",
+  "where": ["DreamSim/dream_arm.py", "DreamSim/dream_live.py"],
+  "details": ["Left arm cycles 1-14: reach to the hand, gripper closing to about -26 / -36 SDK deg (partly closed, not a firm grasp), then motor 3 heat stop at 50 C; rest verified home.", "Right arm cycles 15-20 after the automatic switch: Dream's session had expired and the bottle was back on the table; the gripper closed on air; rest verified home.", "Frames changed every cycle (hashes differ); input check recorded by a person (dream.input_check). Tool centre point still uncalibrated.", "Open: firm grasp and the place-into-the-other-hand step; heat budget ends each arm's turn after about 14 cycles."]
+}
