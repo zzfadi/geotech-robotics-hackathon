@@ -119,10 +119,31 @@ def _stop_strays():
             pass
 
 
+def hide_camera_bodies():
+    """Hide the editor-only body mesh and frustum of every MakerCamera (all tables) in this editor's viewport and VR.
+    The cameras keep rendering: captures use their transforms, and these proxies never appear in a capture anyway.
+    Local and untransacted: nothing enters Multi-User history or the saved level (Denys, 2026-11-08: "I want to see
+    just the virtual camera, without the actual shape")."""
+    world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    hidden = 0
+    for actor in unreal.GameplayStatics.get_all_actors_of_class(world, unreal.CameraActor):
+        if 'MakerCamera' not in actor.get_actor_label():
+            continue
+        for component in actor.get_components_by_class(unreal.PrimitiveComponent):
+            if component.get_class().get_name() in ('CameraProxyMeshComponent', 'DrawFrustumComponent'):
+                component.set_visibility(False, False)
+                hidden += 1
+    return hidden
+
+
 def start(directory, seconds=4*3600):
     global _camera
     stop()
     _stop_strays()
+    try:
+        hide_camera_bodies()
+    except Exception as error:  # cosmetic only: never block the stream
+        unreal.log_warning('Table 10 camera: could not hide camera bodies: %s' % error)
     _camera = Camera(directory, seconds)
     return _camera.status()
 
