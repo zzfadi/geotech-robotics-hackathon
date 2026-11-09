@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:20:00-08:00",
+  "workstream": "arm-station",
+  "status": "blocked",
+  "what": "Live Dream run on the left arm with Saleh's 17:00 hand-to-hand prompt went wrong and was stopped with the E-stop; dream_arm.py now ends the whole run when an arm does not verify its return home.",
+  "why": "Dream's plan did not head for a grasp: over 13 cycles it swung the shoulder pan to about +74 deg and raised the arm (shoulder -128, elbow 155, wrist roll 64 SDK deg) with jaws open. pickup_server tripped on a motor 1 torque residual (2.33 Nm, likely contact), the operator pressed the E-stop, so rest could not return the arm (feedback timeout); the loop then tried to switch to the right arm.",
+  "where": ["DreamSim/dream_arm.py"],
+  "details": ["Arm switching now happens only after a verified return home; an unverified return (fault, trip, E-stop, lost bus) stops the run.", "Not ready for unattended or demo use on the real arms: Dream warns the tool centre point is uncalibrated and no person has checked its camera inputs (dream.check / dream.input_check). The team's working Dream handover remains the Unreal Table 10 path.", "Left arm unpowered after the E-stop; inspect it before powering on."]
+}

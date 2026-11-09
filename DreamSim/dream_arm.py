@@ -189,9 +189,14 @@ def run_side(client, side, other_sdk, a, run, start_cycle, cycles, active_sdk=No
         if not a.dry:
             print(f'{side} arm returning home (rest: open jaws, slow return to the enable pose, release)', flush=True)
             try:
-                print('  ' + json.dumps(server({'cmd': 'rest'}, a.port, timeout=120)), flush=True)
+                r = server({'cmd': 'rest'}, a.port, timeout=120)
+                print('  ' + json.dumps(r), flush=True)
             except OSError as exc:
-                print(f'  rest failed: {exc} - use the E-stop', flush=True)
+                r = {'error': str(exc)}
+            if not r.get('return_verified'):
+                # A fault, a trip or the E-stop: never hand the run to the other arm after an unverified return.
+                raise RuntimeError(f'{side} arm did not verify its return home ({r.get("fault") or r.get("error")}); '
+                                   'stopping the whole run - check the arm by hand')
     return done
 
 
