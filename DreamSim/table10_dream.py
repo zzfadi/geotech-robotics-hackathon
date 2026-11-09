@@ -74,6 +74,25 @@ print("T10DREAM scheduled")
 ''' % (TOOLS, DIR)
 
 
+MAX_STEP_RAD = math.radians(1.5)  # 30 deg/s at 20 Hz, the editor runtime's own cap
+
+
+def cap_speed(action, max_step=MAX_STEP_RAD):
+    """Spread any joint step above max_step over more rows, both arms together (two-arm timing holds). Dream lift
+    chunks through vertical_only asked for up to 113-168 deg/s at the wrist (2026-11-08); the runtime caps that too,
+    but the chunk itself should not ask for it. The jaw value is interpolated with the joints."""
+    keys = ('q_l_chunk', 'q_r_chunk')
+    n = max(len(action[k]) for k in keys)
+    rows = {k: list(action[k]) + [action[k][-1]] * (n - len(action[k])) for k in keys}
+    out = {k: [list(rows[k][0])] for k in keys}
+    for i in range(1, n):
+        steps = max(1, max(math.ceil(max(abs(rows[k][i][j] - rows[k][i - 1][j]) for j in range(6)) / max_step) for k in keys))
+        for k in keys:
+            a, b = rows[k][i - 1], rows[k][i]
+            out[k] += [[a[j] + (b[j] - a[j]) * f / steps for j in range(len(b))] for f in range(1, steps + 1)]
+    return {**action, **out}
+
+
 def read(path):
     try:
         return json.loads(Path(path).read_text())
@@ -146,6 +165,7 @@ class Runner:
 
     def play(self, action, label):
         self.check_cancel()  # between chunks: a chunk already playing finishes
+        action = cap_speed(action)
         self.seq += 1
         n = max(len(action['q_l_chunk']), len(action['q_r_chunk']))
         for key in ('q_l_chunk', 'q_r_chunk'):
