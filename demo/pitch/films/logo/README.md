@@ -1,9 +1,9 @@
-# Emmy nebula reveal
+# The offering · museum logo film
 
-[Play the six-second MP4](emmy-nebula-reveal.mp4) · [Full-resolution transparent master and preview on Drive](https://drive.google.com/drive/folders/1coavOSNd3tsg4kwHHR7qOXiuugRxO5tP)
+[Play the eight-second film](marble/emmy-nebula-marble.mp4) · [Poster](marble/poster.jpg) · [Production motion folder on Drive](https://drive.google.com/drive/folders/1coavOSNd3tsg4kwHHR7qOXiuugRxO5tP)
 
-The human palm lights from 0.2 seconds. Emmy answers at 1.85 seconds. Their two streams curl into one nebula. From 4.875 seconds through the end, the transparent master holds the original 1536 × 1024 RGBA logo.
+The amber palm cups and opens. A filament leaves the palm and spirals into a revolving nebula; Emmy dips her ivory fingertips into its light. The hands were performed in Higgsfield rather than held behind a light mask. One silent Kling v3.0 Pro take used the [offering](marble/offering.jpg) and [receiving](marble/receiving.jpg) plates. A separate pass carries the inner dust around the inclined disc. The full-frame background is honed white marble. The film is 1920 × 1080, 24 fps, H.264.
 
-Higgsfield Kling v3.0 generated the light motion between [start](start.png) and [end](end.png) in one silent five-second take (job `6964db65-9f79-4998-97d1-526585105263`). The final composite uses the original hand silhouettes, timed light masks and the approved artwork for the hold.
+**Playback:** Judges slide 3, Stage slide 2, Investor slide 1. Enter the cue to start the movie. In Keynote, advance to the editable title when ready. In PowerPoint the cue is timed to advance after 8.1 seconds when slide timings are enabled. The PDF uses a frame from the film. Speak over the cue during a timed pitch.
 
-The title slide plays the movie in the Judges (slide 3), Stage (slide 2), and Investor (slide 1) decks. Keynote embeds a transparent ProRes movie. PowerPoint embeds H.264 matched to the slide background. The master on Drive uses lossless QuickTime Animation and preserves the original alpha. Use the MP4 for standalone playback on oxblood.
+**Source:** Higgsfield job `fac40365-01c8-4e63-9d18-0f00476ea266`. Find the raw take and finishing script in Drive’s brand-kit-scratchpad/emmy-nebula-marble. The transparent static logo remains the identity master. The [older six-second oxblood reveal](emmy-nebula-reveal.mp4) and its alpha master are alternate assets.

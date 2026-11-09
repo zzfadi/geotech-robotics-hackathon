@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T16:27:13-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Replaced the small logo reveal with a full-screen white-marble film in all three pitch decks.",
+  "why": "Let the audience see the human offering, the rotating nebula and Emmy receiving the light as a single gesture.",
+  "where": [
+    "demo/pitch/films/logo/marble/emmy-nebula-marble.mp4",
+    "demo/pitch/deck",
+    "demo/pitch/HANDOFF.md"
+  ]
+}
