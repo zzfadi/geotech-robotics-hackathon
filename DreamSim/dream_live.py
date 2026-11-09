@@ -30,8 +30,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 JAW = .104825                    # model jaw gap range, metres
 SIGN = (1, 1, 1, 1, -1, 1)       # SDK motor -> URDF: wrist yaw is inverted (maker_arm_real_mapping.py)
 GRIP_OPEN_DEG = -96.0            # SDK gripper: 0 closed, -96 open; linear gap map (unmeasured linkage)
-SALEH_PROMPT = ("Use the right arm to pick up the water bottle, hand it to me, release it, and return home. "
-                "Keep the left arm still.")
+# Saleh's prompt in #geotech-robotics, 2026-11-08 17:00 (replaces his 14:59 "pick up the water bottle, hand it to me")
+SALEH_PROMPT = ("Use the right arm to take the bottle from my hand, place it in my other open hand, release it, "
+                "and return home. Keep the left arm still.")
 ROLES = ("overhead", "wrist_l", "wrist_r")
 
 

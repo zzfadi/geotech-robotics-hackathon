@@ -32,7 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from dream_live import JAW, SALEH_PROMPT, fetch_frames, obs_to_sdk, sdk_to_obs  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[1]
-ADAPTERS = {'0027002E4146570520313238': 'right', '003A003F4146570320303038': 'left'}  # docs/table10-real-arms.md
+ADAPTERS = {'0027002E4146570520313238': 'right', '003A003F4146570320303038': 'left'}  # the station's adapters
 SPEED = 15.0          # pickup_server's own cap
 MAX_STEP_DEG = 30.0   # largest joint change sent in one move
 # SDK profile maker_arm_v1.yaml joint limits (maker_arm_real_mapping.MOTOR_LIMITS_DEG); pickup_server refuses
@@ -87,8 +87,16 @@ def scan():
     return {s: {'sdk': [q for q, _ in v], 'max_temp': max(t for _, t in v)} for s, v in arms.items() if len(v) == 7}
 
 
+def server_name(side):
+    """The name pickup_server knows this arm by: arm_names.json, else arm-<last 4 of the adapter serial>."""
+    serial = next(k for k, v in ADAPTERS.items() if v == side)
+    names = json.loads((REPO / 'arm/tools/arm_names.json').read_text())
+    return names.get(serial, f'arm-{serial[-4:]}')
+
+
 def start_server(side, run, port):
-    proc = subprocess.Popen([str(REPO / 'arm/.venv/bin/python'), 'arm/tools/pickup_server.py', side, '--operator-cutoff',
+    proc = subprocess.Popen([str(REPO / 'arm/.venv/bin/python'), 'arm/tools/pickup_server.py', server_name(side),
+                             '--operator-cutoff',
                              '--log', str(run / f'server-{side}.jsonl'), '--port', str(port)],
                             cwd=REPO, env=arm_env(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     deadline = time.monotonic() + 60
