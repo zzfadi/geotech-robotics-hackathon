@@ -56,6 +56,12 @@ def obs_to_sdk(row):
 
 
 def fetch_frames(base, out):
+    # The dashboard keeps serving a camera's last frame after it drops; never send Dream a frozen picture.
+    with urllib.request.urlopen(f'{base}/state', timeout=5) as r:
+        live = json.load(r).get('arm_cams') or {}
+    dead = [role for role in ROLES if not live.get(role)]
+    if dead:
+        raise RuntimeError(f'arm cameras not live on {base}: {", ".join(dead)} (restart the dashboard / check USB)')
     frames = {}
     for role in ROLES:
         with urllib.request.urlopen(f'{base}/cam/{role}.jpg', timeout=5) as r:

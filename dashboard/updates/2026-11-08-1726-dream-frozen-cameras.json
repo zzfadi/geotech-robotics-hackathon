@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:26:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Found why Dream moved the real arms blind: every camera frame it received in the 17:15 and 17:17 runs was the same frozen picture. The Dream loop now refuses frames unless the dashboard reports all three arm cameras live.",
+  "why": "The arm cameras dropped (around the 17:10 power/USB loss) and the Mac dashboard kept serving each camera's last frame; cycle 1, 10 and 13 frames were byte-identical while the arm swung about 40 deg.",
+  "where": ["DreamSim/dream_live.py"],
+  "details": ["fetch_frames checks /state arm_cams before every Dream call and stops the run if any role is not live.", "Restarting the Mac dashboard brought all three cameras back (verified live, scene changing).", "On macOS a camera read can hang when the device vanishes, so the dashboard's own 2 s reconnect never ran; restart it after any USB or power loss."]
+}
