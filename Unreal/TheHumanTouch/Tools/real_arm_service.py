@@ -355,8 +355,24 @@ class Service:
         return None
 
     # ---- drive: web tests, hold, and the hand-over to Unreal ----------------------------------
-    def acknowledge(self, state, detail):
-        self.ack = {'seq': self.drive_seq, 'state': state, 'detail': str(detail)[:200], 'unix': time.time()}
+    def acknowledge(self, state, detail, **extra):
+        self.ack = {'seq': self.drive_seq, 'state': state, 'detail': str(detail)[:200], 'unix': time.time(), **extra}
+
+    def engage_gap(self):
+        """Per arm: how far Unreal's Table 10 arm was from the real arm when torque came on, in degrees (None without
+        Unreal). Unreal then snaps to the real pose (the real arm never moves to Unreal on its own), so a large gap
+        means the virtual arm jumped (81 deg on 2026-11-08, carrying a held can with it)."""
+        ue = self.bridge.read_ue() or {}
+        gaps = {}
+        for side in self.bridge.sides:
+            arm = (ue.get('arms') or {}).get(side.name) or {}
+            meas = side.arm.get_joint_positions()
+            if arm.get('q') and all(math.isfinite(v) for v in meas[:6]):
+                target = mapping.urdf_to_motor(arm['q'])
+                gaps[side.name] = round(max(abs(math.degrees(a - b)) for a, b in zip(target, meas[:6])), 1)
+            else:
+                gaps[side.name] = None
+        return gaps
 
     def drive_message(self):
         names = ' and '.join(s.name for s in self.bridge.sides)
@@ -552,6 +568,7 @@ class Service:
                         arms = self.bridge.mirror_step()
                         return 1.0 / rb.MIRROR_HZ
                     self.bridge.sides = mine
+                    gap = self.engage_gap()  # before the snap: Unreal still shows its own pose
                     reason = self.preflight()
                     if reason:
                         self.bridge.sides = list(self.all_sides)
@@ -560,7 +577,9 @@ class Service:
                     elif self.try_engage():
                         self.engage_since = None
                         self.set('drive', self.drive_message())
-                        self.acknowledge('on', 'motors enabled (torque on) and holding their pose')
+                        self.acknowledge('on', 'motors enabled (torque on) and holding their pose' + ''.join(
+                            '; Unreal %s arm was %.0f deg away and snaps to the real pose' % (k, v)
+                            for k, v in gap.items() if v is not None and v > SYNC_DEG), engaged_gap_deg=gap)
                         return 1.0 / DRIVE_HZ
                     else:
                         self.bridge.sides = list(self.all_sides)
