@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:52:00-08:00",
+  "workstream": "arm-station",
+  "status": "in-progress",
+  "what": "Jetson prepared to run Dream's own robot station: gs_usb built for its kernel and Dream's station installed; loading the driver (one sudo step) and the station setup wait for the arms to move to the Jetson.",
+  "why": "Dream's station drives candleLight adapters only as Linux SocketCAN links, and the Jetson kernel ships without gs_usb (CONFIG_CAN_GS_USB not set).",
+  "where": ["orin-arm:~/gs_usb-build", "orin-arm:~/dream-station/.venv"],
+  "details": ["gs_usb.ko built out of tree from Linux v6.8 drivers/net/can/usb/gs_usb.c (sha256 2ef2f149...ec01b) against the installed 6.8.12-1021-tegra headers; vermagic matches; aliases include 1d50:606f. Module signing is on but not enforced and lockdown is off, so it loads unsigned (kernel taint note).", "~/gs_usb-build/install.sh installs it under /lib/modules/<kernel>/updates, runs depmod, loads it at boot via /etc/modules-load.d/gs_usb.conf and modprobes it. While gs_usb holds the adapters, the repo's raw-USB arm tools (arm scan, pickup_server) cannot open them on the Jetson.", "~/dream-station/.venv: dreamlabs 1.0.37 + dreamlabs-client 1.1.3 from PyPI (uv); dreamcli --version shows the IK solves working on aarch64.", "Remaining: the Dream key in ~/.dreamlabs/credentials, the station config (~/.dreamlabs/station.yaml) from `dreamcli setup` with arms pinned by adapter serial, stopping vision.live_view so the station gets the arm cameras, then `dreamcli robot run --dry-run --view` before any motion."]
+}
