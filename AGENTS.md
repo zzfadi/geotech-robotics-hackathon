@@ -63,6 +63,12 @@ The team dashboard at https://zzfadi.github.io/geotech-robotics-hackathon/ is ho
 - Preserve unrelated user changes and never commit credentials, tokens, private keys, or local secret files.
 - Keep documentation aligned with implemented behavior. Report what changed, what was verified, and any remaining blockers.
 
+### Real arms through the Jetson
+
+- Both Maker Arms and their cameras are on the Jetson (`orin-arm`, `orin-arm.local` on the travel router) and are driven only by Dream's robot station. Read [docs/jetson-arms.md](docs/jetson-arms.md) before touching them; access needs the router's Wi-Fi and an authorized SSH key, both from FADI.
+- Use `DreamSim/station.sh` (`status` is read-only; `demo`, `start` and `home` move the arms; `stop` holds; `down` lets them go limp). Say exactly what will move before it moves, and only start a run when a person confirms they are at the E-stop.
+- One owner per USB-CAN adapter: never run `arm/tools` programs, `DreamSim/dream_arm.py` or anything else that opens the adapters on the Jetson. Keep services on `127.0.0.1` with SSH tunnels. Never type, print, store or commit passwords, the Wi-Fi key or the Dream API key.
+
 ### Maker Arm robot description
 
 - Target MakerMods **Maker Arm**, not Metal Arm or the earlier I2RT YAM preview. Official sources: https://www.makermods.ai/maker-arm and https://github.com/makermods-robotics/maker-arm-sdk/tree/main/urdf/maker_arm.

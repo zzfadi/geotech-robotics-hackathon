@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T18:48:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Team guide for the real arms through the Jetson: join the travel router, get SSH access, run the demo with one command (DreamSim/station.sh demo), and the rules every agent follows. AGENTS.md points agents to it.",
+  "why": "The arms now run only through Dream's station on the Jetson; teammates and their agents need one way in and the same safety rules.",
+  "where": ["docs/jetson-arms.md", "AGENTS.md", "DreamSim/station.sh", "arm/jetson-station/install-gs_usb.sh"],
+  "details": ["Jetson reachable as orin-arm.local over mDNS on the travel router (192.168.8.136, not reserved); host key fingerprint checked by name.", "station.sh demo: starts the station if needed, 3 s countdown, runs Saleh's prompt with progress, then stop and home after 120 s or Ctrl-C. Non-motion paths tested (status, unreachable host, request body).", "install-gs_usb.sh verified to download, hash-check and build from scratch on the Jetson.", "No passwords, Wi-Fi key or Dream key in the repo; teammates send FADI their public key."]
+}
