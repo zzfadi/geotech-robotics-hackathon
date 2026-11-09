@@ -281,48 +281,33 @@ def _registry():
 
 
 _MODEL = "/Game/_Agents/Denys_Mac_Codex/MakerArm/Cans/FreeWave/SM_FreeWaveCan/StaticMeshes/"
-_MESHES = {PREFIX + "HandoverCan_Model_Can": _MODEL + "Can_body_355_mL",
-           PREFIX + "HandoverCan_Model_Bottom_rolled": _MODEL + "Bottom_rolled_rim",
-           PREFIX + "HandoverCan_Model_Top_rolled": _MODEL + "Top_rolled_seam",
-           PREFIX + "HandoverCan_Model_Recessed": _MODEL + "Recessed_lid",
-           PREFIX + "HandoverCan_Model_Opened_drinking": _MODEL + "Opened_drinking_aperture",
-           PREFIX + "HandoverCan_Model_Pull": _MODEL + "Pull_tab",
-           PREFIX + "HandoverCan_Model_Tab": _MODEL + "Tab_rivet",
+# The can is one actor: its proxy MakerInteraction_T09__HandoverCan shows the whole Free Wave can as one
+# mesh (pivot at the can's centre), so it moves as one piece in every editor
+_MESHES = {PREFIX + "HandoverCan": _MODEL + "SM_FreeWaveCan",
            HANDLE + "left": "/Engine/BasicShapes/Sphere", HANDLE + "right": "/Engine/BasicShapes/Sphere"}
 _HANDLE_MATERIAL = "/Game/_Agents/Denys_Mac_Codex/MakerArm/VR/MI_ArmHandle"
-# Denys's can model. Agents can't save, so its imported meshes live only in memory (or in a Multi-User
-# session) and are gone after a restart without one; repair() imports them again from here
-_CAN_SOURCES = (Path(__file__).resolve().parents[2] / "SourceAssets" / "FreeWaveCan" / "free_wave_can.glb",
-                Path(__file__).resolve().parents[5] / "Assets" / "FreeWaveCan" / "free_wave_can.glb")
+# Denys's can as one mesh (SourceAssets/FreeWaveCan/free_wave_can_whole.glb, made by combine_can_glb.py).
+# If an editor ever comes up without the imported mesh (agents can't save), repair() imports it again
+_CAN_SOURCES = (Path(__file__).resolve().parents[2] / "SourceAssets" / "FreeWaveCan" / "free_wave_can_whole.glb",
+                Path(__file__).resolve().parents[5] / "Assets" / "FreeWaveCan" / "free_wave_can_whole.glb")
 _CAN_SOURCE = next((p for p in _CAN_SOURCES if p.exists()), _CAN_SOURCES[0])
 
 
-def _clean_glb(source, target):
-    """A copy of the glb whose object names import as plain asset names: the body is called
-    'Can body • 355 mL', and renaming the imported asset afterwards saves it, which agents can't."""
-    data = source.read_bytes()
-    json_length = struct.unpack_from("<I", data, 12)[0]
-    document = json.loads(data[20:20 + json_length])
-    for kind in ("nodes", "meshes"):
-        for entry in document.get(kind, []):
-            if "name" in entry:
-                entry["name"] = " ".join(entry["name"].replace("•", " ").split())
-    chunk = json.dumps(document, separators=(",", ":")).encode()
-    chunk += b" " * (-len(chunk) % 4)
-    rest = data[20 + json_length:]
-    header = struct.pack("<4sII", b"glTF", 2, 12 + 8 + len(chunk) + len(rest))
-    target.write_bytes(header + struct.pack("<I4s", len(chunk), b"JSON") + chunk + rest)
-
-
 def _ensure_can_model():
-    if unreal.EditorAssetLibrary.does_asset_exist(_MODEL + "Can_body_355_mL") or not _CAN_SOURCE.exists():
+    if unreal.EditorAssetLibrary.does_asset_exist(_MODEL + "SM_FreeWaveCan") or not _CAN_SOURCE.exists():
         return False
+    # Imported under the name the mesh has in the project (a one-mesh glb takes its file's name)
     copy = Path(tempfile.mkdtemp()) / "SM_FreeWaveCan.glb"
-    _clean_glb(_CAN_SOURCE, copy)
+    copy.write_bytes(_CAN_SOURCE.read_bytes())
     task = unreal.AssetImportTask()
     task.filename, task.destination_path = str(copy), _MODEL.split("/SM_FreeWaveCan/")[0]
     task.automated, task.replace_existing, task.save = True, True, False
     unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
+    mesh = unreal.load_asset(_MODEL + "SM_FreeWaveCan")
+    if mesh is not None:
+        # The VR laser is a Visibility trace: the can needs collision to be grabbed
+        mesh.get_editor_property("body_setup").set_editor_property(
+            "collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
     return True
 
 

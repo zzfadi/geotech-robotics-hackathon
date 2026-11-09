@@ -1,14 +1,17 @@
 # Free Wave can (Table 10 handover object)
 
-Denys's model of a 12 oz Athletic Free Wave can, used as the visible can on Table 10
-(`MakerInteraction_T09__HandoverCan_Model_*`, seven parts on the invisible 6.6 × 12.2 cm grasp proxy
-`MakerInteraction_T09__HandoverCan`).
+Denys's model of a 12 oz Athletic Free Wave can. On Table 10 it is one actor, `MakerInteraction_T09__HandoverCan`,
+showing the whole can as one mesh (`/Game/_Agents/Denys_Mac_Codex/MakerArm/Cans/FreeWave/SM_FreeWaveCan/StaticMeshes/SM_FreeWaveCan`),
+so it moves as one piece in every editor. The pivot is at the can's centre (rest height 81.1 cm, radius 3.3 cm,
+12.2 cm tall), which is where the Table 10 Dream runtime expects it. Collision is complex-as-simple so the VR
+laser (a Visibility trace) can grab it.
 
-- `free_wave_can.glb`: the model imported into
-  `/Game/_Agents/Denys_Mac_Codex/MakerArm/Cans/FreeWave/SM_FreeWaveCan`.
-- `free_wave_can.blend` and `build_can.py`: the Blender source and the script that builds it.
-- `label.png`: the printed label texture.
+- `free_wave_can.glb`, `free_wave_can.blend`, `build_can.py`, `label.png`: the model as built in Blender
+  (seven parts), its source and the label texture.
+- `free_wave_can_whole.glb`: the same can as one mesh, made by
+  `python3 combine_can_glb.py free_wave_can.glb free_wave_can_whole.glb`. That bakes each part's transform into
+  its vertices, moves the origin to the can's centre and puts all parts in one mesh with their three materials.
+  Import it as `SM_FreeWaveCan.glb` (a one-mesh glb takes the file's name), as `Tools/QuestVR/table10_vr_grab.py`
+  does when the mesh is missing.
 
-The body object is named "Can body • 355 mL". The bullet becomes part of the asset name on import,
-and renaming the asset afterwards saves it, which agent editors refuse. `Tools/QuestVR/table10_vr_grab.py`
-therefore imports a copy with the bullet removed, so the body arrives as `Can_body_355_mL`.
+The seven separate part meshes from the first import are still in the folder's `StaticMeshes`; nothing uses them now.
