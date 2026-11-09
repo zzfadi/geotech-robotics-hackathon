@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T16:23:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Station dashboard shows all four cameras (perception webcam plus overhead, left-wrist and right-wrist arm cameras); the MacBook can make Dream calls with those live views.",
+  "why": "Consolidating after the demo so post-hackathon experiments start from a working station: the same three views Dream's embodiment expects, and one command to send a prompt such as Saleh's water-bottle handover.",
+  "where": ["vision/live_view.py", "DreamSim/dream_live.py"],
+  "details": ["Arm cameras are pinned to their Jetson USB hub ports and opened as MJPG at 15 fps; raw YUYV from four cameras saturated the shared USB 2.0 hub (right wrist failed, detector fell to 10 fps). With MJPG: all live, detector back to about 24 fps.", "Each arm camera is served at /cam/{overhead,wrist_l,wrist_r}.jpg; the --mac dashboard pulls them from the Jetson through the SSH tunnel.", "dream_live.py reuses probe.configure / model.prepare (dream-1-beta, the Table 10 runner's checkpoint), sends the three live frames plus both arms' state, and saves the action chunk with an SDK-degree summary. It never actuates. State is measured SDK readings or an explicitly labelled NOMINAL pose.", "Removed the superseded MJPEG route and the stale control-center process."]
+}

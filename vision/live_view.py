@@ -29,6 +29,61 @@ from .yolo_source import detections_from_result
 ENGINES = Path("~/hub-tests/engines-fp16").expanduser()
 COLORS = {"hand": (60, 60, 255), "bottle": (80, 220, 80), "cup": (80, 220, 80), "can": (80, 220, 80),
           "person": (255, 170, 60)}
+# The three KD-USB arm cameras, pinned to their Jetson USB hub ports (video numbers move on replug).
+# Same roles as Dream's embodiment: overhead, wrist_l, wrist_r.
+ARM_CAMS = {
+    "overhead": "/dev/v4l/by-path/platform-3610000.usb-usb-0:2.1.1.3:1.0-video-index0",
+    "wrist_l": "/dev/v4l/by-path/platform-3610000.usb-usb-0:2.1.1.4:1.0-video-index0",
+    "wrist_r": "/dev/v4l/by-path/platform-3610000.usb-usb-0:2.1.1.1:1.0-video-index0",
+}
+
+
+class ArmCams:
+    """Latest raw JPEG per arm camera: read from the Jetson's devices, or pulled from a Jetson dashboard URL."""
+
+    def __init__(self, source: str):
+        self.source, self.jpgs, self.seen, self.lock = source, {}, {}, threading.Lock()
+        for role in ARM_CAMS:
+            threading.Thread(target=self._run, args=(role,), daemon=True).start()
+
+    def _keep(self, role, jpg):
+        with self.lock:
+            self.jpgs[role], self.seen[role] = jpg, time.time()
+
+    def _run(self, role):
+        if self.source.startswith("http"):
+            import urllib.request
+            while True:
+                try:
+                    with urllib.request.urlopen(f"{self.source}/cam/{role}.jpg", timeout=2) as r:
+                        self._keep(role, r.read())
+                except Exception:
+                    time.sleep(1)
+                time.sleep(0.1)
+        import cv2
+        while True:
+            cap = cv2.VideoCapture(ARM_CAMS[role], cv2.CAP_V4L2)
+            # All cameras share one USB 2.0 hub: compressed MJPG at 15 fps leaves room for four streams.
+            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            cap.set(cv2.CAP_PROP_FPS, 15)
+            while cap.isOpened():
+                ok, frame = cap.read()
+                if not ok:
+                    break
+                self._keep(role, cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])[1].tobytes())
+            cap.release()
+            time.sleep(2)  # unplugged or busy: retry
+
+    def get(self, role):
+        with self.lock:
+            return self.jpgs.get(role), self.seen.get(role)
+
+    def status(self):
+        now = time.time()
+        with self.lock:
+            return {r: (self.seen.get(r) is not None and now - self.seen[r] < 3) for r in ARM_CAMS}
 
 
 class Pipeline:
@@ -42,6 +97,8 @@ class Pipeline:
         self.kwargs = {"imgsz": 640, "conf": 0.25, "verbose": False, "device": args.device}
         backend = cv2.CAP_V4L2 if sys.platform.startswith("linux") else cv2.CAP_ANY
         self.capture = cv2.VideoCapture(args.camera, backend)
+        if backend == cv2.CAP_V4L2:
+            self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.router = ExecutorRouter(target="real")
@@ -139,7 +196,7 @@ class Pipeline:
 
 
 PAGE = r"""<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hold My Beer · Jetson</title><style>
+<title>Hold My Beer · live perception</title><style>
 :root{--bg:#0b0d12;--panel:#141821;--line:#232a36;--ink:#e8ecf2;--mute:#8a94a6;--live:#2ecc71;--sep:#4aa3ff;--next:#f5a623;--hold:#ff5d5d}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 -apple-system,system-ui,Segoe UI,Roboto,sans-serif}
 header{display:flex;align-items:baseline;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line)}
@@ -155,6 +212,9 @@ h1{font-size:22px;margin:0}header .sub{color:var(--mute)}header .dot{margin-left
 .metrics b{display:block;font-size:20px}.metrics span{color:var(--mute);font-size:12px}
 .events{list-style:none;margin:10px 0 0;padding:0;max-height:260px;overflow:auto;font-family:ui-monospace,Menlo,monospace;font-size:13px}
 .events li{padding:4px 0;border-bottom:1px solid var(--line)}.events time{color:var(--mute);margin-right:8px}
+.armcams{padding:0 20px 14px}.armrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.armrow figure{margin:0}.armrow img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;background:#000;display:block}
+.armrow figcaption{display:flex;justify-content:space-between;color:var(--mute);font-size:12px;margin-top:6px}
 .flow{padding:0 20px 18px}.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
 .step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;position:relative}
 .step h3{margin:0 0 4px;font-size:15px}.step p{margin:0;color:var(--mute);font-size:13px}
@@ -177,6 +237,11 @@ h1{font-size:22px;margin:0}header .sub{color:var(--mute)}header .dot{margin-left
   <div class="label" style="margin-top:12px">Timeline</div><ul class="events" id="events"></ul>
  </div>
 </div>
+<div class="armcams panel" style="margin:0 20px 14px"><div class="label">Arm cameras · the three views Dream receives</div><div class="armrow">
+ <figure><img data-role="overhead" alt="overhead"><figcaption><span>Overhead</span><span class="cst" data-role="overhead">–</span></figcaption></figure>
+ <figure><img data-role="wrist_l" alt="left wrist"><figcaption><span>Left wrist</span><span class="cst" data-role="wrist_l">–</span></figcaption></figure>
+ <figure><img data-role="wrist_r" alt="right wrist"><figcaption><span>Right wrist</span><span class="cst" data-role="wrist_r">–</span></figcaption></figure>
+</div></div>
 <div class="flow"><div class="label">The full loop we are building</div><div class="steps">
  <div class="step"><span class="chip c-live">LIVE HERE</span><h3>1 · Camera</h3><p>Webcam on the Jetson watches the person, the hand and the bottle.</p></div>
  <div class="step"><span class="chip c-live">LIVE HERE</span><h3>2 · Edge perception</h3><p>YOLO26n + pose on the Orin Nano GPU, about 30 ms per frame, no cloud.</p></div>
@@ -197,6 +262,7 @@ async function poll(){try{const s=await (await fetch('/state',{cache:'no-store'}
  const c=s.counts||{};$('seen').textContent=['person','hand','bottle','cup'].filter(k=>c[k]).map(k=>c[k]+' '+k).join(', ')||'nothing';
  $('events').innerHTML=(s.events||[]).map(e=>`<li><time>${e.t}</time>${nice(e.kind)} <span class="reason">${nice(e.detail)}</span></li>`).join('');
  if(s.host){$('host').textContent=s.host.title;$('camlabel').textContent=s.host.camera}
+ const cs=s.arm_cams||{};document.querySelectorAll('.cst').forEach(el=>{const ok=cs[el.dataset.role];el.textContent=ok?'● live':'○ no signal';el.style.color=ok?'var(--live)':'var(--hold)'});
  $('up').textContent='● LIVE · '+s.frames+' frames';$('up').style.color='var(--live)';
 }catch(e){$('up').textContent='● reconnecting';$('up').style.color='var(--hold)';}}
 setInterval(poll,250);poll();
@@ -205,10 +271,12 @@ function next(){if(busy)return;busy=true;const u='/frame.jpg?t='+Date.now();cons
  im.onload=()=>{cam.src=u;busy=false};im.onerror=()=>{busy=false};
  setTimeout(()=>{busy=false},1500);im.src=u}
 setInterval(next,70);next();
+document.querySelectorAll('.armrow img').forEach(img=>{let b=false;setInterval(()=>{if(b)return;b=true;const u='/cam/'+img.dataset.role+'.jpg?t='+Date.now();const im=new Image();
+ im.onload=()=>{img.src=u;b=false};im.onerror=()=>{b=false};setTimeout(()=>{b=false},2000);im.src=u},150)});
 </script></body></html>"""
 
 
-def serve(pipe: Pipeline, port: int):
+def serve(pipe: Pipeline, cams: ArmCams, port: int):
     class H(BaseHTTPRequestHandler):
         def log_message(self, *a):
             pass
@@ -223,8 +291,17 @@ def serve(pipe: Pipeline, port: int):
         def do_GET(self):
             if self.path == "/state":
                 with pipe.lock:
-                    body = json.dumps(pipe.state).encode()
-                return self._send(body, "application/json")
+                    state = dict(pipe.state)
+                state["arm_cams"] = cams.status()
+                return self._send(json.dumps(state).encode(), "application/json")
+            if self.path.startswith("/cam/"):
+                role = self.path[5:].split(".jpg")[0]
+                jpg, _ = cams.get(role) if role in ARM_CAMS else (None, None)
+                if not jpg:
+                    self.send_response(503)
+                    self.end_headers()
+                    return
+                return self._send(jpg, "image/jpeg")
             if self.path.startswith("/frame.jpg"):
                 with pipe.lock:
                     jpg = pipe.jpg
@@ -233,20 +310,7 @@ def serve(pipe: Pipeline, port: int):
                     self.end_headers()
                     return
                 return self._send(jpg, "image/jpeg")
-            if self.path != "/stream":
-                return self._send(PAGE.encode(), "text/html; charset=utf-8")
-            self.send_response(200)
-            self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=f")
-            self.end_headers()
-            try:
-                while True:
-                    with pipe.lock:
-                        jpg = pipe.jpg
-                    if jpg:
-                        self.wfile.write(b"--f\r\nContent-Type: image/jpeg\r\n\r\n" + jpg + b"\r\n")
-                    time.sleep(1 / 15)
-            except Exception:
-                pass
+            return self._send(PAGE.encode(), "text/html; charset=utf-8")
 
     ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()
 
@@ -261,6 +325,8 @@ def main(argv=None) -> int:
     p.add_argument("--device", default="0", help="0 for the Jetson GPU, mps on a Mac, cpu otherwise")
     p.add_argument("--mac", action="store_true", help="Mac built-in camera with .pt weights on the Apple GPU")
     p.add_argument("--weights", type=Path, default=Path("~/hub-mac/weights").expanduser())
+    p.add_argument("--arm-cams", help="'local' (Jetson USB) or a Jetson dashboard URL; default local on the "
+                                      "Jetson, http://127.0.0.1:8790 (the tunnel) with --mac")
     a = p.parse_args(argv)
     if a.device.isdigit():
         a.device = int(a.device)
@@ -273,9 +339,10 @@ def main(argv=None) -> int:
     else:
         a.host = {"title": "Jetson Orin Nano · live perception",
                   "camera": "Live webcam on the Jetson · YOLO26n + pose · TensorRT FP16"}
+    cams = ArmCams(a.arm_cams or ("http://127.0.0.1:8790" if a.mac else "local"))
     pipe = Pipeline(a)
     threading.Thread(target=pipe.run, daemon=True).start()
-    serve(pipe, a.port)
+    serve(pipe, cams, a.port)
     return 0
 
 
