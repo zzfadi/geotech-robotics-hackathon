@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T19:05:33-08:00",
+  "workstream": "demo",
+  "status": "note",
+  "what": "Saved the current Keynote files for Shared Vessel, Engraving comparison, and Logo review.",
+  "why": "Keep the editable pitch materials with the submission checkpoint.",
+  "where": [
+    "demo/pitch/logo-redesign/Shared Vessel.key",
+    "demo/pitch/logo-redesign/almost-touch/Engraving comparison.key",
+    "demo/pitch/logo-review/Logo review.key"
+  ]
+}
