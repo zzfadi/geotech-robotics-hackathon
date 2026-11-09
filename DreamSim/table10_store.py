@@ -5,8 +5,10 @@ a request with an expiry (DRIVE_S): the agent turns it into a heartbeat for the 
 real-arm service, which drops back to mirror (torque off) if the heartbeat stops. The server
 refuses drive_on from public (Funnel) visitors; drive_off and release are always accepted.
 """
+import json
 import time
 import uuid
+from pathlib import Path
 
 ACTIONS = ('move_up', 'idle', 'stop')
 DRIVE_ACTIONS = ('drive_on', 'drive_off', 'release')
@@ -32,17 +34,37 @@ def _clip(value, depth=0):
 
 
 class Table10Tests:
-    def __init__(self, clock=time.time):
+    def __init__(self, clock=time.time, state_path=None):
         self.clock = clock
         self.command = None
         self.agent = None
         self.agent_at = 0.
         self.drive = {'on': False, 'seq': 0, 'since': None, 'until': None, 'source': None}
         self.release_seq = 0
+        # Drive survives a restart of this server (a deploy restarted it and the arms released, 2026-11-08):
+        # the request and its counters are kept on disk until they expire.
+        self.state_path = Path(state_path) if state_path else None
+        try:
+            saved = json.loads(self.state_path.read_text()) if self.state_path else {}
+            if isinstance(saved.get('drive'), dict):
+                self.drive.update(saved['drive'])
+            self.release_seq = int(saved.get('release_seq', 0))
+        except (OSError, ValueError, TypeError):
+            pass
+
+    def _save(self):
+        if self.state_path:
+            try:
+                tmp = self.state_path.with_suffix('.tmp')
+                tmp.write_text(json.dumps({'drive': self.drive, 'release_seq': self.release_seq}))
+                tmp.replace(self.state_path)
+            except OSError:
+                pass
 
     def drive_state(self):
         if self.drive['on'] and self.clock() > self.drive['until']:
             self.drive.update(on=False, ended='expired after %d min' % (DRIVE_S/60))
+            self._save()
         return dict(self.drive)
 
     def online(self):
@@ -78,6 +100,7 @@ class Table10Tests:
             now = self.clock()
             self.drive.update(on=True, seq=self.drive['seq']+1, since=now, until=now+DRIVE_S,
                               source=str(source)[:20], ended=None, sides=sides)
+        self._save()
         return {'drive': self.drive_state(), 'release_seq': self.release_seq}
 
     def agent_update(self, data):

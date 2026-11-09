@@ -14,7 +14,7 @@ class Store:
         self.path=path;path.mkdir(parents=True,exist_ok=True)
         self.interaction=InteractionStore(path)
         self.interaction_preview=None
-        self.table10=Table10Tests()
+        self.table10=Table10Tests(state_path=path/'table10-drive.json')
         # Public (Tailscale Funnel) visitors are view-only unless they present this code.
         code=path/'operator-code'
         if not code.exists():code.write_text(secrets.token_urlsafe(9));code.chmod(0o600)

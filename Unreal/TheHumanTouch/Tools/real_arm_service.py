@@ -574,6 +574,10 @@ class Service:
                 self.power_lost('arms stopped answering')
             return 1.0 / rb.MIRROR_HZ
         if self.mode == 'drive':
+            if c.get('drive') and fresh and c.get('drive_seq') != self.drive_seq:
+                # Turn arms ON pressed again while this arm is already on: answer, so the page doesn't wait forever.
+                self.drive_seq = c.get('drive_seq')
+                self.acknowledge('on', 'already on (torque on) and ' + self.drive_message().split(': ', 1)[-1])
             faulted = [s for s in self.bridge.sides if s.arm.state is ArmState.FAULT]
             if not any(self.side_answering(s) for s in self.bridge.sides):
                 self.power_lost('power lost during drive')
