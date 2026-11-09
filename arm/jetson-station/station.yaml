@@ -1,0 +1,117 @@
+# Station config written by `dreamcli setup`. `dreamcli robot up` runs the station agent on it.
+# Every key is documented in the robots README, *Config file*; the loop keys not written here keep the
+# package's defaults. Re-run `dreamcli setup` to change it, or edit it by hand.
+
+body: makers
+follower_l:
+  can_channel: can_follower_l
+  gripper_hold_torque_nm: 0.5
+  gripper_closed_deg: -2.5
+  gripper_open_deg: -96.0
+  home: [-0.0527, -0.0025, 0.0343, -0.1222, -0.1199, -0.0808]
+  reach:
+  - [0.06, -0.22]
+  - [0.06, -0.2]
+  - [0.06, 0.2]
+  - [0.08, -0.2]
+  - [0.08, 0.2]
+  - [0.1, -0.2]
+  - [0.1, 0.18]
+  - [0.1, 0.2]
+  - [0.12, -0.18]
+  - [0.12, 0.18]
+  - [0.14, -0.18]
+  - [0.14, -0.16]
+  - [0.14, 0.16]
+  - [0.16, -0.16]
+  - [0.16, -0.14]
+  - [0.16, 0.14]
+  - [0.16, 0.16]
+  - [0.18, -0.14]
+  - [0.18, -0.12]
+  - [0.18, 0.12]
+  - [0.18, 0.14]
+  - [0.2, -0.1]
+  - [0.2, -0.08]
+  - [0.2, -0.06]
+  - [0.2, 0.06]
+  - [0.2, 0.08]
+  - [0.2, 0.1]
+  - [0.22, -0.06]
+  - [0.22, -0.04]
+  - [0.22, -0.02]
+  - [0.22, 0.0]
+  - [0.22, 0.02]
+  - [0.22, 0.04]
+  - [0.22, 0.06]
+follower_r:
+  can_channel: can_follower_r
+  gripper_hold_torque_nm: 0.5
+  gripper_closed_deg: -2.5
+  gripper_open_deg: -96.0
+  home: [-0.0236, -0.0079, 0.187, -0.027, -0.0274, -0.0278]
+  reach:
+  - [-0.1, -0.18]
+  - [-0.08, -0.2]
+  - [-0.08, -0.18]
+  - [-0.06, -0.2]
+  - [-0.04, -0.22]
+  - [-0.04, -0.2]
+  - [-0.02, -0.22]
+  - [-0.02, -0.2]
+  - [0.0, -0.22]
+  - [0.02, -0.22]
+  - [0.02, -0.2]
+  - [0.04, -0.22]
+  - [0.04, -0.2]
+  - [0.06, -0.2]
+  - [0.06, 0.2]
+  - [0.08, -0.2]
+  - [0.08, 0.2]
+  - [0.1, -0.2]
+  - [0.1, -0.18]
+  - [0.1, 0.18]
+  - [0.1, 0.2]
+  - [0.12, -0.18]
+  - [0.12, 0.18]
+  - [0.14, -0.16]
+  - [0.14, 0.16]
+  - [0.14, 0.18]
+  - [0.16, -0.16]
+  - [0.16, -0.14]
+  - [0.16, 0.14]
+  - [0.16, 0.16]
+  - [0.18, -0.12]
+  - [0.18, -0.1]
+  - [0.18, 0.12]
+  - [0.18, 0.14]
+  - [0.2, -0.1]
+  - [0.2, -0.08]
+  - [0.2, -0.06]
+  - [0.2, -0.04]
+  - [0.2, 0.04]
+  - [0.2, 0.06]
+  - [0.2, 0.08]
+  - [0.2, 0.1]
+  - [0.2, 0.12]
+  - [0.22, -0.08]
+  - [0.22, -0.06]
+  - [0.22, -0.04]
+  - [0.22, -0.02]
+  - [0.22, 0.0]
+  - [0.22, 0.02]
+  - [0.22, 0.04]
+  - [0.22, 0.06]
+cameras:
+- {name: scene, device: '/dev/v4l/by-path/platform-3610000.usb-usb-0:2.3.1.3:1.0-video-index0',
+  width: 1280, height: 720, fps: 30, rotate: 0}
+- {name: wrist_l, device: '/dev/v4l/by-path/platform-3610000.usb-usb-0:2.3.1.4:1.0-video-index0',
+  width: 1280, height: 720, fps: 30, rotate: 0}
+- {name: wrist_r, device: '/dev/v4l/by-path/platform-3610000.usb-usb-0:2.3.1.1:1.0-video-index0',
+  width: 1280, height: 720, fps: 30, rotate: 0}
+action_horizon: 48
+stale_after_s: 0.2
+max_stall_ticks: 240
+max_ee_speed_m_s: 0.6
+face_blur: true
+live: {robot_id: rbt_574d07a82815d561}

@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T18:34:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "The working Jetson Dream station setup is now in the repo, with one Mac command to run it: DreamSim/station.sh up | start [prompt] | stop | home | status | down.",
+  "why": "The hand-to-hand bottle prompt now runs from the Jetson through Dream's own station; saving its config and one-time scripts lets anyone rebuild it, and the Mac command drives it through the station's local API.",
+  "where": ["DreamSim/station.sh", "arm/jetson-station/station.yaml", "arm/jetson-station/install-gs_usb.sh", "arm/jetson-station/can-names.sh"],
+  "details": ["Run 2 (operator: 'doing not bad'): 116 plans over about 5 min, round trip about 1.2 s median; both arms move because the base model plans both and the station plays both. Stopped and homed to cool.", "Correction to the 18:24 entry: the left gripper reading was fine. state.<side>_gripper is the jaw stroke in mm (0-80); state.<side>_grip is the 0..1 fraction, which read normally.", "install-gs_usb.sh now builds the driver itself from the pinned Linux v6.8 source (sha256 checked). can-names.sh installs the udev rule dreamcli setup prints (can_follower_l/r by adapter serial).", "Next: the hybrid model (local control near the hand, Dream for the plan) to cut the lag and keep the idle arm still."]
+}
