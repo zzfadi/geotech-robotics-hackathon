@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:17:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Dream on the real arms now uses Saleh's 17:00 hand-to-hand prompt (take the bottle from my hand, place it in my other open hand, release, return home), and the left arm can take over after a heat stop.",
+  "why": "The loop was still sending his 14:59 prompt; the 17:00 run reached 14 cycles on the right arm before the shoulder hit 50 C, then failed to start the left arm because its adapter is not named in arm_names.json.",
+  "where": ["DreamSim/dream_live.py", "DreamSim/dream_arm.py"],
+  "details": ["17:15 live run, old prompt: 14 cycles, Dream 0.4-0.7 s per call, the right arm panned about -45 deg and reached to shoulder -159 / elbow 156 SDK deg with jaws open; no grasp. Heat stop at 50 C, rest returned it home (verified).", "pickup_server is now started with the name it knows each arm by (arm_names.json, else arm-<last 4 of the serial>; the station's left adapter is arm-3038).", "Dry run (no motion) at 17:16 chose the cooler left arm, mirrored the prompt to it and read q_l_chunk."]
+}
