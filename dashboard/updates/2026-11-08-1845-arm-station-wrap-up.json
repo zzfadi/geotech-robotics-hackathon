@@ -1,0 +1,22 @@
+{
+  "when": "2026-11-08T18:45:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Arm station wrapped up: the real right arm took the bottle from a hand and passed it to the other hand, driven by Dream's model through Dream's own station on the Jetson. The hardware is now disconnected.",
+  "why": "This was the track's goal (the hand-off, from a person's hand). It now runs with one command, and the team has a guide to reach the arms through the travel router.",
+  "where": ["DreamSim/station.sh", "docs/jetson-arms.md", "arm/jetson-station/", "DreamSim/dream_arm.py", "DreamSim/dream_live.py"],
+  "details": [
+    "Path we took: our guarded controller picked up an object on the Mac, then a Mac loop sent Dream's plans to the arm through pickup_server. That loop played one row per plan with slow blocking moves, so it never behaved like the Dream website.",
+    "Root cause: the website runs Dream's robot station (dreamcli robot up/run: a 20 Hz control loop, 250 Hz interpolation, plans refilled while the arm moves). It needs Linux SocketCAN, so it cannot run on macOS.",
+    "Fix: moved both arms and the three cameras to the Jetson, built the missing gs_usb USB-CAN driver for its kernel, named the CAN links by adapter serial, and set up the station with Dream's wizard.",
+    "Result: two runs started through the station's API with Saleh's prompt completed the handover (the right gripper held and then released the bottle). Both were stopped and homed through the API.",
+    "Known limits: about 1.2 s per Dream answer, so the arms pause now and then; the left arm moves although the prompt says to keep it still; a run does not end by itself; holding a reach heats the motors.",
+    "Lessons from the Mac loop that stay in the repo: retry when a Dream session expires while idle, refuse stale camera frames, switch to the cooler arm on a heat stop, and stop the whole run if the return home is not verified.",
+    "Not done: gripper tip calibration (dreamcli tcp), a DHCP reservation for the Jetson, inspecting the right arm after its earlier drop. The demo command's moving path was not run end to end by the team after it was written.",
+    "Next: a hybrid model (Dream for the plan, local control near the hand) to cut the lag and keep the idle arm still."
+  ],
+  "workstream_update": {
+    "status": "done",
+    "next": "Hardware is packed up. Follow-up: a hybrid model that keeps Dream for planning and adds local control near the hand."
+  }
+}

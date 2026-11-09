@@ -4,6 +4,9 @@ Both Maker Arms and their three cameras are plugged into the Jetson Orin Nano (`
 runs there and drives them; this is the same software and the same model the Dream website uses (verified 2026-11-08:
 the hand-to-hand bottle handover with Saleh's prompt). Everyone reaches it from their laptop over the travel router.
 
+**Status (2026-11-08, evening):** the hackathon is over and the arms, cameras and Jetson are disconnected. To run
+again, plug them back into the Jetson as listed in section 5, then `DreamSim/station.sh demo`.
+
 No passwords, Wi-Fi keys or API keys belong in this file, in chat or in any commit. Ask FADI for them in person.
 
 ## 1. Join the travel router
