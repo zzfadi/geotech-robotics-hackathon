@@ -46,7 +46,7 @@ from urllib.parse import unquote, urlparse
 
 import httpx
 from mcp.server.fastmcp import FastMCP, Image
-from PIL import Image as PilImage
+from PIL import Image as PilImage, ImageDraw
 from copresence_process import brain_executable, process_running
 import copresence_quick_edit as quick
 
@@ -68,6 +68,9 @@ CHAT_PAGE = 20
 COPRESENCE_TOOLSET = "copresence.toolset.CoPresenceTools"
 SCENE_TOOLSET = "editor_toolset.toolsets.scene.SceneTools"
 APP_TOOLSET = "EditorToolset.EditorAppToolset"
+# Host-local toolsets that the Quest VR launcher (Saved/XR/join_vr.py) registers on a VR-capable Mac
+VR_STATE_TOOLSET = "Temp.XR.editor_vr_state.EditorVRState"
+TABLE10_ROBOT_TOOLSET = "Temp.XR.table10_robot_tools.Table10RobotTools"
 FAB_TOOLSET = "copresence.fab_browser.FabBrowserTools"
 SLATE_TOOLSET = "SlateInspectorToolset.SlateInspectorToolset"
 # Set by the agent runner for runs that answer people in a video call. Anyone admitted to
@@ -226,6 +229,10 @@ SERVER = FastMCP(
         "In a video call with voice on, answer with say: the call voice speaks your answers, and in the "
         "avatar scene moves the MetaHuman's face with them. speak is only for the Luna2 meeting service's "
         "own voice. The build scene shows companion eyes without a MetaHuman. "
+        "Robot requests at Table 10, in any wording ('use the DreamLab API', 'grab the bottle', 'move the "
+        "left arm 10 cm up', 'open the gripper'), go straight to robot_arms, without asking whether Unreal "
+        "or the physical robot is meant; say briefly what you started and report the Dream result. "
+        "While someone is in VR Mode in this editor, look returns no image (it would crash the editor). "
     ),
 )
 
@@ -649,7 +656,28 @@ def _compact_image(png_base64: str) -> bytes:
     return buffer.getvalue()
 
 
+def _in_vr_mode() -> bool:
+    """Whether this editor is in VR Mode, as told by the VR launcher's toolset (Saved/XR/editor_vr_state.py
+    on a VR-capable Mac). Editors without it are never in VR Mode."""
+    try:
+        return "true" in str(UNREAL.call_toolset(VR_STATE_TOOLSET, "vr_mode_active", {})).lower()
+    except Exception:
+        return False
+
+
+def _vr_placeholder() -> bytes:
+    image = PilImage.new("RGB", (480, 270), (38, 40, 48))
+    ImageDraw.Draw(image).text((20, 125), "VR Mode is on: no viewport image", fill=(230, 230, 230))
+    buffer = io.BytesIO()
+    image.save(buffer, format="JPEG", quality=82)
+    return buffer.getvalue()
+
+
 def _capture(annotate: bool) -> tuple[bytes, dict]:
+    if _in_vr_mode():
+        # In VR Mode CaptureViewport fails an assertion on the viewport size (UnrealClient.cpp
+        # in UE 5.8.3) and the editor crashes, so the image is a placeholder until VR Mode ends
+        return _vr_placeholder(), {"vr_mode": True}
     # CaptureViewport needs every parameter, so pass the camera's current pose explicitly
     camera = UNREAL.call_toolset(APP_TOOLSET, "GetCameraTransform", {})
     # The agent's viewport only draws when captured, and the first frame from a new spot
@@ -1228,6 +1256,10 @@ def look(annotate: bool = False) -> list:
     else:
         with _step(task, "Taking a look"):
             image_bytes, details = _capture(annotate)
+    if details.get("vr_mode"):
+        return ["Someone is in VR Mode in this editor, and a viewport image would crash it, so there is "
+                "none until VR Mode ends. Use inspect_scene and the read tools to see where things are.",
+                Image(data=image_bytes, format="jpeg")]
     camera = details.get("cameraLocation", {})
     rotation = details.get("cameraRotation", {})
     lines = [f"camera at ({camera.get('x', 0):.0f}, {camera.get('y', 0):.0f}, {camera.get('z', 0):.0f}) "
@@ -1530,6 +1562,74 @@ def read(toolset: str, tool: str, arguments: dict) -> str:
     result = UNREAL.call_toolset(toolset, tool, arguments)
     text = result if isinstance(result, str) else json.dumps(result)
     return text[:20000]
+
+
+ROBOT_ACTIONS = {"dream": "dream_task", "move": "move_gripper", "gripper": "set_gripper", "handover": "handover",
+                 "pickup": "pickup", "home": "go_home", "idle": "go_home",
+                 "status": "table10_status", "dream_status": "dream_status", "stop": "stop_arm_motion"}
+
+
+@SERVER.tool()
+def robot_arms(action: str, side: str = "", prompt: str = "", toward_person_cm: float = 0.0,
+               toward_right_arm_cm: float = 0.0, up_cm: float = 0.0, yaw_deg: float = 0.0,
+               pitch_deg: float = 0.0, roll_deg: float = 0.0, opening_percent: float = 100.0) -> str:
+    """Table 10's robot: two MakerMods Maker Arms with grippers, and the Dream (DreamLab) API robot
+    policy that grasps with them. Use it straight away for any robot request, however it is worded:
+    "use the DreamLab API", "grab / pick up / take the bottle or the can", "put it down", "move the
+    left arm 10 cm up", "turn the gripper", "open the gripper". The bottle, beer or red can on Table 10
+    is the can it handles. It moves the arms in Unreal, and the real arms follow them by themselves
+    when their drive is on, so don't ask whether Unreal or the physical robot is meant. Needs no task.
+
+    Args:
+        action: "dream" runs a Dream task from prompt, e.g. "pick up the can" or "put the can down"
+            (side picks the arm for a pickup); "handover" passes the can from the arm holding it to
+            the other one ("give it to the right arm", "pass it between the arms"; side = the arm to
+            end up holding it); "pickup" is a planned pickup without Dream (when Dream is at
+            capacity or failed); "home" moves one or both arms back to the idle pose ("go to idle",
+            "home position"; side empty = both);
+            "move" moves one gripper from where it is, at most 25 cm and 90 degrees per axis, and the
+            whole arm follows inside the Maker Arm's joint limits; "gripper" opens or closes one;
+            "status" says where both grippers and the can are; "dream_status" follows a Dream task;
+            "stop" holds both arms where they are and asks Dream to cancel its task.
+        side: "left" or "right" arm (left is at world -Y), or "both" for move (both grippers together;
+            one call, not two): the arm to move or open, or for dream the
+            arm to pick up with or hand the can to. If the person names none for move or gripper, use
+            the arm nearer the can (status shows both).
+        prompt: The Dream task in plain words.
+        toward_person_cm: Move across the table, away from the robot (negative: back).
+        toward_right_arm_cm: Move sideways toward the right arm (negative: toward the left arm).
+        up_cm: Move up (negative: down).
+        yaw_deg: Turn about the vertical axis.
+        pitch_deg: Tilt.
+        roll_deg: Roll.
+        opening_percent: For gripper: 0 closed, 100 fully open.
+    """
+    tool = ROBOT_ACTIONS.get((action or "").strip().lower())
+    if tool is None:
+        raise ValueError("action must be one of: " + ", ".join(ROBOT_ACTIONS))
+    arguments = {}
+    if tool == "dream_task":
+        arguments = {"prompt": prompt, "side": side}
+    elif tool == "move_gripper":
+        arguments = {"side": side, "toward_person_cm": toward_person_cm, "toward_right_arm_cm": toward_right_arm_cm,
+                     "up_cm": up_cm, "yaw_deg": yaw_deg, "pitch_deg": pitch_deg, "roll_deg": roll_deg}
+    elif tool == "set_gripper":
+        arguments = {"side": side, "opening_percent": opening_percent}
+    elif tool == "handover":
+        arguments = {"to_side": side}
+    elif tool == "pickup":
+        arguments = {"side": side}
+    elif tool == "go_home":
+        arguments = {"side": side or "both"}
+    _check_call_toolset(TABLE10_ROBOT_TOOLSET, tool)
+    try:
+        result = UNREAL.call_toolset(TABLE10_ROBOT_TOOLSET, tool, arguments)
+    except UnrealError as error:
+        if TABLE10_ROBOT_TOOLSET in str(error) or not _has_robot_arms():
+            raise UnrealError(f"Table 10's robot tools aren't running in this editor ({str(error)[:200]}). The "
+                              "Quest VR launcher (Saved/XR/join_vr.py) on Denys's Mac loads them.") from error
+        raise UnrealError(f"Table 10's robot tools failed: {str(error)[:400]}") from error
+    return (result if isinstance(result, str) else json.dumps(result))[:20000]
 
 
 @SERVER.tool()
@@ -2537,6 +2637,7 @@ EFFORTS = ("low", "medium", "high", "xhigh", "max")
 SCOPED_RUNNER_TOOLS = frozenset((
     "inspect_scene", "quick_edit",
     "session", "say", "speak", "read_chat", "look", "meet_look", "gbrain_read", "tools", "tool_schema", "read",
+    "robot_arms",
     "begin_task", "end_task", "frame_point", "set_camera", "place_asset",
     "move_actors", "delete_actors", "edit", "run_python", "revert_last_task",
     "set_appearance", "emote",
@@ -2739,7 +2840,30 @@ def _turn_prompt(agent: str, orders: list, stopped_by: str = "", shared: dict | 
         prompt += CALL_NOTE
     if stopped_by:
         prompt += STOPPED_NOTE.format(person=stopped_by)
+    if any(ROBOT_WORDS.search(message.get("text") or "") for message in orders) and _has_robot_arms():
+        prompt += ROBOT_NOTE
     return prompt
+
+
+# Messages that sound like asking Table 10's robot for something
+ROBOT_WORDS = re.compile(r"\b(robots?|robotic|arms?|grippers?|grab\w*|grasp\w*|pick\w*|bottles?|beer|the can|"
+                         r"dream\s*lab|dream|lift\w*|hand\s*over)\b", re.IGNORECASE)
+# Added when they do and this editor has the robot tools. The agent learns its tools once per
+# conversation, so a tool added later stays unknown to it unless a turn names it
+ROBOT_NOTE = (
+    "\n\nRobot requests at Table 10 (the Dream or DreamLab API; grab, pick up, take or put down the can or "
+    "bottle, where a red bottle or beer means that can; move, turn, open or close an arm or gripper) go to "
+    "the robot_arms tool. Call it right away, without asking whether Unreal or the physical robot is meant: "
+    "it moves the Unreal arms, and the real arms follow them when their drive is on."
+)
+
+
+def _has_robot_arms() -> bool:
+    try:
+        UNREAL.call("describe_toolset", {"toolset_name": TABLE10_ROBOT_TOOLSET})
+        return True
+    except Exception:
+        return False
 
 
 def _end_process(process: subprocess.Popen) -> None:
