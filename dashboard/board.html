@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Dashboard</title>
+  <meta name="description" content="Hold My Beer: where the GeoTech hackathon team stands, what happens today and what needs a decision.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Crect x='6' y='16' width='4' height='10' rx='1.5' fill='%232a78d6'/%3E%3Crect x='12' y='10' width='4' height='16' rx='1.5' fill='%23eb6834'/%3E%3Crect x='18' y='13' width='4' height='13' rx='1.5' fill='%231baf7a'/%3E%3Crect x='24' y='6' width='4' height='20' rx='1.5' fill='%23eda100'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="overview">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="bar-top">
+    <div class="wrap">
+      <a class="brand" href="./"><span class="brand-mark" id="mark" aria-hidden="true"></span><span id="brand">Team dashboard</span></a>
+      <nav class="nav" id="nav" aria-label="Pages"></nav>
+      <button class="theme" id="theme" type="button" aria-label="Switch light or dark mode" title="Switch light or dark mode">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="wrap">
+      <section class="card hero" aria-labelledby="title">
+        <div class="hero-text">
+          <p class="eyebrow" id="eyebrow">Physical AI Hacks</p>
+          <h1 id="title">Loading…</h1>
+          <p class="summary" id="summary"></p>
+          <div class="hero-links">
+            <a class="btn" href="design.html">How it works</a>
+            <a class="btn ghost" href="updates.html">All updates</a>
+          </div>
+        </div>
+        <div class="hero-clock">
+          <div class="count" id="count" role="timer" aria-live="off"></div>
+          <p class="deadline" id="deadline"></p>
+          <div class="nextup" id="nextup"></div>
+        </div>
+      </section>
+
+      <section class="split">
+        <div class="card">
+          <div class="card-head"><h2>Today</h2><span class="sub" id="today-sub"></span></div>
+          <ol class="today" id="today"></ol>
+          <p class="fine" id="today-note"></p>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Needs a decision</h2><span class="sub">Settle at the 9 AM standup</span></div>
+          <ol class="decisions" id="decisions"></ol>
+          <p class="fine">From the team plan (docs/plan.md) and the hand-off checklist (handoff/README.md).</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="tracks-h">
+        <div class="section-head"><h2 id="tracks-h">The tracks</h2><span class="sub">Who is on what, how it's going and the one next step. Open a card for its milestones.</span></div>
+        <div class="tracks" id="tracks"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Latest updates</h2><a class="more-link" id="all-link" href="updates.html">See all updates</a></div>
+        <ol class="latest" id="latest"></ol>
+      </section>
+    </div>
+    <footer class="wrap" id="footer"></footer>
+  </main>
+  <div id="tip" role="tooltip"></div>
+  <script src="app.js"></script>
+</body>
+</html>

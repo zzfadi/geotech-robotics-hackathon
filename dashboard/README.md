@@ -2,7 +2,8 @@
 
 Live at **https://zzfadi.github.io/geotech-robotics-hackathon/**. It is written for the whole team, including people who don't read code.
 
-- **Overview** (`index.html`): what we are building in one sentence, the countdown to the 3 PM demo, **Today** (the Sunday run of day, with each item marked agreed or proposed), one card per track (what it is in plain words, a status word and colour, the owner and the single next step), **Needs a decision**, and the latest updates.
+- **Wrap-up** (`index.html`): the finished story of the project, with the team photo, what we built, the journey and what we learned.
+- **Board** (`board.html`, formerly the overview): what we are building in one sentence, the countdown to the 3 PM demo, **Today** (the Sunday run of day, with each item marked agreed or proposed), one card per track (what it is in plain words, a status word and colour, the owner and the single next step), **Needs a decision**, and the latest updates.
 - **How it works** (`design.html`): three pictures drawn from `data/design.json`: the demo step by step, the whole system, and the machines and who looks after them. Every box says **working**, **in progress** or **planned**. Then the team and a glossary.
 - **All updates** (`updates.html`): every update and commit, filterable by track and by person, plus the milestone timeline, activity by hour and who's shipping.
 - **Track pages** (`track.html?id=<track>`): one per track, with its plain description, next step, risk, owner, milestones, progress next to every other track, its activity, who's on it, and its updates and commits.

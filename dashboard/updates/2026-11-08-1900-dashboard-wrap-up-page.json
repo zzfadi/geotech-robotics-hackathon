@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T19:00:00-08:00",
+  "workstream": "planning",
+  "status": "done",
+  "what": "The dashboard's front page is now the project wrap-up: the team photo, the idea, what we built, the two-day journey, what we learned, what's next and the team. The old overview lives on as the Board page.",
+  "why": "The hackathon is over; the front page should tell the finished story to anyone who opens the link.",
+  "where": ["dashboard/index.html", "dashboard/board.html", "dashboard/assets/team.jpg", "dashboard/app.js"],
+  "details": ["Team photo resized for the web with location and camera metadata removed.", "Claims match demo/submission.md and the dashboard updates: the filmed handover, VR control, assisted simulation results and the Jetson Dream station run."]
+}

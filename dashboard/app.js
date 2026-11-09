@@ -1,5 +1,5 @@
 /* Team dashboard. Static: reads data/feed.json (built by build.py) and, on the How it works page, data/design.json.
-   Pages: overview (index.html), updates (updates.html), track (track.html?id=...), design (design.html). */
+   Pages: wrap (index.html, the wrap-up), overview (board.html), updates (updates.html), track (track.html?id=...), design (design.html). */
 (() => {
   "use strict";
 
@@ -171,16 +171,16 @@
 
   function renderChrome(currentId) {
     const name = feed.project.name || "Team dashboard";
-    const titles = { overview: `${name} · Dashboard`, updates: `All updates · ${name}`, design: `How it works · ${name}` };
+    const titles = { wrap: "The Human Touch: Hold My Beer", overview: `${name} · Dashboard`, updates: `All updates · ${name}`, design: `How it works · ${name}` };
     document.title = PAGE === "track" && currentId ? `${shortName(currentId)} · ${name}` : titles[PAGE] || name;
     $("brand").textContent = name;
     $("mark").replaceChildren(...[1, 2, 3, 4, 5, 6, 7, 0].map((i) => el("i", { style: { background: `var(--t${i})` } })));
-    const links = [["overview", "./", "Overview"], ["design", "design.html", "How it works"], ["updates", "updates.html", "Updates"]];
+    const links = [["wrap", "./", "Wrap-up"], ["overview", "board.html", "Board"], ["design", "design.html", "How it works"], ["updates", "updates.html", "Updates"]];
     $("nav").replaceChildren(...links.map(([page, href, text]) => el("a", { href, "aria-current": PAGE === page ? "page" : null, text })));
     const repo = feed.project.repo;
     $("footer").replaceChildren(
       el("span", {}, repo ? el("a", { href: `${repo}/blob/${feed.project.branch || "main"}/dashboard/README.md`, target: "_blank", rel: "noopener", text: "How to post an update" }) : null),
-      el("span", { text: `Built ${dayTime(feed.generated)}${PAGE === "design" ? "" : " · refreshes every 2 minutes"} · times in Pacific` }));
+      el("span", { text: `Built ${dayTime(feed.generated)}${PAGE === "design" || PAGE === "wrap" ? "" : " · refreshes every 2 minutes"} · times in Pacific` }));
   }
 
   // ---------- charts (updates and track pages) ----------
@@ -902,7 +902,8 @@
   function renderAll() {
     const id = PAGE === "track" ? currentTrackId() : null;
     renderChrome(id);
-    if (PAGE === "overview") renderOverview();
+    if (PAGE === "wrap") { const n = $("n-updates"); if (n) n.textContent = String(feed.updates.length); }
+    else if (PAGE === "overview") renderOverview();
     else if (PAGE === "track") renderTrack();
     else if (PAGE === "updates") renderUpdatesPage();
     else if (PAGE === "design") renderDesign();
@@ -973,5 +974,5 @@
     setInterval(renderCountdown, 1000);
     setInterval(() => { if (feed) renderToday(); }, 60000);
   }
-  if (PAGE !== "design") setInterval(load, REFRESH_MS);
+  if (PAGE !== "design" && PAGE !== "wrap") setInterval(load, REFRESH_MS);
 })();

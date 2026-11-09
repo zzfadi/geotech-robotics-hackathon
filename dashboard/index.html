@@ -3,16 +3,92 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Team Dashboard</title>
-  <meta name="description" content="Hold My Beer: where the GeoTech hackathon team stands, what happens today and what needs a decision.">
+  <title>The Human Touch</title>
+  <meta name="description" content="The Human Touch: Hold My Beer. How Team 01 taught robot arms to lend a hand at Physical AI Hacks, November 7-8, 2026.">
+  <meta property="og:title" content="The Human Touch: Hold My Beer">
+  <meta property="og:description" content="Teaching robots when and how to lend a hand. Team 01 at Physical AI Hacks, Founders Inc SF.">
+  <meta property="og:image" content="assets/team.jpg">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Crect x='6' y='16' width='4' height='10' rx='1.5' fill='%232a78d6'/%3E%3Crect x='12' y='10' width='4' height='16' rx='1.5' fill='%23eb6834'/%3E%3Crect x='18' y='13' width='4' height='13' rx='1.5' fill='%231baf7a'/%3E%3Crect x='24' y='6' width='4' height='20' rx='1.5' fill='%23eda100'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .w-hero { position: relative; margin: 20px 0 0; border-radius: 24px; overflow: hidden; background: #0b0b0b; color: #f4f2ec; min-height: clamp(440px, 58vw, 700px); display: grid; }
+    .w-hero img { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+    .w-hero .shade { grid-area: 1 / 1; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.82) 100%); }
+    .w-hero .txt { grid-area: 1 / 1; align-self: end; padding: 28px; max-width: 760px; }
+    .w-hero .eyebrow { color: rgba(244,242,236,.78); }
+    .w-hero h1 { margin: 0 0 6px; font-size: clamp(34px, 6vw, 60px); line-height: 1.02; letter-spacing: -.03em; font-weight: 760; }
+    .w-hero .w-tag { margin: 0 0 18px; font-size: clamp(17px, 2.4vw, 22px); color: rgba(244,242,236,.9); }
+    .w-hero .btn { background: #f4f2ec; color: #0b0b0b; border-color: #f4f2ec; }
+    .w-hero .btn.ghost { background: rgba(0,0,0,.25); color: #f4f2ec; border-color: rgba(244,242,236,.5); }
+    .w-hero .links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .w-hero.nophoto { min-height: 0; background: linear-gradient(135deg, #14120f, #2a2520); }
+    .w-hero.nophoto img, .w-hero.nophoto .shade { display: none; }
+    .w-hero.nophoto .txt { padding-top: 64px; }
+
+    .w-stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin: 16px 0 0; }
+    .w-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; }
+    .w-stat b { display: block; font-size: 28px; font-weight: 740; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+    .w-stat span { color: var(--muted); font-size: 13px; }
+
+    .w-sec { margin-top: 44px; }
+    .w-sec > h2 { margin: 0 0 6px; font-size: 26px; letter-spacing: -.02em; font-weight: 720; }
+    .w-sec > .lead { margin: 0 0 18px; color: var(--ink-2); font-size: 16.5px; max-width: 760px; }
+    .w-idea { font-size: 18px; line-height: 1.55; max-width: 820px; color: var(--ink-2); }
+    .w-idea p { margin: 0 0 12px; }
+    .w-idea strong { color: var(--ink); }
+
+    .w-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .w-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; border-top: 4px solid var(--c); }
+    .w-card h3 { margin: 0 0 6px; font-size: 17px; }
+    .w-card p { margin: 0 0 10px; color: var(--ink-2); }
+    .w-card ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 14px; }
+    .w-card li { margin: 3px 0; }
+
+    .w-days { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .w-day h3 { margin: 0 0 12px; font-size: 15px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+    .w-tl { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--grid); }
+    .w-tl li { position: relative; padding: 0 0 16px 20px; }
+    .w-tl li::before { content: ""; position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--c, var(--t0)); border: 2px solid var(--page); }
+    .w-tl time { font-size: 12.5px; font-weight: 650; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .w-tl b { display: block; font-weight: 650; }
+    .w-tl span { color: var(--ink-2); font-size: 14px; }
+    .w-tl li.big b { font-size: 16.5px; }
+
+    .w-quote { margin: 0; padding: 22px 24px; border-radius: 18px; background: var(--surface-2); font-size: 19px; line-height: 1.5; max-width: 820px; }
+    .w-quote cite { display: block; margin-top: 8px; font-style: normal; color: var(--muted); font-size: 14px; }
+
+    .w-team { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .w-person { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+    .w-person b { display: block; font-size: 16px; }
+    .w-person span { color: var(--muted); font-size: 13.5px; }
+
+    .w-learn { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .w-learn .card p { margin: 0; color: var(--ink-2); }
+    .w-explore { display: flex; flex-wrap: wrap; gap: 10px; }
+    .w-logo { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; float: right; margin: 0 0 8px 16px; }
+
+    @media (max-width: 980px) {
+      .w-stats { grid-template-columns: repeat(3, 1fr); }
+      .w-cards { grid-template-columns: 1fr 1fr; }
+      .w-team { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .w-hero { min-height: 0; border-radius: 18px; display: block; }
+      .w-hero img { aspect-ratio: 4 / 3; height: auto; }
+      .w-hero .shade { display: none; }
+      .w-hero .txt { padding: 18px 20px 22px; }
+      .w-stats { grid-template-columns: 1fr 1fr; }
+      .w-cards, .w-days, .w-learn { grid-template-columns: 1fr; }
+      .w-team { grid-template-columns: 1fr 1fr; }
+      .w-logo { display: none; }
+    }
+  </style>
 </head>
-<body data-page="overview">
+<body data-page="wrap">
   <a class="skip" href="#main">Skip to content</a>
   <header class="bar-top">
     <div class="wrap">
-      <a class="brand" href="./"><span class="brand-mark" id="mark" aria-hidden="true"></span><span id="brand">Team dashboard</span></a>
+      <a class="brand" href="./"><span class="brand-mark" id="mark" aria-hidden="true"></span><span id="brand">The Human Touch</span></a>
       <nav class="nav" id="nav" aria-label="Pages"></nav>
       <button class="theme" id="theme" type="button" aria-label="Switch light or dark mode" title="Switch light or dark mode">
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
@@ -21,44 +97,171 @@
   </header>
   <main id="main">
     <div class="wrap">
-      <section class="card hero" aria-labelledby="title">
-        <div class="hero-text">
-          <p class="eyebrow" id="eyebrow">Physical AI Hacks</p>
-          <h1 id="title">Loading…</h1>
-          <p class="summary" id="summary"></p>
-          <div class="hero-links">
-            <a class="btn" href="design.html">How it works</a>
-            <a class="btn ghost" href="updates.html">All updates</a>
+      <section class="w-hero" id="hero" aria-labelledby="title">
+        <img src="assets/team.jpg" alt="Team 01, The Human Touch, at the robot station" onerror="document.getElementById('hero').classList.add('nophoto')">
+        <div class="shade"></div>
+        <div class="txt">
+          <p class="eyebrow">Physical AI Hacks · Founders Inc SF · November 7–8, 2026 · Team 01 · Creative track</p>
+          <h1 id="title">The Human Touch: Hold My Beer</h1>
+          <p class="w-tag">Teaching robots when and how to lend a hand.</p>
+          <div class="links">
+            <a class="btn" href="https://youtu.be/GK2B8TnZ3BI" target="_blank" rel="noopener">Watch the handover</a>
+            <a class="btn ghost" href="https://youtu.be/Nhui-EnJoLI" target="_blank" rel="noopener">Watch VR control</a>
+            <a class="btn ghost" href="https://github.com/zzfadi/geotech-robotics-hackathon" target="_blank" rel="noopener">The code</a>
           </div>
         </div>
-        <div class="hero-clock">
-          <div class="count" id="count" role="timer" aria-live="off"></div>
-          <p class="deadline" id="deadline"></p>
-          <div class="nextup" id="nextup"></div>
+      </section>
+
+      <section class="w-stats" aria-label="By the numbers">
+        <div class="w-stat"><b>31 h</b><span>first commit to last run</span></div>
+        <div class="w-stat"><b>460+</b><span>commits to main</span></div>
+        <div class="w-stat"><b id="n-updates">347</b><span>dashboard updates</span></div>
+        <div class="w-stat"><b>2</b><span>real Maker Arms</span></div>
+        <div class="w-stat"><b>9</b><span>simulated tables</span></div>
+        <div class="w-stat"><b>5</b><span>people</span></div>
+      </section>
+
+      <section class="w-sec" aria-labelledby="idea-h">
+        <h2 id="idea-h">The idea</h2>
+        <div class="w-idea">
+          <img class="w-logo" src="assets/the-human-touch-team-logo.png" alt="The Human Touch logo">
+          <p>When someone starts pouring from a heavy pitcher, a good partner steadies the bowl. Knowing <strong>when to reach, how close to stand and when to wait</strong> is what robots need to learn as they move into homes, workplaces and care settings. And the right answer changes from person to person.</p>
+          <p>So we built <strong>a rehearsal space where people teach robots how to work alongside them</strong>. A headset or a webcam brings a real person into Unreal Engine. Nine virtual tables rehearse the same moment in parallel with models of the MakerMods arms. Then real arms do it for real. We started with the simplest moment anyone can judge: handing someone a drink.</p>
         </div>
       </section>
 
-      <section class="split">
-        <div class="card">
-          <div class="card-head"><h2>Today</h2><span class="sub" id="today-sub"></span></div>
-          <ol class="today" id="today"></ol>
-          <p class="fine" id="today-note"></p>
-        </div>
-        <div class="card">
-          <div class="card-head"><h2>Needs a decision</h2><span class="sub">Settle at the 9 AM standup</span></div>
-          <ol class="decisions" id="decisions"></ol>
-          <p class="fine">From the team plan (docs/plan.md) and the hand-off checklist (handoff/README.md).</p>
+      <section class="w-sec" aria-labelledby="built-h">
+        <h2 id="built-h">What we built</h2>
+        <p class="lead">Five pieces, built in parallel by five people and their agents, all committing straight to main.</p>
+        <div class="w-cards">
+          <article class="w-card" style="--c: var(--t2)">
+            <h3>Real arms that hand you a drink</h3>
+            <p>Two MakerMods Maker Arms on the table, driven three ways.</p>
+            <ul>
+              <li>Our guarded controller picked up a cylinder and set it back on Saturday night.</li>
+              <li>The filmed take: the arm grips a water bottle, lifts it to a person and lets go as they take it.</li>
+              <li>Sunday night: Dream's model passed a bottle from one hand to the other, running on the Jetson.</li>
+            </ul>
+          </article>
+          <article class="w-card" style="--c: var(--t1)">
+            <h3>Nine tables in Unreal</h3>
+            <p>A shared Unreal world with the official Maker Arm model on a 3 × 3 grid of tables, plus Table 10 for people.</p>
+            <ul>
+              <li>Dream-1 drove the virtual arms: grasp, lift, a two-arm handover and place back.</li>
+              <li>The handover-and-place task passed 9 of 9 tables, then 8 of 9 twice (grasps had help from a scripted reach and grip).</li>
+              <li>Simulation sped up from 11 to about 60 frames per second.</li>
+            </ul>
+          </article>
+          <article class="w-card" style="--c: var(--t3)">
+            <h3>Real people inside the sim</h3>
+            <p>Body pose from a webcam, and head and hands from a Quest headset, streamed live into Unreal.</p>
+            <ul>
+              <li>MetaHumans and mannequins move with the performer.</li>
+              <li>The same poses mirrored into Isaac Sim for contact physics (4,369 checked).</li>
+              <li>In VR you just say it: "grab the can", "give it to the other arm", and the arms do it, including the real ones.</li>
+            </ul>
+          </article>
+          <article class="w-card" style="--c: var(--t4)">
+            <h3>A brain at the edge</h3>
+            <p>A Jetson Orin Nano at the station on its own travel-router network.</p>
+            <ul>
+              <li>Live person, hand and bottle detection on a real webcam at about 30–37 ms a frame.</li>
+              <li>A small edge model trained in simulation, deciding in 0.038 ms.</li>
+              <li>Finally the home of Dream's own robot station, driving both arms and all three arm cameras.</li>
+            </ul>
+          </article>
+          <article class="w-card" style="--c: var(--t5)">
+            <h3>One-click and one-command control</h3>
+            <p>Ways for anyone on the team to drive the real arms safely.</p>
+            <ul>
+              <li>A web panel: Turn arms on, Move up, Go to idle, Turn arms off, with the real arms within 2.6° of Unreal.</li>
+              <li><code>DreamSim/station.sh demo</code> runs the whole Dream handover from a laptop.</li>
+              <li>A guide so teammates and their agents can reach the arms through the Jetson.</li>
+            </ul>
+          </article>
+          <article class="w-card" style="--c: var(--t7)">
+            <h3>The story and the stage</h3>
+            <p>A pitch built around a museum of human gestures, and a brand to carry it.</p>
+            <ul>
+              <li>Judges, Stage and Investor decks with 4K exhibit films.</li>
+              <li>The nebula emblem with an ivory and titanium hand.</li>
+              <li>Submission copy that says exactly what was shown, and nothing more.</li>
+            </ul>
+          </article>
         </div>
       </section>
 
-      <section aria-labelledby="tracks-h">
-        <div class="section-head"><h2 id="tracks-h">The tracks</h2><span class="sub">Who is on what, how it's going and the one next step. Open a card for its milestones.</span></div>
-        <div class="tracks" id="tracks"></div>
+      <section class="w-sec" aria-labelledby="journey-h">
+        <h2 id="journey-h">The journey</h2>
+        <p class="lead">Two days, Pacific time. The full log, with every update and commit, is on the <a href="updates.html">updates page</a>.</p>
+        <div class="w-days">
+          <div class="w-day">
+            <h3>Saturday, November 7</h3>
+            <ol class="w-tl">
+              <li style="--c: var(--t0)"><time>11:26</time><b>First commit</b><span>One repo, everyone on main, agents included.</span></li>
+              <li style="--c: var(--t0)"><time>11:57</time><b>Stack picked</b><span>Dream-1 for the robot brain, Creative track.</span></li>
+              <li style="--c: var(--t1)"><time>13:45</time><b>Dream moves an arm in Unreal from a web page</b><span>The first link from prompt to motion.</span></li>
+              <li style="--c: var(--t3)"><time>14:09</time><b>A Quest moves a MetaHuman</b><span>A real person's motion inside the scene.</span></li>
+              <li style="--c: var(--t3)"><time>14:58</time><b>Isaac Sim joins</b><span>The scene rebuilt one to one from Unreal for physics.</span></li>
+              <li style="--c: var(--t1)"><time>15:49</time><b>First Dream-driven pickup in sim</b><span>A red block, lifted 11 cm and held.</span></li>
+              <li style="--c: var(--t1)"><time>17:12</time><b>Nine tables, one grid</b><span>Parallel rehearsals of the same moment.</span></li>
+              <li class="big" style="--c: var(--t5)"><time>17:33</time><b>"Hold My Beer" becomes the demo</b><span>Drinking cups on every table.</span></li>
+              <li class="big" style="--c: var(--t2)"><time>18:35</time><b>The real right arm picks something up</b><span>Grasped, lifted about 6 cm, set back, returned to rest.</span></li>
+              <li style="--c: var(--t7)"><time>23:37</time><b>The first pitch deck</b><span>Keynote, brand guide and five exhibit films.</span></li>
+            </ol>
+          </div>
+          <div class="w-day">
+            <h3>Sunday, November 8</h3>
+            <ol class="w-tl">
+              <li style="--c: var(--t4)"><time>00:36</time><b>The Jetson gets an OS</b><span>JetPack written overnight, then our test suites and detector running on it.</span></li>
+              <li style="--c: var(--t1)"><time>10:53</time><b>Nine of nine tables hand a cup between arms</b><span>Dream picks up, passes over and places back.</span></li>
+              <li style="--c: var(--t2)"><time>12:12</time><b>Real arms follow Unreal, the web and VR</b><span>One sim table drives the hardware.</span></li>
+              <li style="--c: var(--t2)"><time>14:50</time><b>Both real arms on one click</b><span>The motor dropouts traced to two adapters in one process, then fixed.</span></li>
+              <li class="big" style="--c: var(--t5)"><time>15:00</time><b>Demos at 3 PM</b><span>Pitch decks, the filmed bottle handover and the VR control video ready.</span></li>
+              <li style="--c: var(--t4)"><time>15:31</time><b>The Jetson sees people, hands and bottles</b><span>About 30–37 ms a frame at the venue.</span></li>
+              <li style="--c: var(--t2)"><time>17:40</time><b>Why Dream on the real arm felt wrong</b><span>Our Mac loop wasn't Dream's real-time station, and the station needs Linux.</span></li>
+              <li style="--c: var(--t3)"><time>18:01</time><b>Talk to the arms from VR</b><span>Plain speech becomes arm actions, on the sim and the real arms.</span></li>
+              <li class="big" style="--c: var(--t2)"><time>18:24</time><b>Dream hands the bottle across, on the Jetson</b><span>Arms and cameras moved to the Jetson, a missing driver built, Dream's own station set up. "Finally, it worked!"</span></li>
+              <li style="--c: var(--t0)"><time>18:45</time><b>Wrapped up</b><span>One demo command, a team guide, hardware packed up.</span></li>
+            </ol>
+          </div>
+        </div>
       </section>
 
-      <section class="card">
-        <div class="card-head"><h2>Latest updates</h2><a class="more-link" id="all-link" href="updates.html">See all updates</a></div>
-        <ol class="latest" id="latest"></ol>
+      <section class="w-sec" aria-labelledby="learn-h">
+        <h2 id="learn-h">What we learned</h2>
+        <div class="w-learn">
+          <div class="card"><h2>The control loop matters as much as the model</h2><p>Same model, same prompt: a slow loop that played one step at a time looked clumsy, and Dream's own 20 Hz station looked right. Run a robot model the way it was built to run.</p></div>
+          <div class="card"><h2>One owner per adapter</h2><p>Two USB-CAN adapters in one process made motors drop out. One process per arm fixed it, and it became a team rule.</p></div>
+          <div class="card"><h2>Check the cameras, not just the robot</h2><p>For a while Dream was steering blind on a frozen frame. Now stale frames are refused before they reach the model.</p></div>
+          <div class="card"><h2>Say only what you showed</h2><p>Our submission separates the filmed handover, VR control and assisted simulation, and claims no success rate we didn't measure.</p></div>
+        </div>
+      </section>
+
+      <section class="w-sec" aria-labelledby="next-h">
+        <h2 id="next-h">What's next</h2>
+        <blockquote class="w-quote">Keep the bottle and vary the person: accept it, switch hands or pull away. Record which robot response each person preferred, then test whether a policy trained on those examples offers, waits or withdraws at the right moment.<cite>From our submission. On the robot side: a hybrid that keeps Dream for the plan and adds fast local control near the hand.</cite></blockquote>
+      </section>
+
+      <section class="w-sec" aria-labelledby="team-h">
+        <h2 id="team-h">The team</h2>
+        <div class="w-team">
+          <div class="w-person"><b>FADI</b><span>Lead, robot stack</span></div>
+          <div class="w-person"><b>Brian Frager</b><span>GeoTech, XR and capture, pitch</span></div>
+          <div class="w-person"><b>Denys Dubinin</b><span>GeoTech, Unreal and Dream simulation</span></div>
+          <div class="w-person"><b>Saleh Aldwais</b><span>Arm hardware integration</span></div>
+          <div class="w-person"><b>Takeshi Okamura</b><span>Cameras, LiveKit and UI</span></div>
+        </div>
+        <p class="fine" style="margin-top:14px">With thanks to MakerMods for the arms, SDK and robot model, and to Dream Labs for the robot model and API.</p>
+      </section>
+
+      <section class="w-sec" aria-labelledby="explore-h">
+        <h2 id="explore-h">Dig in</h2>
+        <div class="w-explore">
+          <a class="btn" href="design.html">How it works</a>
+          <a class="btn ghost" href="updates.html">Every update and commit</a>
+          <a class="btn ghost" href="board.html">The live board</a>
+        </div>
       </section>
     </div>
     <footer class="wrap" id="footer"></footer>
