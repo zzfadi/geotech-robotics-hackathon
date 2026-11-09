@@ -372,12 +372,15 @@ class Service:
         self.bridge.mode = 'web'  # the editor link mirrors this arm instead of driving it
 
     def ue_matches(self, ue):
+        # Compare with the MEASURED pose: Unreal mirrors where the arm is, and under gravity a held arm can sit a few
+        # degrees from its commanded target (right arm 3.2 deg at idle, 2026-11-08), which never matched before.
         for side in self.bridge.sides:
             arm = (ue.get('arms') or {}).get(side.name) or {}
-            if not arm.get('q') or not side.last_target:
+            meas = side.arm.get_joint_positions()
+            if not arm.get('q') or not all(math.isfinite(v) for v in meas[:6]):
                 return False
             target = mapping.urdf_to_motor(arm['q'])
-            if max(abs(math.degrees(a - b)) for a, b in zip(target, side.last_target[:6])) > SYNC_DEG:
+            if max(abs(math.degrees(a - b)) for a, b in zip(target, meas[:6])) > SYNC_DEG:
                 return False
         return True
 

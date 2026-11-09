@@ -141,7 +141,10 @@ class Runner:
         report = DIR / ('action-%03d.json' % self.seq)
         write(report, {'action': action, 'controller_source': label})
         write(DIR / 'command.json', {'seq': self.seq, 'report': str(report)})
-        deadline = time.time() + n / 20. + 15
+        # The editor runtime spreads any joint step above 1.5 deg/row (30 deg/s) over more rows: wait for that too.
+        rows = n + sum(max(0, math.ceil(max(abs(b[j] - a[j]) for a, b, j in ((ra, rb, j) for j in range(6))) / math.radians(1.5)) - 1)
+                       for key in ('q_l_chunk', 'q_r_chunk') for ra, rb in zip(action[key], action[key][1:]))
+        deadline = time.time() + rows / 20. + 15
         while time.time() < deadline:
             done = read(DIR / 'playback.json')
             if done and done.get('seq') == self.seq and done.get('done'):

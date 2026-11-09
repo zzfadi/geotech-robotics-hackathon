@@ -43,6 +43,13 @@ CAMERAS = {'overhead': PREFIX + 'MakerCamera_Overview', 'wrist_l': PREFIX + 'Mak
 OFFSET = (2460.0, 0.0, 0.0)          # Table 10 grid offset (maker_arm_grid.offset(9))
 ACTION_HZ = 20.0
 SIDES = ('left', 'right')
+# Careful motion: no joint moves more than this between two 20 Hz rows (30 deg/s); faster steps in a
+# chunk (Dream lifts peaked at 113-168 deg/s on 2026-11-08) are spread over more rows, for both arms
+# together so two-arm timing (handovers) holds
+MAX_STEP_RAD = math.radians(1.5)
+# While idle, the arm state is read back from the actors this often, so something else moving them
+# (the VR wrist handle, the real-arm link) doesn't leave this runtime planning from stale joints
+RESYNC_S = 0.5
 _rt = None
 
 
@@ -76,7 +83,17 @@ class Runtime:
             q, gap, _ = mapping.extract(poses, MOUNT_YAW[side], TABLE10_BASES[side], .1)
             self.q[side], self.gap[side] = q, gap
         self.motion, self.seq, self.held, self.rel, self.grip_gap = None, None, None, None, 1.0
+        # Per side: squeezing the cup while the other arm holds it (a handover in progress)
+        self.squeezing = {side: False for side in SIDES}
+        self._resume_hold()
         self.command_mtime, self.error = None, None
+        # A command left from before this start was already played: replaying it from today's pose would
+        # repeat its moves out of place (a restart re-ran a handover and dropped the can, 2026-11-08 16:06)
+        try:
+            self.command_mtime = (self.dir / 'command.json').stat().st_mtime_ns
+            self.seq = json.loads((self.dir / 'command.json').read_text()).get('seq')
+        except (OSError, ValueError):
+            pass
         self.captures = {}
         if call_camera._locally(self._create_cameras) is None:
             raise RuntimeError('Start the Table 10 Dream runtime outside a transaction')
@@ -103,6 +120,18 @@ class Runtime:
             if label in found:
                 self.cup, self.spec, self.label = found[label], spec, label
                 return
+
+    def _resume_hold(self):
+        """After a restart of this runtime, keep holding the cup that a gripper still has between its jaws."""
+        side = ((json.loads((self.dir / 'cup.json').read_text()) if (self.dir / 'cup.json').exists() else {}) or {}).get('held_by')
+        if side not in SIDES or self.cup is None:
+            return
+        gc = self._grasp_center(side, self.q[side], self.gap[side])
+        c = self.cup.get_actor_location()
+        if math.hypot(gc[0] - c.x, gc[1] - c.y) <= 2.5 and abs(gc[2] - c.z) < self.spec['half_height_cm']:
+            link = self.arms[(side, 'link_007')]
+            self.rel = unreal.MathLibrary.make_relative_transform(self.cup.get_actor_transform(), link.get_actor_transform())
+            self.held, self.grip_gap = side, self.gap[side]
 
     @staticmethod
     def _pose(actor):
@@ -137,8 +166,9 @@ class Runtime:
         return [p[i] + base[i] for i in range(3)]
 
     def _contact_gap(self, side, q, requested):
-        """Jaws stop on the cup body when it is between the pads (approximate, editor world)."""
-        if self.cup is None or (self.held and self.held != side):
+        """Jaws stop on the cup body when it is between the pads (approximate, editor world), also the
+        jaws of the arm not holding it, so the other arm can take it in a handover."""
+        if self.cup is None:
             return requested
         gc = self._grasp_center(side, q, requested)
         c = self.cup.get_actor_location()
@@ -153,20 +183,30 @@ class Runtime:
         if self.cup is None:
             return
         link = self.arms[(side, 'link_007')]
+        squeezing = gap > requested + .003  # the jaw is squeezing the cup body
+        other = 'right' if side == 'left' else 'left'
         if self.held == side:
-            if requested > self.grip_gap + .005:  # jaws opened past the grip: set the cup down upright below
+            if requested > self.grip_gap + .005 and self.squeezing.get(other):
+                # Handover: the other gripper already squeezes the cup, so it takes it where it is
+                other_link = self.arms[(other, 'link_007')]
+                self.rel = unreal.MathLibrary.make_relative_transform(self.cup.get_actor_transform(), other_link.get_actor_transform())
+                self.held, self.grip_gap = other, self.gap[other]
+            elif requested > self.grip_gap + .005:  # jaws opened past the grip: set the cup down upright below
                 loc = self.cup.get_actor_location()
                 self.cup.set_actor_location_and_rotation(unreal.Vector(loc.x, loc.y, self.spec['rest_z']), unreal.Rotator(0, 0, 0), False, True)
                 self.held, self.rel = None, None
             else:
                 t = unreal.MathLibrary.compose_transforms(self.rel, link.get_actor_transform())
                 self.cup.set_actor_transform(t, False, True)
-        elif self.held is None and gap > requested + .003:  # the jaw is squeezing the cup body
+        elif self.held is None and squeezing:
             self.rel = unreal.MathLibrary.make_relative_transform(self.cup.get_actor_transform(), link.get_actor_transform())
             self.held, self.grip_gap = side, gap
+        self.squeezing[side] = squeezing and self.held != side
 
     # ---- io --------------------------------------------------------------------------------
     def _observe(self):
+        if self.motion is None:
+            self._resync()
         frames, paths = {}, {}
         for role, (actor, capture, target) in self.captures.items():
             source = self.sources[role]
@@ -200,8 +240,36 @@ class Runtime:
             return
         self.seq = command['seq']
         action = json.loads(Path(command['report']).read_text())['action']
-        rows = {'left': action['q_l_chunk'], 'right': action['q_r_chunk']}
+        self._resync()
+        rows = self._smooth({'left': action['q_l_chunk'], 'right': action['q_r_chunk']})
         self.motion = {'rows': rows, 'start': time.monotonic(), 'n': max(len(r) for r in rows.values())}
+
+    def _resync(self):
+        """Joint state from the arm actors as they are now."""
+        for side in SIDES:
+            poses = {l: self._pose(self.arms[(side, l)]) for l in VISUAL_LINKS}
+            q, gap, _ = mapping.extract(poses, MOUNT_YAW[side], TABLE10_BASES[side], .1)
+            self.q[side], self.gap[side] = list(q), gap
+        self.synced = time.monotonic()
+
+    def _smooth(self, rows):
+        """The chunk's rows, eased in from where the arms are and with no joint step above MAX_STEP_RAD
+        (both arms subdivided together). The jaw keeps each row's value during the ease-in, so a grip
+        is never loosened by it."""
+        n = max(len(r) for r in rows.values())
+        rows = {s: list(r) + [r[-1]] * (n - len(r)) for s, r in rows.items()}
+        prev = {s: list(self.q[s]) + [rows[s][0][6]] for s in SIDES}
+        out = {s: [] for s in SIDES}
+        for i in range(n):
+            k = max(1, max(math.ceil(max(abs(rows[s][i][j] - prev[s][j]) for j in range(6)) / MAX_STEP_RAD)
+                           for s in SIDES))
+            for s in SIDES:
+                a, b = prev[s], rows[s][i]
+                for step in range(1, k + 1):
+                    f = step / k
+                    out[s].append([a[j] + (b[j] - a[j]) * f for j in range(6)] + [a[6] + (b[6] - a[6]) * f])
+                prev[s] = list(b)
+        return out
 
     def _step_motion(self):
         m = self.motion
@@ -240,6 +308,13 @@ class Runtime:
             self._read_command()
             if self.motion is not None:
                 self._step_motion()
+            else:
+                if time.monotonic() - getattr(self, 'synced', 0.0) > RESYNC_S:
+                    self._resync()
+                if self.held in SIDES and self.cup is not None:
+                    # Still in hand while idle: it moves with the gripper whatever moves the arm
+                    link = self.arms[(self.held, 'link_007')]
+                    self.cup.set_actor_transform(unreal.MathLibrary.compose_transforms(self.rel, link.get_actor_transform()), False, True)
             _write(self.dir / 'cup.json', self._cup_status())
             self.error = None
         except Exception as error:

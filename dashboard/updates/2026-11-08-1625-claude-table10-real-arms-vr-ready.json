@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T16:25:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Both real Table 10 arms passed the web test after today's fixes (ON, Move up, Go to idle) and now hand over to Unreal/VR control automatically.",
+  "why": "User request: arms on USB, send and receive verified, then control from VR.",
+  "where": ["Unreal/TheHumanTouch/Tools/real_arm_service.py", "Unreal/TheHumanTouch/Tools/maker_arm_table10_dream.py", "DreamSim/table10_dream.py"],
+  "details": ["Turn arms ON was acknowledged by both SDK services. Move up: 27 deg in 2.1 s, at most 1.7 deg behind the plan. Go to idle: back at rest. 0 CAN errors.", "Fix: the hand-over to Unreal compared Unreal with the commanded target instead of the measured pose, so the right arm, sitting 3.2 deg off under gravity, never handed over. Both arms now follow Unreal/VR (virtual vs real 0.2 and 0.6 deg).", "VR session's runtime changes synced to the repo: 30 deg/s joint cap, ease-in from the actual pose, can handover between grippers, no replay on restart. The runner timeout accounts for the cap."]
+}
