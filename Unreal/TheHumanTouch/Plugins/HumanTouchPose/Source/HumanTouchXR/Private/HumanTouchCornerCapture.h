@@ -18,7 +18,9 @@ class FHumanTouchCornerCapture
     }
     // Returns true only once, after all independent checks pass.
     bool Tick(UWorld *World, int32 Table, bool bLive, FTransform &Room);
-    static bool Geometry(UWorld *World, const FString &Prefix, TArray<FVector> &Targets, FString &Error);
+    enum class ELandmarks { FullSurvey, FixedStation };
+    static bool Geometry(UWorld *World, const FString &Prefix, TArray<FVector> &Targets, FString &Error,
+                         ELandmarks Landmarks = ELandmarks::FullSurvey);
     const TArray<FVector> &Targets() const
     {
         return Model;

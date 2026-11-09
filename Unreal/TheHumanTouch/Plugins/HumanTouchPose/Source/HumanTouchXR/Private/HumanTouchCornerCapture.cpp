@@ -12,7 +12,7 @@
 
 using namespace HumanTouchCorners;
 
-bool FHumanTouchCornerCapture::Geometry(UWorld *World, const FString &Prefix, TArray<FVector> &Out, FString &Error)
+bool FHumanTouchCornerCapture::Geometry(UWorld *World, const FString &Prefix, TArray<FVector> &Out, FString &Error, ELandmarks Landmarks)
 {
     Out.Reset();
     if (!World || !FMath::IsNearlyEqual(World->GetWorldSettings()->WorldToMeters, 100.f, 0.01f))
@@ -25,8 +25,10 @@ bool FHumanTouchCornerCapture::Geometry(UWorld *World, const FString &Prefix, TA
     for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
     {
         const FString &Label = It->GetActorLabel(false);
+        const bool bRelevantArm = Landmarks == ELandmarks::FullSurvey ? Label.StartsWith(Prefix + TEXT("MakerArm_"))
+            : Label == Prefix + TEXT("MakerArm_left_base_link") || Label == Prefix + TEXT("MakerArm_right_base_link");
         if (Label == Prefix + TEXT("Dreamlabs_YAM_Table") || Label == Prefix + TEXT("MakerEnvironment_Floor") ||
-            Label.StartsWith(Prefix + TEXT("MakerArm_")))
+            bRelevantArm)
         {
             if (Actors.Contains(Label))
             {
@@ -66,6 +68,8 @@ bool FHumanTouchCornerCapture::Geometry(UWorld *World, const FString &Prefix, TA
              {TEXT("base_link"), TEXT("link_002"), TEXT("link_003"), TEXT("link_004"), TEXT("link_005"),
               TEXT("link_006"), TEXT("link_007"), TEXT("gripper_left"), TEXT("gripper_right")})
         {
+            if (Landmarks == ELandmarks::FixedStation && FCString::Strcmp(Link, TEXT("base_link")) != 0)
+                continue;
             auto *Part = Actors.FindRef(Arm + Link);
             if (!Part || !Part->GetStaticMeshComponent()->GetComponentScale().Equals(FVector::OneVector, 0.001))
             {
@@ -79,6 +83,12 @@ bool FHumanTouchCornerCapture::Geometry(UWorld *World, const FString &Prefix, TA
         for (const FVector &Hole :
              {FVector(4, 2.5700001, 9), FVector(4, 2.5700001, -9), FVector(-4, 2.5700001, 9)})
             Out.Add(Base.TransformPosition(Hole));
+        if (Landmarks == ELandmarks::FixedStation)
+        {
+            // Keep the existing landmark indices. Docking and optical correction use only the fixed points.
+            Out.Add(FVector::ZeroVector);
+            continue;
+        }
         const FTransform Wrist = Actors[Arm + TEXT("link_007")]->GetStaticMeshComponent()->GetComponentTransform();
         Out.Add(Wrist.TransformPosition(FVector(0, 0, -16.96387)));
     }

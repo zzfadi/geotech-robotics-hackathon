@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T18:25:22-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Applied a local Table 10 edge calibration and enabled Quest 3S casting. Updated dock validation to use the fixed table geometry and both base plates.",
+  "why": "An articulated wrist link in the current map is scaled 1.0158. Its size blocked edge calibration even though the tabletop and both bases are intact.",
+  "where": [
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Source/HumanTouchXR/Private/HumanTouchCornerCapture.cpp",
+    "Unreal/TheHumanTouch/Plugins/HumanTouchPose/Source/HumanTouchXR/Private/HumanTouchXRTable.cpp"
+  ],
+  "details": "The live local placement used 43 stationary tracked samples over two seconds. The editor held the requested transform and the headset decoded frames over USB with drift correction off. The updated module compiled for the next launch. Physical overlay accuracy and Luna2 Concert membership remain unverified."
+}

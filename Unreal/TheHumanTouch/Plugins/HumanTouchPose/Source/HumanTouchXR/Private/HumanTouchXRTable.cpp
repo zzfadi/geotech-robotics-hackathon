@@ -286,7 +286,7 @@ bool OpticalTick(float)
         NextDockCheck = Now + .20;
         TArray<FVector> Marks;
         UWorld *World = PlacedAvatar->GetWorld();
-        if (!FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World, Number), Marks, Note))
+        if (!FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World, Number), Marks, Note, FHumanTouchCornerCapture::ELandmarks::FixedStation))
             Optical.CancelDock();
         else
         {
@@ -312,7 +312,7 @@ bool OpticalTick(float)
         TArray<FVector> Current;
         FString GeoError;
         const bool bRead = FHumanTouchCornerCapture::Geometry(
-            PlacedAvatar->GetWorld(), ScenePrefix(PlacedAvatar->GetWorld(), Number), Current, GeoError);
+            PlacedAvatar->GetWorld(), ScenePrefix(PlacedAvatar->GetWorld(), Number), Current, GeoError, FHumanTouchCornerCapture::ELandmarks::FixedStation);
         if (!bRead || !SameFixedGeometry(Current))
         {
             Optical.Invalidate();
@@ -387,7 +387,7 @@ bool Tick(float)
         TArray<FVector> Current;
         FString Error;
         const bool bMatches = Number == VerifiedNumber && XR.HasValidTrackingPosition() && HasLiveViewer() &&
-            FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World,Number), Current, Error) && SameFixedGeometry(Current);
+            FHumanTouchCornerCapture::Geometry(World, ScenePrefix(World,Number), Current, Error, FHumanTouchCornerCapture::ELandmarks::FixedStation) && SameFixedGeometry(Current);
         if (!bMatches)
         {
             VerifiedRoom.Reset();
