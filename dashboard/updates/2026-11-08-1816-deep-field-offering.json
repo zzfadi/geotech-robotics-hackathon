@@ -1,0 +1,12 @@
+{
+  "when": "2026-11-08T18:16:15-08:00",
+  "workstream": "demo",
+  "status": "done",
+  "what": "Installed the palm-stabilized deep-field offering in the three pitch decks and rendered an alternate with both hands entering the shot.",
+  "why": "Give the central galaxy more screen time, remove visible palm growth, and ground the effect in the Hubble Ultra Deep Field.",
+  "where": [
+    "demo/pitch/films/logo/README.md",
+    "demo/pitch/films/logo/deep-field",
+    "demo/pitch/deck"
+  ]
+}

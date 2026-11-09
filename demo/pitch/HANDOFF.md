@@ -1,6 +1,6 @@
 # The Human Touch · cloud handoff
 
-**Approved logo.** Use the [transparent Emmy nebula PNG](https://drive.google.com/file/d/1ImaJFPjERw7ZqHKFz5H1Nrnjk3CypSr6/view). An amber human palm and Emmy’s ivory hand with exposed titanium joints form a single spiral of light. The [final logo folder](https://drive.google.com/drive/folders/1NPCH0J0-Dt8_Gi0fY6nmV2qLo2Bs7NCM) and [brand guide](https://drive.google.com/file/d/1m1ghiYL3c9VkqjNrb1SQkGHw64CccpX5/view) are the production references. Each deck plays the [full-screen cosmic logo film](films/logo/README.md) before its editable title.
+**Approved logo.** Use the [transparent Emmy nebula PNG](https://drive.google.com/file/d/1ImaJFPjERw7ZqHKFz5H1Nrnjk3CypSr6/view). An amber human palm and Emmy’s ivory hand with exposed titanium joints form a single spiral of light. The [final logo folder](https://drive.google.com/drive/folders/1NPCH0J0-Dt8_Gi0fY6nmV2qLo2Bs7NCM) and [brand guide](https://drive.google.com/file/d/1m1ghiYL3c9VkqjNrb1SQkGHw64CccpX5/view) are the production references. Each deck plays the [full-screen deep-field logo film](films/logo/README.md) before its editable title.
 
 | Continue here | What to open |
 | --- | --- |
