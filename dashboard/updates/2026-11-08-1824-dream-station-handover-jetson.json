@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T18:24:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Dream drove the real Maker Arms through the hand-to-hand bottle handover from the Jetson, using Dream's own station started over its local API with Saleh's 17:00 prompt.",
+  "why": "Same path as the working Windows/WSL setup (dreamcli setup + station), now on the Jetson: gs_usb built for its kernel, CAN links named by adapter serial, three arm cameras, model dreamlabs/dream-1-beta.",
+  "where": ["orin-arm:~/dream-station", "orin-arm:~/.dreamlabs/station.yaml", "orin-arm:~/gs_usb-build"],
+  "details": ["Started with POST /start {prompt, checkpoint} on the station API (127.0.0.1:8091) and stopped with POST /stop; the station logged the right gripper holding and then releasing during the run. Operator confirmed the handover worked.", "Laggy: Dream round trip about 1.4 s median (3 s p95, one chunk discarded past the 3 s timeout) with about 17 ms of network; the Jetson's 20 Hz loop overran its 50 ms tick at times.", "After the task both arms kept moving until Stop: the station loops until told to stop. The left gripper reads outside 0..1 (1.97-4.23) because its whole-turn encoder wrap is not corrected, and the left arm moved although the prompt keeps it still.", "Repo raw-USB arm tools cannot open the adapters while gs_usb holds them on the Jetson."]
+}
