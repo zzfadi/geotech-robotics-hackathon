@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:40:00-08:00",
+  "workstream": "arm-station",
+  "status": "decision",
+  "what": "The working real-arm Dream path is Dream's own station (dreamcli setup / dreamcli robot, the robots package in dreamlabs 1.0.37), which the Windows/WSL laptop runs; DreamSim/dream_arm.py is not equivalent and stays a guarded experiment.",
+  "why": "The station is a port of MakerMods' reference Maker Arm driver: a 20 Hz control loop that keeps refilling Dream's 48-row chunks while the arm moves and commands both arms at 250 Hz between rows. dream_arm.py played one row per chunk through pickup_server's blocking 15 deg/s moves, so Dream drove a far slower, stop-start robot than it plans for.",
+  "where": ["DreamSim/dream_arm.py", "~/hub-mac/.venv/lib/python3.12/site-packages/robots/makers.py", "~/hub-mac/.venv/lib/python3.12/site-packages/robots/control.py"],
+  "details": ["The station opens a candleLight adapter only as a Linux SocketCAN link (kernel gs_usb driver) or a CANable on slcan firmware; its raw-USB candleLight transport is not ported, so it cannot drive these adapters from macOS. That is why it runs under WSL on Windows.", "Jetson (L4T R39.2.1, kernel 6.8.12-1021-tegra): CONFIG_CAN and CAN_RAW are modules but CONFIG_CAN_GS_USB is not set; kernel headers are installed, so gs_usb can be built out of tree to run the station there.", "Maker Arm motor temperature limits are set in the station with `dreamcli robot temp --warn/--stop`."]
+}
