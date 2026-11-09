@@ -61,8 +61,12 @@ class ArmCams:
                     time.sleep(1)
                 time.sleep(0.1)
         import cv2
+        if self.source.startswith("devices:"):  # e.g. devices:1,2,3 = overhead, wrist_l, wrist_r camera indices
+            device, backend = int(self.source[8:].split(",")[list(ARM_CAMS).index(role)]), cv2.CAP_ANY
+        else:
+            device, backend = ARM_CAMS[role], cv2.CAP_V4L2
         while True:
-            cap = cv2.VideoCapture(ARM_CAMS[role], cv2.CAP_V4L2)
+            cap = cv2.VideoCapture(device, backend)
             # All cameras share one USB 2.0 hub: compressed MJPG at 15 fps leaves room for four streams.
             cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -325,8 +329,9 @@ def main(argv=None) -> int:
     p.add_argument("--device", default="0", help="0 for the Jetson GPU, mps on a Mac, cpu otherwise")
     p.add_argument("--mac", action="store_true", help="Mac built-in camera with .pt weights on the Apple GPU")
     p.add_argument("--weights", type=Path, default=Path("~/hub-mac/weights").expanduser())
-    p.add_argument("--arm-cams", help="'local' (Jetson USB) or a Jetson dashboard URL; default local on the "
-                                      "Jetson, http://127.0.0.1:8790 (the tunnel) with --mac")
+    p.add_argument("--arm-cams", help="'local' (Jetson USB), 'devices:I,J,K' (camera indices for overhead, "
+                                      "wrist_l, wrist_r) or a Jetson dashboard URL; default local on the Jetson, "
+                                      "http://127.0.0.1:8790 (the tunnel) with --mac")
     a = p.parse_args(argv)
     if a.device.isdigit():
         a.device = int(a.device)

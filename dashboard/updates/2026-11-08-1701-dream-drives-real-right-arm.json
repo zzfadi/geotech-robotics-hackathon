@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:01:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "Dream drove the real right Maker Arm from the MacBook: Saleh's water-bottle prompt, live arm cameras and measured joints in, Dream action chunks out through pickup_server's guarded moves.",
+  "why": "First physical Dream-controlled motion: the step before moving the same loop to the Jetson.",
+  "where": ["DreamSim/dream_arm.py", "DreamSim/dream_live.py", "vision/live_view.py"],
+  "details": ["Five closed-loop cycles, Dream get_action about 0.6 s each (dream-1-beta): the arm panned toward the bottle and reached down and out (shoulder -101, elbow 71, wrist 54 SDK deg) with the jaws opening. No grasp: the elbow motor reached the 52 C guard mid-reach (it started at 47 C after the day's use); pickup_server froze and the loop's rest returned the arm home and released it (return verified).", "Every exit returns home via rest; targets are clamped 2 deg inside the SDK profile limits (the dry run caught a shoulder target the server would refuse); speed is pickup_server's 15 deg/s cap.", "Mac dashboard reads the three arm cameras by local index (--arm-cams devices:1,2,0) and the MacBook webcam as the perception view.", "Dream warned that the tool centre point is hand-set (uncalibrated) and that a person should confirm the camera inputs with dream.check / dream.input_check before real runs.", "Next: cool the motors below about 40 C before retrying; heat, not Dream latency, limits the reach."]
+}
