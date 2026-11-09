@@ -120,6 +120,26 @@ def _runtime():
     return rt if rt is not None and rt.callback is not None else None
 
 
+
+def _start_runtime():
+    """Starts the Table 10 runtime (Tools/maker_arm_table10_dream.py) when an editor came up without it:
+    agent motions go through it so the can is carried. It must start outside a transaction, so on the
+    next tick; the agent asks again a moment later."""
+    if not getattr(unreal, "_table10_runtime_starting", False):
+        unreal._table10_runtime_starting = True
+        state = {}
+
+        def _go(_delta):
+            unreal.unregister_slate_post_tick_callback(state["h"])
+            unreal._table10_runtime_starting = False
+            try:
+                _t10().start(str(_dream_dir()))
+            except Exception as error:
+                unreal.log_error(f"Table 10 runtime start: {error!r}")
+        state["h"] = unreal.register_slate_post_tick_callback(_go)
+    return {"started": False, "reason": "the Table 10 motion runtime wasn't running; it is starting now, "
+                                        "so ask again in a second"}
+
 def _runner_busy():
     status = _read_json(_dream_dir() / "status.json") or {}
     if status.get("state") in ("queued", "starting", "running") and time.time() - float(status.get("unix", 0)) < 120:
@@ -559,7 +579,7 @@ class Table10RobotTools(unreal.ToolsetDefinition):
         """
         rt = _runtime()
         if rt is None:
-            return json.dumps({"started": False, "reason": "the Table 10 runtime isn't running in this editor"})
+            return json.dumps(_start_runtime())
         side = (side or "both").strip().lower()
         sides = SIDES if side not in SIDES else (side,)
         if _waits(rt):
@@ -606,6 +626,8 @@ class Table10RobotTools(unreal.ToolsetDefinition):
         turn = unreal.Rotator(_clamp(roll_deg, MAX_TURN_DEG), _clamp(pitch_deg, MAX_TURN_DEG),
                               _clamp(yaw_deg, MAX_TURN_DEG)).quaternion()
         rt = _runtime()
+        if rt is None:
+            return json.dumps(_start_runtime())
         if rt is not None and both:
             if _waits(rt):
                 return json.dumps(_enqueue(Table10RobotTools.move_gripper, "both", toward_person_cm, toward_right_arm_cm, up_cm, yaw_deg, pitch_deg, roll_deg))
@@ -701,6 +723,8 @@ class Table10RobotTools(unreal.ToolsetDefinition):
         side = _side(side)
         gap = mapping.JAW_MAX_M * max(0.0, min(100.0, float(opening_percent))) / 100.0
         rt = _runtime()
+        if rt is None:
+            return json.dumps(_start_runtime())
         if rt is not None:
             if _waits(rt):
                 return json.dumps(_enqueue(Table10RobotTools.set_gripper, side, opening_percent))
@@ -804,7 +828,7 @@ class Table10RobotTools(unreal.ToolsetDefinition):
         """
         rt = _runtime()
         if rt is None:
-            return json.dumps({"started": False, "reason": "the Table 10 runtime isn't running in this editor"})
+            return json.dumps(_start_runtime())
         busy = _busy(rt, ((side or "").strip().lower(),) if (side or "").strip().lower() in SIDES else SIDES)
         if busy:
             return json.dumps({"started": False, "reason": busy})
@@ -826,7 +850,7 @@ class Table10RobotTools(unreal.ToolsetDefinition):
         """
         rt = _runtime()
         if rt is None:
-            return json.dumps({"started": False, "reason": "the Table 10 runtime isn't running in this editor"})
+            return json.dumps(_start_runtime())
         busy = _busy(rt)
         if busy:
             return json.dumps({"started": False, "reason": busy})
