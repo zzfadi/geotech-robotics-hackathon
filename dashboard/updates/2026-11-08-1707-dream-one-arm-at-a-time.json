@@ -1,0 +1,9 @@
+{
+  "when": "2026-11-08T17:07:00-08:00",
+  "workstream": "arm-station",
+  "status": "done",
+  "what": "dream_arm.py drives one arm at a time: --side auto scans both arms read-only, starts pickup_server on the cooler one and mirrors Saleh's prompt to that side; on a heat stop it returns the arm home and continues on the other arm if it is cool enough.",
+  "why": "Motor heat limits each arm's reach; alternating keeps a demo going while the hot arm cools.",
+  "where": ["DreamSim/dream_arm.py"],
+  "details": ["The idle arm's measured joints from the scan go to Dream as its state; --other-sdk is only needed with --side right|left.", "Dry run (no motion) at 17:06: scan read left 49 C / right 46 C, chose right, Dream answered in 1.6 s with a 48-row chunk.", "Every exit still ends with pickup_server rest; the server subprocess is never killed while its arm is enabled."]
+}
