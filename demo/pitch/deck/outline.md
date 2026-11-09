@@ -8,7 +8,7 @@ Open in silence on the fingertip detail. Play the pullback. Let the painted conf
 
 ## 2. The offering · 8 s
 
-[The marble logo film plays. Begin the title narration below over the offering; advance to the title as Emmy receives the light.]
+[The cosmic logo film plays. Begin the title narration below over the offering; advance to the title as Emmy receives the light.]
 
 ## 3. The Human Touch · 2 s remaining
 

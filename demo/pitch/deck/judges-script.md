@@ -12,7 +12,7 @@ Target 2:52 including the live action, with eight seconds of margin under three 
 
 ## 3. The offering · 8 s
 
-[The marble logo film plays. Begin the title narration below over the offering; advance to the title as Emmy receives the light.]
+[The cosmic logo film plays. Begin the title narration below over the offering; advance to the title as Emmy receives the light.]
 
 ## 4. The Human Touch · 12 s remaining
 

@@ -6,7 +6,7 @@
 | --- | --- |
 | 0:00–0:07 | Open on the fingertips; reveal the war. Ask the question. |
 | 0:07–0:37 | Turn immediately to the live station. Use the verified greeting, then “Hold my beer.” Let the audience see the physical action. “Thanks.” |
-| 0:37–0:57 | Begin the box example over the eight-second marble logo film; advance to the title and finish the example. |
+| 0:37–0:57 | Begin the box example over the eight-second cosmic logo film; advance to the title and finish the example. |
 | 0:57–1:16 | Explain the difference a real, remote participant makes inside a virtual rehearsal. |
 | 1:16–1:40 | Four brief museum illustrations. Let each human initiate. |
 | 1:40–2:00 | Webcam/Quest, the shared Unreal scene and the physics design. |
