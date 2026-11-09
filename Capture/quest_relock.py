@@ -111,7 +111,7 @@ def forward(serial, open_camera=False):
         )
 
 
-def read_frame(port):
+def read_frame(port, *, photometry=False):
     with socket.create_connection(("127.0.0.1", port), 2) as sock:
         sock.settimeout(2.5)
         sock.sendall(b"\x01")
@@ -136,6 +136,8 @@ def read_frame(port):
             data = stream.read(1280 * 960 * 3 // 2)
             if len(data) != 1280 * 960 * 3 // 2:
                 raise Hold("incomplete exposure")
+    if not photometry:
+        meta.pop("photometry", None)  # Exposure changes per frame and is not part of the lens identity.
     stamp = meta.pop("timestamp_ns", None)
     if not isinstance(stamp, int) or stamp <= 0:
         raise Hold("missing sensor timestamp")

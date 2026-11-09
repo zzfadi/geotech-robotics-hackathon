@@ -1,0 +1,8 @@
+{
+  "camera_props": ["Dreamlabs_YAM_CameraMast", "Dreamlabs_YAM_OverviewCameraProxy", "MakerStation_CentralCameraLens_Approximate"],
+  "studio_fills": ["MakerLighting_LocalPointFill", "MakerEnvironment_CeilingLeft", "MakerEnvironment_CeilingRight", "MakerLighting_SoftKey", "MakerLighting_BackFill", "MakerLighting_SoftFill"],
+  "daylight_lux": 320,
+  "sky_intensity": 1.0,
+  "exposure_bias": -0.5,
+  "bloom_intensity": 0.04
+}

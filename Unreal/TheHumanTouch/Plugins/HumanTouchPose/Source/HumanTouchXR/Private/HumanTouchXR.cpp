@@ -1,5 +1,6 @@
 #include "HumanTouchPassthrough.h"
 #include "HumanTouchXRTable.h"
+#include "HumanTouchPresentationCook.h"
 
 #include "Components/PrimitiveComponent.h"
 #include "Containers/Ticker.h"
@@ -196,6 +197,7 @@ public:
     {
         const FString ShaderDir = IPluginManager::Get().FindPlugin(TEXT("HumanTouchPose"))->GetBaseDir() / TEXT("Shaders");
         AddShaderSourceDirectoryMapping(TEXT("/HumanTouchXR"), ShaderDir);
+        HumanTouchPresentationCook::Startup();
         if (IsRunningCommandlet())
             return;
         HumanTouchXRTable::Startup();
@@ -218,6 +220,7 @@ public:
     }
     void ShutdownModule() override
     {
+        HumanTouchPresentationCook::Shutdown();
         if (!IsRunningCommandlet()) HumanTouchXRTable::Shutdown();
         FTSTicker::GetCoreTicker().RemoveTicker(Tick);
         if (Command) IConsoleManager::Get().UnregisterConsoleObject(Command);

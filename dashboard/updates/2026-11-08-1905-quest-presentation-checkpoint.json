@@ -1,0 +1,14 @@
+{
+  "when": "2026-11-08T19:05:33-08:00",
+  "workstream": "vrxr",
+  "status": "in-progress",
+  "what": "Checkpointed Quest room lighting, camera visibility, and real-hand compositing for the Table 10 demo. The local editor was closed after leaving the shared session.",
+  "why": "Preserve the rehearsal build and the remaining visual checks for the next session.",
+  "where": [
+    "Capture/quest_room_light.py",
+    "Unreal/TheHumanTouch/Config/StationPresentation.json",
+    "Unreal/TheHumanTouch/Tools/station_presentation.py",
+    "https://github.com/Geodesic-Games/OpenXR-OSX"
+  ],
+  "details": "Quest 3S decoded the Luna2 scene over USB and the static dock applied at unit scale with drift correction off. The tabletop sample differed by 0.04 stops with 19% directional coverage. Full-room lighting and physical hand-edge alignment need visual verification. CoPresenceCall startup also needs an import-path check. The room capture and headset placement are local."
+}
