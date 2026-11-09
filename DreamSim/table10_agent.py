@@ -37,7 +37,8 @@ HEARTBEAT_S = .25
 RESTART_EVERY_S = 30.
 SDK_PYTHON = Path('/Users/geo_dennis/Desktop/Projects/geotech-robotics-hackathon/maker-arm-sdk/.venv/bin/python')
 ADAPTERS = {'left': '003A003F4146570320303038', 'right': '0027002E4146570520313238'}
-SERVER_LOST_S = 2.  # drive heartbeat stops when the web server has not answered for this long
+SERVER_LOST_S = 15.  # drive heartbeat stops when the web server has not answered for this long (a deploy restart
+                     # takes a few seconds; the server keeps the drive request across it)
 
 EDITOR_CODE = '''import sys, importlib, json
 T = r"%s"
@@ -303,6 +304,7 @@ def main():
     web_test = None      # the latest test handed to the real-arm services (control.json "test")
     local_test = None    # a test the agent itself had to refuse
     routed = {}          # test id -> 'service' | 'editor'
+    routed_at = {}
     control_sent = {}
     next_beat = 0.
     print('Table 10 agent: server %s' % args.server, flush=True)
@@ -334,7 +336,9 @@ def main():
             status = merged_status(services)
             test = (ue or {}).get('test')
             if claimed and routed.get(claimed) == 'service':
-                test = merged_test(services, claimed) or {'id': claimed, 'state': 'sent', 'detail': 'sent to the real-arm services'}
+                test = merged_test(services, claimed) or (
+                    {'id': claimed, 'state': 'sent', 'detail': 'sent to the real-arm services'} if time.time()-routed_at.get(claimed, 0) < 5
+                    else {'id': claimed, 'state': 'error', 'detail': 'no arm service took the test (are the arms on?)'})
             elif local_test and local_test.get('id') == claimed:
                 test = local_test
             elif claimed and routed.get(claimed) == 'editor' and test and test.get('id') == claimed:
@@ -362,6 +366,7 @@ def main():
                 command = reply.get('command')
                 if command and command.get('id') != claimed:
                     claimed = command['id']
+                    routed_at[claimed] = time.time()
                     item = {'id': command['id'], 'action': command['action'], 'unix': time.time()}
                     torque_on = any(m == 'drive' for m in (status.get('modes') or {}).values())
                     if torque_on:  # the real-arm services run it (no Unreal needed); the editor mirrors

@@ -349,6 +349,10 @@ class Link:
 
     def _follow_handle(self, side):
         yaw, base = MOUNT_YAW[side], TABLE10_BASES[side]
+        if self.source.get(side) in ("real", "test"):
+            # This arm is now driven from Unreal: drop the stale "real" label left by mirroring, or the VR wrist-handle
+            # helper (which leaves arms labelled "real" alone) never drives it (2026-11-08).
+            self.source[side] = "recovered"
         poses = self._poses(side)
         expected = self.expected.get(side)
         if expected is not None and not any(_moved(poses[l], expected[l]) for l in VISUAL_LINKS):
